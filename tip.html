@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <title>Peng's jQuery Plugins: Tip</title>
+        <link rel="stylesheet" id="reset" href="http://files.pengxwang.com/lib/reset.css" type="text/css" media="all"/>
+        <style type="text/css">
+h1 { font: bold 1.5em Helvetica, sans-serif; letter-spacing: -1px; }
+body { padding: 1em; }
+p { padding: 1em 0; }
+#main { padding: 2em 0; }
+#border_test_bottom { padding-top: 50em; }
+.border_test { position: absolute; }
+#upper_right { right: 1em; top: 1em; }
+#lower_right { right: 1em; bottom: 1em; }
+#lower_left { left: 1em; bottom: 1em; }
+.box { border: 1px solid #ccc; padding: 1em; margin: 1em 0; width: 600px;
+    border-radius: .5em; -moz-border-radius: .5em; -webkit-border-radius: .5em; }
+.menu { margin: 1em 0; width: 300px; }
+.menu li a { display: block; padding: 1em; border: 1px solid #ccc; border-bottom-width: 0; }
+.menu li.chF a { border-bottom-width: 1px; }
+
+.pjpTip {
+    position: absolute;
+    z-index: 9999;
+}
+.pjpTip .wrap {
+    position: relative; 
+    max-width: 18em; /* 162px (9px) */
+}
+.pjpTip .content {
+    overflow: hidden;
+    padding: .777em 1.333em 1.111em 1.333em; /* 7px 12px 10px 12px */
+    position: relative;
+    background-color: #666;
+    color: #fff;
+}
+.pjpTip .stem {
+    border-width: 0;
+    border-style: solid;
+    
+    background: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+    
+    border-color: transparent;
+}
+/** default > n/s-w/e corner stems */
+
+.pjpTip .east .stem {
+    border-right-width: 1em;
+    left: 0;
+}
+.pjpTip .west .stem {
+    border-left-width: 1em;
+    right: 0;
+}
+.pjpTip .south .content {
+    top: 1em;
+}
+.pjpTip .south .stem {
+    top: 0;
+    border-bottom-width: 1em;
+    border-bottom-color: #666;
+}
+.pjpTip .north .content {
+    bottom: 1em;
+}
+.pjpTip .north .stem {
+    bottom: 0;
+    border-top-width: 1em;
+    border-top-color: #666;
+}
+
+/* ^ default > n/s-w/e corner stems **/
+/** snapping */
+/** snapping > locked y value */
+
+.pjpTips .snapYSide .wrap .stem {
+    left: 50%;
+    margin-left: -.75em;
+    border-width: 0 .75em; /* 3-2 triangle */
+    border-color: transparent;
+}
+.pjpTips .snapYSide .south .stem {
+    border-bottom-width: 1em;
+    border-bottom-color: #666;
+}
+.pjpTips .snapYSide .north .stem {
+    border-top-width: 1em;
+    border-top-color: #666;
+}
+
+/* ^ snapping > locked y value **/
+/** snapping > locked x value */
+
+.pjpTips .snapXSide .wrap .stem {
+    top: 50%;
+    margin-top: .25em;
+    border-width: .75em 0;
+    border-color: transparent;
+}
+.pjpTips .snapXSide .east .stem {
+    border-right-width: 1em;
+    border-right-color: #666;
+}
+.pjpTips .snapXSide .west .stem {
+    border-left-width: 1em;
+    border-left-color: #666;
+}
+.pjpTips .snapXSide .east .content {
+    left: 1em;
+}
+.pjpTips .snapXSide .west .content {
+    right: 1em;
+}
+
+/* ^ snapping > locked x value **/
+/* ^ snapping **/
+
+        </style>
+        
+<!--[if lte IE 8]>
+        <style type="text/css">
+            
+        </style>
+    <![endif]-->
+<!--[if lte IE 7]>
+        <style type="text/css">
+            
+        </style>
+<![endif]-->
+<!--[if lte IE 6]>
+        <style type="text/css">
+            .pjpTip .wrap {
+                width: 18em;
+            }
+            #override .pjpTip .north .stem { border-top-color: #666; bottom: -1em; }
+            #override .pjpTip .south .stem { border-bottom-color: #666; top: -1em; }
+            #override .pjpTip .stem {
+                border-color: orange;
+                filter: chroma(color=orange);
+            }
+            
+        </style>
+<![endif]-->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" ></script>
+        <!-- // <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js" ></script> -->
+        <script type="text/javascript" src="jquery.plugin.pjp.tip.js"></script>
+        <script type="text/javascript">
+        
+            var IE = (IE == undefined) 
+                ? (jQuery.browser.msie && /MSIE\s(5\.5|6\.)/.test(navigator.userAgent)) 
+                : IE
+                ;
+            
+            var do_debug = (do_debug == undefined) 
+                ? true : do_debug;
+            if (typeof(trace) != 'function') 
+            {
+                var trace = function (x, do_trace) 
+                {
+                    if (do_debug == true) 
+                    {
+                        if (x == undefined) x = 'success';
+                        if ((typeof x == 'string' && x == '') || x.length == 0) x = 'nothing';
+                        if (window.console) 
+                        {
+                            if (typeof x === 'object')
+                                console.info(x);
+                            else 
+                                (do_trace == true) ? console.trace(x) : console.log(x);
+                        }
+                        else
+                        {
+                            alert(x);
+                        }
+                    }
+                    return x;
+                };
+            }
+            
+            
+            jQuery.noConflict();
+            jQuery(document).ready(function($) {
+                
+                if (IE) 
+                {
+                    // trace('Is IE');
+                    // trace('jQuery(document).width() ' + $(document.body).width());
+                }
+                
+                /**
+                 * Plugin calls for pjpTip
+                 */
+                    // two types of exceptions: selector (leave alone) or filter (erase)
+                    // custom anchor: variations
+                $('.box a[title]').pjpTip({ do_snap_side: true, tip_anchor: '.box'});
+                // $('.box a[title]').pjpTip({ do_snap_side: true, do_lock_x: true, do_lock_y: false, tip_anchor: '.box'});
+                    // umbrella calls: variations
+                $('.menu *[title]').pjpTip({ do_lock_x: true, do_lock_y: false });
+                // $('*[title]').pjpTip({ do_snap: false });
+                $('*[title]').pjpTip({ do_snap_side: true });
+                // $('*[title]').pjpTip();
+            }
+            );
+        
+        </script>        
+    </head>
+    <body id="override">
+        <h1>Peng's jQuery Plugins: Tip</h1>
+        <div id="main">
+            <p>default</p>
+            <p>
+                <a class="trigger" href="#" title="foo">tooltip trigger</a> | 
+                <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">tooltip trigger</a> | 
+                <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">tooltip trigger</a>
+            </p>
+            <p>a list</p>
+            <ul class="menu">
+                <li><a class="trigger" href="#" title="This is tooltip 1">tooltip trigger</a></li>
+                <li><a class="trigger" href="#" title="This is tooltip 2">tooltip trigger</a></li>
+                <li class="chF"><a class="trigger" href="#" title="This is tooltip 3">tooltip trigger</a></li>
+            </ul>
+            <p>in a box</p>
+            <div class="box">
+                <!-- <br/><br/><br/><br/><br/><br/><br/><br/> -->
+                <p>
+                    <a class="trigger" href="#" title="This is tooltip 1">tooltip trigger</a> | 
+                    <a class="trigger" href="#" title="This is tooltip 2">tooltip trigger</a> | 
+                    <a class="trigger" href="#" title="This is tooltip 3">tooltip trigger</a>
+                </p>
+            </div>
+        </div>
+        <div id="upper_right" class="border_test">
+            <a class="trigger" href="#" title="foo">tooltip trigger</a>
+            <p>upper right corner</p>
+        </div>
+        <div id="lower_left" class="border_test">
+            <p>lower left corner</p>
+            <a class="trigger" href="#" title="foo">tooltip trigger</a>
+        </div>
+        <div id="lower_right" class="border_test">
+            <p>lower right corner</p>
+            <a class="trigger" href="#" title="foo">tooltip trigger</a>
+        </div>
+    </body>
+</html>
