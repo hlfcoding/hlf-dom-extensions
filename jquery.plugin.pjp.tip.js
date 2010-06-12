@@ -14,9 +14,12 @@
     //---------------------------------------
     $.hlf.tip = {
         opt: {
-            showTip: true,
+            showStem: true,
             followCursor: true,
-            
+            sClass: 'hlf-tip',
+            sInnerClass: 'tip-inner',
+            sContentClass: 'tip-content',
+            sStemClass: 'tip-stem'
         }
     };
     //---------------------------------------
@@ -32,21 +35,66 @@
         //---------------------------------------
         // PRIVATE VARIABLES
         //---------------------------------------
-        var self = this,
-            $trigger
-            ;
+        var $tip = $('<div>'),
+            $trigger, $triggerP,
+            self = this;
         //---------------------------------------
         // PRIVATE METHODS
         //---------------------------------------
-        var findTipContent = function ($trigger) {
+        var saveTriggerContent = function ($trigger) {
             title = $trigger.attr('title');
             if (title) {
-                return title;
+                $trigger.data('hlfTipContent', title)
+                        .attr('data-tip-content', 'hlfTipContent')
+                        .removeAttr('title');
             }
-        }
-        var displayTip = function () {
-            
-        }
+        };
+        var bindTrigger = function ($trigger) {
+            $trigger.bind({
+                mouseenter: function (evt) {
+                    self.wake($trigger);
+                },
+                mouseleave: function (evt) {
+                    self.sleep($trigger);
+                }
+            });
+        };
+        var renderDefaultTip = function () {
+            var builder = [],
+                html;
+            builder.push('<div class="', opt.sClass, '">');
+            builder.push('<div class="', opt.sInnerClass, '">');
+            if (opt.showStem) {
+                builder.push('<div class="', opt.sStemClass, '">');            
+                builder.push('</div>');            
+            }
+            builder.push('<div class="', opt.sContentClass, '">');            
+            builder.push('</div>');
+            builder.push('</div>');
+            builder.push('</div>');
+            html = builder.join('\n');
+            html = self.onRenderDefault(html);
+            return html;
+        };
+        var renderTip = function () {
+            if ($tip.html && $tip.html().length > 0) {
+                return;
+            }
+            var html;
+            html = self.onRender();
+            if (html.length === 0) {
+                html = renderDefaultTip();
+            }
+            $tip = $(html);
+            $tip.prependTo($context);
+        };
+        var positionTip = function ($trigger) {
+            var position = $trigger.position();
+            $tip.css({
+                top: position.top,
+                left: position.left
+            });
+        };
         //---------------------------------------
         // PUBLIC METHODS
         //---------------------------------------
@@ -54,16 +102,28 @@
             init: function () {
                 $triggers.each(function () {
                     var $t = $(this);
-                    $t.data('tipContent', findTipContent($t));
+                    saveTriggerContent($t);
+                    bindTrigger($t);
                 });
+                renderTip();
             },
-            render: function () {
-                
+            getTip: function () {
+                return $tip;
+            },
+            wake: function ($trigger) {
+                positionTip($trigger);
+                $tip.fadeIn();
+            },
+            sleep: function ($trigger) {
+                $triggerP = $trigger;
+                $tip.fadeOut();
             },
             //---------------------------------------
             // EXTENSION SLOTS
             //---------------------------------------
-            move: function () {}
+            move: function () {},
+            onRender: function () { return ''; },
+            onRenderDefault: function (html) { return html; }
         });
         self.init();
     };

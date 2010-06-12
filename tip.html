@@ -5,45 +5,49 @@
         <title>Peng's jQuery Plugins: Tip</title>
         <link rel="stylesheet" id="reset" href="http://files.pengxwang.com/lib/reset.css" type="text/css" media="all"/>
         <style type="text/css">
+
+body { padding: 1em; position: relative; }
 h1 { font: bold 1.5em Helvetica, sans-serif; letter-spacing: -1px; }
-body { padding: 1em; }
 p { padding: 1em 0; }
 #main { padding: 2em 0; }
-#border_test_bottom { padding-top: 50em; }
-.border_test { position: absolute; }
-#upper_right { right: 1em; top: 1em; }
-#lower_right { right: 1em; bottom: 1em; }
-#lower_left { left: 1em; bottom: 1em; }
 .box { border: 1px solid #ccc; padding: 1em; margin: 1em 0; width: 600px;
     border-radius: .5em; -moz-border-radius: .5em; -webkit-border-radius: .5em; }
 .menu { margin: 1em 0; width: 300px; }
 .menu li a { display: block; padding: 1em; border: 1px solid #ccc; border-bottom-width: 0; }
 .menu li.chF a { border-bottom-width: 1px; }
+.border_test { position: absolute; }
+#border_test_bottom { padding-top: 50em; }
+#upper_right { right: 1em; top: 1em; }
+#lower_right { right: 1em; bottom: 1em; }
+#lower_left { left: 1em; bottom: 1em; }
 
-.pjpTip {
+.hlf-tip {
     position: absolute;
     z-index: 9999;
+    display: none;
 }
-.pjpTip .wrap {
+.hlf-tip .tip-inner {
     position: relative; 
-    max-width: 18em; /* 162px (9px) */
 }
-.pjpTip .content {
+    .hlf-tip .tip-inner {
+        max-width: 18em; /* 162px (9px) */
+    }
+.hlf-tip .tip-content {
     overflow: hidden;
-    padding: .777em 1.333em 1.111em 1.333em; /* 7px 12px 10px 12px */
     position: relative;
-    background-color: #666;
-    color: #fff;
 }
-.pjpTip .stem {
+    .hlf-tip .tip-content {
+        padding: .777em 1.333em 1.111em 1.333em; /* 7px 12px 10px 12px */
+        background-color: #666;
+        color: #fff;        
+    }
+.hlf-tip .tip-stem {
     border-width: 0;
-    border-style: solid;
-    
+    border-style: solid;    
     background: none;
     position: absolute;
     width: 0;
     height: 0;
-    
     border-color: transparent;
 }
 /** default > n/s-w/e corner stems */
@@ -145,8 +149,7 @@ p { padding: 1em 0; }
             
         </style>
 <![endif]-->
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" ></script>
-        <!-- // <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js" ></script> -->
+        <script type="text/javascript" src="third-party/jquery.js" ></script>
         <script type="text/javascript" src="jquery.plugin.pjp.tip.js"></script>
         <script type="text/javascript">
             
