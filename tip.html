@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en-US">
     <head>
+        <meta charset="utf-8" />
         <title>Peng's jQuery Plugins: Tip</title>
         <link rel="stylesheet" id="reset" href="http://files.pengxwang.com/lib/reset.css" type="text/css" media="all"/>
         <style type="text/css">
 
-body { padding: 1em; position: relative; }
+body { padding: 1em; }
 h1 { font: bold 1.5em Helvetica, sans-serif; letter-spacing: -1px; }
 p { padding: 1em 0; }
 #main { padding: 2em 0; }
@@ -21,27 +21,27 @@ p { padding: 1em 0; }
 #lower_right { right: 1em; bottom: 1em; }
 #lower_left { left: 1em; bottom: 1em; }
 
-.hlf-tip {
+.tip {
     position: absolute;
     z-index: 9999;
     display: none;
 }
-.hlf-tip .tip-inner {
+.tip .inner {
     position: relative; 
 }
-    .hlf-tip .tip-inner {
+    .tip .inner {
         max-width: 18em; /* 162px (9px) */
     }
-.hlf-tip .tip-content {
+.tip .content {
     overflow: hidden;
     position: relative;
 }
-    .hlf-tip .tip-content {
+    .tip .content {
         padding: .777em 1.333em 1.111em 1.333em; /* 7px 12px 10px 12px */
         background-color: #666;
         color: #fff;        
     }
-.hlf-tip .tip-stem {
+.tip .stem {
     border-width: 0;
     border-style: solid;    
     background: none;

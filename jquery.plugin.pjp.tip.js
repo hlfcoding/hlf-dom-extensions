@@ -6,7 +6,7 @@
  * @package jQuery.hlf
  * @subpackage jQuery.hlf.tip
  */
-
+console.log = jQuery.noop;
 ;(function ($) {
     $.hlf = $.hlf || {};
     //---------------------------------------
@@ -16,10 +16,14 @@
         opt: {
             showStem: true,
             followCursor: true,
-            sClass: 'hlf-tip',
-            sInnerClass: 'tip-inner',
-            sContentClass: 'tip-content',
-            sStemClass: 'tip-stem'
+            sClass: 'tip',
+            sInnerClass: 'inner',
+            sContentClass: 'content',
+            sStemClass: 'stem',
+            sNorthClass: 'north',
+            sEastClass: 'east',
+            sSouthClass: 'south',
+            sWestClass: 'west'
         }
     };
     //---------------------------------------
@@ -30,7 +34,7 @@
      * Base Tip
      * prevents hover queueing
      * slots for display and movement
-     */    
+     */
     var Tip = function ($context, $triggers, opt) {
         //---------------------------------------
         // PRIVATE VARIABLES
@@ -51,10 +55,11 @@
         };
         var bindTrigger = function ($trigger) {
             $trigger.bind({
-                mouseenter: function (evt) {
+                truemouseenter: function (evt) {
                     self.wake($trigger);
+                    console.log('truemouseenter');
                 },
-                mouseleave: function (evt) {
+                truemouseleave: function (evt) {
                     self.sleep($trigger);
                 }
             });
@@ -110,13 +115,23 @@
             getTip: function () {
                 return $tip;
             },
+            isSleeping: function () {
+                return true;
+            },
+            isAwake: function () {
+                return true;
+            },
             wake: function ($trigger) {
-                positionTip($trigger);
-                $tip.fadeIn();
+                if (self.isSleeping()) {
+                    positionTip($trigger);
+                    $tip.fadeIn();
+                }
             },
             sleep: function ($trigger) {
-                $triggerP = $trigger;
-                $tip.fadeOut();
+                if (self.isAwake) {
+                    $triggerP = $trigger;
+                    $tip.fadeOut();
+                }
             },
             //---------------------------------------
             // EXTENSION SLOTS
@@ -144,7 +159,97 @@
         instances.push(instance);
         return this;
     };
-    
+
+})(jQuery);
+(function ($) {
+    //---------------------------------------
+    // GLOBALS
+    //---------------------------------------
+    $.mouse = $.extend(($.mouse || {}), {
+        x: {current: 0, previous: 0},
+        y: {current: 0, previous: 0},
+        hoverIntentSensitivity: 8,
+        hoverIntentInterval: 300
+    });
+    //---------------------------------------
+    // EVENT HANDLERS
+    //---------------------------------------
+    var checker = function (evt) {
+        var $trigger = $(this),
+            intentional = $trigger.data('hoverIntent') || true,
+            timer = $trigger.data('hoverIntentTimer') || null,
+            sensitivity = $trigger.data('hoverIntentSensitivity') || $.mouse.hoverIntentSensitivity,
+            interval = $trigger.data('hoverIntentInterval') || $.mouse.hoverIntentInterval,
+            mouse = $.mouse;
+        // update timer
+        $trigger.data('hoverIntentTimer', 
+            setTimeout(function () {
+                var intentional = ((Math.abs(mouse.x.previous - mouse.x.current) +
+                    Math.abs(mouse.y.previous - mouse.y.current)) > sensitivity || 
+                    evt.type === 'mouseleave');
+                cache(evt);
+                $trigger.data('hoverIntent', intentional);
+                if (intentional) {
+                    $trigger.trigger('true'+evt.type);
+                    switch (evt.type) {
+                        case 'mouseleave':
+                            clear($trigger);
+                            break; 
+                    }
+                    console.log(evt.type);
+                }
+                console.log('timer');
+            }, interval)
+        );
+        console.log('checker');
+    };
+    var tracker = function (evt) {
+        var mouse = $.mouse;
+        mouse.x.current = evt.pageX;
+        mouse.y.current = evt.pageY;
+        console.log('tracker');
+    };
+    //---------------------------------------
+    // PRIVATE METHODS
+    //---------------------------------------
+    var cache = function (evt) {
+        evt = evt || false;
+        var mouse = $.mouse;
+        if (evt) {
+            mouse.x.previous = evt.pageX;
+            mouse.y.previous = evt.pageY;
+        } else {
+            mouse.x.previous = mouse.x.current;
+            mouse.y.previous = mouse.y.current;
+        }
+        console.log('cache');
+    };
+    var clear = function ($trigger) {
+        clearTimeout($trigger.data('hoverIntentTimer'));
+        console.log('clear');
+    }
+    $.event.special.truemouseenter = {
+        setup: function (data, namespaces) {
+            $(this).bind({
+               mouseenter: checker,
+               mousemove: tracker 
+            });
+        },
+        teardown: function (namespaces) {
+            $(this).unbind({
+               mouseenter: checker,
+               mousemove: tracker 
+            });
+        }
+    };
+    $.event.special.truemouseleave = {
+        setup: function (data, namespaces) {
+            $(this).bind('mouseleave', checker);
+        },
+        teardown: function (namespaces) {
+            $(this).unbind('mouseleave', checker);
+        }
+    };
 })(jQuery);
 (function ($) {
     if (!$.hlf.tip) {
