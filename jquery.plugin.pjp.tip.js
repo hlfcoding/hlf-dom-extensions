@@ -5,41 +5,40 @@
  * @requires jQuery 1.4+
  * @package jQuery.hlf
  * @subpackage jQuery.hlf.tip
- */
-console.log = jQuery.noop;
+**/
+console.log = jQuery.noop; // comment out to start debugging
 ;(function ($) {
-    $.hlf = $.hlf || {};
     //---------------------------------------
     // STATIC VARIABLES
     //---------------------------------------
-    $.hlf.tip = {
-        opt: {
-            showStem: true,
-            followCursor: true,
-            sClass: 'tip',
-            sInnerClass: 'inner',
-            sContentClass: 'content',
-            sStemClass: 'stem',
-            sNorthClass: 'north',
-            sEastClass: 'east',
-            sSouthClass: 'south',
-            sWestClass: 'west'
-        }
-    };
-    //---------------------------------------
-    // FACTORY
-    //---------------------------------------
-    var instances = [];
+    $.extend(true, $, {
+        // $.hlf.tip
+        hlf: { tip: { 
+            opt: {
+                innerClass: 'inner',
+                contentClass: 'content',
+                stemClass: 'stem',
+                northClass: 'north',
+                eastClass: 'east',
+                southClass: 'south',
+                westClass: 'west',
+                followClass: 'tip-follow',
+                // direction: '',
+                cursorHeight: 9,
+                tipClass: 'tip'
+            }
+        }}
+    });
     /**
      * Base Tip
      * prevents hover queueing
      * slots for display and movement
-     */
+    **/
     var Tip = function ($context, $triggers, opt) {
         //---------------------------------------
         // PRIVATE VARIABLES
         //---------------------------------------
-        var $tip = $('<div>'),
+        var $tip,
             $trigger, $triggerP,
             self = this;
         //---------------------------------------
@@ -63,48 +62,80 @@ console.log = jQuery.noop;
                     self.sleep($trigger);
                 }
             });
+            if (self.doFollow) {
+                $trigger.bind('mousemove.hlftip', followCursor);
+            }
         };
         var renderDefaultTip = function () {
             var builder = [],
                 html;
-            builder.push('<div class="', opt.sClass, '">');
-            builder.push('<div class="', opt.sInnerClass, '">');
-            if (opt.showStem) {
-                builder.push('<div class="', opt.sStemClass, '">');            
-                builder.push('</div>');            
+            builder.push('<div class="', $.trim([opt.tipClass, opt.followClass].join(' ')), '">');
+            builder.push('<div class="', opt.innerClass, '">');
+            if (self.doStem) {
+                builder.push('<div class="', opt.stemClass, '">');
+                builder.push('</div>');
             }
-            builder.push('<div class="', opt.sContentClass, '">');            
+            builder.push('<div class="', opt.contentClass, '">');
             builder.push('</div>');
-            builder.push('</div>');
-            builder.push('</div>');
-            html = builder.join('\n');
+            builder.push('</div>', '</div>');
+            html = builder.join('');
             html = self.onRenderDefault(html);
             return html;
         };
-        var renderTip = function () {
+        var renderTip = function ($trigger) {
             if ($tip.html && $tip.html().length > 0) {
                 return;
             }
-            var html;
-            html = self.onRender();
-            if (html.length === 0) {
+            var html = self.onRender(),
+                isCustom = (html.length > 0);
+            if (!isCustom) {
                 html = renderDefaultTip();
-            }
+            } 
             $tip = $(html);
+            if (isCustom) {
+                $tip.addClass(opt.followClass);
+            }
             $tip.prependTo($context);
         };
         var positionTip = function ($trigger) {
-            var position = $trigger.position();
+            var offset = $trigger.offset(), 
+                _offset = offset;
+            offset = self.onPosition(offset);
+            if (self.doFollow) {
+                $trigger.trigger('mousemove');
+            } else {
+                $tip.css({
+                    top: offset.top,
+                    left: offset.left
+                });
+            }
+        };
+        var hydrateTip = function ($trigger) {
+            var content = $trigger.data('hlfTipContent');
+            $tip.find("." + opt.contentClass).text(content);
+        };
+        var followCursor = function (evt) {
             $tip.css({
-                top: position.top,
-                left: position.left
+                top: evt.pageY + opt.cursorHeight,
+                left: evt.pageX
             });
         };
-        //---------------------------------------
-        // PUBLIC METHODS
-        //---------------------------------------
+        var checkBounds = function (position) {
+            
+        };
         $.extend(self, {
+            //---------------------------------------
+            // PUBLIC VARIABLES
+            //---------------------------------------
+            doStem: true,
+            doFollow: true,
+            //---------------------------------------
+            // PUBLIC METHODS
+            //---------------------------------------
             init: function () {
+                $tip = $('<div>');
+                self.doStem = (opt.stemClass !== '');
+                self.doFollow = (opt.followClass !== '' && opt.cursorHeight > 0);
                 $triggers.each(function () {
                     var $t = $(this);
                     saveTriggerContent($t);
@@ -115,30 +146,22 @@ console.log = jQuery.noop;
             getTip: function () {
                 return $tip;
             },
-            isSleeping: function () {
-                return true;
-            },
-            isAwake: function () {
-                return true;
-            },
             wake: function ($trigger) {
-                if (self.isSleeping()) {
-                    positionTip($trigger);
-                    $tip.fadeIn();
-                }
+                hydrateTip($trigger);
+                positionTip($trigger);
+                $tip.fadeIn();
             },
             sleep: function ($trigger) {
-                if (self.isAwake) {
-                    $triggerP = $trigger;
-                    $tip.fadeOut();
-                }
+                $triggerP = $trigger;
+                $tip.fadeOut();
             },
             //---------------------------------------
             // EXTENSION SLOTS
             //---------------------------------------
             move: function () {},
-            onRender: function () { return ''; },
-            onRenderDefault: function (html) { return html; }
+            onRender: function (content) { return ''; },
+            onRenderDefault: function (html) { return html; },
+            onPosition: function (offset) { return offset; }
         });
         self.init();
     };
@@ -152,24 +175,26 @@ console.log = jQuery.noop;
         }
         opt = $.extend({}, $.hlf.tip.opt, opt);
         // instantiate
-        instance = new Tip($context, $(this), opt);
+        instance = new Tip($context, this, opt);
         $context.data('hlfTip', instance);
         // other
         $context.attr('data-tip', 'hlfTip');
-        instances.push(instance);
         return this;
     };
 
 })(jQuery);
 (function ($) {
     //---------------------------------------
-    // GLOBALS
+    // STATIC VARIABLES
     //---------------------------------------
-    $.mouse = $.extend(($.mouse || {}), {
-        x: {current: 0, previous: 0},
-        y: {current: 0, previous: 0},
-        hoverIntentSensitivity: 8,
-        hoverIntentInterval: 300
+    $.extend(true, $, { 
+        // $.mouse
+        mouse: {
+            x: {current: 0, previous: 0},
+            y: {current: 0, previous: 0},
+            hoverIntentSensitivity: 8,
+            hoverIntentInterval: 300
+        }
     });
     //---------------------------------------
     // EVENT HANDLERS
@@ -252,15 +277,19 @@ console.log = jQuery.noop;
     };
 })(jQuery);
 (function ($) {
-    if (!$.hlf.tip) {
-        return;
-    }
-    $.hlf.tip.snap = {
-        opt: {
-            snapAlongX: true,
-            snapAlongY: false
-        }
-    }
+    //---------------------------------------
+    // STATIC VARIABLES
+    //---------------------------------------
+    $.extend(true, $, {
+        // $.hlf.tip.snap
+        hlf: { tip: { snap: {
+            opt: {
+                snapClass: 'tip-snap',
+                railXClass: 'rail-x',
+                railYClass: 'rail-y'
+            }
+        }}}
+    });
     //---------------------------------------
     // CLASSES
     //---------------------------------------
@@ -269,23 +298,31 @@ console.log = jQuery.noop;
         // PRIVATE VARIABLES
         //---------------------------------------
         var self = this,
-            tip = $context.data('hlfTip')
+            tip
             ;
         //---------------------------------------
         // PRIVATE METHODS
         //---------------------------------------
-        //---------------------------------------
-        // PUBLIC METHODS
-        //---------------------------------------
         $.extend(self, {
+            //---------------------------------------
+            // PUBLIC VARIABLES
+            //---------------------------------------
+            doRailX: false, 
+            doRailY: false, 
+            //---------------------------------------
+            // PUBLIC METHODS
+            //---------------------------------------
             init: function () {
-                
+                tip = $context.data('hlfTip');
+                self.doRailX = (opt.railXClass !== '');
+                self.doRailY = (opt.railYClass !== '');
             },
             move: function () {
                 
             }
         });
         self.init();
+        
     };
     $.fn.hlfSnapTip = function (opt, $context) {
         $context = $context || $('body');
@@ -294,7 +331,7 @@ console.log = jQuery.noop;
             return instance;
         }
         opt = $.extend({}, $.hlf.tip.snap.opt, opt);
-        instance = new SnapTip($(this), opt);
+        instance = new SnapTip($context, this, opt);
         $context.data('hlfSnapTip', instance);
         $context.attr('data-snap-tip', 'hlfSnapTip');
         return this;
