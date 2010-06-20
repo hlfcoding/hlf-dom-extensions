@@ -15,6 +15,13 @@ console.log = jQuery.noop; // comment out to start debugging
         // $.hlf.tip
         hlf: { tip: { 
             opt: {
+                // direction: '',
+                // millis
+                inDuration: 300,
+                outDuration: 300,
+                // pixels
+                cursorHeight: 16,
+                // class names
                 innerClass: 'inner',
                 contentClass: 'content',
                 stemClass: 'stem',
@@ -23,8 +30,6 @@ console.log = jQuery.noop; // comment out to start debugging
                 southClass: 'south',
                 westClass: 'west',
                 followClass: 'tip-follow',
-                // direction: '',
-                cursorHeight: 9,
                 tipClass: 'tip'
             }
         }}
@@ -147,18 +152,32 @@ console.log = jQuery.noop; // comment out to start debugging
                 return $tip;
             },
             wake: function ($trigger) {
-                hydrateTip($trigger);
-                positionTip($trigger);
-                $tip.fadeIn();
+                if ($trigger !== $triggerP) {
+                    hydrateTip($trigger);
+                    positionTip($trigger);
+                }
+                self.onShow();
+                if ($tip.is(':hidden')) {
+                    $tip.fadeIn(opt.inDuration, self.afterShow);
+                }
             },
             sleep: function ($trigger) {
-                $triggerP = $trigger;
-                $tip.fadeOut();
+                if ($trigger !== $triggerP) {
+                    $triggerP = $trigger;
+                }
+                self.onHide();
+                if ($tip.is(':visible')) {
+                    $tip.fadeOut(opt.outDuration, self.afterHide);
+                }
             },
             //---------------------------------------
             // EXTENSION SLOTS
             //---------------------------------------
-            move: function () {},
+            onMove: function () {},
+            onShow: function () {},
+            onHide: function () {},
+            afterShow: function () {},
+            afterHide: function () {},
             onRender: function (content) { return ''; },
             onRenderDefault: function (html) { return html; },
             onPosition: function (offset) { return offset; }
@@ -298,8 +317,8 @@ console.log = jQuery.noop; // comment out to start debugging
         // PRIVATE VARIABLES
         //---------------------------------------
         var self = this,
-            tip
-            ;
+            tip = $context.data('hlfTip'),
+            offsetStart;
         //---------------------------------------
         // PRIVATE METHODS
         //---------------------------------------
@@ -309,20 +328,28 @@ console.log = jQuery.noop; // comment out to start debugging
             //---------------------------------------
             doRailX: false, 
             doRailY: false, 
+            doSnap: false,
             //---------------------------------------
             // PUBLIC METHODS
             //---------------------------------------
             init: function () {
-                tip = $context.data('hlfTip');
                 self.doRailX = (opt.railXClass !== '');
                 self.doRailY = (opt.railYClass !== '');
+                self.doSnap = (opt.snapClass !== '' && (self.doRailX || self.doRailY));
             },
             move: function () {
                 
             }
         });
         self.init();
-        
+        $.extend(tip, {
+            onPosition: function (offset) {
+                // need to get the initial position for non-snapping
+                if (self.doRailX) {
+                    
+                }
+            }
+        });
     };
     $.fn.hlfSnapTip = function (opt, $context) {
         $context = $context || $('body');
