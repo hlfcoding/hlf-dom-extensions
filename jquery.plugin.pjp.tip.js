@@ -6,8 +6,9 @@
  * @package jQuery.hlf
  * @subpackage jQuery.hlf.tip
 **/
-console.log = jQuery.noop; // comment out to start debugging
 ;(function ($) {
+    var log = function(x) { console.log(x); };
+    log = $.noop; // comment to start debugging
     //---------------------------------------
     // STATIC VARIABLES
     //---------------------------------------
@@ -41,7 +42,7 @@ console.log = jQuery.noop; // comment out to start debugging
     **/
     var Tip = function ($context, $triggers, opt) {
         //---------------------------------------
-        // PRIVATE VARIABLES
+        // PRIVATE VARIABLES / CONSTRUCTOR
         //---------------------------------------
         var $tip,
             $trigger, $triggerP,
@@ -59,16 +60,17 @@ console.log = jQuery.noop; // comment out to start debugging
         };
         var bindTrigger = function ($trigger) {
             $trigger.bind({
-                truemouseenter: function (evt) {
+                'truemouseenter.hlf.tip': function (evt) {
                     self.wake($trigger);
-                    console.log('truemouseenter');
+                    log('truemouseenter');
                 },
-                truemouseleave: function (evt) {
+                'truemouseleave.hlf.tip': function (evt) {
                     self.sleep($trigger);
+                    log('truemouseleave');
                 }
             });
             if (self.doFollow) {
-                $trigger.bind('mousemove.hlftip', followCursor);
+                $trigger.bind('mousemove.hlf.tip', onMouseMove);
             }
         };
         var renderDefaultTip = function () {
@@ -103,31 +105,35 @@ console.log = jQuery.noop; // comment out to start debugging
             $tip.prependTo($context);
         };
         var positionTip = function ($trigger) {
-            var offset = $trigger.offset(), 
-                _offset = offset;
+            var offset = $trigger.offset();
             offset = self.onPosition(offset);
             if (self.doFollow) {
-                $trigger.trigger('mousemove');
-            } else {
-                $tip.css({
-                    top: offset.top,
-                    left: offset.left
-                });
+                $trigger.trigger('mousemove.hlf.tip');
+                return;
             }
+            $tip.css(offset);
+            log('positionTip');
         };
         var hydrateTip = function ($trigger) {
             var content = $trigger.data('hlfTipContent');
             $tip.find("." + opt.contentClass).text(content);
         };
-        var followCursor = function (evt) {
-            $tip.css({
-                top: evt.pageY + opt.cursorHeight,
-                left: evt.pageX
-            });
-        };
         var checkBounds = function (position) {
             
         };
+        //---------------------------------------
+        // EVENT HANDLERS
+        //---------------------------------------
+        var onMouseMove = function (evt) {
+            var offset = {
+                top: evt.pageY,
+                left: evt.pageX
+            };
+            offset = self.onMouseMove(evt, offset);
+            offset.top += opt.cursorHeight;
+            $tip.css(offset);
+            log('onMouseMove');
+        };        
         $.extend(self, {
             //---------------------------------------
             // PUBLIC VARIABLES
@@ -148,6 +154,9 @@ console.log = jQuery.noop; // comment out to start debugging
                 });
                 renderTip();
             },
+            getOptions: function () {
+                return opt;
+            },
             getTip: function () {
                 return $tip;
             },
@@ -157,7 +166,8 @@ console.log = jQuery.noop; // comment out to start debugging
                     positionTip($trigger);
                 }
                 self.onShow();
-                if ($tip.is(':hidden')) {
+                // TODO - no fade if immediated retriggered
+                if ($tip.is(':hidden, :animated')) {
                     $tip.fadeIn(opt.inDuration, self.afterShow);
                 }
             },
@@ -173,14 +183,14 @@ console.log = jQuery.noop; // comment out to start debugging
             //---------------------------------------
             // EXTENSION SLOTS
             //---------------------------------------
-            onMove: function () {},
             onShow: function () {},
             onHide: function () {},
             afterShow: function () {},
             afterHide: function () {},
             onRender: function (content) { return ''; },
             onRenderDefault: function (html) { return html; },
-            onPosition: function (offset) { return offset; }
+            onPosition: function (offset) { return offset; },
+            onMouseMove: function (evt, offset) { return offset; }
         });
         self.init();
     };
@@ -203,6 +213,8 @@ console.log = jQuery.noop; // comment out to start debugging
 
 })(jQuery);
 (function ($) {
+    var log = function(x) { console.log(x); };
+    log = $.noop; // comment to start debugging
     //---------------------------------------
     // STATIC VARIABLES
     //---------------------------------------
@@ -240,18 +252,18 @@ console.log = jQuery.noop; // comment out to start debugging
                             clear($trigger);
                             break; 
                     }
-                    console.log(evt.type);
+                    log(evt.type);
                 }
-                console.log('timer');
+                log('timer');
             }, interval)
         );
-        console.log('checker');
+        log('checker');
     };
     var tracker = function (evt) {
         var mouse = $.mouse;
         mouse.x.current = evt.pageX;
         mouse.y.current = evt.pageY;
-        console.log('tracker');
+        log('tracker');
     };
     //---------------------------------------
     // PRIVATE METHODS
@@ -266,11 +278,11 @@ console.log = jQuery.noop; // comment out to start debugging
             mouse.x.previous = mouse.x.current;
             mouse.y.previous = mouse.y.current;
         }
-        console.log('cache');
+        log('cache');
     };
     var clear = function ($trigger) {
         clearTimeout($trigger.data('hoverIntentTimer'));
-        console.log('clear');
+        log('clear');
     }
     $.event.special.truemouseenter = {
         setup: function (data, namespaces) {
@@ -296,6 +308,8 @@ console.log = jQuery.noop; // comment out to start debugging
     };
 })(jQuery);
 (function ($) {
+    var log = function(x) { console.log(x); };
+    // log = $.noop; // comment to start debugging
     //---------------------------------------
     // STATIC VARIABLES
     //---------------------------------------
@@ -314,21 +328,36 @@ console.log = jQuery.noop; // comment out to start debugging
     //---------------------------------------
     var SnapTip = function ($context, $triggers, opt) {
         //---------------------------------------
-        // PRIVATE VARIABLES
+        // PRIVATE VARIABLES / CONSTRUCTOR
         //---------------------------------------
         var self = this,
             tip = $context.data('hlfTip'),
+            tipOptions = tip.getOptions(),
             offsetStart;
         //---------------------------------------
         // PRIVATE METHODS
         //---------------------------------------
+        var bindTrigger = function ($trigger) {
+            $trigger.bind({
+                'truemouseenter.hlf.tip': function (evt) {
+                    offsetStart = {
+                        top: evt.pageX,
+                        left: evt.pageY
+                    };
+                    log('truemouseenter');
+                },
+                'truemouseleave.hlf.tip': function (evt) {
+                    log('truemouseleave');
+                }
+            });
+        };
         $.extend(self, {
             //---------------------------------------
             // PUBLIC VARIABLES
             //---------------------------------------
-            doRailX: false, 
+            doRailX: true, 
             doRailY: false, 
-            doSnap: false,
+            doSnap: true,
             //---------------------------------------
             // PUBLIC METHODS
             //---------------------------------------
@@ -336,20 +365,41 @@ console.log = jQuery.noop; // comment out to start debugging
                 self.doRailX = (opt.railXClass !== '');
                 self.doRailY = (opt.railYClass !== '');
                 self.doSnap = (opt.snapClass !== '' && (self.doRailX || self.doRailY));
+                $triggers.each(function () {
+                    var $t = $(this);
+                    bindTrigger($t);
+                });
+                // allow us to extend tip api
+                $context.data('hlfTip', tip);
             },
             move: function () {
                 
             }
         });
-        self.init();
         $.extend(tip, {
             onPosition: function (offset) {
-                // need to get the initial position for non-snapping
-                if (self.doRailX) {
-                    
+                log('onPosition');
+                return offset;
+            },
+            onMouseMove: function (evt, offset) {
+                if (offsetStart === undefined) {
+                    offsetStart = {
+                        top: evt.pageX,
+                        left: evt.pageY
+                    };
                 }
+                if (self.doRailX) {
+                    offset.top = (offsetStart.top + tipOptions.cursorHeight);
+                    log('railX');
+                } else if (self.doRailY) {
+                    offset.left = offsetStart.left;
+                    log('railY');
+                }
+                log('onMouseMove');
+                return offset;
             }
         });
+        self.init();
     };
     $.fn.hlfSnapTip = function (opt, $context) {
         $context = $context || $('body');
