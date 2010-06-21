@@ -8,7 +8,7 @@
 **/
 ;(function ($) {
     var log = function(x) { console.log(x); };
-    log = $.noop; // comment to start debugging
+    // log = $.noop; // comment to start debugging
     //---------------------------------------
     // STATIC VARIABLES
     //---------------------------------------
@@ -19,7 +19,9 @@
                 // direction: '',
                 // millis
                 inDuration: 300,
+                inDelay: 0,
                 outDuration: 300,
+                outDelay: 500,
                 // pixels
                 cursorHeight: 16,
                 // class names
@@ -39,6 +41,7 @@
      * Base Tip
      * prevents hover queueing
      * slots for display and movement
+     * @todo truemouseenter sometimes doesn't fire when moving to adjacent trigger
     **/
     var Tip = function ($context, $triggers, opt) {
         //---------------------------------------
@@ -46,6 +49,9 @@
         //---------------------------------------
         var $tip,
             $trigger, $triggerP,
+            visibility,
+            wakeCountdown,
+            sleepCountdown,
             self = this;
         //---------------------------------------
         // PRIVATE METHODS
@@ -62,17 +68,25 @@
             $trigger.bind({
                 'truemouseenter.hlf.tip': function (evt) {
                     self.wake($trigger);
-                    log('truemouseenter');
-                },
-                'truemouseleave.hlf.tip': function (evt) {
+                }, 'truemouseleave.hlf.tip': function (evt) {
                     self.sleep($trigger);
-                    log('truemouseleave');
                 }
             });
             if (self.doFollow) {
                 $trigger.bind('mousemove.hlf.tip', onMouseMove);
             }
         };
+        var bindTip = function ($trigger) {
+            $tip.bind({
+                'mouseenter.hlf.tip': function (evt) {
+                    log('enter tip');
+                    $trigger.data('activeState', true);
+                }, 'mouseleave.hlf.tip': function (evt) {
+                    log('leave tip');
+                    $trigger.data('activeState', false);
+                }
+            });
+        }
         var renderDefaultTip = function () {
             var builder = [],
                 html;
@@ -86,7 +100,6 @@
             builder.push('</div>');
             builder.push('</div>', '</div>');
             html = builder.join('');
-            html = self.onRenderDefault(html);
             return html;
         };
         var renderTip = function ($trigger) {
@@ -111,6 +124,8 @@
                 $trigger.trigger('mousemove.hlf.tip');
                 return;
             }
+            // default adjustment
+            offset.top += opt.cursorHeight;
             $tip.css(offset);
             log('positionTip');
         };
@@ -125,6 +140,13 @@
         // EVENT HANDLERS
         //---------------------------------------
         var onMouseMove = function (evt) {
+            if (evt.pageX === undefined) {
+                return;
+            }
+            // #HACK
+            if (self.isAsleep()) {
+                self.wake($(evt.target));
+            }
             var offset = {
                 top: evt.pageY,
                 left: evt.pageX
@@ -151,6 +173,7 @@
                     var $t = $(this);
                     saveTriggerContent($t);
                     bindTrigger($t);
+                    bindTip($t);
                 });
                 renderTip();
             },
@@ -160,25 +183,44 @@
             getTip: function () {
                 return $tip;
             },
+            isAwake: function () {
+                return visibility === 'truevisible';
+            },
+            isAsleep: function () {
+                return visibility === 'truehidden';
+            },
             wake: function ($trigger) {
                 if ($trigger !== $triggerP) {
                     hydrateTip($trigger);
                     positionTip($trigger);
                 }
-                self.onShow();
-                // TODO - no fade if immediated retriggered
-                if ($tip.is(':hidden, :animated')) {
-                    $tip.fadeIn(opt.inDuration, self.afterShow);
-                }
+                wakeCountdown = setTimeout(function () {
+                    clearTimeout(sleepCountdown);
+                    if (self.isAwake()) {
+                        return;
+                    }
+                    self.onShow();
+                    $tip.fadeIn(opt.inDuration, function () {
+                        visibility = 'truevisible';
+                        self.afterShow();
+                    });
+                }, opt.inDelay);
             },
             sleep: function ($trigger) {
                 if ($trigger !== $triggerP) {
                     $triggerP = $trigger;
                 }
-                self.onHide();
-                if ($tip.is(':visible')) {
-                    $tip.fadeOut(opt.outDuration, self.afterHide);
-                }
+                sleepCountdown = setTimeout(function () {
+                    clearTimeout(wakeCountdown);
+                    if (self.isAsleep()) {
+                        return;
+                    }
+                    self.onHide();
+                    $tip.fadeOut(opt.outDuration, function () {
+                        visibility = 'truehidden';
+                        self.afterHide();
+                    });
+                }, opt.outDelay);
             },
             //---------------------------------------
             // EXTENSION SLOTS
@@ -188,7 +230,6 @@
             afterShow: function () {},
             afterHide: function () {},
             onRender: function (content) { return ''; },
-            onRenderDefault: function (html) { return html; },
             onPosition: function (offset) { return offset; },
             onMouseMove: function (evt, offset) { return offset; }
         });
@@ -214,7 +255,7 @@
 })(jQuery);
 (function ($) {
     var log = function(x) { console.log(x); };
-    log = $.noop; // comment to start debugging
+    // log = $.noop; // comment to start debugging
     //---------------------------------------
     // STATIC VARIABLES
     //---------------------------------------
@@ -243,46 +284,45 @@
                 var intentional = ((Math.abs(mouse.x.previous - mouse.x.current) +
                     Math.abs(mouse.y.previous - mouse.y.current)) > sensitivity || 
                     evt.type === 'mouseleave');
-                cache(evt);
+                // cache
+                mouse.x.previous = evt.pageX;
+                mouse.y.previous = evt.pageY;
                 $trigger.data('hoverIntent', intentional);
+                // go
                 if (intentional) {
-                    $trigger.trigger('true'+evt.type);
                     switch (evt.type) {
                         case 'mouseleave':
+                            if ($trigger.data('activeState') === true) {
+                                log('activeState');
+                                return;
+                            }
                             clear($trigger);
                             break; 
                     }
+                    $trigger.trigger('true'+evt.type);
                     log(evt.type);
                 }
-                log('timer');
+                // log('timer');
             }, interval)
         );
-        log('checker');
+        // log('checker');
     };
     var tracker = function (evt) {
         var mouse = $.mouse;
         mouse.x.current = evt.pageX;
         mouse.y.current = evt.pageY;
-        log('tracker');
+        // log('tracker');
     };
     //---------------------------------------
     // PRIVATE METHODS
     //---------------------------------------
     var cache = function (evt) {
         evt = evt || false;
-        var mouse = $.mouse;
-        if (evt) {
-            mouse.x.previous = evt.pageX;
-            mouse.y.previous = evt.pageY;
-        } else {
-            mouse.x.previous = mouse.x.current;
-            mouse.y.previous = mouse.y.current;
-        }
-        log('cache');
+        // log('cache');
     };
     var clear = function ($trigger) {
         clearTimeout($trigger.data('hoverIntentTimer'));
-        log('clear');
+        // log('clear');
     }
     $.event.special.truemouseenter = {
         setup: function (data, namespaces) {
@@ -309,7 +349,7 @@
 })(jQuery);
 (function ($) {
     var log = function(x) { console.log(x); };
-    // log = $.noop; // comment to start debugging
+    log = $.noop; // comment to start debugging
     //---------------------------------------
     // STATIC VARIABLES
     //---------------------------------------
@@ -347,6 +387,7 @@
                     log('truemouseenter');
                 },
                 'truemouseleave.hlf.tip': function (evt) {
+                    offsetStart = undefined;
                     log('truemouseleave');
                 }
             });
@@ -383,19 +424,15 @@
             },
             onMouseMove: function (evt, offset) {
                 if (offsetStart === undefined) {
-                    offsetStart = {
-                        top: evt.pageX,
-                        left: evt.pageY
-                    };
+                    return offset;
                 }
                 if (self.doRailX) {
-                    offset.top = (offsetStart.top + tipOptions.cursorHeight);
+                    offset.top = offsetStart.top;
                     log('railX');
                 } else if (self.doRailY) {
                     offset.left = offsetStart.left;
                     log('railY');
                 }
-                log('onMouseMove');
                 return offset;
             }
         });
