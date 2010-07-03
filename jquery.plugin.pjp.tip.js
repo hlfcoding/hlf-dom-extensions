@@ -56,6 +56,11 @@
         //---------------------------------------
         // PRIVATE METHODS
         //---------------------------------------
+        /**
+         * Remove the title attribute to disable the default tooltip
+         * Store the content in a data attribute for future access by the tip
+         * @see hydrateTip
+         */
         var saveTriggerContent = function ($trigger) {
             title = $trigger.attr('title');
             if (title) {
@@ -64,6 +69,11 @@
                         .removeAttr('title');
             }
         };
+        /**
+         * Link the trigger to the tip for 
+         * 1 - mouseenter, mouseleave (uses special events)
+         * 2 - mousemove
+         */
         var bindTrigger = function ($trigger) {
             $trigger.bind({
                 'truemouseenter.hlf.tip': function (evt) {
@@ -76,6 +86,10 @@
                 $trigger.bind('mousemove.hlf.tip', onMouseMove);
             }
         };
+        /** 
+         * Link the tip to the trigger for 
+         * 1 - mouseenter, mouseleave
+         */
         var bindTip = function ($trigger) {
             $tip.bind({
                 'mouseenter.hlf.tip': function (evt) {
@@ -87,6 +101,9 @@
                 }
             });
         }
+        /**
+         * Default HTML Template
+         */
         var renderDefaultTip = function () {
             var builder = [],
                 html;
@@ -102,6 +119,10 @@
             html = builder.join('');
             return html;
         };
+        /**
+         * Create and insert the jQuery element 
+         * Hook for custom template
+         */
         var renderTip = function ($trigger) {
             if ($tip.html && $tip.html().length > 0) {
                 return;
@@ -117,6 +138,10 @@
             }
             $tip.prependTo($context);
         };
+        /** 
+         * Update tip position
+         * Hook for custom positioning
+         */
         var positionTip = function ($trigger) {
             var offset = $trigger.offset();
             offset = self.onPosition(offset);
@@ -129,10 +154,17 @@
             $tip.css(offset);
             log('positionTip');
         };
+        /** 
+         * Take stored data 
+         * @see saveTriggerContent
+         */
         var hydrateTip = function ($trigger) {
             var content = $trigger.data('hlfTipContent');
             $tip.find("." + opt.contentClass).text(content);
         };
+        /** 
+         * 
+         */
         var checkBounds = function (position) {
             
         };
