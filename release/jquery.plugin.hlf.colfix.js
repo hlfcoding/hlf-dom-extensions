@@ -1,10 +1,10 @@
 /**
- * PJP CSS Column Fixer
+ * HLF CSS Column Fixer
  * equalizes column heights and supports padding and ems
  * NOTE Namespace: $('foo').myPlugin(options{p_foo:bar}) { var myPrivate; }
  * NOTE For conflicting property namespaces: plugin -> p_foo  utility -> u_foo
  * @param       {jQuery object}     one matched grid / set of columns
- * @requires    pjuPxToEm
+ * @requires    hlfPxToEm
  * @requires    jQuery 1.2+
  * @package     Peng's JQuery Plugins
  * @subpackage  Peng's WordPress Frontend
@@ -14,7 +14,7 @@
 
 (function ($) /* declaration */ // self-invoking function, jQuery passed as alias
 {
-    $.fn.pjpColFix = function (options) // assign jQuery prototype custom function
+    $.fn.hlfColFix = function (options) // assign jQuery prototype custom function
     {	
         /* setup */
         
@@ -28,13 +28,13 @@
         /* properties */
         
         var tallest;
-        var unit = (options.use_px === false && Number.prototype.pjuPxToEm && IE == false) ? 'em' : 'px';
+        var unit = (options.use_px === false && Number.prototype.hlfPxToEm && IE == false) ? 'em' : 'px';
         
         /* methods */
         
-        if (typeof $.fn.pjuFullHeight != 'function') 
+        if (typeof $.fn.hlfFullHeight != 'function') 
         {
-            $.fn.pjuFullHeight = function () 
+            $.fn.hlfFullHeight = function () 
             {
                 $this = this;
                 // no chaining
@@ -56,11 +56,11 @@
                 $cols.each(function (i) 
                     {
                         // trace(i);
-                        tallest = Math.max($(this).pjuFullHeight(), tallest);
+                        tallest = Math.max($(this).hlfFullHeight(), tallest);
                     }
                 );
                 tallest = (options.max_h !== false) ? parseInt(options.max_h) : tallest;
-                // trace('pjpColFix :: tallest = ' + tallest + unit);        
+                // trace('hlfColFix :: tallest = ' + tallest + unit);        
                 $cols.each(function (i) 
                     {
                         // trace(i);
@@ -70,7 +70,7 @@
                             - (parseInt($col.css('padding-top'))
                                 + parseInt($col.css('padding-bottom'))) 
                             ;
-                            h = (unit == 'em') ? h.pjuPxToEm({u_scope: $col.parent()}) : h;
+                            h = (unit == 'em') ? h.hlfPxToEm({u_scope: $col.parent()}) : h;
                         // trace(h);
                         // trace($this.attr('class'));
                             /* climax */
@@ -102,7 +102,7 @@
     };
 
 /**
- * PJU PxToEm
+ * hlf PxToEm
  * Converter tool for CSS
  * 
  * @param {string} u_scope
@@ -116,7 +116,7 @@
  * @author		peng@pengxwang.com
  */
 
-    Number.prototype.pjuPxToEm = String.prototype.pjuPxToEm = function (options) 
+    Number.prototype.hlfPxToEm = String.prototype.hlfPxToEm = function (options) 
     {	
             /* setup */
         
@@ -148,7 +148,7 @@
             ? (pxVal * scopeVal).toFixed(2) + ((options.do_units == true) ? 'px' : 0) 
             : (pxVal / scopeVal).toFixed(2) + ((options.do_units == true) ? 'em' : 0)
             ;
-        // trace('pjuPxToEm :: result = ' + result);
+        // trace('hlfPxToEm :: result = ' + result);
         return result;
     };
 

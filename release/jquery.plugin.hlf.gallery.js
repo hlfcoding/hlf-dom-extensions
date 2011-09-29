@@ -1,12 +1,12 @@
 /**
- * PJP Slideshow Gallery
+ * hlf Slideshow Gallery
  * NOTE Namespace: $('foo').myPlugin(options{p_foo:bar}) { var myPrivate; }
  * NOTE For conflicting property namespaces: plugin -> p_foo  utility -> u_foo
  * TODO flexible dims
  * TODO arrow buttons
  * TODO caption list support
- * @see         pjpTip, http://cherne.net/brian/resources/jquery.hoverIntent.html
- * @requires    pjuHover
+ * @see         hlfTip, http://cherne.net/brian/resources/jquery.hoverIntent.html
+ * @requires    hlfHover
  * @requires    jQuery 1.2+
  * @package     Peng's JQuery Plugins
  * @subpackage  Peng's WordPress Frontend
@@ -16,14 +16,14 @@
  
 (function ($) /* declaration */ // self-invoking function, jQuery passed as alias
 {
-    $.fn.pjpGallery = function (options) 
+    $.fn.hlfGallery = function (options) 
     {	
         var defaults = 
-            { gallery_class:       'pjpGallery'
-            , slider_class:        'pjpGallerySlider'
-            , button_class:        'pjpGalleryBtn'
-            , next_class:          'pjpGalleryNext'
-            , prev_class:          'pjpGalleryPrev'
+            { gallery_class:       'hlfGallery'
+            , slider_class:        'hlfGallerySlider'
+            , button_class:        'hlfGalleryBtn'
+            , next_class:          'hlfGalleryNext'
+            , prev_class:          'hlfGalleryPrev'
             , frame_selector:      'li'
             , frame_inner_class:   'in'
             , frame_width:          650
@@ -45,12 +45,12 @@
             {
                 // trace(i);
                 $this = $(this);
-                new $.PJPGallery(options, $this);
+                new $.hlfGallery(options, $this);
             }	
         );
     }; // _end registration
     
-    $.PJPGallery = function (options, $gallery) 
+    $.hlfGallery = function (options, $gallery) 
     {
         /* properties */
         
@@ -188,7 +188,7 @@
         {
             // trace('handleHover');
             var pE = $.extend({}, e);
-            if ($.pjuHover &&  $.pjuHover(e, this) == false) // ignore children onMouseOver/onMouseOut
+            if ($.hlfHover &&  $.hlfHover(e, this) == false) // ignore children onMouseOver/onMouseOut
             {
                 return false;
             }

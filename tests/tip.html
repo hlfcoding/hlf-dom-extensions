@@ -2,8 +2,8 @@
 <html lang="en-US">
     <head>
         <meta charset="utf-8" />
-        <title>Peng's jQuery Plugins: Tip</title>
-        <link rel="stylesheet" id="reset" href="http://files.pengxwang.com/lib/reset.css" type="text/css" media="all"/>
+        <title>Hello Little Friend: Tip</title>
+        <link rel="stylesheet" id="reset" href="../lib/normalize.css" type="text/css" media="all"/>
         <style type="text/css">
 
 body { padding: 1em; font-size: 12px; }
@@ -52,26 +52,26 @@ p { padding: 1em 0; }
 }
 /** default > n/s-w/e corner stems */
 
-.pjpTip .east .stem {
+.hlfTip .east .stem {
     border-right-width: 1em;
     left: 0;
 }
-.pjpTip .west .stem {
+.hlfTip .west .stem {
     border-left-width: 1em;
     right: 0;
 }
-.pjpTip .south .content {
+.hlfTip .south .content {
     top: 1em;
 }
-.pjpTip .south .stem {
+.hlfTip .south .stem {
     top: 0;
     border-bottom-width: 1em;
     border-bottom-color: #666;
 }
-.pjpTip .north .content {
+.hlfTip .north .content {
     bottom: 1em;
 }
-.pjpTip .north .stem {
+.hlfTip .north .stem {
     bottom: 0;
     border-top-width: 1em;
     border-top-color: #666;
@@ -81,17 +81,17 @@ p { padding: 1em 0; }
 /** snapping */
 /** snapping > locked y value */
 
-.pjpTips .snapYSide .wrap .stem {
+.hlfTips .snapYSide .wrap .stem {
     left: 50%;
     margin-left: -.75em;
     border-width: 0 .75em; /* 3-2 triangle */
     border-color: transparent;
 }
-.pjpTips .snapYSide .south .stem {
+.hlfTips .snapYSide .south .stem {
     border-bottom-width: 1em;
     border-bottom-color: #666;
 }
-.pjpTips .snapYSide .north .stem {
+.hlfTips .snapYSide .north .stem {
     border-top-width: 1em;
     border-top-color: #666;
 }
@@ -99,24 +99,24 @@ p { padding: 1em 0; }
 /* ^ snapping > locked y value **/
 /** snapping > locked x value */
 
-.pjpTips .snapXSide .wrap .stem {
+.hlfTips .snapXSide .wrap .stem {
     top: 50%;
     margin-top: .25em;
     border-width: .75em 0;
     border-color: transparent;
 }
-.pjpTips .snapXSide .east .stem {
+.hlfTips .snapXSide .east .stem {
     border-right-width: 1em;
     border-right-color: #666;
 }
-.pjpTips .snapXSide .west .stem {
+.hlfTips .snapXSide .west .stem {
     border-left-width: 1em;
     border-left-color: #666;
 }
-.pjpTips .snapXSide .east .content {
+.hlfTips .snapXSide .east .content {
     left: 1em;
 }
-.pjpTips .snapXSide .west .content {
+.hlfTips .snapXSide .west .content {
     right: 1em;
 }
 
@@ -137,26 +137,26 @@ p { padding: 1em 0; }
 <![endif]-->
 <!--[if lte IE 6]>
         <style type="text/css">
-            .pjpTip .wrap {
+            .hlfTip .wrap {
                 width: 18em;
             }
-            #override .pjpTip .north .stem { border-top-color: #666; bottom: -1em; }
-            #override .pjpTip .south .stem { border-bottom-color: #666; top: -1em; }
-            #override .pjpTip .stem {
+            #override .hlfTip .north .stem { border-top-color: #666; bottom: -1em; }
+            #override .hlfTip .south .stem { border-bottom-color: #666; top: -1em; }
+            #override .hlfTip .stem {
                 border-color: orange;
                 filter: chroma(color=orange);
             }
             
         </style>
 <![endif]-->
-        <script type="text/javascript" src="third-party/jquery.js" ></script>
-        <script type="text/javascript" src="jquery.plugin.pjp.tip.js"></script>
+        <script type="text/javascript" src="../lib/jquery.js" ></script>
+        <script type="text/javascript" src="../release/jquery.plugin.hlf.tip.js"></script>
         <script type="text/javascript">
             
-            jQuery.noConflict();
+            // jQuery.noConflict();
             jQuery(document).ready(function($) {
                 
-                $('*[title]').hlfTip().hlfSnapTip();
+                $('*[title]').hlfSnapTip();
             }
             );
         
