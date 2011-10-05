@@ -76,12 +76,13 @@
     checkHoverIntent = function(event) {
       var intentional, interval, m, sensitivity, timer, trigger;
       trigger = $(this);
-      intentional = trigger.data('hoverIntent' || true);
-      timer = trigger.data('hoverIntentTimer' || null);
-      sensitivity = trigger.data('hoverIntentSensitivity' || $.hoverIntent.sensitivity);
-      interval = trigger.data('hoverIntentInterval' || $.hoverIntent.interval);
+      intentional = trigger.data('hoverIntent') || true;
+      timer = trigger.data('hoverIntentTimer') || null;
+      sensitivity = trigger.data('hoverIntentSensitivity') || $.hoverIntent.sensitivity;
+      interval = trigger.data('hoverIntentInterval') || $.hoverIntent.interval;
       m = $.mouse;
       return trigger.data('hoverIntentTimer', setTimeout(function() {
+        var eventType;
         intentional = Math.abs(m.x.previous - m.x.current) + Math.abs(m.y.previous - m.y.current) > sensitivity;
         intentional = intentional || event.type === 'mouseleave';
         m.x.previous = event.pageX;
@@ -90,15 +91,21 @@
         if (intentional) {
           switch (event.type) {
             case 'mouseleave':
-              if (trigger.data('activeState' === true)) {
+              if (trigger.data('activeState') === true) {
                 return console.log('activeState');
               }
               clearHoverIntent(trigger);
+              break;
+            case 'mouseout':
+              eventType = 'mouseleave';
+              break;
+            case 'mouseover':
+              eventType = 'mouseenter';
           }
-          trigger.trigger("true" + event.type);
-          return console.log(event.type);
+          trigger.trigger("true" + eventType);
+          return console.log("true" + eventType);
         }
-      }));
+      }, interval));
     };
     trackHoverIntent = function(event) {
       $.mouse.x.current = event.pageX;

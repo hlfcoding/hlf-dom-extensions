@@ -26,6 +26,7 @@
       @_tip = $ '<div>'
       @doStem = @_options.stemClass isnt ''
       @doFollow = @_options.followClass isnt '' and @_options.cursorHeight > 0
+      @_visibility = 'truehidden'
       @_triggers.each (index,  element) =>
         trigger = $  element
         @_saveTriggerContent trigger
@@ -47,6 +48,11 @@
   </div>"
   
     _saveTriggerContent: (trigger) ->
+      title = trigger.attr 'title'
+      if title
+        trigger.data('hlfTipContent', title)
+               .attr('data-tip-content', title)
+               .removeAttr('title')
   
     # Link the trigger to the tip for:
     # 1. mouseenter, mouseleave (uses special events)
@@ -86,7 +92,7 @@
       console.log '_position'
 
     _inflate: (trigger) ->
-      @_tip.find(".#{options.contentClass}").text trigger.data 'hlfTipContent'
+      @_tip.find(".#{@_options.contentClass}").text trigger.data('hlfTipContent')
 
     _onMouseMove: (event) ->
       return false if not event.pageX?
@@ -110,10 +116,10 @@
     # Methods
     wake: (trigger) ->
       if trigger isnt @_triggerP
-        @_hydrate trigger
+        @_inflate trigger
         @_position trigger
       @_wakeCountdown = setTimeout =>
-        _clearTimeout @_sleepCountdown
+        clearTimeout @_sleepCountdown
         return false if @isAwake()
         @onShow()
         @_tip.fadeIn @_options.inDuration, =>
@@ -125,7 +131,7 @@
       if trigger isnt @_triggerP
         @_triggerP = trigger
       @_sleepCountdown = setTimeout =>
-        _clearTimeout @_wakeCountdown
+        clearTimeout @_wakeCountdown
         return false if @isAsleep()
         @onHide()
         @_tip.fadeOut @_options.outDuration, =>

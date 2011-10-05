@@ -33,6 +33,7 @@
         this._tip = $('<div>');
         this.doStem = this._options.stemClass !== '';
         this.doFollow = this._options.followClass !== '' && this._options.cursorHeight > 0;
+        this._visibility = 'truehidden';
         this._triggers.each(__bind(function(index, element) {
           var trigger;
           trigger = $(element);
@@ -50,7 +51,13 @@
         }
         return html = "  <div class='" + containerClass + "'>  <div class='" + this._options.innerClass + "'>  " + stemHtml + "  <div class='" + this._options.contentClass + "'></div>  </div>  </div>";
       };
-      Tip.prototype._saveTriggerContent = function(trigger) {};
+      Tip.prototype._saveTriggerContent = function(trigger) {
+        var title;
+        title = trigger.attr('title');
+        if (title) {
+          return trigger.data('hlfTipContent', title).attr('data-tip-content', title).removeAttr('title');
+        }
+      };
       Tip.prototype._bindTrigger = function(trigger) {
         trigger.bind({
           'truemouseenter.hlf.tip': __bind(function(event) {
@@ -101,7 +108,7 @@
         return console.log('_position');
       };
       Tip.prototype._inflate = function(trigger) {
-        return this._tip.find("." + options.contentClass).text(trigger.data('hlfTipContent'));
+        return this._tip.find("." + this._options.contentClass).text(trigger.data('hlfTipContent'));
       };
       Tip.prototype._onMouseMove = function(event) {
         var offset;
@@ -134,11 +141,11 @@
       };
       Tip.prototype.wake = function(trigger) {
         if (trigger !== this._triggerP) {
-          this._hydrate(trigger);
+          this._inflate(trigger);
           this._position(trigger);
         }
         this._wakeCountdown = setTimeout(__bind(function() {
-          _clearTimeout(this._sleepCountdown);
+          clearTimeout(this._sleepCountdown);
           if (this.isAwake()) {
             return false;
           }
@@ -155,7 +162,7 @@
           this._triggerP = trigger;
         }
         return this._sleepCountdown = setTimeout(__bind(function() {
-          _clearTimeout(this._wakeCountdown);
+          clearTimeout(this._wakeCountdown);
           if (this.isAsleep()) {
             return false;
           }

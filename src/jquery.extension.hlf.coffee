@@ -21,7 +21,7 @@
             $.fn[nsName] = (options) ->
               return false if this.length > 1
               # Return existing instance.
-              instance = this.data nsName
+              instance = this.data(nsName)
               return instance if instance?
               # Create, boilerplate, and store instance
               options = $.extend true, {}, class_.defaults, options
@@ -31,7 +31,7 @@
           when 'manyElementsOneContext'
             $.fn[nsName] = (options, context=$('body')) ->
               # Return existing instance.
-              instance = context.data nsName
+              instance = context.data(nsName)
               return instance if instance?
               # Create, boilerplate, and store instance
               options = $.extend true, {}, class_.defaults, options
@@ -54,10 +54,10 @@
   
   checkHoverIntent = (event) ->
     trigger = $ this
-    intentional = trigger.data 'hoverIntent' or true
-    timer = trigger.data 'hoverIntentTimer' or null
-    sensitivity = trigger.data 'hoverIntentSensitivity' or $.hoverIntent.sensitivity
-    interval = trigger.data 'hoverIntentInterval' or $.hoverIntent.interval
+    intentional = trigger.data('hoverIntent') or true
+    timer = trigger.data('hoverIntentTimer') or null
+    sensitivity = trigger.data('hoverIntentSensitivity') or $.hoverIntent.sensitivity
+    interval = trigger.data('hoverIntentInterval') or $.hoverIntent.interval
     m = $.mouse
     # Update timer.
     trigger.data 'hoverIntentTimer', setTimeout ->
@@ -69,10 +69,13 @@
       if intentional
         switch event.type
           when 'mouseleave' 
-            return console.log 'activeState' if trigger.data 'activeState' is true
+            return console.log 'activeState' if trigger.data('activeState') is true
             clearHoverIntent trigger
-        trigger.trigger "true#{event.type}"
-        console.log event.type
+          when 'mouseout' then eventType = 'mouseleave'
+          when 'mouseover' then eventType = 'mouseenter'
+        trigger.trigger "true#{eventType}"
+        console.log "true#{eventType}"
+    , interval
       #console.log 'timer'
     #console.log 'checker'
   
@@ -81,7 +84,7 @@
     $.mouse.y.current = event.pageY
   
   clearHoverIntent = (trigger) ->
-    clearTimeout trigger.data 'hoverIntentTimer'
+    clearTimeout trigger.data('hoverIntentTimer')
   
   $.event.special.truemouseenter = 
     setup: (data, namespaces) ->
