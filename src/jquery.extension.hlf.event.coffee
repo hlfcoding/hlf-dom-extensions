@@ -1,10 +1,34 @@
+###
+HLF Event jQuery Extension v1.0
+Released under the MIT License
+Written with jQuery 1.7.2
+###
 $ = jQuery
 
-# Event extensions
-$.extend true, $, 
+###
+Composed of three parts:
+
+1. Extend main namespace with properties to store global state.
+2. Private functions to implement certain behaviors.
+3. Adapting the behaviors to custom events.
+
+Hover-intent
+------------
+Basically a distance check with a delay to throttle mouse-enter. Allows for
+customization based on sensitivity to movement. Unlike the jQuery `mouseenter`
+and `mouseleave` events, these custom ones provide `pageX` and `pageY` values.
+###
+
+$.extend true, $.hlf,
   hoverIntent:
+    debug: off
     sensitivity: 8
     interval: 300
+    toString: (context) ->
+      switch context
+        when 'data' then 'hlfHoverIntent'
+        when 'log'  then 'hover-intent:'
+        else 'hlf.HoverIntent'
   mouse:
     x:
       current: 0
@@ -13,52 +37,68 @@ $.extend true, $,
       current: 0
       previous: 0
 
-checkHoverIntent = (evt) ->
-  $t = $ @
-  intentional = $t.data('hoverIntent') or true
-  timer = $t.data('hoverIntentTimer') or null
-  sensitivity = $t.data('hoverIntentSensitivity') or $.hoverIntent.sensitivity
-  interval = $t.data('hoverIntentInterval') or $.hoverIntent.interval
-  m = $.mouse
-  # Update timer.
-  $t.data 'hoverIntentTimer', setTimeout ->
-    intentional = Math.abs(m.x.previous - m.x.current) + Math.abs(m.y.previous - m.y.current) > sensitivity 
-    intentional = intentional or evt.type is 'mouseleave'
-    m.x.previous = evt.pageX
-    m.y.previous = evt.pageY
-    $t.data 'hoverIntent', intentional
-    if intentional
-      switch evt.type
-        when 'mouseleave' 
-          return console.log 'activeState' if $t.data('activeState') is true
-          clearHoverIntent $t
-        when 'mouseout' then type = 'mouseleave'
-        when 'mouseover' then type = 'mouseenter'
-      $t.trigger "true#{type}"
-      console.log "true#{type}"
-  , interval
-    #console.log 'timer'
-  #console.log 'checker'
+do (ns=$.hlf.hoverIntent, m=$.hlf.mouse) ->
+  
+  nsDat = ns.toString 'data'
+  nsLog = ns.toString 'log'
+  dat = (name) -> "#{nsDat}#{name}"
+  log = if ns.debug then $.hlf.log else $.noop
+  
+  check = (evt) ->
+    trigger = (evtType) ->
+      $t.trigger "true#{evtType}"
+      log nsLog, "true#{evtType}"
+    
+    $t = $ @
+    intentional = $t.data(dat()) or yes
+    timer = $t.data(dat('Timer')) or null
+    sensitivity = $t.data(dat('Sensitivity')) or ns.sensitivity
+    interval = $t.data(dat('Interval')) or ns.interval
+    # Update timer.
+    if timer? and evt.type is 'mouseleave'
+      clear $t
+      trigger evt.type
+      return
+    $t.data dat('Timer'), setTimeout ->
+      intentional = Math.abs(m.x.previous - m.x.current) + Math.abs(m.y.previous - m.y.current) > sensitivity 
+      intentional = intentional
+      m.x.previous = evt.pageX
+      m.y.previous = evt.pageY
+      $t.data dat(), intentional
+      if intentional
+        switch evt.type
+          when 'mouseout'   then type = 'mouseleave'
+          when 'mouseover'  then type = 'mouseenter'
+        trigger type
+    , interval
+    
+  
+  track = (evt) ->
+    m.x.current = evt.pageX
+    m.y.current = evt.pageY
+  
+  clear = ($t) ->
+    clearTimeout $t.data dat('Timer')
+    $t.removeData dat('Timer')
+  
+  $.event.special.truemouseenter =
+    setup: (data, namespaces) ->
+      $(@).on
+        mouseenter: check
+        mousemove:  track
+    
+    teardown: (data, namespaces) ->
+      $(@).off
+        mouseenter: check
+        mousemove:  track
+    
+  $.event.special.truemouseleave =
+    setup: (data, namespaces) ->
+      $(@).on
+        mouseleave: check
+    
+    teardown: (data, namespaces) ->
+      $(@).off
+        mouseleave: check
+    
 
-trackHoverIntent = (evt) ->
-  $.mouse.x.current = evt.pageX
-  $.mouse.y.current = evt.pageY
-
-clearHoverIntent = ($t) ->
-  clearTimeout $t.data('hoverIntentTimer')
-
-$.event.special.truemouseenter = 
-  setup: (data, namespaces) ->
-    $(@).bind
-      mouseenter: checkHoverIntent
-      mousemove: trackHoverIntent
-  teardown: (data, namespaces) ->
-    $(@).unbind
-      mouseenter: checkHoverIntent
-      mousemove: trackHoverIntent
-
-$.event.special.truemouseleave = 
-  setup: (data, namespaces) ->
-    $(@).bind 'mouseleave', checkHoverIntent
-  teardown: (data, namespaces) ->
-    $(@).unbind 'mouseleave', checkHoverIntent
