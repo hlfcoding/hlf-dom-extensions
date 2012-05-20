@@ -1,0 +1,94 @@
+<!doctype html>  <html> <head>   <title>jquery.extension.hlf.event.coffee</title>   <meta charset="utf-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>        <div id="jump_to">       Jump To &hellip;        <div id="jump_wrapper">   <form id="jump_search_wrapper" name="jump_search_form">     <input id="jump_search" name="jump_search" type="text" placeholder="Search..." tabindex="1">     <a id="clear_search" href="#" title="Clear">x</a>   </form>    <div id="jump_scroller">     <div id="jump_page">                         <a class="source" href="index.html"            title="src/jquery.extension.hlf.core.coffee" data-path="src/jquery.extension.hlf.core.coffee">           jquery.extension.hlf.core         </a>                         <a class="source" href="src.jquery.extension.hlf.event.coffee.html"            title="src/jquery.extension.hlf.event.coffee" data-path="src/jquery.extension.hlf.event.coffee">           jquery.extension.hlf.event         </a>                         <a class="source" href="src.jquery.hlf.tip.coffee.html"            title="src/jquery.hlf.tip.coffee" data-path="src/jquery.hlf.tip.coffee">           jquery.hlf.tip         </a>                         <a class="source" href="src.ui.canvas-app.coffee.html"            title="src/ui.canvas-app.coffee" data-path="src/ui.canvas-app.coffee">           ui.canvas-app         </a>            </div>   </div> </div>     </div>        <div id="scroller">       <table id="doc_page" cellpadding="0" cellspacing="0" data-path="src/jquery.extension.hlf.event.coffee">         <thead>           <tr>             <th class="docs">               <h1>                 jquery.extension.hlf.event.coffee               </h1>             </th>             <th class="code">             </th>           </tr>         </thead>         <tbody>                                     <tr id="section-1">               <td class="docs">                 <div class="pilwrap">                   <a class="pilcrow" href="#section-1">&#182;</a>                 </div>                 <h1>#</h1>               </td>               <td class="code">                 <div class="highlight"><pre><span class="nx">HLF</span> <span class="nx">Event</span> <span class="nx">jQuery</span> <span class="nx">Extension</span> <span class="nx">v1</span><span class="p">.</span><span class="mi">0</span>
+<span class="nx">Released</span> <span class="nx">under</span> <span class="nx">the</span> <span class="nx">MIT</span> <span class="nx">License</span>
+<span class="nx">Written</span> <span class="nx">with</span> <span class="nx">jQuery</span> <span class="mf">1.7</span><span class="p">.</span><span class="mi">2</span></pre></div>               </td>             </tr>                                     <tr id="section-2">               <td class="docs">                 <div class="pilwrap">                   <a class="pilcrow" href="#section-2">&#182;</a>                 </div>                 <h1>#</h1>               </td>               <td class="code">                 <div class="highlight"><pre><span class="nv">$ = </span><span class="nx">jQuery</span></pre></div>               </td>             </tr>                                     <tr id="section-3">               <td class="docs">                 <div class="pilwrap">                   <a class="pilcrow" href="#section-3">&#182;</a>                 </div>                 <h1>#</h1>               </td>               <td class="code">                 <div class="highlight"><pre><span class="nx">Composed</span> <span class="k">of</span> <span class="nx">three</span> <span class="nv">parts:</span>
+
+<span class="mi">1</span><span class="p">.</span> <span class="nx">Extend</span> <span class="nx">main</span> <span class="nx">namespace</span> <span class="nx">with</span> <span class="nx">properties</span> <span class="nx">to</span> <span class="nx">store</span> <span class="nx">global</span> <span class="nx">state</span><span class="p">.</span>
+<span class="mi">2</span><span class="p">.</span> <span class="nx">Private</span> <span class="nx">functions</span> <span class="nx">to</span> <span class="nx">implement</span> <span class="nx">certain</span> <span class="nx">behaviors</span><span class="p">.</span>
+<span class="mi">3</span><span class="p">.</span> <span class="nx">Adapting</span> <span class="nx">the</span> <span class="nx">behaviors</span> <span class="nx">to</span> <span class="nx">custom</span> <span class="nx">events</span><span class="p">.</span>
+
+<span class="nx">Hover</span><span class="o">-</span><span class="nx">intent</span>
+<span class="o">------------</span>
+<span class="nx">Basically</span> <span class="nx">a</span> <span class="nx">distance</span> <span class="nx">check</span> <span class="nx">with</span> <span class="nx">a</span> <span class="nx">delay</span> <span class="nx">to</span> <span class="nx">throttle</span> <span class="nx">mouse</span><span class="o">-</span><span class="nx">enter</span><span class="p">.</span> <span class="nx">Allows</span> <span class="k">for</span>
+<span class="nx">customization</span> <span class="nx">based</span> <span class="kc">on</span> <span class="nx">sensitivity</span> <span class="nx">to</span> <span class="nx">movement</span><span class="p">.</span> <span class="nx">Unlike</span> <span class="nx">the</span> <span class="nx">jQuery</span> <span class="o">`</span><span class="nx">mouseenter</span><span class="o">`</span>
+<span class="o">and</span> <span class="o">`</span><span class="nx">mouseleave</span><span class="o">`</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">these</span> <span class="nx">custom</span> <span class="nx">ones</span> <span class="nx">provide</span> <span class="o">`</span><span class="nx">pageX</span><span class="o">`</span> <span class="o">and</span> <span class="o">`</span><span class="nx">pageY</span><span class="o">`</span> <span class="nx">values</span><span class="p">.</span></pre></div>               </td>             </tr>                                     <tr id="section-4">               <td class="docs">                 <div class="pilwrap">                   <a class="pilcrow" href="#section-4">&#182;</a>                 </div>                 <h1>#</h1>               </td>               <td class="code">                 <div class="highlight"><pre><span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span><span class="p">,</span>
+  <span class="nv">hoverIntent:</span>
+    <span class="nv">debug: </span><span class="kc">off</span>
+    <span class="nv">sensitivity: </span><span class="mi">8</span>
+    <span class="nv">interval: </span><span class="mi">300</span>
+    <span class="nv">toString: </span><span class="nf">(context) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">context</span>
+        <span class="k">when</span> <span class="s1">&#39;data&#39;</span> <span class="k">then</span> <span class="s1">&#39;hlfHoverIntent&#39;</span>
+        <span class="k">when</span> <span class="s1">&#39;log&#39;</span>  <span class="k">then</span> <span class="s1">&#39;hover-intent:&#39;</span>
+        <span class="k">else</span> <span class="s1">&#39;hlf.HoverIntent&#39;</span>
+  <span class="nv">mouse:</span>
+    <span class="nv">x:</span>
+      <span class="nv">current: </span><span class="mi">0</span>
+      <span class="nv">previous: </span><span class="mi">0</span>
+    <span class="nv">y:</span>
+      <span class="nv">current: </span><span class="mi">0</span>
+      <span class="nv">previous: </span><span class="mi">0</span>
+
+<span class="nx">do</span> <span class="nf">(ns=$.hlf.hoverIntent, m=$.hlf.mouse) -&gt;</span>
+  
+  <span class="nv">nsDat = </span><span class="nx">ns</span><span class="p">.</span><span class="nx">toString</span> <span class="s1">&#39;data&#39;</span>
+  <span class="nv">nsLog = </span><span class="nx">ns</span><span class="p">.</span><span class="nx">toString</span> <span class="s1">&#39;log&#39;</span>
+  <span class="nv">dat = </span><span class="nf">(name) -&gt;</span> <span class="s2">&quot;#{nsDat}#{name}&quot;</span>
+  <span class="nv">log = </span><span class="k">if</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">debug</span> <span class="k">then</span> <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span><span class="p">.</span><span class="nx">log</span> <span class="k">else</span> <span class="nx">$</span><span class="p">.</span><span class="nx">noop</span>
+  
+  <span class="nv">check = </span><span class="nf">(evt) -&gt;</span>
+    <span class="nv">trigger = </span><span class="nf">(evtType) -&gt;</span>
+      <span class="nx">$t</span><span class="p">.</span><span class="nx">trigger</span> <span class="s2">&quot;true#{evtType}&quot;</span>
+      <span class="nx">log</span> <span class="nx">nsLog</span><span class="p">,</span> <span class="s2">&quot;true#{evtType}&quot;</span>
+
+    <span class="nv">$t = </span><span class="nx">$</span> <span class="err">@</span>
+    <span class="nv">intentional = </span><span class="nx">$t</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dat</span><span class="p">())</span> <span class="o">or</span> <span class="kc">yes</span>
+    <span class="nv">timer = </span><span class="nx">$t</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dat</span><span class="p">(</span><span class="s1">&#39;Timer&#39;</span><span class="p">))</span> <span class="o">or</span> <span class="kc">null</span>
+    <span class="nv">sensitivity = </span><span class="nx">$t</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dat</span><span class="p">(</span><span class="s1">&#39;Sensitivity&#39;</span><span class="p">))</span> <span class="o">or</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">sensitivity</span>
+    <span class="nv">interval = </span><span class="nx">$t</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dat</span><span class="p">(</span><span class="s1">&#39;Interval&#39;</span><span class="p">))</span> <span class="o">or</span> <span class="nx">ns</span><span class="p">.</span><span class="nx">interval</span></pre></div>               </td>             </tr>                                     <tr id="section-5">               <td class="docs">                 <div class="pilwrap">                   <a class="pilcrow" href="#section-5">&#182;</a>                 </div>                 <p>Update timer.</p>               </td>               <td class="code">                 <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">timer</span><span class="o">?</span> <span class="o">and</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">type</span> <span class="o">is</span> <span class="s1">&#39;mouseleave&#39;</span>
+      <span class="nx">clear</span> <span class="nx">$t</span>
+      <span class="nx">trigger</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">type</span>
+      <span class="k">return</span>
+    <span class="nx">$t</span><span class="p">.</span><span class="nx">data</span> <span class="nx">dat</span><span class="p">(</span><span class="s1">&#39;Timer&#39;</span><span class="p">),</span> <span class="nx">setTimeout</span> <span class="o">-&gt;</span>
+      <span class="nv">intentional = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">previous</span> <span class="o">-</span> <span class="nx">m</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">current</span><span class="p">)</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">previous</span> <span class="o">-</span> <span class="nx">m</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">current</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nx">sensitivity</span> 
+      <span class="nv">intentional = </span><span class="nx">intentional</span>
+      <span class="nv">m.x.previous = </span><span class="nx">evt</span><span class="p">.</span><span class="nx">pageX</span>
+      <span class="nv">m.y.previous = </span><span class="nx">evt</span><span class="p">.</span><span class="nx">pageY</span>
+      <span class="nx">$t</span><span class="p">.</span><span class="nx">data</span> <span class="nx">dat</span><span class="p">(),</span> <span class="nx">intentional</span>
+      <span class="k">if</span> <span class="nx">intentional</span>
+        <span class="k">switch</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">type</span>
+          <span class="k">when</span> <span class="s1">&#39;mouseout&#39;</span>   <span class="k">then</span> <span class="nv">type = </span><span class="s1">&#39;mouseleave&#39;</span>
+          <span class="k">when</span> <span class="s1">&#39;mouseover&#39;</span>  <span class="k">then</span> <span class="nv">type = </span><span class="s1">&#39;mouseenter&#39;</span>
+        <span class="nx">trigger</span> <span class="nx">type</span>
+    <span class="p">,</span> <span class="nx">interval</span>
+    
+  
+  <span class="nv">track = </span><span class="nf">(evt) -&gt;</span>
+    <span class="nv">m.x.current = </span><span class="nx">evt</span><span class="p">.</span><span class="nx">pageX</span>
+    <span class="nv">m.y.current = </span><span class="nx">evt</span><span class="p">.</span><span class="nx">pageY</span>
+  
+  <span class="nv">clear = </span><span class="nf">($t) -&gt;</span>
+    <span class="nx">clearTimeout</span> <span class="nx">$t</span><span class="p">.</span><span class="nx">data</span> <span class="nx">dat</span><span class="p">(</span><span class="s1">&#39;Timer&#39;</span><span class="p">)</span>
+    <span class="nx">$t</span><span class="p">.</span><span class="nx">removeData</span> <span class="nx">dat</span><span class="p">(</span><span class="s1">&#39;Timer&#39;</span><span class="p">)</span>
+  
+  <span class="nv">$.event.special.truemouseenter =</span>
+    <span class="nv">setup: </span><span class="nf">(data, namespaces) -&gt;</span>
+      <span class="nx">$</span><span class="p">(</span><span class="err">@</span><span class="p">).</span><span class="kc">on</span>
+        <span class="nv">mouseenter: </span><span class="nx">check</span>
+        <span class="nv">mousemove: </span> <span class="nx">track</span>
+    
+    <span class="nv">teardown: </span><span class="nf">(data, namespaces) -&gt;</span>
+      <span class="nx">$</span><span class="p">(</span><span class="err">@</span><span class="p">).</span><span class="kc">off</span>
+        <span class="nv">mouseenter: </span><span class="nx">check</span>
+        <span class="nv">mousemove: </span> <span class="nx">track</span>
+    
+  <span class="nv">$.event.special.truemouseleave =</span>
+    <span class="nv">setup: </span><span class="nf">(data, namespaces) -&gt;</span>
+      <span class="nx">$</span><span class="p">(</span><span class="err">@</span><span class="p">).</span><span class="kc">on</span>
+        <span class="nv">mouseleave: </span><span class="nx">check</span>
+    
+    <span class="nv">teardown: </span><span class="nf">(data, namespaces) -&gt;</span>
+      <span class="nx">$</span><span class="p">(</span><span class="err">@</span><span class="p">).</span><span class="kc">off</span>
+        <span class="nv">mouseleave: </span><span class="nx">check</span>
+    
+
+</pre></div>               </td>             </tr>                    </tbody>       </table>     </div>   </div>   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>   <script src="docco-client.js"></script>        <script>       docco = window.docco || {};       docco.no_results_tpl = function(vars){         vars.msg = vars.msg || 'No results.';         return '<div class="menu-item no-results">'+vars.msg+'</div>';        };       docco.sticky_item_tpl = function(vars){         if (!vars.path || !vars.href) { return; }         return '<a class="source sticky" href="'+vars.href+'"'+             'title="'+vars.path+'" data-path="'+vars.path+'">'+             vars.path.split('/').pop().split('.').shift()+             '<span class="remove" title="Remove sticky">x</span>'+           '</a>';       };     </script>    </body> </html> 

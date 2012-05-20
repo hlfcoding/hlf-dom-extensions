@@ -1,0 +1,75 @@
+<!doctype html>  <html> <head>   <title>ui.canvas-app.coffee</title>   <meta charset="utf-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>        <div id="jump_to">       Jump To &hellip;        <div id="jump_wrapper">   <form id="jump_search_wrapper" name="jump_search_form">     <input id="jump_search" name="jump_search" type="text" placeholder="Search..." tabindex="1">     <a id="clear_search" href="#" title="Clear">x</a>   </form>    <div id="jump_scroller">     <div id="jump_page">                         <a class="source" href="index.html"            title="src/jquery.extension.hlf.core.coffee" data-path="src/jquery.extension.hlf.core.coffee">           jquery.extension.hlf.core         </a>                         <a class="source" href="src.jquery.extension.hlf.event.coffee.html"            title="src/jquery.extension.hlf.event.coffee" data-path="src/jquery.extension.hlf.event.coffee">           jquery.extension.hlf.event         </a>                         <a class="source" href="src.jquery.hlf.tip.coffee.html"            title="src/jquery.hlf.tip.coffee" data-path="src/jquery.hlf.tip.coffee">           jquery.hlf.tip         </a>                         <a class="source" href="src.ui.canvas-app.coffee.html"            title="src/ui.canvas-app.coffee" data-path="src/ui.canvas-app.coffee">           ui.canvas-app         </a>            </div>   </div> </div>     </div>        <div id="scroller">       <table id="doc_page" cellpadding="0" cellspacing="0" data-path="src/ui.canvas-app.coffee">         <thead>           <tr>             <th class="docs">               <h1>                 ui.canvas-app.coffee               </h1>             </th>             <th class="code">             </th>           </tr>         </thead>         <tbody>                                     <tr id="section-1">               <td class="docs">                 <div class="pilwrap">                   <a class="pilcrow" href="#section-1">&#182;</a>                 </div>                 <p>(function($){
+/<strong>@exports $ as jQuery <em>/
+/</strong>
+ * Plugin to create custom ui-related bindings for a toolbar control. Uses the 
+ *      pattern of lazy-initializing the API and storing an instance of it as a 
+ *      data reference to the jQuery object.
+ * @constructor
+ * @param {?Object=} options Custom overrides to the defaults. 
+ * @return {jQuery} Returns an extended jQuery object with the toolbar API methods.
+ * @example 
+ * $toolbar = jQuery('#the-toolbar').toolbar(); // get the lazy-constructed API
+ * $toolbar.hideButton($('#some-button', $toolbar)); // hide the button
+ */
+$.fn.hlfToolbar = function(options){ <br />
+  var api = this.data(hlfPkg + '.jquery.toolbar');
+  if (api) {
+    return api;
+  }
+  var opt = $.extend(true, {}, $.fn.hlfToolbar.defaults, options);
+  var sel = opt.selectors;
+  // temporary
+  api = {
+    $buttons: this.find(sel.btn).hlfButton(),
+    /</em>* @methodOf jQuery.fn.toolbar <em>/ 
+    hideButton: function($button){
+      $button.add($button.closest(sel.btnWrap).next(sel.btnSeparator))
+        .hide();
+    }
+  };
+  this.data(hlfPkg + '.jquery.toolbar', api);
+  $.extend(this, api);
+  return this;
+};
+/</em>*
+ * TODO doc
+ <em>/
+$.fn.hlfButton = function(options){
+  var opt = $.extend(true, {}, $.fn.hlfButton.defaults, options);
+  if (this.length > 1) {
+    this.each(function(){ $(this).hlfButton(); });
+    return;
+  }
+  // link button
+  this.filter('[data-href]').bind('click', $.proxy(function(evt){
+    evt.preventDefault();
+    window.open(this.attr('data-href'));
+  }, this));
+  // toggle button
+  // TODO - long hold
+  this.filter('.toggle').bind('click', $.proxy(function(evt){
+    evt.preventDefault();
+    if (!this.is('.on, .off')) {
+      this.addClass('on');
+    } else {
+      this.toggleClass('on off');
+    }
+    this.trigger((this.is('.on') ? 'on' : 'off'), [this.attr('id')]);
+  }, this));
+  return this;
+};
+/</em>* 
+ * Properties:
+ *      <br/>selectors: btnWrap, btnSeparator
+ * @static
+ */
+$.fn.hlfToolbar.defaults = {};
+$.fn.hlfToolbar.defaults.selectors = {
+  btnWrap: '.btn-wrap',
+  btnSeparator: '.separator',
+  btn: '.btn'
+};
+$.fn.hlfButton.defaults = {};
+})(jQuery);</p>               </td>               <td class="code">                 <div class="highlight"><pre>
+
+</pre></div>               </td>             </tr>                    </tbody>       </table>     </div>   </div>   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>   <script src="docco-client.js"></script>        <script>       docco = window.docco || {};       docco.no_results_tpl = function(vars){         vars.msg = vars.msg || 'No results.';         return '<div class="menu-item no-results">'+vars.msg+'</div>';        };       docco.sticky_item_tpl = function(vars){         if (!vars.path || !vars.href) { return; }         return '<a class="source sticky" href="'+vars.href+'"'+             'title="'+vars.path+'" data-path="'+vars.path+'">'+             vars.path.split('/').pop().split('.').shift()+             '<span class="remove" title="Remove sticky">x</span>'+           '</a>';       };     </script>    </body> </html> 
