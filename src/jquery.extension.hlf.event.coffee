@@ -1,24 +1,28 @@
-###
-HLF Event jQuery Extension v1.0
-Released under the MIT License
-Written with jQuery 1.7.2
-###
+# 
+# HLF Event jQuery Extension v1.0  
+# Released under the MIT License  
+# Written with jQuery 1.7.2  
+# 
 $ = jQuery
+#
+# jQuery Event Extension
+# ======================
 
-###
-Composed of three parts:
+#
+# Composed of three parts:
+# 
+# 1. Extend main namespace with properties to store global state.
+# 2. Private functions to implement certain behaviors.
+# 3. Adapting the behaviors to custom events.
+#
 
-1. Extend main namespace with properties to store global state.
-2. Private functions to implement certain behaviors.
-3. Adapting the behaviors to custom events.
-
-Hover-intent
-------------
-Basically a distance check with a delay to throttle mouse-enter. Allows for
-customization based on sensitivity to movement. Unlike the jQuery `mouseenter`
-and `mouseleave` events, these custom ones provide `pageX` and `pageY` values.
-###
-
+# 
+# Hover-intent
+# ------------
+# Basically a distance check with a delay to throttle mouse-enter. Allows for
+# customization based on sensitivity to movement. Unlike the jQuery `mouseenter`
+# and `mouseleave` events, these custom ones provide `pageX` and `pageY` values.
+#
 $.extend true, $.hlf,
   hoverIntent:
     debug: off

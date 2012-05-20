@@ -1,8 +1,8 @@
-###
-HLF Core jQuery Extension v1.0
-Released under the MIT License
-Written with jQuery 1.7.2
-###
+# 
+# HLF Core jQuery Extension v1.0  
+# Released under the MIT License  
+# Written with jQuery 1.7.2  
+#
 $ = jQuery
 
 if not _? then throw "UnderscoreJS required."
@@ -32,7 +32,7 @@ $.hlf =
       opt = $.extend (deep=on), {}, ns.defaults, opt
       
       if asSingleton is no
-        return @each -> 
+        return @each ->
           $el = $(@)
           boilerplate()
         
