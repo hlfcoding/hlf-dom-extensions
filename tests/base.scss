@@ -1,0 +1,10 @@
+
+body { padding: 1em; font-size: 12px; }
+h1 { font: bold 1.5em Helvetica, sans-serif; letter-spacing: -1px; }
+p { padding: 1em 0; }
+#main { padding: 2em 0; }
+.box { border: 1px solid #ccc; padding: 1em; margin: 1em 0; width: 600px;
+  border-radius: .5em; -moz-border-radius: .5em; -webkit-border-radius: .5em; }
+.menu { margin: 1em 0; width: 300px; }
+.menu li a { display: block; padding: 1em; border: 1px solid #ccc; border-bottom-width: 0; }
+.menu li.chF a { border-bottom-width: 1px; }

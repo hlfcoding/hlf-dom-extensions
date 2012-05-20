@@ -1,0 +1,68 @@
+.js-tip {
+  position: absolute;
+  z-index: 9999;
+  display: none; }
+
+.js-tip-inner {
+  position: relative;
+  max-width: 216px; }
+
+.js-tip-stem {
+  border-width: 0;
+  border-style: solid;
+  border-color: transparent;
+  background: none;
+  position: absolute;
+  width: 0;
+  height: 0; }
+  .js-tip-east.js-snap-tip-y-side .js-tip-stem, .js-tip-east .js-tip-stem {
+    left: 0;
+    border-right-width: 12px;
+    border-right-color: #666666; }
+    .js-tip-east.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip-east .js-tip-stem + .js-tip-content {
+      top: auto;
+      bottom: auto;
+      left: 12px; }
+  .js-tip-west.js-snap-tip-y-side .js-tip-stem, .js-tip-west .js-tip-stem {
+    right: 0;
+    border-left-width: 12px;
+    border-left-color: #666666; }
+    .js-tip-west.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip-west .js-tip-stem + .js-tip-content {
+      top: auto;
+      bottom: auto;
+      right: 12px; }
+  .js-tip-south.js-snap-tip-x-side .js-tip-stem, .js-tip-south .js-tip-stem {
+    top: 0;
+    border-bottom-width: 12px;
+    border-color: transparent;
+    border-bottom-color: #666666; }
+    .js-tip-south.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip-south .js-tip-stem + .js-tip-content {
+      left: auto;
+      right: auto;
+      top: 12px; }
+  .js-tip-north.js-snap-tip-x-side .js-tip-stem, .js-tip-north .js-tip-stem {
+    bottom: 0;
+    border-top-width: 12px;
+    border-color: transparent;
+    border-top-color: #666666; }
+    .js-tip-north.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip-north .js-tip-stem + .js-tip-content {
+      left: auto;
+      right: auto;
+      bottom: 12px; }
+  .js-snap-tip-x-side .js-tip-stem {
+    left: 50%;
+    margin-left: -9px;
+    border-width: 0 9px;
+    border-color: transparent; }
+  .js-snap-tip-y-side .js-tip-stem {
+    top: 50%;
+    margin-top: -9px;
+    border-width: 9px 0;
+    border-color: transparent; }
+
+.js-tip-content {
+  overflow: hidden;
+  position: relative;
+  padding: 8px 12px 10px 12px;
+  background-color: #666666;
+  color: white; }

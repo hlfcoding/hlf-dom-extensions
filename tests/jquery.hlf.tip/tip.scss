@@ -1,0 +1,116 @@
+$fill-color: #666;
+$text-color: #fff;
+$stem-color: $fill-color;
+
+$baseline: 12px;
+$max-width: 18 * $baseline;
+$stem-size: $baseline;
+$stem-wide-base: 3/2*$baseline;
+
+$content-padding: (2/3*$baseline) $baseline (5/6*$baseline) $baseline;
+
+@mixin stem-style ($side) {
+  border-#{$side}-width: $stem-size;
+  @if $side == top or $side == bottom {
+    border-color: transparent; // Reset.
+    &+.js-tip-content {
+      left: auto; right: auto; // Reset.
+      @if $side == top { bottom: $stem-size; }
+      @if $side == bottom { top: $stem-size; }
+    }
+  } @else if $side == left or $side == right {
+    &+.js-tip-content {
+      top: auto; bottom: auto; // Reset.
+      @if $side == left { right: $stem-size; }
+      @if $side == right { left: $stem-size; }
+    }
+  }
+  border-#{$side}-color: $stem-color;
+}
+
+.js-tip {
+  // Base.
+  position: absolute;
+  z-index: 9999;
+  display: none;
+}
+// ->
+.js-tip-inner {
+  // Base.
+  position: relative; 
+  // Style.
+  max-width: $max-width;
+}
+// ->
+.js-tip-stem {
+  // Base.
+  border: {
+    width: 0;
+    style: solid;
+    color: transparent;
+  }
+  background: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  .js-tip-east.js-snap-tip-y-side &, // Reapply.
+  .js-tip-east & {
+    // Base.
+    left: 0;
+    // Style.
+    @include stem-style(right);
+  }
+  .js-tip-west.js-snap-tip-y-side &, // Reapply.
+  .js-tip-west & {
+    // Base.
+    right: 0;
+    // Style.
+    @include stem-style(left);
+  }
+  // By default north and south have precedence in growing the stem, so they
+  // come last.
+  .js-tip-south.js-snap-tip-x-side &, // Reapply.
+  .js-tip-south & {
+    // Base.
+    top: 0;
+    // Style.
+    @include stem-style(bottom);
+  }
+  .js-tip-north.js-snap-tip-x-side &, // Reapply.
+  .js-tip-north & {
+    // Base.
+    bottom: 0;
+    // Style.
+    @include stem-style(top);
+  }
+  .js-snap-tip-x-side & {
+    // Base.
+    left: 50%;
+    margin-left: -$stem-wide-base/2; // Center.
+    // Partial reset.
+    border: {
+      width: 0 ($stem-wide-base/2);
+      color: transparent;
+    }
+  }
+  .js-snap-tip-y-side & {
+    // Base.
+    top: 50%;
+    margin-top: -$stem-wide-base/2; // Center.
+    // Partial reset.
+    border: {
+      width: ($stem-wide-base/2) 0;
+      color: transparent;
+    }
+  }
+}
+.js-tip-content {
+  // Base.
+  overflow: hidden;
+  position: relative;
+  // Style.
+  padding: $content-padding;
+  background-color: $fill-color;
+  color: $text-color;
+  // Position adjusted by to stem style mixin.
+}
