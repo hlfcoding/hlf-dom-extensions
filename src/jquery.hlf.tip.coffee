@@ -9,27 +9,41 @@ ns = $.hlf
 ###
 Tip
 ---
+Full-featured tooltip plugin. Use the different plugins to add different types
+of tips to an element.
+
+Options:
+
+- `ms.duration`- Duration of sleep and wake animations.
+- `ms.delay` - Delay before sleeping and waking.
+- `cls.xsnap`- Set empty to disable snapping along x-axis. Off by default.
+- `cls.ysnap`- Set empty to disable snapping along y-axis. Off by default.
 ###
 ns.tip = 
+  debug: on
   toString: (context) ->
     switch context
-      when 'event' then '.hlf.tip'
-      when 'data' then 'hlfTip'
-      when 'class' then 'js-tips'
+      when 'event'  then '.hlf.tip'
+      when 'data'   then 'hlfTip'
+      when 'class'  then 'js-tips'
+      when 'log'    then 'hlf-tip:'
       else 'hlf.tip'
   
   defaults: do (pre='js-tip-') ->
     ms:
       duration:
+        in: 200
+        out: 100
+      delay:
         in: 300
         out: 300
-      delay:
-        in: 0
-        out: 500
     cursorHeight: 6
     cls: (->
-      cls = {}
-      _.each ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow'],
+      cls =
+        xsnap: ''
+        ysnap: ''
+      _.each ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow',
+        'snap'],
         (key) -> cls[key] = "#{pre}#{key}"
       cls.tip = 'js-tip'
       return cls
@@ -37,18 +51,22 @@ ns.tip =
     
   
 
+nsLog = ns.tip.toString 'log'
+
 ###
 Tip API
 -------
-
+Fades in and out based on give delays. Awake and asleep states can be read and
+are set after fade animations.
 ###
 class Tip
   
   constructor: (@$ts, @o, @$ctx) ->
+    _.bindAll @, '_onMouseMove'
     @$tip = $ '<div>'
     @doStem = @o.cls.stem isnt ''
     @doFollow = @o.cls.follow isnt '' and @o.cursorHeight > 0
-    @_visibility = 'truehidden'
+    @_state = 'truehidden'
     @_p =
       $t: null
     @$ts.each (idx, el) =>
@@ -87,16 +105,16 @@ class Tip
     $t.on @_evt('truemouseenter'), (evt) => @wake $t
       .on @_evt('truemouseleave'), (evt) => @sleep $t
     if @doFollow is on
-      $t.on @_evt('mousemove'), $.proxy @_onMouseMove, this
+      $t.on @_evt('mousemove'), @_onMouseMove
   
   _bind: ($t) ->
     @$tip
       .on @_evt('mouseenter'), (evt) =>
-        console.log 'enter tip'
+        @_log nsLog, 'enter tip'
         $t.data 'activeState', true
     
       .on @_evt('mouseleave'), (evt) =>
-        console.log 'leave tip'
+        @_log nsLog, 'leave tip'
         $t.data 'activeState', false
       
   
@@ -115,7 +133,7 @@ class Tip
       return false
     offset.top += @o.cursorHeight
     @$tip.css offset
-    console.log '_position'
+    @_log nsLog, '_position'
   
   _inflate: ($t) ->
     @$tip.find(".#{@o.cls.content}").text $t.data @_dat 'Content'
@@ -129,46 +147,48 @@ class Tip
     offset = @onMouseMove(evt, offset) or offset
     offset.top += @o.cursorHeight
     @$tip.css offset
-    console.log '_onMouseMove'
+    @_log nsLog, '_onMouseMove'
   
   # Public
 
   # Accessors
   options: -> @o
   tip: -> @$tip
-  isAwake: -> @_visibility is 'truevisible'
-  isAsleep: -> @_visibility is 'truehidden'
+  isAwake: -> @_state is 'truevisible'
+  isAsleep: -> @_state is 'truehidden'
 
   # Methods
   wake: ($t) ->
     if $t isnt @_p.$t
       @_inflate $t
       @_position $t
+    return no if @_state is 'changing'
+    @_state = 'changing'
+    clearTimeout @_sleepCountdown
     @_wakeCountdown = setTimeout =>
-      clearTimeout @_sleepCountdown
-      return false if @isAwake()
       @onShow()
-      @$tip.fadeIn @o.ms.duration.in, =>
-        @_visibility = 'truevisible'
+      @$tip.stop().fadeIn @o.ms.duration.in, =>
+        @_state = 'truevisible'
         @afterShow()
       
     , @o.ms.delay.in
     
-    true
+    yes
   
   sleep: ($t) ->
-    if $t isnt @_p.$t
-      @_p.$t = $t
+    if $t isnt @_p.$t then @_p.$t = $t
+    @_state = 'changing'
+    clearTimeout @_wakeCountdown
     @_sleepCountdown = setTimeout =>
-      clearTimeout @_wakeCountdown
-      return false if @isAsleep()
+      # return no if @isAsleep()
       @onHide()
-      @$tip.fadeOut @o.ms.duration.out, =>
-        @_visibility = 'truehidden'
+      @$tip.stop().fadeOut @o.ms.duration.out, =>
+        @_state = 'truehidden'
         @afterHide()
       
     , @o.ms.delay.out
     
+    yes
   
   # Hooks
   onShow: $.noop
@@ -182,7 +202,6 @@ class Tip
 ###
 SnapTip API
 -----------
-
 ###
 class SnapTip extends Tip
   
@@ -202,32 +221,31 @@ class SnapTip extends Tip
     
   _bindTrigger: ($t) ->
     super $t
-    $t.on @_evt('truemouseenter'), (evt) ->
+    $t
+      .on @_evt('truemouseenter'), (evt) =>
         @_offsetStart = 
           top: evt.pageX
           left: evt.pageY
-        console.log 'truemouseenter'
       
-      .on @_evt('truemouseleave'), (evt) ->
+      .on @_evt('truemouseleave'), (evt) =>
         @_offsetStart = null
-        console.log 'truemouseleave'
       
   
   # Public
 
   # Hooked
   onPosition: (offset) ->
-    console.log 'onPosition'
+    @_log nsLog, 'onPosition'
     offset
   
   onMouseMove: (evt, offset) ->
     return offset if not @_offsetStart?
     if @doXSnap
       offset.top = @_offsetStart.top
-      console.log 'xSnap'
+      # @_log nsLog, 'xSnap'
     else if @doYSnap
       offset.left = @_offsetStart.left
-      console.log 'ySnap'
+      # @_log nsLog, 'ySnap'
     offset
   
   

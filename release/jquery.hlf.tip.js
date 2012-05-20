@@ -8,7 +8,7 @@ Written with jQuery 1.7.2
 
 
 (function() {
-  var $, SnapTip, Tip, ns,
+  var $, SnapTip, Tip, ns, nsLog,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
@@ -19,10 +19,20 @@ Written with jQuery 1.7.2
   /*
   Tip
   ---
+  Full-featured tooltip plugin. Use the different plugins to add different types
+  of tips to an element.
+  
+  Options:
+  
+  - `ms.duration`- Duration of sleep and wake animations.
+  - `ms.delay` - Delay before sleeping and waking.
+  - `cls.xsnap`- Set empty to disable snapping along x-axis. Off by default.
+  - `cls.ysnap`- Set empty to disable snapping along y-axis. Off by default.
   */
 
 
   ns.tip = {
+    debug: true,
     toString: function(context) {
       switch (context) {
         case 'event':
@@ -31,6 +41,8 @@ Written with jQuery 1.7.2
           return 'hlfTip';
         case 'class':
           return 'js-tips';
+        case 'log':
+          return 'hlf-tip:';
         default:
           return 'hlf.tip';
       }
@@ -39,19 +51,22 @@ Written with jQuery 1.7.2
       return {
         ms: {
           duration: {
-            "in": 300,
-            out: 300
+            "in": 200,
+            out: 100
           },
           delay: {
-            "in": 0,
-            out: 500
+            "in": 300,
+            out: 300
           }
         },
         cursorHeight: 6,
         cls: (function() {
           var cls;
-          cls = {};
-          _.each(['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow'], function(key) {
+          cls = {
+            xsnap: '',
+            ysnap: ''
+          };
+          _.each(['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'snap'], function(key) {
             return cls[key] = "" + pre + key;
           });
           cls.tip = 'js-tip';
@@ -61,9 +76,13 @@ Written with jQuery 1.7.2
     })('js-tip-')
   };
 
+  nsLog = ns.tip.toString('log');
+
   /*
   Tip API
   -------
+  Fades in and out based on give delays. Awake and asleep states can be read and
+  are set after fade animations.
   */
 
 
@@ -76,10 +95,11 @@ Written with jQuery 1.7.2
       this.$ts = $ts;
       this.o = o;
       this.$ctx = $ctx;
+      _.bindAll(this, '_onMouseMove');
       this.$tip = $('<div>');
       this.doStem = this.o.cls.stem !== '';
       this.doFollow = this.o.cls.follow !== '' && this.o.cursorHeight > 0;
-      this._visibility = 'truehidden';
+      this._state = 'truehidden';
       this._p = {
         $t: null
       };
@@ -118,17 +138,17 @@ Written with jQuery 1.7.2
         }));
       });
       if (this.doFollow === true) {
-        return $t.on(this._evt('mousemove'), $.proxy(this._onMouseMove, this));
+        return $t.on(this._evt('mousemove'), this._onMouseMove);
       }
     };
 
     Tip.prototype._bind = function($t) {
       var _this = this;
       return this.$tip.on(this._evt('mouseenter'), function(evt) {
-        console.log('enter tip');
+        _this._log(nsLog, 'enter tip');
         return $t.data('activeState', true);
       }).on(this._evt('mouseleave'), function(evt) {
-        console.log('leave tip');
+        _this._log(nsLog, 'leave tip');
         return $t.data('activeState', false);
       });
     };
@@ -156,7 +176,7 @@ Written with jQuery 1.7.2
       }
       offset.top += this.o.cursorHeight;
       this.$tip.css(offset);
-      return console.log('_position');
+      return this._log(nsLog, '_position');
     };
 
     Tip.prototype._inflate = function($t) {
@@ -178,7 +198,7 @@ Written with jQuery 1.7.2
       offset = this.onMouseMove(evt, offset) || offset;
       offset.top += this.o.cursorHeight;
       this.$tip.css(offset);
-      return console.log('_onMouseMove');
+      return this._log(nsLog, '_onMouseMove');
     };
 
     Tip.prototype.options = function() {
@@ -190,11 +210,11 @@ Written with jQuery 1.7.2
     };
 
     Tip.prototype.isAwake = function() {
-      return this._visibility === 'truevisible';
+      return this._state === 'truevisible';
     };
 
     Tip.prototype.isAsleep = function() {
-      return this._visibility === 'truehidden';
+      return this._state === 'truehidden';
     };
 
     Tip.prototype.wake = function($t) {
@@ -203,14 +223,15 @@ Written with jQuery 1.7.2
         this._inflate($t);
         this._position($t);
       }
+      if (this._state === 'changing') {
+        return false;
+      }
+      this._state = 'changing';
+      clearTimeout(this._sleepCountdown);
       this._wakeCountdown = setTimeout(function() {
-        clearTimeout(_this._sleepCountdown);
-        if (_this.isAwake()) {
-          return false;
-        }
         _this.onShow();
-        return _this.$tip.fadeIn(_this.o.ms.duration["in"], function() {
-          _this._visibility = 'truevisible';
+        return _this.$tip.stop().fadeIn(_this.o.ms.duration["in"], function() {
+          _this._state = 'truevisible';
           return _this.afterShow();
         });
       }, this.o.ms.delay["in"]);
@@ -222,17 +243,16 @@ Written with jQuery 1.7.2
       if ($t !== this._p.$t) {
         this._p.$t = $t;
       }
-      return this._sleepCountdown = setTimeout(function() {
-        clearTimeout(_this._wakeCountdown);
-        if (_this.isAsleep()) {
-          return false;
-        }
+      this._state = 'changing';
+      clearTimeout(this._wakeCountdown);
+      this._sleepCountdown = setTimeout(function() {
         _this.onHide();
-        return _this.$tip.fadeOut(_this.o.ms.duration.out, function() {
-          _this._visibility = 'truehidden';
+        return _this.$tip.stop().fadeOut(_this.o.ms.duration.out, function() {
+          _this._state = 'truehidden';
           return _this.afterHide();
         });
       }, this.o.ms.delay.out);
+      return true;
     };
 
     Tip.prototype.onShow = $.noop;
@@ -282,21 +302,20 @@ Written with jQuery 1.7.2
     SnapTip.prototype._move = function() {};
 
     SnapTip.prototype._bindTrigger = function($t) {
+      var _this = this;
       SnapTip.__super__._bindTrigger.call(this, $t);
       return $t.on(this._evt('truemouseenter'), function(evt) {
-        this._offsetStart = {
+        return _this._offsetStart = {
           top: evt.pageX,
           left: evt.pageY
         };
-        return console.log('truemouseenter');
       }).on(this._evt('truemouseleave'), function(evt) {
-        this._offsetStart = null;
-        return console.log('truemouseleave');
+        return _this._offsetStart = null;
       });
     };
 
     SnapTip.prototype.onPosition = function(offset) {
-      console.log('onPosition');
+      this._log(nsLog, 'onPosition');
       return offset;
     };
 
@@ -306,10 +325,8 @@ Written with jQuery 1.7.2
       }
       if (this.doXSnap) {
         offset.top = this._offsetStart.top;
-        console.log('xSnap');
       } else if (this.doYSnap) {
         offset.left = this._offsetStart.left;
-        console.log('ySnap');
       }
       return offset;
     };
