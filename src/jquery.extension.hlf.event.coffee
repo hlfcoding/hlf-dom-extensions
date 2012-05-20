@@ -42,32 +42,30 @@ do (ns=$.hlf.hoverIntent, m=$.hlf.mouse) ->
   nsDat = ns.toString 'data'
   nsLog = ns.toString 'log'
   dat = (name) -> "#{nsDat}#{name}"
-  log = if ns.debug then $.hlf.log else $.noop
+  log = if ns.debug is on then $.hlf.log else $.noop
   
   check = (evt) ->
     trigger = (evtType) ->
       $t.trigger "true#{evtType}"
       log nsLog, "true#{evtType}"
-    
+
+    # `$t` for trigger.
     $t = $ @
     intentional = $t.data(dat()) or yes
     timer = $t.data(dat('Timer')) or null
     sensitivity = $t.data(dat('Sensitivity')) or ns.sensitivity
     interval = $t.data(dat('Interval')) or ns.interval
-    # Update timer.
-    if timer? and evt.type is 'mouseleave'
-      clear $t
-      trigger evt.type
-      return
     $t.data dat('Timer'), setTimeout ->
       intentional = Math.abs(m.x.previous - m.x.current) + Math.abs(m.y.previous - m.y.current) > sensitivity 
       intentional = intentional
       m.x.previous = evt.pageX
       m.y.previous = evt.pageY
       $t.data dat(), intentional
-      if intentional
+      if intentional is yes
         switch evt.type
-          when 'mouseout'   then type = 'mouseleave'
+          when 'mouseout'
+            type = 'mouseleave'
+            clear $t if not $t.data 'hlfIsActive'
           when 'mouseover'  then type = 'mouseenter'
         trigger type
     , interval
@@ -80,6 +78,7 @@ do (ns=$.hlf.hoverIntent, m=$.hlf.mouse) ->
   clear = ($t) ->
     clearTimeout $t.data dat('Timer')
     $t.removeData dat('Timer')
+    $t.removeData dat()
   
   $.event.special.truemouseenter =
     setup: (data, namespaces) ->

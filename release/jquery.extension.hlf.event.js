@@ -62,7 +62,7 @@ Written with jQuery 1.7.2
     dat = function(name) {
       return "" + nsDat + name;
     };
-    log = ns.debug ? $.hlf.log : $.noop;
+    log = ns.debug === true ? $.hlf.log : $.noop;
     check = function(evt) {
       var $t, intentional, interval, sensitivity, timer, trigger;
       trigger = function(evtType) {
@@ -74,11 +74,6 @@ Written with jQuery 1.7.2
       timer = $t.data(dat('Timer')) || null;
       sensitivity = $t.data(dat('Sensitivity')) || ns.sensitivity;
       interval = $t.data(dat('Interval')) || ns.interval;
-      if ((timer != null) && evt.type === 'mouseleave') {
-        clear($t);
-        trigger(evt.type);
-        return;
-      }
       return $t.data(dat('Timer'), setTimeout(function() {
         var type;
         intentional = Math.abs(m.x.previous - m.x.current) + Math.abs(m.y.previous - m.y.current) > sensitivity;
@@ -86,10 +81,13 @@ Written with jQuery 1.7.2
         m.x.previous = evt.pageX;
         m.y.previous = evt.pageY;
         $t.data(dat(), intentional);
-        if (intentional) {
+        if (intentional === true) {
           switch (evt.type) {
             case 'mouseout':
               type = 'mouseleave';
+              if (!$t.data('hlfIsActive')) {
+                clear($t);
+              }
               break;
             case 'mouseover':
               type = 'mouseenter';
@@ -104,7 +102,8 @@ Written with jQuery 1.7.2
     };
     clear = function($t) {
       clearTimeout($t.data(dat('Timer')));
-      return $t.removeData(dat('Timer'));
+      $t.removeData(dat('Timer'));
+      return $t.removeData(dat());
     };
     $.event.special.truemouseenter = {
       setup: function(data, namespaces) {

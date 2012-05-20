@@ -9,15 +9,19 @@ ns = $.hlf
 ###
 Tip
 ---
-Full-featured tooltip plugin. Use the different plugins to add different types
-of tips to an element.
+Basic tooltip plugin with fading. Fades in and out based on give delays. Awake
+and asleep states can be read and are set after fade animations. This plugin
+requires css display logic for the classes. The API class has hooks; delegation
+is used instead of events due to call frequency.
+
+The tip object is shared by the input jQuery collection.
 
 Options:
 
 - `ms.duration`- Duration of sleep and wake animations.
 - `ms.delay` - Delay before sleeping and waking.
-- `cls.xsnap`- Set empty to disable snapping along x-axis. Off by default.
-- `cls.ysnap`- Set empty to disable snapping along y-axis. Off by default.
+- `cls.stem` - Empty to remove the stem.
+- `cls.follow` - Empty to disable cursor following.
 ###
 ns.tip = 
   debug: on
@@ -32,157 +36,204 @@ ns.tip =
   defaults: do (pre='js-tip-') ->
     ms:
       duration:
-        in: 200
-        out: 100
+        in: 300
+        out: 300
       delay:
         in: 300
         out: 300
     cursorHeight: 6
+    dir: ['south', 'east']
     cls: (->
-      cls =
-        xsnap: ''
-        ysnap: ''
-      _.each ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow',
-        'snap'],
+      cls = {}
+      _.each ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger'],
         (key) -> cls[key] = "#{pre}#{key}"
       cls.tip = 'js-tip'
       return cls
     )()
     
   
+###
+Snap-Tip
+--------
 
-nsLog = ns.tip.toString 'log'
+The tip object is shared by the input jQuery collection.
+
+Options:
+
+- `snap.xSnap`- Set empty to disable snapping along x-axis. Off by default.
+- `snap.ySnap`- Set empty to disable snapping along y-axis. Off by default.
+- `snap.snap` - Set empty to disable snapping to trigger. Builds on top of
+  axis-snapping. Off by default.
+
+###
+ns.snapTip = 
+  debug: on
+  toString: (context) ->
+    switch context
+      when 'event'  then '.hlf.snapTip'
+      when 'data'   then 'hlfSnapTip'
+      when 'class'  then 'js-snap-tips'
+      when 'log'    then 'hlf-snap-tip:'
+      else 'hlf.snapTip'
+  
+  defaults: do (pre='js-snap-tip-') ->
+    $.extend true, {}, ns.tip.defaults, 
+      snap:
+        toTrigger: on
+        toXAxis: off
+        toYAxis: off
+      cls: (->
+        cls =
+          snap: {}
+        _.each 
+          toXAxis:   'x-side'
+          toYAxis:   'y-side'
+          toTrigger: 'trigger'
+        , (val, key) -> cls.snap[key] = "#{pre}#{val}"
+        cls.tip = 'js-tip js-snap-tip'
+        return cls
+      )()
+      
+  
 
 ###
 Tip API
 -------
-Fades in and out based on give delays. Awake and asleep states can be read and
-are set after fade animations.
 ###
 class Tip
   
   constructor: (@$ts, @o, @$ctx) ->
-    _.bindAll @, '_onMouseMove'
+    _.bindAll @, '_onTriggerMouseMove'
     @$tip = $ '<div>'
     @doStem = @o.cls.stem isnt ''
-    @doFollow = @o.cls.follow isnt '' and @o.cursorHeight > 0
+    @doFollow = @o.cls.follow isnt ''
     @_state = 'truehidden'
     @_p =
       $t: null
     @$ts.each (idx, el) =>
       $t = $ el
+      $t.addClass @o.cls.trigger
       @_saveTriggerContent $t
       @_bindTrigger $t
-      @_bind $t
     
     @_render()
+    @_bind()
   
-  # Private
+  # Protected
+  # =========
 
   _defaultHtml: ->
-    containerClass = $.trim [@o.cls.tip, @o.cls.follow].join(' ')
-    stemHtml = "<div class='#{@o.cls.stem}'></div>" if @doStem is on
+    c = @o.cls
+    cDir = $.trim _.reduce @o.dir, ((cls, dir) => "#{cls} #{c[dir]}"), ''
+    containerClass = $.trim [c.tip, c.follow, cDir].join ' '
+    stemHtml = "<div class='#{c.stem}'></div>" if @doStem is on
     html = """
            <div class="#{containerClass}">
-           <div class="#{@o.cls.inner}">
-           #{stemHtml}
-           <div class="#{@o.cls.content}"></div>
-           </div>
+             <div class="#{c.inner}">
+               #{stemHtml}
+               <div class="#{c.content}"></div>
+              </div>
            </div>
            """
   
   _saveTriggerContent: ($t) ->
     title = $t.attr 'title'
-    if title
-      $t.data(@_dat('Content'), title)
-        .attr('data-tip-content', title)
-        .removeAttr('title')
+    if title then $t.data(@_dat('Content'), title).removeAttr 'title'
   
   # Link the trigger to the tip for:
   # 1. mouseenter, mouseleave (uses special events)
   # 2. mousemove
   _bindTrigger: ($t) ->
-    $t.on @_evt('truemouseenter'), (evt) => @wake $t
-      .on @_evt('truemouseleave'), (evt) => @sleep $t
+    $t.on @_evt('truemouseenter'), @_onTriggerMouseMove
+    $t.on @_evt('truemouseleave'), (evt) => @sleepByTrigger $t
     if @doFollow is on
-      $t.on @_evt('mousemove'), @_onMouseMove
+      $t.on 'mousemove', @_onTriggerMouseMove
   
-  _bind: ($t) ->
+  _bind: () ->
     @$tip
-      .on @_evt('mouseenter'), (evt) =>
-        @_log nsLog, 'enter tip'
-        $t.data 'activeState', true
+      .on 'mouseenter', (evt) =>
+        @_log @_nsLog, 'enter tip'
+        if @_p.$t?
+          @_p.$t.data 'hlfIsActive', yes
+          @wakeByTrigger @_p.$t
     
-      .on @_evt('mouseleave'), (evt) =>
-        @_log nsLog, 'leave tip'
-        $t.data 'activeState', false
+      .on 'mouseleave', (evt) =>
+        @_log @_nsLog, 'leave tip'
+        if @_p.$t?
+          @_p.$t.data 'hlfIsActive', no
+          @sleepByTrigger @_p.$t
       
   
-  _render: ($t) ->
-    return false if @$tip.html().length
-    html = @onRender()
+  _render: () ->
+    return no if @$tip.html().length
+    html = @htmlOnRender()
     isCustom = html? and html.length
     html = @_defaultHtml() if not isCustom
-    @$tip = $(html).toggleClass @o.cls.follow, isCustom
+    @$tip = $(html).addClass @o.cls.follow
     @$tip.prependTo @$ctx
   
-  _position: ($t) ->
-    offset = @onPosition $t.offset()
-    if @doFollow is on
-      $t.trigger @_evt('mousemove')
-      return false
-    offset.top += @o.cursorHeight
-    @$tip.css offset
-    @_log nsLog, '_position'
+  _positionByTrigger: ($t) ->
+    $t.trigger 'mousemove'
   
-  _inflate: ($t) ->
+  _inflateByTrigger: ($t) ->
     @$tip.find(".#{@o.cls.content}").text $t.data @_dat 'Content'
   
-  _onMouseMove: (evt) ->
-    return false if not evt.pageX?
-    @wake $ evt.target if @isAsleep()
-    offset = 
-      top: evt.pageY
-      left: evt.pageX
-    offset = @onMouseMove(evt, offset) or offset
-    offset.top += @o.cursorHeight
-    @$tip.css offset
-    @_log nsLog, '_onMouseMove'
+  _onTriggerMouseMove: (evt) ->
+    return no if not evt.pageX?
+    $t = if ($t = $(evt.target)) and $t.hasClass(@o.cls.trigger) then $t else $t.closest(@o.cls.trigger)
+    return no if not $t.length
+    @wakeByTrigger $t, =>
+      offset = 
+        top: evt.pageY
+        left: evt.pageX
+      offset = @offsetOnTriggerMouseMove(evt, offset, $t) or offset
+      offset.top += @o.cursorHeight
+      @$tip.css offset
+      @_log @_nsLog, '_onTriggerMouseMove', @isAwake()
   
   # Public
+  # ======
 
   # Accessors
   options: -> @o
   tip: -> @$tip
-  isAwake: -> @_state is 'truevisible'
-  isAsleep: -> @_state is 'truehidden'
+  isAwake: -> @_state in ['truevisible', 'waking']
+  isAsleep: -> @_state in ['truehidden', 'sleeping']
+  isDir: (dir) -> _.include @o.dir, dir
 
   # Methods
-  wake: ($t) ->
-    if $t isnt @_p.$t
-      @_inflate $t
-      @_position $t
-    return no if @_state is 'changing'
-    @_state = 'changing'
-    clearTimeout @_sleepCountdown
+  wakeByTrigger: ($t, cb) ->
+    initial = not $t.is @_p.$t
+    return cb() if cb? and initial is no and @_state isnt 'waking'
+    return no if @isAwake() is yes
+    if initial then @_inflateByTrigger $t
+    delay = @o.ms.delay.in
+    duration = @o.ms.duration.in
+    if @_state is 'sleeping'
+      @_log @_nsLog, 'clear sleep'
+      clearTimeout @_sleepCountdown
+      duration = delay = 50
+    @_state = 'waking'
     @_wakeCountdown = setTimeout =>
-      @onShow()
-      @$tip.stop().fadeIn @o.ms.duration.in, =>
+      @onShow initial
+      @$tip.fadeIn duration, =>
+        if initial
+          @_p.$t = $t
+          cb() if cb?
+        @afterShow initial
         @_state = 'truevisible'
-        @afterShow()
       
-    , @o.ms.delay.in
+    , delay
     
     yes
   
-  sleep: ($t) ->
-    if $t isnt @_p.$t then @_p.$t = $t
-    @_state = 'changing'
+  sleepByTrigger: ($t) ->
+    return no if @_state isnt 'truevisible'
+    @_state = 'sleeping'
     clearTimeout @_wakeCountdown
     @_sleepCountdown = setTimeout =>
-      # return no if @isAsleep()
       @onHide()
-      @$tip.stop().fadeOut @o.ms.duration.out, =>
+      @$tip.fadeOut @o.ms.duration.out, =>
         @_state = 'truehidden'
         @afterHide()
       
@@ -191,13 +242,12 @@ class Tip
     yes
   
   # Hooks
-  onShow: $.noop
+  onShow: (initial) ->
   onHide: $.noop
-  afterShow: $.noop
+  afterShow: (initial) ->
   afterHide: $.noop
-  onRender: $.noop
-  onPosition: $.noop
-  onMouseMove: $.noop
+  htmlOnRender: $.noop
+  offsetOnTriggerMouseMove: (evt, offset, $t) -> no
 
 ###
 SnapTip API
@@ -207,51 +257,67 @@ class SnapTip extends Tip
   
   constructor: ($ts, o, $ctx) ->
     super $ts, o, $ctx
-    @doXSnap = @o.cls.xsnap isnt ''
-    @doYSnap = @o.cls.ysnap isnt ''
-    @doSnap = @o.cls.snap isnt '' and (@doXSnap or @doYSnap)
+    @o.snap.toTrigger = @o.snap.toXAxis is on or @o.snap.toYAxis is on
     @_offsetStart = null
     @$ts.each (idx, el) =>
       trigger = $ el 
       @_bindTrigger trigger
+    _.each @o.snap, (active, prop) => if active then @$tip.addClass @o.cls.snap[prop]
 
-  # Private
+  # Protected
+  # =========
 
-  _move: ->
-    
+  _moveToTrigger: ($t, baseOffset) ->
+    @_log @_nsLog, baseOffset
+    offset = $t.offset()
+    if @o.snap.toXAxis is yes
+      if @isDir 'south' then offset.top += $t.outerHeight()
+      # if baseOffset? and @o.snap.toYAxis is no 
+      if @o.snap.toYAxis is no 
+        offset.left = baseOffset.left - (@$tip.outerWidth() - 12)/ 2
+    if @o.snap.toYAxis is yes
+      if @isDir 'east' then offset.left += $t.outerWidth()
+      # if baseOffset? and @o.snap.toXAxis is no 
+      if @o.snap.toXAxis is no 
+        offset.top = baseOffset.top - $t.outerHeight() / 2
+    offset
+  
   _bindTrigger: ($t) ->
     super $t
     $t
       .on @_evt('truemouseenter'), (evt) =>
         @_offsetStart = 
-          top: evt.pageX
-          left: evt.pageY
+          top: evt.pageY
+          left: evt.pageX
       
       .on @_evt('truemouseleave'), (evt) =>
         @_offsetStart = null
       
   
   # Public
+  # ======
 
   # Hooked
-  onPosition: (offset) ->
-    @_log nsLog, 'onPosition'
-    offset
+  onShow: (initial) -> if initial then @$tip.css 'visibility', 'hidden'
+  afterShow: (initial) -> if initial then @$tip.css 'visibility', 'visible'
   
-  onMouseMove: (evt, offset) ->
-    return offset if not @_offsetStart?
-    if @doXSnap
-      offset.top = @_offsetStart.top
-      # @_log nsLog, 'xSnap'
-    else if @doYSnap
-      offset.left = @_offsetStart.left
-      # @_log nsLog, 'ySnap'
-    offset
+  offsetOnTriggerMouseMove: (evt, offset, $t) ->
+    newOffset = _.clone offset
+    if @o.snap.toTrigger is yes
+      newOffset = @_moveToTrigger $t, newOffset
+    else
+      if @o.snap.toXAxis is yes
+        newOffset.top = @_offsetStart.top
+        @_log @_nsLog, 'xSnap'
+      if @o.snap.toYAxis is yes
+        newOffset.left = @_offsetStart.left
+        @_log @_nsLog, 'ySnap'
+    newOffset
   
   
 
 # Export
 # ------
 
-$.fn.tip = ns.createPlugin ns.tip, Tip
-$.fn.snapTip = ns.createPlugin ns.tip, SnapTip
+$.fn.tip = ns.createPlugin ns.tip, Tip, yes
+$.fn.snapTip = ns.createPlugin ns.snapTip, SnapTip, yes

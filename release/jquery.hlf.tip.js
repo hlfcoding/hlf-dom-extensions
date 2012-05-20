@@ -8,7 +8,7 @@ Written with jQuery 1.7.2
 
 
 (function() {
-  var $, SnapTip, Tip, ns, nsLog,
+  var $, SnapTip, Tip, ns,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
@@ -19,15 +19,19 @@ Written with jQuery 1.7.2
   /*
   Tip
   ---
-  Full-featured tooltip plugin. Use the different plugins to add different types
-  of tips to an element.
+  Basic tooltip plugin with fading. Fades in and out based on give delays. Awake
+  and asleep states can be read and are set after fade animations. This plugin
+  requires css display logic for the classes. The API class has hooks; delegation
+  is used instead of events due to call frequency.
+  
+  The tip object is shared by the input jQuery collection.
   
   Options:
   
   - `ms.duration`- Duration of sleep and wake animations.
   - `ms.delay` - Delay before sleeping and waking.
-  - `cls.xsnap`- Set empty to disable snapping along x-axis. Off by default.
-  - `cls.ysnap`- Set empty to disable snapping along y-axis. Off by default.
+  - `cls.stem` - Empty to remove the stem.
+  - `cls.follow` - Empty to disable cursor following.
   */
 
 
@@ -51,8 +55,8 @@ Written with jQuery 1.7.2
       return {
         ms: {
           duration: {
-            "in": 200,
-            out: 100
+            "in": 300,
+            out: 300
           },
           delay: {
             "in": 300,
@@ -60,13 +64,11 @@ Written with jQuery 1.7.2
           }
         },
         cursorHeight: 6,
+        dir: ['south', 'east'],
         cls: (function() {
           var cls;
-          cls = {
-            xsnap: '',
-            ysnap: ''
-          };
-          _.each(['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'snap'], function(key) {
+          cls = {};
+          _.each(['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger'], function(key) {
             return cls[key] = "" + pre + key;
           });
           cls.tip = 'js-tip';
@@ -76,13 +78,66 @@ Written with jQuery 1.7.2
     })('js-tip-')
   };
 
-  nsLog = ns.tip.toString('log');
+  /*
+  Snap-Tip
+  --------
+  
+  The tip object is shared by the input jQuery collection.
+  
+  Options:
+  
+  - `snap.xSnap`- Set empty to disable snapping along x-axis. Off by default.
+  - `snap.ySnap`- Set empty to disable snapping along y-axis. Off by default.
+  - `snap.snap` - Set empty to disable snapping to trigger. Builds on top of
+    axis-snapping. Off by default.
+  */
+
+
+  ns.snapTip = {
+    debug: true,
+    toString: function(context) {
+      switch (context) {
+        case 'event':
+          return '.hlf.snapTip';
+        case 'data':
+          return 'hlfSnapTip';
+        case 'class':
+          return 'js-snap-tips';
+        case 'log':
+          return 'hlf-snap-tip:';
+        default:
+          return 'hlf.snapTip';
+      }
+    },
+    defaults: (function(pre) {
+      return $.extend(true, {}, ns.tip.defaults, {
+        snap: {
+          toTrigger: true,
+          toXAxis: false,
+          toYAxis: false
+        },
+        cls: (function() {
+          var cls;
+          cls = {
+            snap: {}
+          };
+          _.each({
+            toXAxis: 'x-side',
+            toYAxis: 'y-side',
+            toTrigger: 'trigger'
+          }, function(val, key) {
+            return cls.snap[key] = "" + pre + val;
+          });
+          cls.tip = 'js-tip js-snap-tip';
+          return cls;
+        })()
+      });
+    })('js-snap-tip-')
+  };
 
   /*
   Tip API
   -------
-  Fades in and out based on give delays. Awake and asleep states can be read and
-  are set after fade animations.
   */
 
 
@@ -95,10 +150,10 @@ Written with jQuery 1.7.2
       this.$ts = $ts;
       this.o = o;
       this.$ctx = $ctx;
-      _.bindAll(this, '_onMouseMove');
+      _.bindAll(this, '_onTriggerMouseMove');
       this.$tip = $('<div>');
       this.doStem = this.o.cls.stem !== '';
-      this.doFollow = this.o.cls.follow !== '' && this.o.cursorHeight > 0;
+      this.doFollow = this.o.cls.follow !== '';
       this._state = 'truehidden';
       this._p = {
         $t: null
@@ -106,99 +161,107 @@ Written with jQuery 1.7.2
       this.$ts.each(function(idx, el) {
         var $t;
         $t = $(el);
+        $t.addClass(_this.o.cls.trigger);
         _this._saveTriggerContent($t);
-        _this._bindTrigger($t);
-        return _this._bind($t);
+        return _this._bindTrigger($t);
       });
       this._render();
+      this._bind();
     }
 
     Tip.prototype._defaultHtml = function() {
-      var containerClass, html, stemHtml;
-      containerClass = $.trim([this.o.cls.tip, this.o.cls.follow].join(' '));
+      var c, cDir, containerClass, html, stemHtml,
+        _this = this;
+      c = this.o.cls;
+      cDir = $.trim(_.reduce(this.o.dir, (function(cls, dir) {
+        return "" + cls + " " + c[dir];
+      }), ''));
+      containerClass = $.trim([c.tip, c.follow, cDir].join(' '));
       if (this.doStem === true) {
-        stemHtml = "<div class='" + this.o.cls.stem + "'></div>";
+        stemHtml = "<div class='" + c.stem + "'></div>";
       }
-      return html = "<div class=\"" + containerClass + "\">\n<div class=\"" + this.o.cls.inner + "\">\n" + stemHtml + "\n<div class=\"" + this.o.cls.content + "\"></div>\n</div>\n</div>";
+      return html = "<div class=\"" + containerClass + "\">\n  <div class=\"" + c.inner + "\">\n    " + stemHtml + "\n    <div class=\"" + c.content + "\"></div>\n   </div>\n</div>";
     };
 
     Tip.prototype._saveTriggerContent = function($t) {
       var title;
       title = $t.attr('title');
       if (title) {
-        return $t.data(this._dat('Content'), title).attr('data-tip-content', title).removeAttr('title');
+        return $t.data(this._dat('Content'), title).removeAttr('title');
       }
     };
 
     Tip.prototype._bindTrigger = function($t) {
       var _this = this;
-      $t.on(this._evt('truemouseenter'), function(evt) {
-        return _this.wake($t.on(_this._evt('truemouseleave'), function(evt) {
-          return _this.sleep($t);
-        }));
+      $t.on(this._evt('truemouseenter'), this._onTriggerMouseMove);
+      $t.on(this._evt('truemouseleave'), function(evt) {
+        return _this.sleepByTrigger($t);
       });
       if (this.doFollow === true) {
-        return $t.on(this._evt('mousemove'), this._onMouseMove);
+        return $t.on('mousemove', this._onTriggerMouseMove);
       }
     };
 
-    Tip.prototype._bind = function($t) {
+    Tip.prototype._bind = function() {
       var _this = this;
-      return this.$tip.on(this._evt('mouseenter'), function(evt) {
-        _this._log(nsLog, 'enter tip');
-        return $t.data('activeState', true);
-      }).on(this._evt('mouseleave'), function(evt) {
-        _this._log(nsLog, 'leave tip');
-        return $t.data('activeState', false);
+      return this.$tip.on('mouseenter', function(evt) {
+        _this._log(_this._nsLog, 'enter tip');
+        if (_this._p.$t != null) {
+          _this._p.$t.data('hlfIsActive', true);
+          return _this.wakeByTrigger(_this._p.$t);
+        }
+      }).on('mouseleave', function(evt) {
+        _this._log(_this._nsLog, 'leave tip');
+        if (_this._p.$t != null) {
+          _this._p.$t.data('hlfIsActive', false);
+          return _this.sleepByTrigger(_this._p.$t);
+        }
       });
     };
 
-    Tip.prototype._render = function($t) {
+    Tip.prototype._render = function() {
       var html, isCustom;
       if (this.$tip.html().length) {
         return false;
       }
-      html = this.onRender();
+      html = this.htmlOnRender();
       isCustom = (html != null) && html.length;
       if (!isCustom) {
         html = this._defaultHtml();
       }
-      this.$tip = $(html).toggleClass(this.o.cls.follow, isCustom);
+      this.$tip = $(html).addClass(this.o.cls.follow);
       return this.$tip.prependTo(this.$ctx);
     };
 
-    Tip.prototype._position = function($t) {
-      var offset;
-      offset = this.onPosition($t.offset());
-      if (this.doFollow === true) {
-        $t.trigger(this._evt('mousemove'));
-        return false;
-      }
-      offset.top += this.o.cursorHeight;
-      this.$tip.css(offset);
-      return this._log(nsLog, '_position');
+    Tip.prototype._positionByTrigger = function($t) {
+      return $t.trigger('mousemove');
     };
 
-    Tip.prototype._inflate = function($t) {
+    Tip.prototype._inflateByTrigger = function($t) {
       return this.$tip.find("." + this.o.cls.content).text($t.data(this._dat('Content')));
     };
 
-    Tip.prototype._onMouseMove = function(evt) {
-      var offset;
+    Tip.prototype._onTriggerMouseMove = function(evt) {
+      var $t,
+        _this = this;
       if (!(evt.pageX != null)) {
         return false;
       }
-      if (this.isAsleep()) {
-        this.wake($(evt.target));
+      $t = ($t = $(evt.target)) && $t.hasClass(this.o.cls.trigger) ? $t : $t.closest(this.o.cls.trigger);
+      if (!$t.length) {
+        return false;
       }
-      offset = {
-        top: evt.pageY,
-        left: evt.pageX
-      };
-      offset = this.onMouseMove(evt, offset) || offset;
-      offset.top += this.o.cursorHeight;
-      this.$tip.css(offset);
-      return this._log(nsLog, '_onMouseMove');
+      return this.wakeByTrigger($t, function() {
+        var offset;
+        offset = {
+          top: evt.pageY,
+          left: evt.pageX
+        };
+        offset = _this.offsetOnTriggerMouseMove(evt, offset, $t) || offset;
+        offset.top += _this.o.cursorHeight;
+        _this.$tip.css(offset);
+        return _this._log(_this._nsLog, '_onTriggerMouseMove', _this.isAwake());
+      });
     };
 
     Tip.prototype.options = function() {
@@ -210,44 +273,66 @@ Written with jQuery 1.7.2
     };
 
     Tip.prototype.isAwake = function() {
-      return this._state === 'truevisible';
+      var _ref;
+      return (_ref = this._state) === 'truevisible' || _ref === 'waking';
     };
 
     Tip.prototype.isAsleep = function() {
-      return this._state === 'truehidden';
+      var _ref;
+      return (_ref = this._state) === 'truehidden' || _ref === 'sleeping';
     };
 
-    Tip.prototype.wake = function($t) {
-      var _this = this;
-      if ($t !== this._p.$t) {
-        this._inflate($t);
-        this._position($t);
+    Tip.prototype.isDir = function(dir) {
+      return _.include(this.o.dir, dir);
+    };
+
+    Tip.prototype.wakeByTrigger = function($t, cb) {
+      var delay, duration, initial,
+        _this = this;
+      initial = !$t.is(this._p.$t);
+      if ((cb != null) && initial === false && this._state !== 'waking') {
+        return cb();
       }
-      if (this._state === 'changing') {
+      if (this.isAwake() === true) {
         return false;
       }
-      this._state = 'changing';
-      clearTimeout(this._sleepCountdown);
+      if (initial) {
+        this._inflateByTrigger($t);
+      }
+      delay = this.o.ms.delay["in"];
+      duration = this.o.ms.duration["in"];
+      if (this._state === 'sleeping') {
+        this._log(this._nsLog, 'clear sleep');
+        clearTimeout(this._sleepCountdown);
+        duration = delay = 50;
+      }
+      this._state = 'waking';
       this._wakeCountdown = setTimeout(function() {
-        _this.onShow();
-        return _this.$tip.stop().fadeIn(_this.o.ms.duration["in"], function() {
-          _this._state = 'truevisible';
-          return _this.afterShow();
+        _this.onShow(initial);
+        return _this.$tip.fadeIn(duration, function() {
+          if (initial) {
+            _this._p.$t = $t;
+            if (cb != null) {
+              cb();
+            }
+          }
+          _this.afterShow(initial);
+          return _this._state = 'truevisible';
         });
-      }, this.o.ms.delay["in"]);
+      }, delay);
       return true;
     };
 
-    Tip.prototype.sleep = function($t) {
+    Tip.prototype.sleepByTrigger = function($t) {
       var _this = this;
-      if ($t !== this._p.$t) {
-        this._p.$t = $t;
+      if (this._state !== 'truevisible') {
+        return false;
       }
-      this._state = 'changing';
+      this._state = 'sleeping';
       clearTimeout(this._wakeCountdown);
       this._sleepCountdown = setTimeout(function() {
         _this.onHide();
-        return _this.$tip.stop().fadeOut(_this.o.ms.duration.out, function() {
+        return _this.$tip.fadeOut(_this.o.ms.duration.out, function() {
           _this._state = 'truehidden';
           return _this.afterHide();
         });
@@ -255,19 +340,19 @@ Written with jQuery 1.7.2
       return true;
     };
 
-    Tip.prototype.onShow = $.noop;
+    Tip.prototype.onShow = function(initial) {};
 
     Tip.prototype.onHide = $.noop;
 
-    Tip.prototype.afterShow = $.noop;
+    Tip.prototype.afterShow = function(initial) {};
 
     Tip.prototype.afterHide = $.noop;
 
-    Tip.prototype.onRender = $.noop;
+    Tip.prototype.htmlOnRender = $.noop;
 
-    Tip.prototype.onPosition = $.noop;
-
-    Tip.prototype.onMouseMove = $.noop;
+    Tip.prototype.offsetOnTriggerMouseMove = function(evt, offset, $t) {
+      return false;
+    };
 
     return Tip;
 
@@ -288,55 +373,92 @@ Written with jQuery 1.7.2
     function SnapTip($ts, o, $ctx) {
       var _this = this;
       SnapTip.__super__.constructor.call(this, $ts, o, $ctx);
-      this.doXSnap = this.o.cls.xsnap !== '';
-      this.doYSnap = this.o.cls.ysnap !== '';
-      this.doSnap = this.o.cls.snap !== '' && (this.doXSnap || this.doYSnap);
+      this.o.snap.toTrigger = this.o.snap.toXAxis === true || this.o.snap.toYAxis === true;
       this._offsetStart = null;
       this.$ts.each(function(idx, el) {
         var trigger;
         trigger = $(el);
         return _this._bindTrigger(trigger);
       });
+      _.each(this.o.snap, function(active, prop) {
+        if (active) {
+          return _this.$tip.addClass(_this.o.cls.snap[prop]);
+        }
+      });
     }
 
-    SnapTip.prototype._move = function() {};
+    SnapTip.prototype._moveToTrigger = function($t, baseOffset) {
+      var offset;
+      this._log(this._nsLog, baseOffset);
+      offset = $t.offset();
+      if (this.o.snap.toXAxis === true) {
+        if (this.isDir('south')) {
+          offset.top += $t.outerHeight();
+        }
+        if (this.o.snap.toYAxis === false) {
+          offset.left = baseOffset.left - (this.$tip.outerWidth() - 12) / 2;
+        }
+      }
+      if (this.o.snap.toYAxis === true) {
+        if (this.isDir('east')) {
+          offset.left += $t.outerWidth();
+        }
+        if (this.o.snap.toXAxis === false) {
+          offset.top = baseOffset.top - $t.outerHeight() / 2;
+        }
+      }
+      return offset;
+    };
 
     SnapTip.prototype._bindTrigger = function($t) {
       var _this = this;
       SnapTip.__super__._bindTrigger.call(this, $t);
       return $t.on(this._evt('truemouseenter'), function(evt) {
         return _this._offsetStart = {
-          top: evt.pageX,
-          left: evt.pageY
+          top: evt.pageY,
+          left: evt.pageX
         };
       }).on(this._evt('truemouseleave'), function(evt) {
         return _this._offsetStart = null;
       });
     };
 
-    SnapTip.prototype.onPosition = function(offset) {
-      this._log(nsLog, 'onPosition');
-      return offset;
+    SnapTip.prototype.onShow = function(initial) {
+      if (initial) {
+        return this.$tip.css('visibility', 'hidden');
+      }
     };
 
-    SnapTip.prototype.onMouseMove = function(evt, offset) {
-      if (!(this._offsetStart != null)) {
-        return offset;
+    SnapTip.prototype.afterShow = function(initial) {
+      if (initial) {
+        return this.$tip.css('visibility', 'visible');
       }
-      if (this.doXSnap) {
-        offset.top = this._offsetStart.top;
-      } else if (this.doYSnap) {
-        offset.left = this._offsetStart.left;
+    };
+
+    SnapTip.prototype.offsetOnTriggerMouseMove = function(evt, offset, $t) {
+      var newOffset;
+      newOffset = _.clone(offset);
+      if (this.o.snap.toTrigger === true) {
+        newOffset = this._moveToTrigger($t, newOffset);
+      } else {
+        if (this.o.snap.toXAxis === true) {
+          newOffset.top = this._offsetStart.top;
+          this._log(this._nsLog, 'xSnap');
+        }
+        if (this.o.snap.toYAxis === true) {
+          newOffset.left = this._offsetStart.left;
+          this._log(this._nsLog, 'ySnap');
+        }
       }
-      return offset;
+      return newOffset;
     };
 
     return SnapTip;
 
   })(Tip);
 
-  $.fn.tip = ns.createPlugin(ns.tip, Tip);
+  $.fn.tip = ns.createPlugin(ns.tip, Tip, true);
 
-  $.fn.snapTip = ns.createPlugin(ns.tip, SnapTip);
+  $.fn.snapTip = ns.createPlugin(ns.snapTip, SnapTip, true);
 
 }).call(this);

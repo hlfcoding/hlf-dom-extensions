@@ -21,13 +21,38 @@ Written with jQuery 1.7.2
   };
 
   $.hlf = {
-    toString: function() {
-      return 'hlf';
-    },
-    createPlugin: function(ns, apiClass) {
+    createPlugin: function(ns, apiClass, asSingleton) {
+      var nsDat, nsEvt;
+      if (asSingleton == null) {
+        asSingleton = false;
+      }
       ns.apiClass = apiClass;
+      nsEvt = ns.toString('event');
+      nsDat = ns.toString('data');
       return function(opt, $ctx) {
-        var api, deep;
+        var $el, api, boilerplate, deep;
+        $el = null;
+        boilerplate = function() {
+          var _base, _base1, _base2, _base3;
+          (asSingleton === false ? $el : $ctx).addClass(ns.toString('class'));
+          if ((_base = apiClass.prototype)._evt == null) {
+            _base._evt = function(name) {
+              return "" + name + nsEvt;
+            };
+          }
+          if ((_base1 = apiClass.prototype)._dat == null) {
+            _base1._dat = function(name) {
+              return "" + nsDat + name;
+            };
+          }
+          if ((_base2 = apiClass.prototype)._log == null) {
+            _base2._log = ns.debug === true ? $.hlf.log : $.noop;
+          }
+          if ((_base3 = apiClass.prototype)._nsLog == null) {
+            _base3._nsLog = ns.toString('log');
+          }
+          return $el.data(ns.toString(), new apiClass($el, opt, $ctx));
+        };
         if ($ctx == null) {
           $ctx = $('body');
         }
@@ -36,23 +61,23 @@ Written with jQuery 1.7.2
           return api;
         }
         opt = $.extend((deep = true), {}, ns.defaults, opt);
-        return this.each(function() {
-          var $el, _base, _base1;
-          $el = $(this).addClass(ns.toString('class'));
-          if ((_base = apiClass.prototype)._evt == null) {
-            _base._evt = function(name) {
-              return "" + name + (ns.toString('event'));
-            };
-          }
-          if ((_base1 = apiClass.prototype)._dat == null) {
-            _base1._dat = function(name) {
-              return "" + (ns.toString('data')) + name;
-            };
-          }
-          return $el.data(ns.toString(), new apiClass($el, opt, $ctx));
-        });
+        if (asSingleton === false) {
+          return this.each(function() {
+            $el = $(this);
+            return boilerplate();
+          });
+        } else {
+          $el = this;
+          return boilerplate();
+        }
       };
+    },
+    debug: true,
+    toString: function() {
+      return 'hlf';
     }
   };
+
+  $.hlf.log = $.hlf.debug === false ? $.noop : (console.log.bind ? console.log.bind(console) : console.log);
 
 }).call(this);
