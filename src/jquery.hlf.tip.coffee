@@ -28,9 +28,10 @@ ns = $.hlf
 # - `ms.delay` - Delay before sleeping and waking.
 # - `cls.stem` - Empty to remove the stem.
 # - `cls.follow` - Empty to disable cursor following.
+# - `safeToggle` - Prevents orphan tips, since timers are sometimes unreliable.
 #
 ns.tip =
-  debug: on
+  debug: off
   toString: (context) ->
     switch context
       when 'event'  then '.hlf.tip'
@@ -49,6 +50,7 @@ ns.tip =
         out: 300
     cursorHeight: 6
     dir: ['south', 'east']
+    safeToggle: on
     cls: (->
       cls = {}
       _.each ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger'],
@@ -75,7 +77,7 @@ ns.tip =
 #   axis-snapping. Off by default.
 # 
 ns.snapTip =
-  debug: on
+  debug: off
   toString: (context) ->
     switch context
       when 'event'  then '.hlf.snapTip'
@@ -114,11 +116,9 @@ class Tip
     @$tip = $ '<div>'
     @doStem = @o.cls.stem isnt ''
     @doFollow = @o.cls.follow isnt ''
-    @_state = 'truehidden'
-    # - A cache of the previous toggling trigger helps us check if we're
-    #   switching triggers.
-    @_p =
-      $t: null
+    # - Toggle state: `awake`, `asleep`, `waking`, `sleeping`.
+    @_state = 'asleep'
+    @_currentTrigger = null
     # - Process triggers
     @$ts.each (idx, el) =>
       $t = $ el
@@ -149,7 +149,9 @@ class Tip
   #   1. mouseenter, mouseleave (uses special events)
   #   2. mousemove
   _bindTrigger: ($t) ->
-    $t.on @_evt('truemouseenter'), @_onTriggerMouseMove
+    $t.on @_evt('truemouseenter'), (evt) =>
+      @_log @_nsLog, evt
+      @_onTriggerMouseMove evt
     $t.on @_evt('truemouseleave'), (evt) => @sleepByTrigger $t
     if @doFollow is on
       $t.on 'mousemove', @_onTriggerMouseMove
@@ -159,15 +161,15 @@ class Tip
     @$tip
       .on 'mouseenter', (evt) =>
         @_log @_nsLog, 'enter tip'
-        if @_p.$t?
-          @_p.$t.data 'hlfIsActive', yes
-          @wakeByTrigger @_p.$t
+        if @_currentTrigger?
+          @_currentTrigger.data 'hlfIsActive', yes
+          @wakeByTrigger @_currentTrigger
     
       .on 'mouseleave', (evt) =>
         @_log @_nsLog, 'leave tip'
-        if @_p.$t?
-          @_p.$t.data 'hlfIsActive', no
-          @sleepByTrigger @_p.$t
+        if @_currentTrigger?
+          @_currentTrigger.data 'hlfIsActive', no
+          @sleepByTrigger @_currentTrigger
       
   
   # - The tip should only need to be rendered once.
@@ -187,23 +189,20 @@ class Tip
     return no if not evt.pageX?
     $t = if ($t = $(evt.target)) and $t.hasClass(@o.cls.trigger) then $t else $t.closest(@o.cls.trigger)
     return no if not $t.length
-    @wakeByTrigger $t, =>
+    @wakeByTrigger $t, evt, =>
       offset = 
         top: evt.pageY
         left: evt.pageX
       offset = @offsetOnTriggerMouseMove(evt, offset, $t) or offset
-      offset.top += @o.cursorHeight
+      offset.top += @o.cursorHeight # TODO - More flexible.
       @$tip.css offset
-      @_log @_nsLog, '_onTriggerMouseMove', @isAwake()
+      @_log @_nsLog, '_onTriggerMouseMove', @_state, offset
   
   # ###Public
   
   # Accessors
   options: -> @o
   tip: -> @$tip
-  # - Toggle state methods also check for 'being in the process of'.
-  isAwake: -> @_state in ['truevisible', 'waking']
-  isAsleep: -> @_state in ['truehidden', 'sleeping']
   # - Direction is actually an array.
   isDir: (dir) -> _.include @o.dir, dir
   
@@ -211,46 +210,61 @@ class Tip
   
   # - The main toggler. Takes in a callback, which is usually to update position.
   #   The toggling and main changes only happen if the delay is passed.
-  #   1. Go directly to the position updating if no toggling is needed.
-  #   2. Don't toggle if awake or waking.
-  #   3. Initialize tip as needed.
+  #   1. Store current trigger info.
+  #   2. Go directly to the position updating if no toggling is needed.
+  #   3. Don't toggle if awake or waking, or if event isn't `truemouseenter`.
   #   4. If we are in the middle of sleeping, stop and speed up our waking
   #      transition.
   #   5. Update our trigger cache.
-  wakeByTrigger: ($t, cb) ->
-    initial = not $t.is @_p.$t
-    return cb() if cb? and initial is no and @_state isnt 'waking'
-    return no if @isAwake() is yes
-    if initial then @_inflateByTrigger $t
+  wakeByTrigger: ($t, evt, cb) ->
+    # - Check.
+    triggerChanged = not $t.is @_currentTrigger
+    if triggerChanged
+      @_inflateByTrigger $t
+      @_currentTrigger = $t
+    # - Guard.
+    if @_state is 'awake' and cb?
+      cb()
+      @_log @_nsLog, 'quick update'
+      return yes
+    
+    if evt? then @_log @_nsLog, evt.type
+    return no if @_state in ['awake', 'waking']
+    # - Prepare.
     delay = @o.ms.delay.in
     duration = @o.ms.duration.in
+    wake = =>
+      @onShow triggerChanged, evt
+      @$tip.fadeIn duration, =>
+        if triggerChanged
+          cb() if cb?
+        if @o.safeToggle is on then @$tip.siblings(@o.cls.tip).fadeOut()
+        @afterShow triggerChanged, evt
+        @_state = 'awake'
+      
+    
+    # - Run.
     if @_state is 'sleeping'
       @_log @_nsLog, 'clear sleep'
       clearTimeout @_sleepCountdown
-      duration = delay = 50
-    @_state = 'waking'
-    @_wakeCountdown = setTimeout =>
-      @onShow initial
-      @$tip.fadeIn duration, =>
-        if initial
-          @_p.$t = $t
-          cb() if cb?
-        @afterShow initial
-        @_state = 'truevisible'
-      
-    , delay
+      duration = 0
+      wake()
+    else if (evt? and evt.type is 'truemouseenter')
+      triggerChanged = yes
+      @_state = 'waking'
+      @_wakeCountdown = setTimeout wake, delay
     
     yes
   
   # - Much simpler toggler. As long as tip isn't truly visible, sleep is unneeded.
   sleepByTrigger: ($t) ->
-    return no if @_state isnt 'truevisible'
+    return no if @_state isnt 'awake'
     @_state = 'sleeping'
     clearTimeout @_wakeCountdown
     @_sleepCountdown = setTimeout =>
       @onHide()
       @$tip.fadeOut @o.ms.duration.out, =>
-        @_state = 'truehidden'
+        @_state = 'asleep'
         @afterHide()
       
     , @o.ms.delay.out
@@ -258,9 +272,9 @@ class Tip
     yes
   
   # Hooks
-  onShow: (initial) -> return
+  onShow: (triggerChanged, evt) -> return
   onHide: $.noop
-  afterShow: (initial) -> return
+  afterShow: (triggerChanged, evt) -> return
   afterHide: $.noop
   htmlOnRender: $.noop
   offsetOnTriggerMouseMove: (evt, offset, $t) -> no
@@ -283,7 +297,7 @@ class SnapTip extends Tip
   # - The main positioner. Uses the trigger offset as the base.
   #   TODO - Still needs to support all the directions.
   _moveToTrigger: ($t, baseOffset) ->
-    @_log @_nsLog, baseOffset
+    # @_log @_nsLog, baseOffset
     offset = $t.offset()
     if @o.snap.toXAxis is yes
       if @isDir 'south' then offset.top += $t.outerHeight()
@@ -297,25 +311,27 @@ class SnapTip extends Tip
   
   # - Bind to get initial position for snapping. This is only for snapping
   #   without snapping to the trigger, which is only what's currently supported.
+  #   See `afterShow` hook.
   _bindTrigger: ($t) ->
     super $t
-    $t
-      .on @_evt('truemouseenter'), (evt) =>
-        @_offsetStart =
-          top: evt.pageY
-          left: evt.pageX
-      
-      .on @_evt('truemouseleave'), (evt) =>
-        @_offsetStart = null
-      
+    $t.on @_evt('truemouseleave'), (evt) => @_offsetStart = null
   
   # ###Public
   
   # Hooked
   
   # - Make the tip invisible while it's being positioned, then reveal it.
-  onShow: (initial) -> if initial then @$tip.css 'visibility', 'hidden'
-  afterShow: (initial) -> if initial then @$tip.css 'visibility', 'visible'
+  onShow: (triggerChanged, evt) ->
+    if triggerChanged is yes
+      @$tip.css 'visibility', 'hidden'
+  
+  afterShow: (triggerChanged, evt) ->
+    if triggerChanged is yes
+      @$tip.css 'visibility', 'visible'
+      @_offsetStart =
+        top: evt.pageY
+        left: evt.pageX
+  
   # - Main positioning handler.
   offsetOnTriggerMouseMove: (evt, offset, $t) ->
     newOffset = _.clone offset

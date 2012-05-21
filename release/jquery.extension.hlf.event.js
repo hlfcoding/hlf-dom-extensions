@@ -33,7 +33,7 @@
   });
 
   (function(ns, m) {
-    var check, clear, dat, log, nsDat, nsLog, track;
+    var check, dat, log, nsDat, nsLog, track;
     nsDat = ns.toString('data');
     nsLog = ns.toString('log');
     dat = function(name) {
@@ -41,57 +41,60 @@
     };
     log = ns.debug === true ? $.hlf.log : $.noop;
     check = function(evt) {
-      var $t, intentional, interval, sensitivity, timer, trigger;
-      trigger = function(evtType) {
-        $t.trigger("true" + evtType);
-        return log(nsLog, "true" + evtType);
-      };
+      var $t, intentional, interval, sensitivity, timer;
       $t = $(this);
       intentional = $t.data(dat()) || true;
-      timer = $t.data(dat('Timer')) || null;
+      timer = $t.data(dat('Timer')) || {
+        cleared: false,
+        timeout: null
+      };
       sensitivity = $t.data(dat('Sensitivity')) || ns.sensitivity;
       interval = $t.data(dat('Interval')) || ns.interval;
-      return $t.data(dat('Timer'), setTimeout(function() {
-        var type;
+      if (evt.type === 'mouseleave') {
+        if (timer.cleared === false) {
+          clearTimeout(timer.timeout);
+          $t.removeData(dat('Timer')).removeData(dat());
+        }
+        $t.trigger('truemouseleave');
+        log(nsLog, 'truemouseleave');
+        return;
+      }
+      if (timer.cleared === false && (timer.timeout != null)) {
+        return;
+      }
+      timer.timeout = setTimeout(function() {
         intentional = Math.abs(m.x.previous - m.x.current) + Math.abs(m.y.previous - m.y.current) > sensitivity;
         intentional = intentional;
         m.x.previous = evt.pageX;
         m.y.previous = evt.pageY;
-        $t.data(dat(), intentional);
-        if (intentional === true) {
-          switch (evt.type) {
-            case 'mouseout':
-              type = 'mouseleave';
-              if (!$t.data('hlfIsActive')) {
-                clear($t);
-              }
-              break;
-            case 'mouseover':
-              type = 'mouseenter';
-          }
-          return trigger(type);
+        if (intentional === true && evt.type === 'mouseover') {
+          $t.trigger(new $.Event('truemouseenter', {
+            pageX: m.x.current,
+            pageY: m.y.current
+          }));
+          log(nsLog, 'truemouseenter');
         }
-      }, interval));
+        timer.cleared = true;
+        $t.data(dat(), intentional);
+        return $t.data(dat('Timer'), timer);
+      }, interval);
+      timer.cleared = false;
+      return $t.data(dat('Timer'), timer);
     };
     track = function(evt) {
       m.x.current = evt.pageX;
       return m.y.current = evt.pageY;
     };
-    clear = function($t) {
-      clearTimeout($t.data(dat('Timer')));
-      $t.removeData(dat('Timer'));
-      return $t.removeData(dat());
-    };
     $.event.special.truemouseenter = {
       setup: function(data, namespaces) {
         return $(this).on({
-          mouseenter: check,
+          mouseover: check,
           mousemove: track
         });
       },
       teardown: function(data, namespaces) {
         return $(this).off({
-          mouseenter: check,
+          mouseover: check,
           mousemove: track
         });
       }

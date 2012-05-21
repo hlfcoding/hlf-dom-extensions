@@ -15,14 +15,15 @@ $.hlf =
     nsEvt = ns.toString 'event'
     nsDat = ns.toString 'data'
     return (opt, $ctx) ->
-      $el = null
+      $el = null # Set to right scope.
       boilerplate = ->
-        (if asSingleton is no then $el else $ctx).addClass ns.toString 'class'
+        $root = if asSingleton is no then $el else $ctx
+        $root.addClass ns.toString 'class'
         apiClass::_evt ?= (name) -> "#{name}#{nsEvt}"
         apiClass::_dat ?= (name) -> "#{nsDat}#{name}"
         apiClass::_log ?= if ns.debug is on then $.hlf.log else $.noop
         apiClass::_nsLog ?= ns.toString 'log'
-        $el.data ns.toString(), new apiClass $el, opt, $ctx
+        $root.data ns.toString(), new apiClass $el, opt, $ctx
       
       $ctx ?= $ 'body'
       # - Try returning existing plugin api if no options are passed in.

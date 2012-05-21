@@ -9,7 +9,7 @@
   ns = $.hlf;
 
   ns.tip = {
-    debug: true,
+    debug: false,
     toString: function(context) {
       switch (context) {
         case 'event':
@@ -38,6 +38,7 @@
         },
         cursorHeight: 6,
         dir: ['south', 'east'],
+        safeToggle: true,
         cls: (function() {
           var cls;
           cls = {};
@@ -52,7 +53,7 @@
   };
 
   ns.snapTip = {
-    debug: true,
+    debug: false,
     toString: function(context) {
       switch (context) {
         case 'event':
@@ -106,10 +107,8 @@
       this.$tip = $('<div>');
       this.doStem = this.o.cls.stem !== '';
       this.doFollow = this.o.cls.follow !== '';
-      this._state = 'truehidden';
-      this._p = {
-        $t: null
-      };
+      this._state = 'asleep';
+      this._currentTrigger = null;
       this.$ts.each(function(idx, el) {
         var $t;
         $t = $(el);
@@ -145,7 +144,10 @@
 
     Tip.prototype._bindTrigger = function($t) {
       var _this = this;
-      $t.on(this._evt('truemouseenter'), this._onTriggerMouseMove);
+      $t.on(this._evt('truemouseenter'), function(evt) {
+        _this._log(_this._nsLog, evt);
+        return _this._onTriggerMouseMove(evt);
+      });
       $t.on(this._evt('truemouseleave'), function(evt) {
         return _this.sleepByTrigger($t);
       });
@@ -158,15 +160,15 @@
       var _this = this;
       return this.$tip.on('mouseenter', function(evt) {
         _this._log(_this._nsLog, 'enter tip');
-        if (_this._p.$t != null) {
-          _this._p.$t.data('hlfIsActive', true);
-          return _this.wakeByTrigger(_this._p.$t);
+        if (_this._currentTrigger != null) {
+          _this._currentTrigger.data('hlfIsActive', true);
+          return _this.wakeByTrigger(_this._currentTrigger);
         }
       }).on('mouseleave', function(evt) {
         _this._log(_this._nsLog, 'leave tip');
-        if (_this._p.$t != null) {
-          _this._p.$t.data('hlfIsActive', false);
-          return _this.sleepByTrigger(_this._p.$t);
+        if (_this._currentTrigger != null) {
+          _this._currentTrigger.data('hlfIsActive', false);
+          return _this.sleepByTrigger(_this._currentTrigger);
         }
       });
     };
@@ -198,7 +200,7 @@
       if (!$t.length) {
         return false;
       }
-      return this.wakeByTrigger($t, function() {
+      return this.wakeByTrigger($t, evt, function() {
         var offset;
         offset = {
           top: evt.pageY,
@@ -207,7 +209,7 @@
         offset = _this.offsetOnTriggerMouseMove(evt, offset, $t) || offset;
         offset.top += _this.o.cursorHeight;
         _this.$tip.css(offset);
-        return _this._log(_this._nsLog, '_onTriggerMouseMove', _this.isAwake());
+        return _this._log(_this._nsLog, '_onTriggerMouseMove', _this._state, offset);
       });
     };
 
@@ -219,60 +221,62 @@
       return this.$tip;
     };
 
-    Tip.prototype.isAwake = function() {
-      var _ref;
-      return (_ref = this._state) === 'truevisible' || _ref === 'waking';
-    };
-
-    Tip.prototype.isAsleep = function() {
-      var _ref;
-      return (_ref = this._state) === 'truehidden' || _ref === 'sleeping';
-    };
-
     Tip.prototype.isDir = function(dir) {
       return _.include(this.o.dir, dir);
     };
 
-    Tip.prototype.wakeByTrigger = function($t, cb) {
-      var delay, duration, initial,
+    Tip.prototype.wakeByTrigger = function($t, evt, cb) {
+      var delay, duration, triggerChanged, wake, _ref,
         _this = this;
-      initial = !$t.is(this._p.$t);
-      if ((cb != null) && initial === false && this._state !== 'waking') {
-        return cb();
-      }
-      if (this.isAwake() === true) {
-        return false;
-      }
-      if (initial) {
+      triggerChanged = !$t.is(this._currentTrigger);
+      if (triggerChanged) {
         this._inflateByTrigger($t);
+        this._currentTrigger = $t;
+      }
+      if (this._state === 'awake' && (cb != null)) {
+        cb();
+        this._log(this._nsLog, 'quick update');
+        return true;
+      }
+      if (evt != null) {
+        this._log(this._nsLog, evt.type);
+      }
+      if ((_ref = this._state) === 'awake' || _ref === 'waking') {
+        return false;
       }
       delay = this.o.ms.delay["in"];
       duration = this.o.ms.duration["in"];
-      if (this._state === 'sleeping') {
-        this._log(this._nsLog, 'clear sleep');
-        clearTimeout(this._sleepCountdown);
-        duration = delay = 50;
-      }
-      this._state = 'waking';
-      this._wakeCountdown = setTimeout(function() {
-        _this.onShow(initial);
+      wake = function() {
+        _this.onShow(triggerChanged, evt);
         return _this.$tip.fadeIn(duration, function() {
-          if (initial) {
-            _this._p.$t = $t;
+          if (triggerChanged) {
             if (cb != null) {
               cb();
             }
           }
-          _this.afterShow(initial);
-          return _this._state = 'truevisible';
+          if (_this.o.safeToggle === true) {
+            _this.$tip.siblings(_this.o.cls.tip).fadeOut();
+          }
+          _this.afterShow(triggerChanged, evt);
+          return _this._state = 'awake';
         });
-      }, delay);
+      };
+      if (this._state === 'sleeping') {
+        this._log(this._nsLog, 'clear sleep');
+        clearTimeout(this._sleepCountdown);
+        duration = 0;
+        wake();
+      } else if ((evt != null) && evt.type === 'truemouseenter') {
+        triggerChanged = true;
+        this._state = 'waking';
+        this._wakeCountdown = setTimeout(wake, delay);
+      }
       return true;
     };
 
     Tip.prototype.sleepByTrigger = function($t) {
       var _this = this;
-      if (this._state !== 'truevisible') {
+      if (this._state !== 'awake') {
         return false;
       }
       this._state = 'sleeping';
@@ -280,18 +284,18 @@
       this._sleepCountdown = setTimeout(function() {
         _this.onHide();
         return _this.$tip.fadeOut(_this.o.ms.duration.out, function() {
-          _this._state = 'truehidden';
+          _this._state = 'asleep';
           return _this.afterHide();
         });
       }, this.o.ms.delay.out);
       return true;
     };
 
-    Tip.prototype.onShow = function(initial) {};
+    Tip.prototype.onShow = function(triggerChanged, evt) {};
 
     Tip.prototype.onHide = $.noop;
 
-    Tip.prototype.afterShow = function(initial) {};
+    Tip.prototype.afterShow = function(triggerChanged, evt) {};
 
     Tip.prototype.afterHide = $.noop;
 
@@ -325,7 +329,6 @@
 
     SnapTip.prototype._moveToTrigger = function($t, baseOffset) {
       var offset;
-      this._log(this._nsLog, baseOffset);
       offset = $t.offset();
       if (this.o.snap.toXAxis === true) {
         if (this.isDir('south')) {
@@ -349,25 +352,24 @@
     SnapTip.prototype._bindTrigger = function($t) {
       var _this = this;
       SnapTip.__super__._bindTrigger.call(this, $t);
-      return $t.on(this._evt('truemouseenter'), function(evt) {
-        return _this._offsetStart = {
-          top: evt.pageY,
-          left: evt.pageX
-        };
-      }).on(this._evt('truemouseleave'), function(evt) {
+      return $t.on(this._evt('truemouseleave'), function(evt) {
         return _this._offsetStart = null;
       });
     };
 
-    SnapTip.prototype.onShow = function(initial) {
-      if (initial) {
+    SnapTip.prototype.onShow = function(triggerChanged, evt) {
+      if (triggerChanged === true) {
         return this.$tip.css('visibility', 'hidden');
       }
     };
 
-    SnapTip.prototype.afterShow = function(initial) {
-      if (initial) {
-        return this.$tip.css('visibility', 'visible');
+    SnapTip.prototype.afterShow = function(triggerChanged, evt) {
+      if (triggerChanged === true) {
+        this.$tip.css('visibility', 'visible');
+        return this._offsetStart = {
+          top: evt.pageY,
+          left: evt.pageX
+        };
       }
     };
 

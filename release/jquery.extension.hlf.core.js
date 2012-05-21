@@ -25,8 +25,9 @@
         var $el, api, boilerplate, deep;
         $el = null;
         boilerplate = function() {
-          var _base, _base1, _base2, _base3;
-          (asSingleton === false ? $el : $ctx).addClass(ns.toString('class'));
+          var $root, _base, _base1, _base2, _base3;
+          $root = asSingleton === false ? $el : $ctx;
+          $root.addClass(ns.toString('class'));
           if ((_base = apiClass.prototype)._evt == null) {
             _base._evt = function(name) {
               return "" + name + nsEvt;
@@ -43,7 +44,7 @@
           if ((_base3 = apiClass.prototype)._nsLog == null) {
             _base3._nsLog = ns.toString('log');
           }
-          return $el.data(ns.toString(), new apiClass($el, opt, $ctx));
+          return $root.data(ns.toString(), new apiClass($el, opt, $ctx));
         };
         if ($ctx == null) {
           $ctx = $('body');
