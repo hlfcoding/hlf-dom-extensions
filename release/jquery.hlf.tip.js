@@ -9,7 +9,7 @@
   ns = $.hlf;
 
   ns.tip = {
-    debug: false,
+    debug: true,
     toString: function(context) {
       switch (context) {
         case 'event':
@@ -37,8 +37,9 @@
           }
         },
         cursorHeight: 6,
-        dir: ['south', 'east'],
+        defaultDirection: ['south', 'east'],
         safeToggle: true,
+        autoDirection: true,
         cls: (function() {
           var cls;
           cls = {};
@@ -103,35 +104,37 @@
       this.$ts = $ts;
       this.o = o;
       this.$ctx = $ctx;
-      _.bindAll(this, '_onTriggerMouseMove');
+      _.bindAll(this, '_onTriggerMouseMove', '_setBounds');
       this.$tip = $('<div>');
       this.doStem = this.o.cls.stem !== '';
       this.doFollow = this.o.cls.follow !== '';
       this._state = 'asleep';
       this._currentTrigger = null;
+      this._render();
+      this._bind();
       this.$ts.each(function(idx, el) {
         var $t;
         $t = $(el);
         $t.addClass(_this.o.cls.trigger);
         _this._saveTriggerContent($t);
-        return _this._bindTrigger($t);
+        _this._bindTrigger($t);
+        return _this._updateDirectionByTrigger($t);
       });
-      this._render();
-      this._bind();
     }
 
     Tip.prototype._defaultHtml = function() {
-      var c, cDir, containerClass, html, stemHtml,
-        _this = this;
-      c = this.o.cls;
-      cDir = $.trim(_.reduce(this.o.dir, (function(cls, dir) {
-        return "" + cls + " " + c[dir];
-      }), ''));
-      containerClass = $.trim([c.tip, c.follow, cDir].join(' '));
-      if (this.doStem === true) {
-        stemHtml = "<div class='" + c.stem + "'></div>";
-      }
-      return html = ("<div class=\"" + containerClass + "\"><div class=\"" + c.inner + "\">" + stemHtml + "<div class='" + c.content + "'>") + "</div></div></div>";
+      var _this = this;
+      return (function(c) {
+        var cDir, containerClass, html, stemHtml;
+        cDir = $.trim(_.reduce(_this.o.defaultDirection, (function(cls, dir) {
+          return "" + cls + " " + c[dir];
+        }), ''));
+        containerClass = $.trim([c.tip, c.follow, cDir].join(' '));
+        if (_this.doStem === true) {
+          stemHtml = "<div class='" + c.stem + "'></div>";
+        }
+        return html = ("<div class=\"" + containerClass + "\"><div class=\"" + c.inner + "\">" + stemHtml + "<div class='" + c.content + "'>") + "</div></div></div>";
+      })(this.o.cls);
     };
 
     Tip.prototype._saveTriggerContent = function($t) {
@@ -158,7 +161,7 @@
 
     Tip.prototype._bind = function() {
       var _this = this;
-      return this.$tip.on('mouseenter', function(evt) {
+      this.$tip.on('mouseenter', function(evt) {
         _this._log(_this._nsLog, 'enter tip');
         if (_this._currentTrigger != null) {
           _this._currentTrigger.data('hlfIsActive', true);
@@ -171,6 +174,9 @@
           return _this.sleepByTrigger(_this._currentTrigger);
         }
       });
+      if (this.o.autoDirection === true) {
+        return $(window).resize(_.debounce(this._setBounds, 300));
+      }
     };
 
     Tip.prototype._render = function() {
@@ -187,7 +193,15 @@
     };
 
     Tip.prototype._inflateByTrigger = function($t) {
-      return this.$tip.find("." + this.o.cls.content).text($t.data(this._dat('Content')));
+      var _this = this;
+      return (function(c) {
+        var dir;
+        dir = $t.data(_this._dat('Direction')) ? $t.data(_this._dat('Direction')).split(' ') : _this.o.defaultDirection;
+        _this._log(_this._nsLog, 'update direction class', dir);
+        return _this.$tip.find("." + c.content).text($t.data(_this._dat('Content'))).end().removeClass([c.north, c.south, c.east, c.west].join(' ')).addClass($.trim(_.reduce(dir, (function(cls, dir) {
+          return "" + cls + " " + c[dir];
+        }), '')));
+      })(this.o.cls);
     };
 
     Tip.prototype._onTriggerMouseMove = function(evt) {
@@ -207,10 +221,87 @@
           left: evt.pageX
         };
         offset = _this.offsetOnTriggerMouseMove(evt, offset, $t) || offset;
+        if (_this.isDirection('north', $t)) {
+          offset.top -= _this.$tip.outerHeight() + _this.o.cursorHeight;
+        }
+        if (_this.isDirection('west', $t)) {
+          offset.left -= _this.$tip.outerWidth();
+        }
+        if (_this.isDirection('south', $t)) {
+          offset.top += _this.o.cursorHeight;
+        }
         offset.top += _this.o.cursorHeight;
         _this.$tip.css(offset);
         return _this._log(_this._nsLog, '_onTriggerMouseMove', _this._state, offset);
       });
+    };
+
+    Tip.prototype._updateDirectionByTrigger = function($t) {
+      var checkDir, dir, newDir, size, tHeight, tPosition, tWidth, _i, _len, _ref, _results,
+        _this = this;
+      if (this.o.autoDirection === false) {
+        return false;
+      }
+      checkDir = function(dir) {
+        var edge, ok;
+        if (!(_this._bounds != null)) {
+          _this._setBounds();
+        }
+        ok = true;
+        switch (dir) {
+          case 'south':
+            ok = (edge = tPosition.top + tHeight + size.height) && _this._bounds.bottom > edge;
+            break;
+          case 'east':
+            ok = (edge = tPosition.left + size.width) && _this._bounds.right > edge;
+            break;
+          case 'north':
+            ok = (edge = tPosition.top - size.height) && _this._bounds.top < edge;
+            break;
+          case 'west':
+            ok = (edge = tPosition.left - size.width) && _this._bounds.left < edge;
+        }
+        _this._log(_this._nsLog, 'checkDir', "'" + ($t.html()) + "'", dir, edge, size);
+        if (!ok) {
+          switch (dir) {
+            case 'south':
+              newDir[0] = 'north';
+              break;
+            case 'east':
+              newDir[1] = 'west';
+              break;
+            case 'north':
+              newDir[0] = 'south';
+              break;
+            case 'west':
+              newDir[1] = 'east';
+          }
+          return $t.data(_this._dat('Direction'), newDir.join(' '));
+        }
+      };
+      tPosition = $t.position();
+      tWidth = $t.outerWidth();
+      tHeight = $t.outerHeight();
+      size = this.sizeForTrigger($t);
+      newDir = _.clone(this.o.defaultDirection);
+      _ref = this.o.defaultDirection;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        dir = _ref[_i];
+        _results.push(checkDir(dir));
+      }
+      return _results;
+    };
+
+    Tip.prototype._setBounds = function() {
+      var $ctx;
+      $ctx = this.$ctx.is('body') ? $(window) : this.$ctx;
+      return this._bounds = {
+        top: parseInt(this.$ctx.css('padding-top'), 10),
+        left: parseInt(this.$ctx.css('padding-left'), 10),
+        bottom: $ctx.innerHeight(),
+        right: this.$ctx.innerWidth()
+      };
     };
 
     Tip.prototype.options = function() {
@@ -221,8 +312,33 @@
       return this.$tip;
     };
 
-    Tip.prototype.isDir = function(dir) {
-      return _.include(this.o.dir, dir);
+    Tip.prototype.sizeForTrigger = function($t, force) {
+      var size;
+      if (force == null) {
+        force = false;
+      }
+      size = {
+        width: $t.data(this._dat('Width')),
+        height: $t.data(this._dat('Height'))
+      };
+      if (size.width && size.height) {
+        return size;
+      }
+      this.$tip.find("." + this.o.cls.content).text($t.data(this._dat('Content'))).end().css({
+        display: 'block',
+        visibility: 'hidden'
+      });
+      $t.data(this._dat('Width'), (size.width = this.$tip.outerWidth()));
+      $t.data(this._dat('Height'), (size.height = this.$tip.outerHeight()));
+      this.$tip.css({
+        display: 'none',
+        visibility: 'visible'
+      });
+      return size;
+    };
+
+    Tip.prototype.isDirection = function(dir, $t) {
+      return (this.$tip.hasClass(this.o.cls[dir])) || ((!($t != null) || !$t.data(this._dat('Direction'))) && _.include(this.o.defaultDirection, dir));
     };
 
     Tip.prototype.wakeByTrigger = function($t, evt, cb) {
@@ -318,7 +434,15 @@
     function SnapTip($ts, o, $ctx) {
       var _this = this;
       SnapTip.__super__.constructor.call(this, $ts, o, $ctx);
-      this.o.snap.toTrigger = this.o.snap.toXAxis === true || this.o.snap.toYAxis === true;
+      if (this.o.snap.toTrigger === false) {
+        this.o.snap.toTrigger = this.o.snap.toXAxis === true || this.o.snap.toYAxis === true;
+      }
+      if (this.o.snap.toXAxis === true) {
+        this.o.cursorHeight = 0;
+      }
+      if (this.o.snap.toYAxis === true) {
+        this.o.cursorHeight = 2;
+      }
       this._offsetStart = null;
       _.each(this.o.snap, function(active, prop) {
         if (active) {
@@ -331,7 +455,7 @@
       var offset;
       offset = $t.offset();
       if (this.o.snap.toXAxis === true) {
-        if (this.isDir('south')) {
+        if (this.isDirection('south')) {
           offset.top += $t.outerHeight();
         }
         if (this.o.snap.toYAxis === false) {
@@ -339,7 +463,7 @@
         }
       }
       if (this.o.snap.toYAxis === true) {
-        if (this.isDir('east')) {
+        if (this.isDirection('east')) {
           offset.left += $t.outerWidth();
         }
         if (this.o.snap.toXAxis === false) {

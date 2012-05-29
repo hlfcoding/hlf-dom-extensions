@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="../base.css" type="text/css" media="all" charset="utf-8" />
     <link rel="stylesheet" href="tip.css" type="text/css" media="all" charset="utf-8" />
     <style type="text/css" media="all">
-      .border_test { position: absolute; }
-      #border_test_bottom { padding-top: 50em; }
+      .border-test { position: absolute; }
       #upper_right { right: 1em; top: 1em; }
       #lower_right { right: 1em; bottom: 1em; }
       #lower_left { left: 1em; bottom: 1em; }
@@ -48,6 +47,7 @@
         $('.default-call [title]').tip();
         $('.list-call [title]').snapTip({ snap: { toYAxis: true } });
         $('.box-call [title]').snapTip({ snap: { toXAxis: true } });
+        $('.border-test[title]').snapTip();
       });
     
     </script>    
@@ -82,17 +82,8 @@
         </div>
       </section>
     </div>
-    <div id="upper_right" class="border_test">
-      <a class="trigger" href="#" title="foo">tooltip trigger</a>
-      <p>upper right corner</p>
-    </div>
-    <div id="lower_left" class="border_test">
-      <p>lower left corner</p>
-      <a class="trigger" href="#" title="foo">tooltip trigger</a>
-    </div>
-    <div id="lower_right" class="border_test">
-      <p>lower right corner</p>
-      <a class="trigger" href="#" title="foo">tooltip trigger</a>
-    </div>
+    <a id="upper_right" class="border-test trigger" href="#" title="foo">upper right corner</a>
+    <a id="lower_left" class="border-test trigger" href="#" title="foo">lower left corner</a>
+    <a id="lower_right" class="border-test trigger" href="#" title="foo">lower right corner</a>
   </body>
 </html>
