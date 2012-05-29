@@ -1,7 +1,7 @@
 #
-# HLF Tip jQuery Plugin v1.2  
-# Released under the MIT License  
-# Written with jQuery 1.7.2  
+# HLF Tip jQuery Plugin v2.0.1
+# Released under the MIT License
+# Written with jQuery 1.7.2
 #
 $ = jQuery
 ns = $.hlf
