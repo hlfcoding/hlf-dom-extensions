@@ -16,14 +16,14 @@ ns = $.hlf
 # and asleep states can be read and are set after fade animations. This plugin
 # requires css display logic for the classes. The API class has hooks; delegation
 # is used instead of events due to call frequency.
-# 
+#
 # The tip object is shared by the input jQuery collection.
-# 
+#
 # Requires the `hoverIntent` special events, since they can be customized to
 # accept delays and provide pageX and pageY event properties.
 #
 # Options:
-# 
+#
 # - `ms.duration`- Duration of sleep and wake animations.
 # - `ms.delay` - Delay before sleeping and waking.
 # - `cls.stem` - Empty to remove the stem.
@@ -39,7 +39,7 @@ ns.tip =
       when 'class'  then 'js-tips'
       when 'log'    then 'hlf-tip:'
       else 'hlf.tip'
-  
+
   defaults: do (pre='js-tip-') ->
     ms:
       duration:
@@ -59,8 +59,7 @@ ns.tip =
       cls.tip = 'js-tip'
       return cls
     )()
-    
-  
+
 #
 # Snap-Tip
 # --------
@@ -69,14 +68,14 @@ ns.tip =
 # slide along the remaining locked axis.
 #
 # The tip object is shared by the input jQuery collection.
-# 
+#
 # Options:
-# 
+#
 # - `snap.xSnap` - Set empty to disable snapping along x-axis. Off by default.
 # - `snap.ySnap` - Set empty to disable snapping along y-axis. Off by default.
 # - `snap.snap` - Set empty to disable snapping to trigger. Builds on top of
 #   axis-snapping. Off by default.
-# 
+#
 ns.snapTip =
   debug: off
   toString: (context) ->
@@ -86,9 +85,9 @@ ns.snapTip =
       when 'class'  then 'js-snap-tips'
       when 'log'    then 'hlf-snap-tip:'
       else 'hlf.snapTip'
-  
+
   defaults: do (pre='js-snap-tip-') ->
-    $.extend true, {}, ns.tip.defaults, 
+    $.extend true, {}, ns.tip.defaults,
       snap:
         toTrigger: on
         toXAxis: off
@@ -104,14 +103,13 @@ ns.snapTip =
         cls.tip = 'js-tip js-snap-tip'
         return cls
       )()
-      
-  
+
 #
 # Tip API
 # -------
-# 
+#
 class Tip
-  
+
   constructor: (@$ts, @o, @$ctx) ->
     _.bindAll @, '_onTriggerMouseMove', '_setBounds'
     @$tip = $ '<div>'
@@ -119,7 +117,7 @@ class Tip
     @doFollow = @o.cls.follow isnt ''
     # - Toggle state: `awake`, `asleep`, `waking`, `sleeping`.
     @_state = 'asleep'
-    @_currentTrigger = null
+    @_$tCurrent = null
     # - Process tip
     @_render()
     @_bind()
@@ -130,10 +128,10 @@ class Tip
       @_saveTriggerContent $t
       @_bindTrigger $t
       @_updateDirectionByTrigger $t
-    
-  
+
+
   # ###Protected
-  
+
   _defaultHtml: ->
     do (c=@o.cls) =>
       cDir = $.trim _.reduce @o.defaultDirection, ((cls, dir) => "#{cls} #{c[dir]}"), ''
@@ -142,11 +140,11 @@ class Tip
       # - Not using block strings b/c Docco 0.3.0 can't correctly parse them.
       html = "<div class=\"#{containerClass}\"><div class=\"#{c.inner}\">#{stemHtml}<div class='#{c.content}'>"+
              "</div></div></div>"
-  
+
   _saveTriggerContent: ($t) ->
     title = $t.attr 'title'
     if title then $t.data(@_dat('Content'), title).removeAttr 'title'
-  
+
   # - Link the trigger to the tip for:
   #   1. mouseenter, mouseleave (uses special events)
   #   2. mousemove
@@ -157,25 +155,24 @@ class Tip
     $t.on @_evt('truemouseleave'), (evt) => @sleepByTrigger $t
     if @doFollow is on
       $t.on 'mousemove', @_onTriggerMouseMove
-  
+
   # - Bind to the tip on hover so the toggling makes an exception.
   _bind: () ->
     @$tip
       .on 'mouseenter', (evt) =>
         @_log @_nsLog, 'enter tip'
-        if @_currentTrigger?
-          @_currentTrigger.data 'hlfIsActive', yes
-          @wakeByTrigger @_currentTrigger
-    
+        if @_$tCurrent?
+          @_$tCurrent.data 'hlfIsActive', yes
+          @wakeByTrigger @_$tCurrent
       .on 'mouseleave', (evt) =>
         @_log @_nsLog, 'leave tip'
-        if @_currentTrigger?
-          @_currentTrigger.data 'hlfIsActive', no
-          @sleepByTrigger @_currentTrigger
-      
+        if @_$tCurrent?
+          @_$tCurrent.data 'hlfIsActive', no
+          @sleepByTrigger @_$tCurrent
+    # - Handle adapting to window resize.
     if @o.autoDirection is on
       $(window).resize _.debounce @_setBounds, 300
-  
+
   # - The tip should only need to be rendered once.
   _render: () ->
     return no if @$tip.html().length
@@ -183,7 +180,7 @@ class Tip
     if not (html? and html.length) then html = @_defaultHtml()
     @$tip = $(html).addClass @o.cls.follow
     @$tip.prependTo @$ctx
-  
+
   # - The tip content will change as it's being refreshed / initialized.
   _inflateByTrigger: ($t) ->
     do (c=@o.cls) =>
@@ -192,15 +189,15 @@ class Tip
       @$tip.find(".#{c.content}").text($t.data @_dat 'Content').end()
            .removeClass([c.north, c.south, c.east, c.west].join ' ')
            .addClass($.trim _.reduce dir, ((cls, dir) => "#{cls} #{c[dir]}"), '')
-    
-  
+
+
   # - The main toggle handler.
   _onTriggerMouseMove: (evt) ->
     return no if not evt.pageX?
     $t = if ($t = $(evt.target)) and $t.hasClass(@o.cls.trigger) then $t else $t.closest(@o.cls.trigger)
     return no if not $t.length
     @wakeByTrigger $t, evt, =>
-      offset = 
+      offset =
         top: evt.pageY
         left: evt.pageX
       offset = @offsetOnTriggerMouseMove(evt, offset, $t) or offset
@@ -210,12 +207,12 @@ class Tip
       offset.top += @o.cursorHeight
       @$tip.css offset
       @_log @_nsLog, '_onTriggerMouseMove', @_state, offset
-  
+
   # - Auto-direction support. Given the context boundary, choose the best
   #   direction. The data is stored with the trigger and gets accessed elsewhere.
   _updateDirectionByTrigger: ($t) ->
     return no if @o.autoDirection is off
-    # - Check, adapt, and store as needed.
+    # - Check if adapting is needed. Adapt and store as needed.
     checkDir = (dir) =>
       if not @_bounds? then @_setBounds()
       ok = yes
@@ -232,14 +229,15 @@ class Tip
           when 'north' then newDir[0] = 'south'
           when 'west'  then newDir[1] = 'east'
         $t.data @_dat('Direction'), newDir.join ' '
-    
+    # - Prepare for checking subroutine.
     tPosition = $t.position()
     tWidth    = $t.outerWidth()
     tHeight   = $t.outerHeight()
     size      = @sizeForTrigger $t
     newDir = _.clone @o.defaultDirection
+    # - Check each direction.
     checkDir dir for dir in @o.defaultDirection
-  
+
   _setBounds: ->
     $ctx = if @$ctx.is('body') then $(window) else @$ctx
     @_bounds =
@@ -247,19 +245,21 @@ class Tip
       left:   parseInt @$ctx.css('padding-left'), 10
       bottom: $ctx.innerHeight()
       right:  @$ctx.innerWidth()
-  
+
   # ###Public
-  
+
   # Accessors
   options: -> @o
   tip: -> @$tip
   # - Does a stealth render to find tip size. The data is stored with the
   #   trigger and gets accessed elsewhere.
   sizeForTrigger: ($t, force=no) ->
+    # - Try cached.
     size =
       width:  $t.data @_dat 'Width'
       height: $t.data @_dat 'Height'
     return size if size.width and size.height
+    # - Otherwise new.
     @$tip.find(".#{@o.cls.content}").text($t.data @_dat 'Content').end()
       .css
         display: 'block',
@@ -269,14 +269,14 @@ class Tip
     @$tip.css
       display: 'none',
       visibility: 'visible'
-    return size
-  
+    size
+
   # - Direction is actually an array.
   isDirection: (dir, $t) -> (@$tip.hasClass @o.cls[dir]) or
     ((not $t? or not $t.data @_dat 'Direction') and _.include @o.defaultDirection, dir)
-  
+
   # Methods
-  
+
   # - The main toggler. Takes in a callback, which is usually to update position.
   #   The toggling and main changes only happen if the delay is passed.
   #   1. Store current trigger info.
@@ -287,16 +287,15 @@ class Tip
   #   5. Update our trigger cache.
   wakeByTrigger: ($t, evt, cb) ->
     # - Check.
-    triggerChanged = not $t.is @_currentTrigger
+    triggerChanged = not $t.is @_$tCurrent
     if triggerChanged
       @_inflateByTrigger $t
-      @_currentTrigger = $t
+      @_$tCurrent = $t
     # - Guard.
     if @_state is 'awake' and cb?
       cb()
       @_log @_nsLog, 'quick update'
       return yes
-    
     if evt? then @_log @_nsLog, evt.type
     return no if @_state in ['awake', 'waking']
     # - Prepare.
@@ -310,8 +309,6 @@ class Tip
         if @o.safeToggle is on then @$tip.siblings(@o.cls.tip).fadeOut()
         @afterShow triggerChanged, evt
         @_state = 'awake'
-      
-    
     # - Run.
     if @_state is 'sleeping'
       @_log @_nsLog, 'clear sleep'
@@ -322,9 +319,9 @@ class Tip
       triggerChanged = yes
       @_state = 'waking'
       @_wakeCountdown = setTimeout wake, delay
-    
+    # - Success.
     yes
-  
+
   # - Much simpler toggler. As long as tip isn't truly visible, sleep is unneeded.
   sleepByTrigger: ($t) ->
     return no if @_state isnt 'awake'
@@ -335,11 +332,11 @@ class Tip
       @$tip.fadeOut @o.ms.duration.out, =>
         @_state = 'asleep'
         @afterHide()
-      
+
     , @o.ms.delay.out
-    
+    # - Success.
     yes
-  
+
   # Hooks
   onShow: (triggerChanged, evt) -> return
   onHide: $.noop
@@ -351,9 +348,9 @@ class Tip
 #
 # SnapTip API
 # -----------
-# 
+#
 class SnapTip extends Tip
-  
+
   constructor: ($ts, o, $ctx) ->
     super $ts, o, $ctx
     if @o.snap.toTrigger is off
@@ -363,9 +360,9 @@ class SnapTip extends Tip
     @_offsetStart = null
     # - Add snapping config as classes.
     _.each @o.snap, (active, prop) => if active then @$tip.addClass @o.cls.snap[prop]
-  
+
   # ###Protected
-  
+
   # - The main positioner. Uses the trigger offset as the base.
   #   TODO - Still needs to support all the directions.
   _moveToTrigger: ($t, baseOffset) ->
@@ -380,30 +377,30 @@ class SnapTip extends Tip
       if @o.snap.toXAxis is no
         offset.top = baseOffset.top - $t.outerHeight() / 2
     offset
-  
+
   # - Bind to get initial position for snapping. This is only for snapping
   #   without snapping to the trigger, which is only what's currently supported.
   #   See `afterShow` hook.
   _bindTrigger: ($t) ->
     super $t
     $t.on @_evt('truemouseleave'), (evt) => @_offsetStart = null
-  
+
   # ###Public
-  
+
   # Hooked
-  
+
   # - Make the tip invisible while it's being positioned, then reveal it.
   onShow: (triggerChanged, evt) ->
     if triggerChanged is yes
       @$tip.css 'visibility', 'hidden'
-  
+
   afterShow: (triggerChanged, evt) ->
     if triggerChanged is yes
       @$tip.css 'visibility', 'visible'
       @_offsetStart =
         top: evt.pageY
         left: evt.pageX
-  
+
   # - Main positioning handler.
   offsetOnTriggerMouseMove: (evt, offset, $t) ->
     newOffset = _.clone offset
@@ -417,7 +414,6 @@ class SnapTip extends Tip
         newOffset.left = @_offsetStart.left
         @_log @_nsLog, 'ySnap'
     newOffset
-  
 
 # Export
 # ------
