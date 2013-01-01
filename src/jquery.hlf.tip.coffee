@@ -43,8 +43,8 @@ ns.tip =
   defaults: do (pre='js-tip-') ->
     ms:
       duration:
-        in: 300
-        out: 300
+        in: 200
+        out: 200
       delay:
         in: 300
         out: 300
