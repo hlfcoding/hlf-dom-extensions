@@ -208,7 +208,7 @@
       if (!(evt.pageX != null)) {
         return false;
       }
-      $t = ($t = $(evt.target)) && $t.hasClass(this.o.cls.trigger) ? $t : $t.closest(this.o.cls.trigger);
+      $t = ($t = $(evt.currentTarget)) && $t.hasClass(this.o.cls.trigger) ? $t : $t.closest(this.o.cls.trigger);
       if (!$t.length) {
         return false;
       }

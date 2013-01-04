@@ -194,7 +194,7 @@ class Tip
   # - The main toggle handler.
   _onTriggerMouseMove: (evt) ->
     return no if not evt.pageX?
-    $t = if ($t = $(evt.target)) and $t.hasClass(@o.cls.trigger) then $t else $t.closest(@o.cls.trigger)
+    $t = if ($t = $(evt.currentTarget)) and $t.hasClass(@o.cls.trigger) then $t else $t.closest(@o.cls.trigger)
     return no if not $t.length
     @wakeByTrigger $t, evt, =>
       offset =
