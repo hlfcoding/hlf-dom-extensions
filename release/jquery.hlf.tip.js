@@ -9,7 +9,7 @@
   ns = $.hlf;
 
   ns.tip = {
-    debug: true,
+    debug: false,
     toString: function(context) {
       switch (context) {
         case 'event':
@@ -463,7 +463,7 @@
           offset.left += $t.outerWidth();
         }
         if (this.o.snap.toXAxis === false) {
-          offset.top = baseOffset.top - $t.outerHeight() / 2;
+          offset.top = baseOffset.top - this.$tip.outerHeight() / 2;
         }
       }
       return offset;
