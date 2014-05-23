@@ -1,0 +1,28 @@
+{
+  "name": "hlf-jquery",
+  "version": "1.0.0",
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "modernizr": "~2.8.2",
+    "normalize-css": "~3.0.1",
+    "requirejs": "~2.1.11",
+    "underscore": "~1.6.0"
+  },
+  "exportsOverride": {
+    "jquery": {
+      ".": "dist/jquery.js"
+    },
+    "modernizr": {
+      ".": "modernizr.js"
+    },
+    "normalize-css": {
+      ".": "normalize.css"
+    },
+    "requirejs": {
+      ".": "require.js"
+    },
+    "underscore": {
+      ".": "underscore.js"
+    }
+  }
+}

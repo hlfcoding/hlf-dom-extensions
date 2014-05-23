@@ -14,12 +14,12 @@
     </style>
 <!--[if lte IE 8]>
     <style type="text/css">
-      
+
     </style>
   <![endif]-->
 <!--[if lte IE 7]>
     <style type="text/css">
-      
+
     </style>
 <![endif]-->
 <!--[if lte IE 6]>
@@ -33,24 +33,24 @@
         border-color: orange;
         filter: chroma(color=orange);
       }
-      
+
     </style>
 <![endif]-->
     <script type="text/javascript" src="../../lib/jquery.js" ></script>
     <script type="text/javascript" src="../../lib/underscore.js" ></script>
-    <script type="text/javascript" src="../../release/jquery.extension.hlf.core.js"></script>
-    <script type="text/javascript" src="../../release/jquery.extension.hlf.event.js"></script>
-    <script type="text/javascript" src="../../release/jquery.hlf.tip.js"></script>
+    <script type="text/javascript" src="../../dist/jquery.extension.hlf.core.js"></script>
+    <script type="text/javascript" src="../../dist/jquery.extension.hlf.event.js"></script>
+    <script type="text/javascript" src="../../dist/jquery.hlf.tip.js"></script>
     <script type="text/javascript">
-      
+
       jQuery(function($){
         $('.default-call [title]').tip();
         $('.list-call [title]').snapTip({ snap: { toYAxis: true } });
         $('.box-call [title]').snapTip({ snap: { toXAxis: true } });
         $('.border-test[title]').snapTip();
       });
-    
-    </script>    
+
+    </script>
   </head>
   <body id="override">
     <h1>Peng's jQuery Plugins: Tip</h1>
@@ -58,8 +58,8 @@
       <section class="default-call">
         <header>default</header>
         <p>
-          <a class="trigger" href="#" title="foo">tooltip trigger</a> | 
-          <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">tooltip trigger</a> | 
+          <a class="trigger" href="#" title="foo">tooltip trigger</a> |
+          <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">tooltip trigger</a> |
           <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">tooltip trigger</a>
         </p>
       </section>
@@ -75,8 +75,8 @@
         <header>in a box</header>
         <div class="box">
           <p>
-            <a class="trigger" href="#" title="This is tooltip 1">tooltip trigger</a> | 
-            <a class="trigger" href="#" title="This is tooltip 2">tooltip trigger</a> | 
+            <a class="trigger" href="#" title="This is tooltip 1">tooltip trigger</a> |
+            <a class="trigger" href="#" title="This is tooltip 2">tooltip trigger</a> |
             <a class="trigger" href="#" title="This is tooltip 3">tooltip trigger</a>
           </p>
         </div>

@@ -1,9 +1,0 @@
-{
-  "base_dir": "src",
-  "file_types": ["coffee"],
-  "exclude_dirs": [],
-  "exclude_files": [],
-  "dir_floor": 1,
-  "dir_ceil": 1,
-  "index_file": "jquery.extension.hlf.core.coffee"
-}
