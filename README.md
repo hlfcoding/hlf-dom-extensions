@@ -1,6 +1,6 @@
 # HLF jQuery Library
 
-jQuery plugins for quality UI.
+jQuery plugins for quality UI. Use `npm install && grunt dist` to build.
 
 ## Extensions
 

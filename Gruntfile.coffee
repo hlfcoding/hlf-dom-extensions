@@ -65,10 +65,14 @@ module.exports = (grunt) ->
   grunt.registerTask 'default', [
     'clean:lib'
     'bower'
+    'dist'
+    'watch'
+  ]
+
+  grunt.registerTask 'dist', [
     'clean:dist'
     'coffee'
     'sass'
-    'watch'
   ]
 
   grunt.registerTask 'docs', ['clean:docs', 'groc']
