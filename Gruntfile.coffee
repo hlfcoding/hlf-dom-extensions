@@ -35,6 +35,11 @@ module.exports = (grunt) ->
         ext: '.js'
         extDot: 'last'
         flatten: yes
+      tests:
+        expand: yes
+        src: 'tests/**/*.coffee'
+        ext: '.js'
+        extDot: 'last'
     groc:
       all:
         src: [
@@ -52,12 +57,17 @@ module.exports = (grunt) ->
         ext: '.css'
         extDot: 'last'
         flatten: yes
+      tests:
+        expand: yes
+        src: 'tests/**/*.scss'
+        ext: '.css'
+        extDot: 'last'
     watch:
       css:
-        files: 'src/**/*.scss'
+        files: '{src,tests}/**/*.scss'
         tasks: ['sass']
       js:
-        files: 'src/**/*.coffee'
+        files: '{src,tests}/**/*.coffee'
         tasks: ['coffee']
 
   grunt.loadNpmTasks plugin for plugin in matchdep.filterDev 'grunt-*'
