@@ -39,7 +39,7 @@ module.exports = (grunt) ->
       all:
         src: [
           'src/**/*'
-          'test/**/*'
+          'tests/**/*'
           'README.md'
         ]
       options:
