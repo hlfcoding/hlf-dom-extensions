@@ -3,15 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <title>Hello Little Friend: Tip</title>
-    <link rel="stylesheet" href="../../lib/normalize.css" type="text/css" media="all" charset="utf-8" />
-    <link rel="stylesheet" href="../base.css" type="text/css" media="all" charset="utf-8" />
-    <link rel="stylesheet" href="tip.css" type="text/css" media="all" charset="utf-8" />
-    <style type="text/css" media="all">
-      .border-test { position: absolute; }
-      #upper_right { right: 1em; top: 1em; }
-      #lower_right { right: 1em; bottom: 1em; }
-      #lower_left { left: 1em; bottom: 1em; }
-    </style>
+    <link rel="stylesheet" href="../../lib/normalize.css" media="all" />
+    <link rel="stylesheet" href="../base.css" media="all" />
+    <link rel="stylesheet" href="tip.css" media="all" />
 <!--[if lte IE 8]>
     <style type="text/css">
 
@@ -36,21 +30,16 @@
 
     </style>
 <![endif]-->
-    <script type="text/javascript" src="../../lib/jquery.js" ></script>
-    <script type="text/javascript" src="../../lib/underscore.js" ></script>
-    <script type="text/javascript" src="../../dist/jquery.extension.hlf.core.js"></script>
-    <script type="text/javascript" src="../../dist/jquery.extension.hlf.event.js"></script>
-    <script type="text/javascript" src="../../dist/jquery.hlf.tip.js"></script>
-    <script type="text/javascript">
-
-      jQuery(function($){
-        $('.default-call [title]').tip();
-        $('.list-call [title]').snapTip({ snap: { toYAxis: true } });
-        $('.box-call [title]').snapTip({ snap: { toXAxis: true } });
-        $('.border-test[title]').snapTip();
-      });
-
-    </script>
+    <!-- Uncomment to test without AMD -->
+    <!--
+    <script src="../../lib/jquery.js" ></script>
+    <script src="../../lib/underscore.js" ></script>
+    <script src="../../dist/jquery.extension.hlf.core.js"></script>
+    <script src="../../dist/jquery.extension.hlf.event.js"></script>
+    <script src="../../dist/jquery.hlf.tip.js"></script>
+    <script src="tip.js"></script>
+    -->
+    <script data-main="main" src="../../lib/require.js"></script>
   </head>
   <body id="override">
     <h1>Peng's jQuery Plugins: Tip</h1>
