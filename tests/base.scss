@@ -1,11 +1,21 @@
 $line-color: #ccc;
 $radius: 10px;
+
+%container-skin {
+  background-color: #fff;
+  border: 1px solid $line-color;
+}
+
 body {
+  background-color: #eaeae6;
   padding: 1em;
-  font-size: 12px;
+  font: {
+    family: Helvetica, sans-serif;
+    size: 14px;
+  }
 }
 h1 {
-  font: bold 1.5em Helvetica, sans-serif;
+  font-size: 1.5em;
   letter-spacing: -1px;
 }
 p {
@@ -15,8 +25,8 @@ p {
   padding: 2em 0;
 }
 .box {
+  @extend %container-skin;
   width: 600px;
-  border: 1px solid $line-color; 
   padding: 1em;
   margin: 1em 0;
   border-radius: $radius;
@@ -26,9 +36,9 @@ p {
   margin: 1em 0;
   li {
     a {
+      @extend %container-skin;
       display: block;
       padding: 1em;
-      border: 1px solid $line-color;
       border-bottom-width: 0;
     }
     &:first-child a {
