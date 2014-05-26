@@ -43,6 +43,26 @@ Use `grunt` to start developing.
 
 Use `grunt docs` to generate Groc documentation.
 
+### Sample ST2 Project File
+
+```json
+{
+  "folders":
+  [
+    {
+      "path": "<projects>",
+      "file_exclude_patterns":
+      [
+        "dist/*",
+        "docs/*",
+        "jquery/tests/*.css",
+        "jquery/tests/*.js"
+      ]
+    }
+  ]
+}
+```
+
 ## License
 
 The MIT License (MIT)
