@@ -63,6 +63,7 @@ module.exports = (grunt) ->
         ext: '.css'
         extDot: 'last'
     watch:
+      # Caveat: These watch tasks do not clean.
       css:
         files: '{src,tests}/**/*.scss'
         tasks: ['sass']
