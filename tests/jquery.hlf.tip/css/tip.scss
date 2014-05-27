@@ -1,4 +1,4 @@
-@import "../../src/jquery.hlf.tip.scss";
+@import "../../../src/css/jquery.hlf.tip.scss";
 
 .js-tip {
   @include tip-skin(#666, #fff);

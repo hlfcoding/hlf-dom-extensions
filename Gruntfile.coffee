@@ -43,8 +43,8 @@ module.exports = (grunt) ->
     groc:
       all:
         src: [
-          'src/**/*'
-          'tests/**/*'
+          'src/**/*.{coffee,scss}'
+          'tests/**/*.{coffee,scss}'
           'README.md'
         ]
       options:

@@ -1,7 +1,7 @@
 ###
-HLF Event jQuery Extension v1.0
-Released under the MIT License
-Written with jQuery 1.7.2
+HLF Event jQuery Extension v1.0  
+Released under the MIT License  
+Written with jQuery 1.7.2  
 ###
 
 # jQuery Event Extension
