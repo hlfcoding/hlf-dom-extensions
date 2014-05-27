@@ -84,8 +84,7 @@ extension = ($, _, hlf) ->
       $trigger
         .removeData attr('timer')
         .removeData attr('intentional')
-    debugLog 'truemouseleave'
-    $trigger.trigger 'truemouseleave'
+    triggerEvent 'truemouseleave', $trigger
     return yes
 
   performCheck = (event, $trigger, state) ->
@@ -96,11 +95,7 @@ extension = ($, _, hlf) ->
     mouse.x.previous = event.pageX
     mouse.y.previous = event.pageY
     if state.intentional is yes and event.type is 'mouseover'
-      debugLog 'truemouseenter'
-      $trigger.trigger new $.Event(
-        'truemouseenter',
-        { pageX: mouse.x.current, pageY: mouse.y.current }
-      )
+      triggerEvent 'truemouseenter', $trigger
     state.timer.cleared = yes
     $trigger.data attr('intentional'), state.intentional
     $trigger.data attr('timer'), state.timer
@@ -108,6 +103,17 @@ extension = ($, _, hlf) ->
   track = (event) ->
     mouse.x.current = event.pageX
     mouse.y.current = event.pageY
+
+  triggerEvent = (name, $trigger) ->
+    switch name
+      when 'truemouseenter' then event =
+        new $.Event name, { pageX: mouse.x.current, pageY: mouse.y.current }
+      when 'truemouseleave' then event = name
+      else event = null
+    if event?
+      debugLog name
+      $trigger.trigger event
+    else return no
 
   $.event.special.truemouseenter =
     setup: (data, namespaces) ->
