@@ -7,7 +7,7 @@ Written with jQuery 1.7.2
 # jQuery Event Extension
 # ======================
 
-extension = ($, hlf) ->
+extension = ($, _, hlf) ->
 
   # Composed of three parts:
   #
@@ -27,9 +27,8 @@ extension = ($, hlf) ->
       interval: 300
       toString: (context) ->
         switch context
-          when 'data' then 'hlfHoverIntent'
-          when 'log'  then 'hover-intent:'
-          else 'hlf.HoverIntent'
+          when 'attr' then 'hlf-hover-intent'
+          else 'hlf.hoverIntent'
     mouse:
       x:
         current: 0
@@ -38,80 +37,100 @@ extension = ($, hlf) ->
         current: 0
         previous: 0
 
-  do (ns=hlf.hoverIntent, m=hlf.mouse) ->
+  do (hoverIntent = hlf.hoverIntent, mouse = hlf.mouse) ->
 
-    nsDat = ns.toString 'data'
-    nsLog = ns.toString 'log'
-    dat = (name) -> "#{nsDat}#{name}"
-    log = if ns.debug is on then hlf.log else $.noop
+    attr = (name='') -> "#{hoverIntent.toString 'attr'}#{name}"
 
-    check = (evt) ->
-      # `$t` for trigger.
-      $t = $ @
-      # - Get state.
-      intentional = $t.data(dat()) or yes # Default to show at first.
-      timer = $t.data(dat('Timer')) or { cleared: no, timeout:null }
-      sensitivity = $t.data(dat('Sensitivity')) or ns.sensitivity
-      interval = $t.data(dat('Interval')) or ns.interval
-      # - Guard.
-      if evt.type is 'mouseleave'
-        if timer.cleared is no
-          # - Clear state.
-          clearTimeout timer.timeout
-          $t.removeData(dat('Timer')).removeData(dat())
-        # - Trigger.
-        $t.trigger 'truemouseleave'
-        log nsLog, 'truemouseleave'
-        return
-      return if timer.cleared is no and timer.timeout?
-      # - Test.
-      timer.timeout = setTimeout ->
-        # log nsLog, 'timeout'
-        # - Measure and track.
-        intentional = Math.abs(m.x.previous - m.x.current) + Math.abs(m.y.previous - m.y.current) > sensitivity
-        intentional = intentional
-        m.x.previous = evt.pageX
-        m.y.previous = evt.pageY
-        if intentional is yes and evt.type is 'mouseover'
-          # - Trigger.
-          $t.trigger new $.Event 'truemouseenter', { pageX: m.x.current, pageY: m.y.current }
-          log nsLog, 'truemouseenter'
-        # - Save state.
-        timer.cleared = yes
-        $t.data dat(), intentional
-        $t.data dat('Timer'), timer
-      , interval
-      # - Save state.
-      timer.cleared = no
-      $t.data dat('Timer'), timer
+    log = $.noop
+    if hoverIntent.debug is on
+      arguments
+      log = -> hlf.log attr(), arguments...
 
-    track = (evt) ->
-      m.x.current = evt.pageX
-      m.y.current = evt.pageY
+    defaultState =
+      intentional: yes
+      timer: { cleared: no, timeout: null }
+      sensitivity: hoverIntent.sensitivity
+      interval: hoverIntent.interval
+
+    getComputedState = ($trigger) ->
+      state = {}
+      for key, value of defaultState
+        if $.isPlainObject value then value = _.clone value
+        state[key] = $trigger.data(attr(key)) or value
+      state
+
+    check = (event) ->
+      $trigger = $ @
+      state = getComputedState $trigger
+      log state
+      didTeardown = teardownCheckIfNeeded event, $trigger, state
+      if didTeardown is no then setupCheckIfNeeded event, $trigger, state
+
+    setupCheckIfNeeded = (event, $trigger, state) ->
+      return no if state.timer.cleared is no and state.timer.timeout?
+      log 'setup'
+      state.timer.timeout = setTimeout ->
+        log 'check and update'
+        performCheck event, $trigger, state
+      , state.interval
+      state.timer.cleared = no
+      $trigger.data attr('timer'), state.timer
+      return yes
+
+    teardownCheckIfNeeded = (event, $trigger, state) ->
+      if event.type is 'mouseleave'
+        log 'teardown'
+        if state.timer.cleared is no
+          clearTimeout state.timer.timeout
+          $trigger
+            .removeData attr('timer')
+            .removeData attr('intentional')
+        log 'truemouseleave'
+        $trigger.trigger 'truemouseleave'
+        return yes
+      return no
+
+    performCheck = (event, $trigger, state) ->
+      state.intentional =
+        (Math.abs(mouse.x.previous - mouse.x.current) +
+         Math.abs(mouse.y.previous - mouse.y.current)) >
+        state.sensitivity
+      mouse.x.previous = event.pageX
+      mouse.y.previous = event.pageY
+      if state.intentional is yes and event.type is 'mouseover'
+        log 'truemouseenter'
+        $trigger.trigger new $.Event(
+          'truemouseenter',
+          { pageX: mouse.x.current, pageY: mouse.y.current }
+        )
+      state.timer.cleared = yes
+      $trigger.data attr('intentional'), state.intentional
+      $trigger.data attr('timer'), state.timer
+
+
+    track = (event) ->
+      mouse.x.current = event.pageX
+      mouse.y.current = event.pageY
 
     $.event.special.truemouseenter =
       setup: (data, namespaces) ->
-        $(@).on
-          mouseover:  check
-          mousemove:  track
-
+        $(@).on   { mouseover: check, mousemove: track }
       teardown: (data, namespaces) ->
-        $(@).off
-          mouseover:  check
-          mousemove:  track
+        $(@).off  { mouseover: check, mousemove: track }
 
     $.event.special.truemouseleave =
       setup: (data, namespaces) ->
-        $(@).on
-          mouseleave: check
-
+        $(@).on   { mouseleave: check }
       teardown: (data, namespaces) ->
-        $(@).off
-          mouseleave: check
+        $(@).off  { mouseleave: check }
 
 # Export. Prefer AMD.
 if define? and define.amd?
-  define ['jquery', 'hlf/jquery.extension.hlf.core'], extension
+  define [
+    'jquery'
+    'underscore'
+    'hlf/jquery.extension.hlf.core'
+  ], extension
 else
-  extension jQuery, jQuery.hlf
+  extension jQuery, _, jQuery.hlf
 
