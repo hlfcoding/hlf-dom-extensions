@@ -9,44 +9,45 @@ extension = ($, _, hlf) ->
   _.templateSettings = interpolate: /\{\{(.+?)\}\}/g
 
   $.hlf =
-    createPlugin: (ns, apiClass, asSingleton=no) ->
-      ns.apiClass = apiClass
-      nsEvt = ns.toString 'event'
-      nsDat = ns.toString 'data'
-      return (opt, $ctx) ->
+    
+    createPlugin: (namespace, apiClass, asSingleton=no) ->
+      namespace.apiClass = apiClass
+      return (options, $context) ->
         $el = null # Set to right scope.
+
         boilerplate = ->
-          $root = if asSingleton is no then $el else $ctx
-          $root.addClass ns.toString 'class'
-          apiClass::_evt ?= (name) -> "#{name}#{nsEvt}"
-          apiClass::_dat ?= (name) -> "#{nsDat}#{name}"
-          apiClass::_log ?= if ns.debug is on then $.hlf.log else $.noop
-          apiClass::_nsLog ?= ns.toString 'log'
-          $root.data ns.toString(), new apiClass $el, opt, $ctx
+          $root = if asSingleton is no then $el else $context
+          $root.addClass namespace.toString 'class'
+          # - Memoize naming helpers for better performance.
+          apiClass::evt ?= _.memoize (name) -> "#{name}#{namespace.toString 'event'}"
+          apiClass::attr ?= _.memoize (name) -> "#{namespace.toString 'data'}#{name}"
+          # - Plugin-specific debugging.
+          apiClass::debugLog ?= if namespace.debug is off then $.noop else
+            -> $.hlf.debugLog namespace.toString('log'), arguments...
+          # - Instantiate and store instance.
+          $root.data namespace.toString(), new apiClass $el, options, $context
 
-        $ctx ?= $ 'body'
-        # - Try returning existing plugin api if no options are passed in.
-        api = @first().data ns.toString()
-        return api if api? and not opt?
-        # - Re-apply plugin.
-        opt = $.extend (deep=on), {}, ns.defaults, opt
-
+        $context ?= $ 'body'
+        # - First, try returning existing plugin api if no options are passed in.
+        api = @first().data namespace.toString()
+        return api if api? and not options?
+        # - Re-apply plugin, and handle requests for singletons.
+        options = $.extend (deep = on), {}, namespace.defaults, options
         if asSingleton is no
           return @each ->
             $el = $(@)
             boilerplate()
-
         else
           $el = @
           boilerplate()
 
     debug: on # Turn this off when going to production.
-    toString: -> 'hlf'
+    toString: _.memoize (context) -> 'hlf'
 
-  $.hlf.log = if $.hlf.debug is off then $.noop else
+  $.hlf.debugLog = if $.hlf.debug is off then $.noop else
     (if console.log.bind then console.log.bind(console) else console.log)
 
-  $.hlf
+  return $.hlf
 
 # Export. Prefer AMD.
 if define? and define.amd?

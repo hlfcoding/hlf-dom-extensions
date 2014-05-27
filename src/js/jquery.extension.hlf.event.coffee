@@ -10,7 +10,7 @@ Written with jQuery 1.7.2
 extension = ($, _, hlf) ->
 
   # Composed of three parts:
-  #
+  
   # 1. Extend main namespace with properties to store global state.
   # 2. Private functions to implement certain behaviors.
   # 3. Adapting the behaviors to custom events.
@@ -25,7 +25,7 @@ extension = ($, _, hlf) ->
       debug: off
       sensitivity: 8
       interval: 300
-      toString: (context) ->
+      toString: _.memoize (context) ->
         switch context
           when 'attr' then 'hlf-hover-intent'
           else 'hlf.hoverIntent'
@@ -41,10 +41,8 @@ extension = ($, _, hlf) ->
 
     attr = (name='') -> "#{hoverIntent.toString 'attr'}#{name}"
 
-    log = $.noop
-    if hoverIntent.debug is on
-      arguments
-      log = -> hlf.log attr(), arguments...
+    debugLog = if hoverIntent.debug is off then $.noop else
+      -> hlf.debugLog hoverIntent.toString('log'), arguments...
 
     defaultState =
       intentional: yes
@@ -62,15 +60,15 @@ extension = ($, _, hlf) ->
     check = (event) ->
       $trigger = $ @
       state = getComputedState $trigger
-      log state
+      debugLog state
       didTeardown = teardownCheckIfNeeded event, $trigger, state
       if didTeardown is no then setupCheckIfNeeded event, $trigger, state
 
     setupCheckIfNeeded = (event, $trigger, state) ->
       return no if state.timer.cleared is no and state.timer.timeout?
-      log 'setup'
+      debugLog 'setup'
       state.timer.timeout = setTimeout ->
-        log 'check and update'
+        debugLog 'check and update'
         performCheck event, $trigger, state
       , state.interval
       state.timer.cleared = no
@@ -79,13 +77,13 @@ extension = ($, _, hlf) ->
 
     teardownCheckIfNeeded = (event, $trigger, state) ->
       if event.type is 'mouseleave'
-        log 'teardown'
+        debugLog 'teardown'
         if state.timer.cleared is no
           clearTimeout state.timer.timeout
           $trigger
             .removeData attr('timer')
             .removeData attr('intentional')
-        log 'truemouseleave'
+        debugLog 'truemouseleave'
         $trigger.trigger 'truemouseleave'
         return yes
       return no
@@ -98,7 +96,7 @@ extension = ($, _, hlf) ->
       mouse.x.previous = event.pageX
       mouse.y.previous = event.pageY
       if state.intentional is yes and event.type is 'mouseover'
-        log 'truemouseenter'
+        debugLog 'truemouseenter'
         $trigger.trigger new $.Event(
           'truemouseenter',
           { pageX: mouse.x.current, pageY: mouse.y.current }

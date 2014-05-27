@@ -30,12 +30,11 @@ plugin = ($, _, hlf) ->
   # - `safeToggle` - Prevents orphan tips, since timers are sometimes unreliable.
   hlf.tip =
     debug: off
-    toString: (context) ->
+    toString: _.memoize (context) ->
       switch context
         when 'event'  then '.hlf.tip'
-        when 'data'   then 'hlfTip'
+        when 'data'   then 'hlf-tip'
         when 'class'  then 'js-tips'
-        when 'log'    then 'hlf-tip:'
         else 'hlf.tip'
 
     defaults: do (pre='js-tip-') ->
@@ -136,16 +135,16 @@ plugin = ($, _, hlf) ->
 
     _saveTriggerContent: ($t) ->
       title = $t.attr 'title'
-      if title then $t.data(@_dat('Content'), title).removeAttr 'title'
+      if title then $t.data(@attr('content'), title).removeAttr 'title'
 
     # - Link the trigger to the tip for:
     #   1. mouseenter, mouseleave (uses special events)
     #   2. mousemove
     _bindTrigger: ($t) ->
-      $t.on @_evt('truemouseenter'), (evt) =>
-        @_log @_nsLog, evt
+      $t.on @evt('truemouseenter'), (evt) =>
+        @debugLog evt
         @_onTriggerMouseMove evt
-      $t.on @_evt('truemouseleave'), (evt) => @sleepByTrigger $t
+      $t.on @evt('truemouseleave'), (evt) => @sleepByTrigger $t
       if @doFollow is on
         $t.on 'mousemove', @_onTriggerMouseMove
 
@@ -153,14 +152,14 @@ plugin = ($, _, hlf) ->
     _bind: () ->
       @$tip
         .on 'mouseenter', (evt) =>
-          @_log @_nsLog, 'enter tip'
+          @debugLog 'enter tip'
           if @_$tCurrent?
-            @_$tCurrent.data 'hlfIsActive', yes
+            @_$tCurrent.data @attr('is-active'), yes
             @wakeByTrigger @_$tCurrent
         .on 'mouseleave', (evt) =>
-          @_log @_nsLog, 'leave tip'
+          @debugLog 'leave tip'
           if @_$tCurrent?
-            @_$tCurrent.data 'hlfIsActive', no
+            @_$tCurrent.data @attr('is-active'), no
             @sleepByTrigger @_$tCurrent
       # - Handle adapting to window resize.
       if @o.autoDirection is on
@@ -177,9 +176,9 @@ plugin = ($, _, hlf) ->
     # - The tip content will change as it's being refreshed / initialized.
     _inflateByTrigger: ($t) ->
       do (c=@o.cls) =>
-        dir = if $t.data(@_dat 'Direction') then $t.data(@_dat 'Direction').split(' ') else @o.defaultDirection
-        @_log @_nsLog, 'update direction class', dir
-        @$tip.find(".#{c.content}").text($t.data @_dat 'Content').end()
+        dir = if $t.data(@attr 'direction') then $t.data(@attr 'direction').split(' ') else @o.defaultDirection
+        @debugLog 'update direction class', dir
+        @$tip.find(".#{c.content}").text($t.data @attr 'content').end()
              .removeClass([c.north, c.south, c.east, c.west].join ' ')
              .addClass($.trim _.reduce dir, ((cls, dir) => "#{cls} #{c[dir]}"), '')
 
@@ -199,7 +198,7 @@ plugin = ($, _, hlf) ->
         if @isDirection 'south', $t then offset.top += @o.cursorHeight
         offset.top += @o.cursorHeight
         @$tip.css offset
-        @_log @_nsLog, '_onTriggerMouseMove', @_state, offset
+        @debugLog '_onTriggerMouseMove', @_state, offset
 
     # - Auto-direction support. Given the context boundary, choose the best
     #   direction. The data is stored with the trigger and gets accessed elsewhere.
@@ -214,14 +213,14 @@ plugin = ($, _, hlf) ->
           when 'east'  then ok = (edge = tPosition.left + size.width)  and @_bounds.right > edge
           when 'north' then ok = (edge = tPosition.top - size.height) and @_bounds.top < edge
           when 'west'  then ok = (edge = tPosition.left - size.width) and @_bounds.left < edge
-        @_log @_nsLog, 'checkDir', "'#{$t.html()}'", dir, edge, size
+        @debugLog 'checkDir', "'#{$t.html()}'", dir, edge, size
         if not ok
           switch dir
             when 'south' then newDir[0] = 'north'
             when 'east'  then newDir[1] = 'west'
             when 'north' then newDir[0] = 'south'
             when 'west'  then newDir[1] = 'east'
-          $t.data @_dat('Direction'), newDir.join ' '
+          $t.data @attr('direction'), newDir.join ' '
       # - Prepare for checking subroutine.
       tPosition = $t.position()
       tWidth    = $t.outerWidth()
@@ -249,16 +248,16 @@ plugin = ($, _, hlf) ->
     sizeForTrigger: ($t, force=no) ->
       # - Try cached.
       size =
-        width:  $t.data @_dat 'Width'
-        height: $t.data @_dat 'Height'
+        width:  $t.data @attr 'width'
+        height: $t.data @attr 'height'
       return size if size.width and size.height
       # - Otherwise new.
-      @$tip.find(".#{@o.cls.content}").text($t.data @_dat 'Content').end()
+      @$tip.find(".#{@o.cls.content}").text($t.data @attr 'content').end()
         .css
           display: 'block',
           visibility: 'hidden'
-      $t.data @_dat('Width'),  (size.width = @$tip.outerWidth())
-      $t.data @_dat('Height'), (size.height = @$tip.outerHeight())
+      $t.data @attr('width'),  (size.width = @$tip.outerWidth())
+      $t.data @attr('height'), (size.height = @$tip.outerHeight())
       @$tip.css
         display: 'none',
         visibility: 'visible'
@@ -266,7 +265,7 @@ plugin = ($, _, hlf) ->
 
     # - Direction is actually an array.
     isDirection: (dir, $t) -> (@$tip.hasClass @o.cls[dir]) or
-      ((not $t? or not $t.data @_dat 'Direction') and _.include @o.defaultDirection, dir)
+      ((not $t? or not $t.data @attr 'direction') and _.include @o.defaultDirection, dir)
 
     # Methods
 
@@ -287,9 +286,9 @@ plugin = ($, _, hlf) ->
       # - Guard.
       if @_state is 'awake' and cb?
         cb()
-        @_log @_nsLog, 'quick update'
+        @debugLog 'quick update'
         return yes
-      if evt? then @_log @_nsLog, evt.type
+      if evt? then @debugLog evt.type
       return no if @_state in ['awake', 'waking']
       # - Prepare.
       delay = @o.ms.delay.in
@@ -304,7 +303,7 @@ plugin = ($, _, hlf) ->
           @_state = 'awake'
       # - Run.
       if @_state is 'sleeping'
-        @_log @_nsLog, 'clear sleep'
+        @debugLog 'clear sleep'
         clearTimeout @_sleepCountdown
         duration = 0
         wake()
@@ -357,7 +356,7 @@ plugin = ($, _, hlf) ->
     # - The main positioner. Uses the trigger offset as the base.
     #   TODO - Still needs to support all the directions.
     _moveToTrigger: ($t, baseOffset) ->
-      # @_log @_nsLog, baseOffset
+      # @debugLog baseOffset
       offset = $t.offset()
       if @o.snap.toXAxis is on
         if @isDirection 'south' then offset.top += $t.outerHeight()
@@ -374,7 +373,7 @@ plugin = ($, _, hlf) ->
     #   See `afterShow` hook.
     _bindTrigger: ($t) ->
       super $t
-      $t.on @_evt('truemouseleave'), (evt) => @_offsetStart = null
+      $t.on @evt('truemouseleave'), (evt) => @_offsetStart = null
 
     # ###Public
 
@@ -400,10 +399,10 @@ plugin = ($, _, hlf) ->
       else
         if @o.snap.toXAxis is on
           newOffset.top = @_offsetStart.top
-          @_log @_nsLog, 'xSnap'
+          @debugLog 'xSnap'
         if @o.snap.toYAxis is on
           newOffset.left = @_offsetStart.left
-          @_log @_nsLog, 'ySnap'
+          @debugLog 'ySnap'
       newOffset
 
   # Export
