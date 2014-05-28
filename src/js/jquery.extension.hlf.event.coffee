@@ -100,9 +100,10 @@ extension = ($, _, hlf) ->
     $trigger.data attr('intentional'), state.intentional
     $trigger.data attr('timer'), state.timer
 
-  track = (event) ->
+  trackMouse = _.throttle (event) ->
     mouse.x.current = event.pageX
     mouse.y.current = event.pageY
+  , 16
 
   triggerEvent = (name, $trigger) ->
     switch name
@@ -117,9 +118,9 @@ extension = ($, _, hlf) ->
 
   $.event.special.truemouseenter =
     setup: (data, namespaces) ->
-      $(@).on   { mouseover: check, mousemove: track }
+      $(@).on   { mouseover: check, mousemove: trackMouse }
     teardown: (data, namespaces) ->
-      $(@).off  { mouseover: check, mousemove: track }
+      $(@).off  { mouseover: check, mousemove: trackMouse }
 
   $.event.special.truemouseleave =
     setup: (data, namespaces) ->
