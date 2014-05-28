@@ -146,7 +146,13 @@ plugin = ($, _, hlf) ->
         @_onTriggerMouseMove evt
       $t.on @evt('truemouseleave'), (evt) => @sleepByTrigger $t
       if @doFollow is on
-        $t.on 'mousemove', @_onTriggerMouseMove
+        if window.requestAnimationFrame?
+          onMouseMove = (evt) =>
+            requestAnimationFrame (timestamp) =>
+              @_onTriggerMouseMove evt
+        else 
+          onMouseMove = _.throttle @_onTriggerMouseMove, 16
+        $t.on 'mousemove', onMouseMove
 
     # - Bind to the tip on hover so the toggling makes an exception.
     _bind: () ->
