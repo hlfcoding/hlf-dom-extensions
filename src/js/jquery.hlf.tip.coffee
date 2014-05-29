@@ -49,6 +49,16 @@ plugin = ($, _, hlf) ->
       defaultDirection: ['south', 'east']
       safeToggle: on
       autoDirection: on
+      tipTemplate: (containerClass) ->
+        stemHtml = "<div class='#{@classNames.stem}'></div>" if @doStem is on
+        """
+        <div class="#{containerClass}">
+          <div class="#{@classNames.inner}">
+            #{stemHtml}
+            <div class='#{@classNames.content}'></div>
+          </div>
+        </div>
+        """
       classNames: do ->
         classNames = {}
         keys = ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger']
@@ -136,10 +146,7 @@ plugin = ($, _, hlf) ->
         , ''
       )
       containerClass = $.trim [@classNames.tip, @classNames.follow, directionClass].join ' '
-      stemHtml = "<div class='#{@classNames.stem}'></div>" if @doStem is on
-      # - Not using block strings b/c Docco 0.3.0 can't correctly parse them.
-      html = "<div class=\"#{containerClass}\"><div class=\"#{@classNames.inner}\">#{stemHtml}<div class='#{@classNames.content}'>"+
-             "</div></div></div>"
+      html = @tipTemplate containerClass
 
     _saveTriggerContent: ($trigger) ->
       title = $trigger.attr 'title'
