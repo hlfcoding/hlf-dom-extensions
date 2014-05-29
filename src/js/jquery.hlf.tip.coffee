@@ -25,8 +25,8 @@ plugin = ($, _, hlf) ->
   #
   # - `ms.duration`- Duration of sleep and wake animations.
   # - `ms.delay` - Delay before sleeping and waking.
-  # - `cls.stem` - Empty to remove the stem.
-  # - `cls.follow` - Empty to disable cursor following.
+  # - `classNames.stem` - Empty to remove the stem.
+  # - `classNames.follow` - Empty to disable cursor following.
   # - `safeToggle` - Prevents orphan tips, since timers are sometimes unreliable.
   hlf.tip =
     debug: off
@@ -37,7 +37,7 @@ plugin = ($, _, hlf) ->
         when 'class'  then 'js-tips'
         else 'hlf.tip'
 
-    defaults: do (pre='js-tip-') ->
+    defaults: do (pre = 'js-tip-') ->
       ms:
         duration:
           in: 200
@@ -49,13 +49,12 @@ plugin = ($, _, hlf) ->
       defaultDirection: ['south', 'east']
       safeToggle: on
       autoDirection: on
-      cls: (->
-        cls = {}
-        _.each ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger'],
-          (key) -> cls[key] = "#{pre}#{key}"
-        cls.tip = 'js-tip'
-        return cls
-      )()
+      classNames: do ->
+        classNames = {}
+        keys = ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger']
+        (classNames[key] = "#{pre}#{key}") for key in keys
+        classNames.tip = 'js-tip'
+        classNames
 
   # Snap-Tip
   # --------
@@ -80,94 +79,107 @@ plugin = ($, _, hlf) ->
         when 'class'  then 'js-snap-tips'
         else 'hlf.snapTip'
 
-    defaults: do (pre='js-snap-tip-') ->
-      $.extend true, {}, hlf.tip.defaults,
+    defaults: do (pre = 'js-snap-tip-') ->
+      $.extend (deep = yes), {}, hlf.tip.defaults,
         snap:
           toTrigger: on
           toXAxis: off
           toYAxis: off
-        cls: (->
-          cls =
+        classNames: do ->
+          classNames =
             snap: {}
-          _.each
+          dictionary =
             toXAxis:   'x-side'
             toYAxis:   'y-side'
             toTrigger: 'trigger'
-          , (val, key) -> cls.snap[key] = "#{pre}#{val}"
-          cls.tip = 'js-tip js-snap-tip'
-          return cls
-        )()
+          (classNames.snap[key] = "#{pre}#{value}") for key, value of dictionary
+          classNames.tip = 'js-tip js-snap-tip'
+          classNames
 
   # Tip API
   # -------
   class Tip
 
-    constructor: (@$ts, @o, @$ctx) ->
-      _.bindAll @, '_onTriggerMouseMove', '_setBounds'
+    constructor: (@$triggers, options, @$context) ->
+      
+      # - Extend self with `options`.  
+      #   See default options for property names.
+      $.extend (deep = yes), @, options
+      # - Public properties.  
+      #   Also includes `$triggers`, `$context`.
       @$tip = $ '<div>'
-      @doStem = @o.cls.stem isnt ''
-      @doFollow = @o.cls.follow isnt ''
-      # - Toggle state: `awake`, `asleep`, `waking`, `sleeping`.
+      @doStem = @classNames.stem isnt ''
+      @doFollow = @classNames.follow isnt ''
+      # - Protected properties.  
+      #   `_state` toggles between: `awake`, `asleep`, `waking`, `sleeping`.
       @_state = 'asleep'
-      @_$tCurrent = null
-      # - Process tip
+      @_$currentTrigger = null
+      # - Process tip.
       @_render()
       @_bind()
-      # - Process triggers
-      @$ts.each (idx, el) =>
-        $t = $ el
-        $t.addClass @o.cls.trigger
-        @_saveTriggerContent $t
-        @_bindTrigger $t
-        @_updateDirectionByTrigger $t
+      # - Process triggers.
+      @$triggers.each (i, el) =>
+        $trigger = $ el
+        $trigger.addClass @classNames.trigger
+        @_saveTriggerContent $trigger
+        @_bindTrigger $trigger
+        @_updateDirectionByTrigger $trigger
+      # - Bind handler methods.
+      _.bindAll @, '_onTriggerMouseMove', '_setBounds'
 
     # ###Protected
 
     _defaultHtml: ->
-      do (c=@o.cls) =>
-        cDir = $.trim _.reduce @o.defaultDirection, ((cls, dir) => "#{cls} #{c[dir]}"), ''
-        containerClass = $.trim [c.tip, c.follow, cDir].join ' '
-        stemHtml = "<div class='#{c.stem}'></div>" if @doStem is on
-        # - Not using block strings b/c Docco 0.3.0 can't correctly parse them.
-        html = "<div class=\"#{containerClass}\"><div class=\"#{c.inner}\">#{stemHtml}<div class='#{c.content}'>"+
-               "</div></div></div>"
+      directionClass = $.trim(
+        _.reduce @defaultDirection, (classListMemo, directionComponent) =>
+          "#{classListMemo} #{@classNames[directionComponent]}"
+        , ''
+      )
+      containerClass = $.trim [@classNames.tip, @classNames.follow, directionClass].join ' '
+      stemHtml = "<div class='#{@classNames.stem}'></div>" if @doStem is on
+      # - Not using block strings b/c Docco 0.3.0 can't correctly parse them.
+      html = "<div class=\"#{containerClass}\"><div class=\"#{@classNames.inner}\">#{stemHtml}<div class='#{@classNames.content}'>"+
+             "</div></div></div>"
 
-    _saveTriggerContent: ($t) ->
-      title = $t.attr 'title'
-      if title then $t.data(@attr('content'), title).removeAttr 'title'
+    _saveTriggerContent: ($trigger) ->
+      title = $trigger.attr 'title'
+      if title?
+        $trigger
+          .data @attr('content'), title
+          .removeAttr 'title'
 
     # - Link the trigger to the tip for:
     #   1. mouseenter, mouseleave (uses special events)
     #   2. mousemove
-    _bindTrigger: ($t) ->
-      $t.on @evt('truemouseenter'), (evt) =>
-        @debugLog evt
-        @_onTriggerMouseMove evt
-      $t.on @evt('truemouseleave'), (evt) => @sleepByTrigger $t
+    _bindTrigger: ($trigger) ->
+      $trigger.on @evt('truemouseenter'), (event) =>
+        @debugLog event
+        @_onTriggerMouseMove event
+      $trigger.on @evt('truemouseleave'), (event) => @sleepByTrigger $trigger
       if @doFollow is on
         if window.requestAnimationFrame?
-          onMouseMove = (evt) =>
+          onMouseMove = (event) =>
             requestAnimationFrame (timestamp) =>
-              @_onTriggerMouseMove evt
+              @_onTriggerMouseMove event
         else 
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
-        $t.on 'mousemove', onMouseMove
+        $trigger.on 'mousemove', onMouseMove
 
     # - Bind to the tip on hover so the toggling makes an exception.
     _bind: () ->
       @$tip
-        .on 'mouseenter', (evt) =>
+        .on 'mouseenter', (event) =>
           @debugLog 'enter tip'
-          if @_$tCurrent?
-            @_$tCurrent.data @attr('is-active'), yes
-            @wakeByTrigger @_$tCurrent
-        .on 'mouseleave', (evt) =>
+          if @_$currentTrigger?
+            @_$currentTrigger.data @attr('is-active'), yes
+            @wakeByTrigger @_$currentTrigger
+        .on 'mouseleave', (event) =>
           @debugLog 'leave tip'
-          if @_$tCurrent?
-            @_$tCurrent.data @attr('is-active'), no
-            @sleepByTrigger @_$tCurrent
+          if @_$currentTrigger?
+            @_$currentTrigger.data @attr('is-active'), no
+            @sleepByTrigger @_$currentTrigger
       # - Handle adapting to window resize.
-      if @o.autoDirection is on
+      if @autoDirection is on
         $(window).resize _.debounce @_setBounds, 300
 
     # - The tip should only need to be rendered once.
@@ -175,102 +187,114 @@ plugin = ($, _, hlf) ->
       return no if @$tip.html().length
       html = @htmlOnRender()
       if not (html? and html.length) then html = @_defaultHtml()
-      @$tip = $(html).addClass @o.cls.follow
-      @$tip.prependTo @$ctx
+      @$tip = $(html).addClass @classNames.follow
+      @$tip.prependTo @$context
 
     # - The tip content will change as it's being refreshed / initialized.
-    _inflateByTrigger: ($t) ->
-      do (c=@o.cls) =>
-        dir = if $t.data(@attr 'direction') then $t.data(@attr 'direction').split(' ') else @o.defaultDirection
-        @debugLog 'update direction class', dir
-        @$tip.find(".#{c.content}").text($t.data @attr 'content').end()
-             .removeClass([c.north, c.south, c.east, c.west].join ' ')
-             .addClass($.trim _.reduce dir, ((cls, dir) => "#{cls} #{c[dir]}"), '')
-
+    _inflateByTrigger: ($trigger) ->
+      compoundDirection = if $trigger.data(@attr 'direction') then $trigger.data(@attr 'direction').split(' ') else @defaultDirection
+      @debugLog 'update direction class', compoundDirection
+      @$tip
+        .find ".#{@classNames.content}"
+          .text $trigger.data @attr 'content'
+        .end()
+        .removeClass [
+          @classNames.north
+          @classNames.south 
+          @classNames.east
+          @classNames.west
+        ].join ' '
+        .addClass $.trim(
+          _.reduce compoundDirection, (classListMemo, directionComponent) =>
+            "#{classListMemo} #{@classNames[directionComponent]}"
+          , ''
+        )
 
     # - The main toggle handler. Hooked into by `offsetOnTriggerMouseMove`.
-    _onTriggerMouseMove: (evt) ->
-      return no if not evt.pageX?
-      $t = if ($t = $(evt.currentTarget)) and $t.hasClass(@o.cls.trigger) then $t else $t.closest(@o.cls.trigger)
-      return no if not $t.length
-      @wakeByTrigger $t, evt, =>
+    _onTriggerMouseMove: (event) ->
+      return no if not event.pageX?
+      $trigger = if (
+        $trigger = $(event.currentTarget)) and 
+        $trigger.hasClass(@classNames.trigger
+      ) then $trigger else $trigger.closest(@classNames.trigger)
+      return no if not $trigger.length
+      @wakeByTrigger $trigger, event, =>
         offset =
-          top: evt.pageY
-          left: evt.pageX
-        offset = @offsetOnTriggerMouseMove(evt, offset, $t) or offset
-        if @isDirection 'north', $t then offset.top -= @$tip.outerHeight() + @o.cursorHeight
-        if @isDirection 'west',  $t then offset.left -= @$tip.outerWidth()
-        if @isDirection 'south', $t then offset.top += @o.cursorHeight
-        offset.top += @o.cursorHeight
+          top: event.pageY
+          left: event.pageX
+        offset = @offsetOnTriggerMouseMove(event, offset, $trigger) or offset
+        if @isDirection('north', $trigger) then offset.top -= @$tip.outerHeight() + @cursorHeight
+        if @isDirection('west',  $trigger) then offset.left -= @$tip.outerWidth()
+        if @isDirection('south', $trigger) then offset.top += @cursorHeight
+        offset.top += @cursorHeight
         @$tip.css offset
         @debugLog '_onTriggerMouseMove', @_state, offset
 
     # - Auto-direction support. Given the context boundary, choose the best
     #   direction. The data is stored with the trigger and gets accessed elsewhere.
-    _updateDirectionByTrigger: ($t) ->
-      return no if @o.autoDirection is off
+    _updateDirectionByTrigger: ($trigger) ->
+      return no if @autoDirection is off
       # - Check if adapting is needed. Adapt and store as needed.
-      checkDir = (dir) =>
+      checkDirectionComponent = (component) =>
         if not @_bounds? then @_setBounds()
         ok = yes
-        switch dir
-          when 'south' then ok = (edge = tPosition.top + tHeight + size.height) and @_bounds.bottom > edge
-          when 'east'  then ok = (edge = tPosition.left + size.width)  and @_bounds.right > edge
-          when 'north' then ok = (edge = tPosition.top - size.height) and @_bounds.top < edge
-          when 'west'  then ok = (edge = tPosition.left - size.width) and @_bounds.left < edge
-        @debugLog 'checkDir', "'#{$t.html()}'", dir, edge, size
+        switch component
+          when 'south' then ok = (edge = triggerPosition.top + triggerHeight + tipSize.height) and @_bounds.bottom > edge
+          when 'east'  then ok = (edge = triggerPosition.left + tipSize.width) and @_bounds.right > edge
+          when 'north' then ok = (edge = triggerPosition.top - tipSize.height) and @_bounds.top < edge
+          when 'west'  then ok = (edge = triggerPosition.left - tipSize.width) and @_bounds.left < edge
+        @debugLog 'checkDirectionComponent', "'#{$trigger.html()}'", component, edge, tipSize
         if not ok
-          switch dir
-            when 'south' then newDir[0] = 'north'
-            when 'east'  then newDir[1] = 'west'
-            when 'north' then newDir[0] = 'south'
-            when 'west'  then newDir[1] = 'east'
-          $t.data @attr('direction'), newDir.join ' '
+          switch component
+            when 'south' then newDirection[0] = 'north'
+            when 'east'  then newDirection[1] = 'west'
+            when 'north' then newDirection[0] = 'south'
+            when 'west'  then newDirection[1] = 'east'
+          $trigger.data @attr('direction'), newDirection.join ' '
       # - Prepare for checking subroutine.
-      tPosition = $t.position()
-      tWidth    = $t.outerWidth()
-      tHeight   = $t.outerHeight()
-      size      = @sizeForTrigger $t
-      newDir = _.clone @o.defaultDirection
-      # - Check each direction.
-      checkDir dir for dir in @o.defaultDirection
+      triggerPosition = $trigger.position()
+      triggerWidth    = $trigger.outerWidth()
+      triggerHeight   = $trigger.outerHeight()
+      tipSize         = @sizeForTrigger $trigger
+      newDirection    = _.clone @defaultDirection
+      # - Check each direction component.
+      checkDirectionComponent component for component in @defaultDirection
 
     _setBounds: ->
-      $ctx = if @$ctx.is('body') then $(window) else @$ctx
+      $context = if @$context.is('body') then $(window) else @$context
       @_bounds =
-        top:    parseInt @$ctx.css('padding-top'), 10
-        left:   parseInt @$ctx.css('padding-left'), 10
-        bottom: $ctx.innerHeight()
-        right:  @$ctx.innerWidth()
+        top:    parseInt @$context.css('padding-top'), 10
+        left:   parseInt @$context.css('padding-left'), 10
+        bottom: $context.innerHeight()
+        right:  @$context.innerWidth()
 
     # ###Public
 
-    # Accessors
-    options: -> @o
-    tip: -> @$tip
     # - Does a stealth render to find tip size. The data is stored with the
     #   trigger and gets accessed elsewhere.
-    sizeForTrigger: ($t, force=no) ->
+    sizeForTrigger: ($trigger, force=no) ->
       # - Try cached.
       size =
-        width:  $t.data @attr 'width'
-        height: $t.data @attr 'height'
+        width:  $trigger.data @attr 'width'
+        height: $trigger.data @attr 'height'
       return size if size.width and size.height
       # - Otherwise new.
-      @$tip.find(".#{@o.cls.content}").text($t.data @attr 'content').end()
+      @$tip.find(".#{@classNames.content}").text($trigger.data @attr 'content').end()
         .css
           display: 'block',
           visibility: 'hidden'
-      $t.data @attr('width'),  (size.width = @$tip.outerWidth())
-      $t.data @attr('height'), (size.height = @$tip.outerHeight())
+      $trigger.data @attr('width'),  (size.width = @$tip.outerWidth())
+      $trigger.data @attr('height'), (size.height = @$tip.outerHeight())
       @$tip.css
         display: 'none',
         visibility: 'visible'
       size
 
     # - Direction is actually an array.
-    isDirection: (dir, $t) -> (@$tip.hasClass @o.cls[dir]) or
-      ((not $t? or not $t.data @attr 'direction') and _.include @o.defaultDirection, dir)
+    isDirection: (directionComponent, $trigger) -> 
+      (@$tip.hasClass @classNames[directionComponent]) or
+      ((not $trigger? or not $trigger.data @attr 'direction') and 
+        _.include @defaultDirection, directionComponent)
 
     # Methods
 
@@ -282,29 +306,29 @@ plugin = ($, _, hlf) ->
     #   4. If we are in the middle of sleeping, stop and speed up our waking
     #      transition.
     #   5. Update our trigger cache.
-    wakeByTrigger: ($t, evt, cb) ->
+    wakeByTrigger: ($trigger, event, onWake) ->
       # - Check.
-      triggerChanged = not $t.is @_$tCurrent
+      triggerChanged = not $trigger.is @_$currentTrigger
       if triggerChanged
-        @_inflateByTrigger $t
-        @_$tCurrent = $t
+        @_inflateByTrigger $trigger
+        @_$currentTrigger = $trigger
       # - Guard.
-      if @_state is 'awake' and cb?
-        cb()
+      if @_state is 'awake' and onWake?
+        onWake()
         @debugLog 'quick update'
         return yes
-      if evt? then @debugLog evt.type
+      if event? then @debugLog event.type
       return no if @_state in ['awake', 'waking']
       # - Prepare.
-      delay = @o.ms.delay.in
-      duration = @o.ms.duration.in
+      delay = @ms.delay.in
+      duration = @ms.duration.in
       wake = =>
-        @onShow triggerChanged, evt
+        @onShow triggerChanged, event
         @$tip.fadeIn duration, =>
           if triggerChanged
-            cb() if cb?
-          if @o.safeToggle is on then @$tip.siblings(@o.cls.tip).fadeOut()
-          @afterShow triggerChanged, evt
+            onWake() if onWake?
+          if @safeToggle is on then @$tip.siblings(@classNames.tip).fadeOut()
+          @afterShow triggerChanged, event
           @_state = 'awake'
       # - Run.
       if @_state is 'sleeping'
@@ -312,7 +336,7 @@ plugin = ($, _, hlf) ->
         clearTimeout @_sleepCountdown
         duration = 0
         wake()
-      else if (evt? and evt.type is 'truemouseenter')
+      else if event? and event.type is 'truemouseenter'
         triggerChanged = yes
         @_state = 'waking'
         @_wakeCountdown = setTimeout wake, delay
@@ -320,92 +344,91 @@ plugin = ($, _, hlf) ->
       yes
 
     # - Much simpler toggler. As long as tip isn't truly visible, sleep is unneeded.
-    sleepByTrigger: ($t) ->
+    sleepByTrigger: ($trigger) ->
       return no if @_state isnt 'awake'
       @_state = 'sleeping'
       clearTimeout @_wakeCountdown
       @_sleepCountdown = setTimeout =>
         @onHide()
-        @$tip.fadeOut @o.ms.duration.out, =>
+        @$tip.fadeOut @ms.duration.out, =>
           @_state = 'asleep'
           @afterHide()
-
-      , @o.ms.delay.out
+      , @ms.delay.out
       # - Success.
       yes
 
     # Hooks
-    onShow: (triggerChanged, evt) -> return
+    onShow: (triggerChanged, event) -> return
     onHide: $.noop
-    afterShow: (triggerChanged, evt) -> return
+    afterShow: (triggerChanged, event) -> return
     afterHide: $.noop
     htmlOnRender: $.noop
-    offsetOnTriggerMouseMove: (evt, offset, $t) -> no
+    offsetOnTriggerMouseMove: (event, offset, $trigger) -> no
 
   # SnapTip API
   # -----------
   class SnapTip extends Tip
 
-    constructor: ($ts, o, $ctx) ->
-      super $ts, o, $ctx
-      if @o.snap.toTrigger is off
-        @o.snap.toTrigger = @o.snap.toXAxis is on or @o.snap.toYAxis is on
-      if @o.snap.toXAxis is on then @o.cursorHeight = 0
-      if @o.snap.toYAxis is on then @o.cursorHeight = 2
+    constructor: ($triggers, options, $context) ->
+      super $triggers, options, $context
+      if @snap.toTrigger is off
+        @snap.toTrigger = @snap.toXAxis is on or @snap.toYAxis is on
+      if @snap.toXAxis is on then @cursorHeight = 0
+      if @snap.toYAxis is on then @cursorHeight = 2
       @_offsetStart = null
       # - Add snapping config as classes.
-      _.each @o.snap, (active, prop) => if active then @$tip.addClass @o.cls.snap[prop]
+      @$tip.addClass @classNames.snap[key] for key, active of @snap when active
 
     # ###Protected
 
     # - The main positioner. Uses the trigger offset as the base.
     #   TODO - Still needs to support all the directions.
-    _moveToTrigger: ($t, baseOffset) ->
-      # @debugLog baseOffset
-      offset = $t.offset()
-      if @o.snap.toXAxis is on
-        if @isDirection 'south' then offset.top += $t.outerHeight()
-        if @o.snap.toYAxis is off
+    _moveToTrigger: ($trigger, baseOffset) ->
+      #@debugLog baseOffset
+      offset = $trigger.offset()
+      if @snap.toXAxis is on
+        if @isDirection 'south' then offset.top += $trigger.outerHeight()
+        if @snap.toYAxis is off
           offset.left = baseOffset.left - (@$tip.outerWidth() - 12)/ 2 # Note arbitrary buffer offset.
-      if @o.snap.toYAxis is on
-        if @isDirection 'east' then offset.left += $t.outerWidth()
-        if @o.snap.toXAxis is off
+      if @snap.toYAxis is on
+        if @isDirection 'east' then offset.left += $trigger.outerWidth()
+        if @snap.toXAxis is off
           offset.top = baseOffset.top - @$tip.outerHeight() / 2
       offset
 
     # - Bind to get initial position for snapping. This is only for snapping
     #   without snapping to the trigger, which is only what's currently supported.
     #   See `afterShow` hook.
-    _bindTrigger: ($t) ->
-      super $t
-      $t.on @evt('truemouseleave'), (evt) => @_offsetStart = null
+    _bindTrigger: ($trigger) ->
+      super $trigger
+      $trigger.on @evt('truemouseleave'), (event) => @_offsetStart = null
 
     # ###Public
 
     # Hooked
 
     # - Make the tip invisible while it's being positioned, then reveal it.
-    onShow: (triggerChanged, evt) ->
+    onShow: (triggerChanged, event) ->
       if triggerChanged is yes
         @$tip.css 'visibility', 'hidden'
 
-    afterShow: (triggerChanged, evt) ->
+    afterShow: (triggerChanged, event) ->
       if triggerChanged is yes
         @$tip.css 'visibility', 'visible'
         @_offsetStart =
-          top: evt.pageY
-          left: evt.pageX
+          top: event.pageY
+          left: event.pageX
 
     # - Main positioning handler.
-    offsetOnTriggerMouseMove: (evt, offset, $t) ->
+    offsetOnTriggerMouseMove: (event, offset, $trigger) ->
       newOffset = _.clone offset
-      if @o.snap.toTrigger is on
-        newOffset = @_moveToTrigger $t, newOffset
+      if @snap.toTrigger is on
+        newOffset = @_moveToTrigger $trigger, newOffset
       else
-        if @o.snap.toXAxis is on
+        if @snap.toXAxis is on
           newOffset.top = @_offsetStart.top
           @debugLog 'xSnap'
-        if @o.snap.toYAxis is on
+        if @snap.toYAxis is on
           newOffset.left = @_offsetStart.left
           @debugLog 'ySnap'
       newOffset
