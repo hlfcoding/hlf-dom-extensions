@@ -73,12 +73,11 @@ plugin = ($, _, hlf) ->
   #   axis-snapping. On by default.
   hlf.snapTip =
     debug: off
-    toString: (context) ->
+    toString: _.memoize (context) ->
       switch context
-        when 'event'  then '.hlf.snapTip'
-        when 'data'   then 'hlfSnapTip'
+        when 'event'  then '.hlf.snap-tip'
+        when 'data'   then 'hlf-snap-tip'
         when 'class'  then 'js-snap-tips'
-        when 'log'    then 'hlf-snap-tip:'
         else 'hlf.snapTip'
 
     defaults: do (pre='js-snap-tip-') ->
