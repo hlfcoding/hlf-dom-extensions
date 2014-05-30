@@ -4,30 +4,32 @@ Released under the MIT License
 Written with jQuery 1.7.2  
 ###
 
-# Tooltip Plugins
-# ===============
+# jQuery Tooltip Plugin
+# =====================
 
+# The base `tip` plugin features basic trigger element parsing, direction-based
+# attachment, appearance state management and presentation by fading, custom tip
+# content, and use of the `hlf.hoverIntent` event extension. The tip object is
+# shared amongst the provided triggers.
+
+# The extended `snapTip` plugin extends the base tip and adds snapping-to-
+# trigger-element behavior. By default locks into place. If one of the snap-to-
+# axis options is turned off, the tip will slide along the remaining locked
+# axis.
+
+# Note the majority of presentation state logic is in the plugin stylesheet. We
+# update the presentation state by using `classNames`.
+
+# Lastly, like any other module in this library, we're using proper namespacing
+# whenever there is an added endpoint to the jQuery interface. This is done with
+# the custom `toString` methods. Also, plugin namespaces (under the root
+# `$.hlf`) each have a `debug` flag allowing more granular logging. Each
+# plugin's API is also entirely public, although some methods are intended as
+# protected given their name. Access the plugin singleton is as simple as via
+# `$('body').tip()` or `$('body').snapTip()`, although using the `toString` and
+# jQuery data methods is the same.
 plugin = ($, _, hlf) ->
-
-  # Tip
-  # ---
-  # Basic tooltip plugin with fading. Fades in and out based on give delays. Awake
-  # and asleep states can be read and are set after fade animations. This plugin
-  # requires css display logic for the classes. The API class has hooks; delegation
-  # is used instead of events due to call frequency.
-  #
-  # The tip object is shared by the input jQuery collection.
-  #
-  # Requires the `hoverIntent` special events, since they can be customized to
-  # accept delays and provide pageX and pageY event properties.
-  #
-  # Options:
-  #
-  # - `ms.duration`- Duration of sleep and wake animations.
-  # - `ms.delay` - Delay before sleeping and waking.
-  # - `classNames.stem` - Empty to remove the stem.
-  # - `classNames.follow` - Empty to disable cursor following.
-  # - `safeToggle` - Prevents orphan tips, since timers are sometimes unreliable.
+  
   hlf.tip =
     debug: off
     toString: _.memoize (context) ->
@@ -37,7 +39,12 @@ plugin = ($, _, hlf) ->
         when 'class'  then 'js-tips'
         else 'hlf.tip'
 
+    # Tip Options
+    # -----------
+    # Note the plugin instance gets extended with the options.
     defaults: do (pre = 'js-tip-') ->
+      # - `ms.duration` are the durations of sleep and wake animations.
+      # - `ms.delay` are the delays before sleeping and waking.
       ms:
         duration:
           in: 200
@@ -46,9 +53,16 @@ plugin = ($, _, hlf) ->
           in: 300
           out: 300
       cursorHeight: 6
+      # - Note that the direction data structure must be an array of
+      #   `components`, and conventionally with north/south first.
       defaultDirection: ['south', 'east']
+      # - `safeToggle` prevents orphan tips, since timers are sometimes unreliable.
       safeToggle: on
+      # - `autoDirection` automatically changes the direction so the tip can
+      #   better fit inside the viewport.
       autoDirection: on
+      # - `tipTemplate` should return interpolated html when given the
+      #   additional container class list. Its context is the plugin instance.
       tipTemplate: (containerClass) ->
         stemHtml = "<div class='#{@classNames.stem}'></div>" if @doStem is on
         """
@@ -59,6 +73,8 @@ plugin = ($, _, hlf) ->
           </div>
         </div>
         """
+      # - `classNames.stem` - Empty string to remove the stem.
+      # - `classNames.follow` - Empty string to disable cursor following.
       classNames: do ->
         classNames = {}
         keys = ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger']
@@ -66,20 +82,6 @@ plugin = ($, _, hlf) ->
         classNames.tip = 'js-tip'
         classNames
 
-  # Snap-Tip
-  # --------
-  # Extends the base tip and adds snapping-to-trigger-element behavior. By default
-  # locks into place. If one of the snap-to-axis options is turned off, the tip will
-  # slide along the remaining locked axis.
-  #
-  # The tip object is shared by the input jQuery collection.
-  #
-  # Options:
-  #
-  # - `snap.xSnap` - Set empty to disable snapping along x-axis. Off by default.
-  # - `snap.ySnap` - Set empty to disable snapping along y-axis. Off by default.
-  # - `snap.snap` - Set empty to disable snapping to trigger. Builds on top of
-  #   axis-snapping. On by default.
   hlf.snapTip =
     debug: off
     toString: _.memoize (context) ->
@@ -89,8 +91,15 @@ plugin = ($, _, hlf) ->
         when 'class'  then 'js-snap-tips'
         else 'hlf.snapTip'
 
+    # Snap-Tip Options
+    # ----------------
+    # These options extend the tip options.
     defaults: do (pre = 'js-snap-tip-') ->
       $.extend (deep = yes), {}, hlf.tip.defaults,
+        # - `snap.toXAxis` is the switch for snapping along x-axis. Off by default.
+        # - `snap.toYAxis` is the switch for snapping along y-axis. Off by default.
+        # - `snap.toTrigger` is the switch snapping to trigger that builds on top of
+        #   axis-snapping. On by default.
         snap:
           toTrigger: on
           toXAxis: off
@@ -103,6 +112,7 @@ plugin = ($, _, hlf) ->
             toYAxis:   'y-side'
             toTrigger: 'trigger'
           (classNames.snap[key] = "#{pre}#{value}") for key, value of dictionary
+          # Update our tip class.
           classNames.tip = 'js-tip js-snap-tip'
           classNames
 
