@@ -9,7 +9,7 @@ extension = ($, _, hlf) ->
   _.templateSettings = interpolate: /\{\{(.+?)\}\}/g
 
   $.hlf =
-    
+
     createPlugin: (namespace, apiClass, asSingleton=no) ->
       namespace.apiClass = apiClass
       return (options, $context) ->
@@ -25,11 +25,11 @@ extension = ($, _, hlf) ->
           apiClass::debugLog ?= if namespace.debug is off then $.noop else
             -> $.hlf.debugLog namespace.toString('log'), arguments...
           # - Instantiate and store instance.
-          $root.data namespace.toString(), new apiClass $el, options, $context
+          $root.data namespace.toString('data'), new apiClass $el, options, $context
 
         $context ?= $ 'body'
         # - First, try returning existing plugin api if no options are passed in.
-        api = @first().data namespace.toString()
+        api = @first().data namespace.toString('data')
         return api if api? and not options?
         # - Re-apply plugin, and handle requests for singletons.
         options = $.extend (deep = on), {}, namespace.defaults, options
@@ -40,6 +40,8 @@ extension = ($, _, hlf) ->
         else
           $el = @
           boilerplate()
+
+        @
 
     debug: on # Turn this off when going to production.
     toString: _.memoize (context) -> 'hlf'
