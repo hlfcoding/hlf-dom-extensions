@@ -124,6 +124,8 @@ plugin = ($, _, hlf) ->
       
       # - Extend self with `options`.  
       #   See default options for property names.
+      # Per convention, bind handler methods here.
+      _.bindAll @, '_onTriggerMouseMove', '_setBounds'
       $.extend (deep = yes), @, options
       # - Public properties.  
       #   Also includes `$triggers`, `$context`.
@@ -144,8 +146,6 @@ plugin = ($, _, hlf) ->
         @_saveTriggerContent $trigger
         @_bindTrigger $trigger
         @_updateDirectionByTrigger $trigger
-      # - Bind handler methods.
-      _.bindAll @, '_onTriggerMouseMove', '_setBounds'
 
     # ###Protected
 
@@ -183,7 +183,7 @@ plugin = ($, _, hlf) ->
         $trigger.on 'mousemove', onMouseMove
 
     # - Bind to the tip on hover so the toggling makes an exception.
-    _bind: () ->
+    _bind: ->
       @$tip
         .on 'mouseenter', (event) =>
           @debugLog 'enter tip'
@@ -200,7 +200,7 @@ plugin = ($, _, hlf) ->
         $(window).resize _.debounce @_setBounds, 300
 
     # - The tip should only need to be rendered once.
-    _render: () ->
+    _render: ->
       return no if @$tip.html().length
       html = @htmlOnRender()
       if not (html? and html.length) then html = @_defaultHtml()
@@ -209,11 +209,11 @@ plugin = ($, _, hlf) ->
 
     # - The tip content will change as it's being refreshed / initialized.
     _inflateByTrigger: ($trigger) ->
-      compoundDirection = if $trigger.data(@attr 'direction') then $trigger.data(@attr 'direction').split(' ') else @defaultDirection
+      compoundDirection = if $trigger.data(@attr('direction')) then $trigger.data(@attr('direction')).split(' ') else @defaultDirection
       @debugLog 'update direction class', compoundDirection
       @$tip
         .find ".#{@classNames.content}"
-          .text $trigger.data @attr 'content'
+          .text $trigger.data @attr('content')
         .end()
         .removeClass [
           @classNames.north
@@ -231,8 +231,8 @@ plugin = ($, _, hlf) ->
     _onTriggerMouseMove: (event) ->
       return no if not event.pageX?
       $trigger = if (
-        $trigger = $(event.currentTarget)) and 
-        $trigger.hasClass(@classNames.trigger
+        ($trigger = $(event.currentTarget)) and
+        $trigger.hasClass @classNames.trigger
       ) then $trigger else $trigger.closest(@classNames.trigger)
       return no if not $trigger.length
       @wakeByTrigger $trigger, event, =>
@@ -251,8 +251,12 @@ plugin = ($, _, hlf) ->
     #   direction. The data is stored with the trigger and gets accessed elsewhere.
     _updateDirectionByTrigger: ($trigger) ->
       return no if @autoDirection is off
-      # - Check if adapting is needed. Adapt and store as needed.
-      checkDirectionComponent = (component) =>
+      triggerPosition = $trigger.position()
+      triggerWidth    = $trigger.outerWidth()
+      triggerHeight   = $trigger.outerHeight()
+      tipSize         = @sizeForTrigger $trigger
+      newDirection    = _.clone @defaultDirection
+      for component in @defaultDirection
         if not @_bounds? then @_setBounds()
         ok = yes
         switch component
@@ -268,14 +272,6 @@ plugin = ($, _, hlf) ->
             when 'north' then newDirection[0] = 'south'
             when 'west'  then newDirection[1] = 'east'
           $trigger.data @attr('direction'), newDirection.join ' '
-      # - Prepare for checking subroutine.
-      triggerPosition = $trigger.position()
-      triggerWidth    = $trigger.outerWidth()
-      triggerHeight   = $trigger.outerHeight()
-      tipSize         = @sizeForTrigger $trigger
-      newDirection    = _.clone @defaultDirection
-      # - Check each direction component.
-      checkDirectionComponent component for component in @defaultDirection
 
     _setBounds: ->
       $context = if @$context.is('body') then $(window) else @$context
@@ -283,7 +279,7 @@ plugin = ($, _, hlf) ->
         top:    parseInt @$context.css('padding-top'), 10
         left:   parseInt @$context.css('padding-left'), 10
         bottom: $context.innerHeight()
-        right:  @$context.innerWidth()
+        right:  $context.innerWidth()
 
     # ###Public
 
@@ -292,13 +288,16 @@ plugin = ($, _, hlf) ->
     sizeForTrigger: ($trigger, force=no) ->
       # - Try cached.
       size =
-        width:  $trigger.data @attr 'width'
-        height: $trigger.data @attr 'height'
+        width:  $trigger.data @attr('width')
+        height: $trigger.data @attr('height')
       return size if size.width and size.height
       # - Otherwise new.
-      @$tip.find(".#{@classNames.content}").text($trigger.data @attr 'content').end()
+      @$tip
+        .find ".#{@classNames.content}"
+          .text $trigger.data @attr('content')
+        .end()
         .css
-          display: 'block',
+          display: 'block'
           visibility: 'hidden'
       $trigger.data @attr('width'),  (size.width = @$tip.outerWidth())
       $trigger.data @attr('height'), (size.height = @$tip.outerHeight())
@@ -308,10 +307,13 @@ plugin = ($, _, hlf) ->
       size
 
     # - Direction is actually an array.
-    isDirection: (directionComponent, $trigger) -> 
-      (@$tip.hasClass @classNames[directionComponent]) or
-      ((not $trigger? or not $trigger.data @attr 'direction') and 
-        _.include @defaultDirection, directionComponent)
+    isDirection: (directionComponent, $trigger) ->
+      (
+        @$tip.hasClass(@classNames[directionComponent]) or (
+          (not $trigger? or not $trigger.data(@attr('direction'))) and 
+          _.include(@defaultDirection, directionComponent)
+        )
+      )
 
     # Methods
 
@@ -375,9 +377,9 @@ plugin = ($, _, hlf) ->
       yes
 
     # Hooks
-    onShow: (triggerChanged, event) -> return
+    onShow: (triggerChanged, event) -> undefined
     onHide: $.noop
-    afterShow: (triggerChanged, event) -> return
+    afterShow: (triggerChanged, event) -> undefined
     afterHide: $.noop
     htmlOnRender: $.noop
     offsetOnTriggerMouseMove: (event, offset, $trigger) -> no
