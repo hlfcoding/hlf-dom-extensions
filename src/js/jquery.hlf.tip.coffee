@@ -1,11 +1,9 @@
 ###
-HLF Tip jQuery Plugin v2.0.1  
+HLF Tip jQuery Plugin
+=====================
 Released under the MIT License  
 Written with jQuery 1.7.2  
 ###
-
-# jQuery Tooltip Plugin
-# =====================
 
 # The base `tip` plugin features basic trigger element parsing, direction-based
 # attachment, cursor following, appearance state management and presentation by

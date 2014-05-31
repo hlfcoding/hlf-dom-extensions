@@ -1,13 +1,11 @@
 ###
-HLF Event jQuery Extension v1.0  
+HLF Event jQuery Extension
+==========================
 Released under the MIT License  
 Written with jQuery 1.7.2  
 ###
 
 #!For working docs generation, disable automatic trailing whitespace trimming.
-
-# jQuery Event Extension
-# ======================
 
 # This extension adds custom events to jQuery. It general, the process is
 # composed of three parts:

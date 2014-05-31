@@ -1,5 +1,6 @@
 ###
-HLF Core jQuery Extension v1.0  
+HLF Core jQuery Extension
+=========================
 Released under the MIT License  
 Written with jQuery 1.7.2  
 ###
