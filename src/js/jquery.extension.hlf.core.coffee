@@ -13,9 +13,16 @@ extension = ($, _, hlf) ->
 
     createPlugin: (options) ->
       name = options.name
+      safeName = "#{@toString()}#{name[0].toUpperCase()}#{name[1..]}"
       namespace = options.namespace
       apiClass = namespace.apiClass = options.apiClass
-      return (options, $context) ->
+      _noConflict = namespace.noConflict
+      @noConflicts.push (namespace.noConflict = ->
+        if _.isFunction(_noConflict) then _noConflict()
+        $.fn[name] = _plugin
+      )
+      _plugin = $.fn[name]
+      plugin = $.fn[name] = $.fn[safeName] = (options, $context) ->
         $el = null # Set to right scope.
 
         boilerplate = ->
@@ -45,12 +52,22 @@ extension = ($, _, hlf) ->
           boilerplate()
 
         @
+      plugin
+
+    noConflicts: [],
+    noConflict: -> (fn() for fn in @noConflicts).length
 
     debug: on # Turn this off when going to production.
     toString: _.memoize (context) -> 'hlf'
 
   $.hlf.debugLog = if $.hlf.debug is off then $.noop else
     (if console.log.bind then console.log.bind(console) else console.log)
+
+  _.bindAll $.hlf, 'createPlugin'
+
+  _createPlugin = $.createPlugin
+  $.createPlugin = $.hlf.createPlugin
+  $.hlf.noConflicts.push -> $.createPlugin = _createPlugin
 
   return $.hlf
 
