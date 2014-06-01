@@ -80,14 +80,14 @@ plugin = ($, _, hlf) ->
         classNames.tip = 'js-tip'
         classNames
 
-  hlf.snapTip =
+  hlf.tip.snap =
     debug: off
     toString: _.memoize (context) ->
       switch context
         when 'event'  then '.hlf.snap-tip'
         when 'data'   then 'hlf-snap-tip'
         when 'class'  then 'js-snap-tips'
-        else 'hlf.snapTip'
+        else 'hlf.tip.snap'
 
     # SnapTip Options
     # ---------------
