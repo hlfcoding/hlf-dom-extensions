@@ -494,8 +494,16 @@ plugin = ($, _, hlf) ->
   # Export
   # ------
   # Both are exported with the `asSingleton` flag set to true.
-  $.fn.tip = hlf.createPlugin hlf.tip, Tip, yes
-  $.fn.snapTip = hlf.createPlugin hlf.snapTip, SnapTip, yes
+  hlf.createPlugin
+    name: 'tip'
+    namespace: hlf.tip
+    apiClass: Tip
+    asSingleton: yes
+  hlf.createPlugin
+    name: 'snapTip'
+    namespace: hlf.tip.snap
+    apiClass: SnapTip
+    asSingleton: yes
 
 # Export. Prefer AMD.
 if define? and define.amd?

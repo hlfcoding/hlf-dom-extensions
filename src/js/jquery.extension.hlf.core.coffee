@@ -11,13 +11,15 @@ extension = ($, _, hlf) ->
 
   $.hlf =
 
-    createPlugin: (namespace, apiClass, asSingleton=no) ->
-      namespace.apiClass = apiClass
+    createPlugin: (options) ->
+      name = options.name
+      namespace = options.namespace
+      apiClass = namespace.apiClass = options.apiClass
       return (options, $context) ->
         $el = null # Set to right scope.
 
         boilerplate = ->
-          $root = if asSingleton is no then $el else $context
+          $root = if options.asSingleton is no then $el else $context
           $root.addClass namespace.toString 'class'
           # - Memoize naming helpers for better performance.
           apiClass::evt ?= _.memoize (name) -> "#{name}#{namespace.toString 'event'}"
@@ -34,7 +36,7 @@ extension = ($, _, hlf) ->
         return api if api? and not options?
         # - Re-apply plugin, and handle requests for singletons.
         options = $.extend (deep = on), {}, namespace.defaults, options
-        if asSingleton is no
+        if options.asSingleton is no
           return @each ->
             $el = $(@)
             boilerplate()
