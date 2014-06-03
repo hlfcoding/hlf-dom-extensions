@@ -1,0 +1,386 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.tip"><meta name="groc-project-path" content="src/js/jquery.hlf.tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.tip.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-jquery-plugin">HLF Tip jQuery Plugin</h1>
+
+<p>Released under the MIT License <br />
+Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base <code>tip</code> plugin features basic trigger element parsing, direction-based
+attachment, cursor following, appearance state management and presentation by
+fading, custom tip content, and use of the <code>hlf.hoverIntent</code> event extension.
+The tip object is shared amongst the provided triggers.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The extended <code>snapTip</code> plugin extends the base tip and adds snapping-to-
+trigger-element behavior. By default locks into place. If one of the snap-to-
+axis options is turned off, the tip will slide along the remaining locked
+axis.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Note the majority of presentation state logic is in the plugin stylesheet. We
+update the presentation state by using <code>classNames</code>.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Lastly, like any other module in this library, we're using proper namespacing
+whenever there is an added endpoint to the jQuery interface. This is done with
+the custom <code>toString</code> methods. Also, plugin namespaces (under the root
+<code>$.hlf</code>) each have a <code>debug</code> flag allowing more granular logging. Each
+plugin's API is also entirely public, although some methods are intended as
+protected given their name. Access the plugin singleton is as simple as via
+<code>$('body').tip()</code> or <code>$('body').snapTip()</code>, although using the <code>toString</code> and
+jQuery data methods is the same.</p></div></div><div class="code"><div class="wrapper"><span class="nv">plugin = </span><span class="nf">($, _, hlf) -&gt;</span>
+  
+  <span class="nv">hlf.tip =</span>
+    <span class="nv">debug: </span><span class="kc">off</span>
+    <span class="nv">toString: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(context) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">context</span>
+        <span class="k">when</span> <span class="s">&#39;event&#39;</span>  <span class="k">then</span> <span class="s">&#39;.hlf.tip&#39;</span>
+        <span class="k">when</span> <span class="s">&#39;data&#39;</span>   <span class="k">then</span> <span class="s">&#39;hlf-tip&#39;</span>
+        <span class="k">when</span> <span class="s">&#39;class&#39;</span>  <span class="k">then</span> <span class="s">&#39;js-tips&#39;</span>
+        <span class="k">else</span> <span class="s">&#39;hlf.tip&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="tip-options">Tip Options</h2>
+
+<p>Note the plugin instance gets extended with the options.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">defaults: </span><span class="nx">do</span> <span class="nf">(pre = &#39;js-tip-&#39;) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>ms.duration</code> are the durations of sleep and wake animations.</li>
+<li><code>ms.delay</code> are the delays before sleeping and waking.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="nv">ms:</span>
+        <span class="nv">duration:</span>
+          <span class="k">in</span><span class="o">:</span> <span class="mi">200</span>
+          <span class="nv">out: </span><span class="mi">200</span>
+        <span class="nv">delay:</span>
+          <span class="k">in</span><span class="o">:</span> <span class="mi">300</span>
+          <span class="nv">out: </span><span class="mi">300</span>
+      <span class="nv">cursorHeight: </span><span class="mi">6</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Note that the direction data structure must be an array of
+<code>components</code>, and conventionally with north/south first.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="nv">defaultDirection: </span><span class="p">[</span><span class="s">&#39;south&#39;</span><span class="p">,</span> <span class="s">&#39;east&#39;</span><span class="p">]</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>safeToggle</code> prevents orphan tips, since timers are sometimes unreliable.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="nv">safeToggle: </span><span class="kc">on</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>autoDirection</code> automatically changes the direction so the tip can
+better fit inside the viewport.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="nv">autoDirection: </span><span class="kc">on</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>tipTemplate</code> should return interpolated html when given the
+additional container class list. Its context is the plugin instance.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="nv">tipTemplate: </span><span class="nf">(containerClass) -&gt;</span>
+        <span class="nv">stemHtml = </span><span class="s">&quot;&lt;div class=&#39;</span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">stem</span><span class="si">}</span><span class="s">&#39;&gt;&lt;/div&gt;&quot;</span> <span class="k">if</span> <span class="nx">@doStem</span> <span class="o">is</span> <span class="kc">on</span>
+        <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        &lt;div class=&quot;</span><span class="si">#{</span><span class="nx">containerClass</span><span class="si">}</span><span class="s">&quot;&gt;</span>
+<span class="s">          &lt;div class=&quot;</span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">inner</span><span class="si">}</span><span class="s">&quot;&gt;</span>
+<span class="s">            </span><span class="si">#{</span><span class="nx">stemHtml</span><span class="si">}</span><span class="s"></span>
+<span class="s">            &lt;div class=&#39;</span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">content</span><span class="si">}</span><span class="s">&#39;&gt;&lt;/div&gt;</span>
+<span class="s">          &lt;/div&gt;</span>
+<span class="s">        &lt;/div&gt;</span>
+<span class="s">        &quot;&quot;&quot;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>classNames.stem</code> - Empty string to remove the stem.</li>
+<li><code>classNames.follow</code> - Empty string to disable cursor following.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="nv">classNames: </span><span class="nx">do</span> <span class="nf">-&gt;</span>
+        <span class="nv">classNames = </span><span class="p">{}</span>
+        <span class="nv">keys = </span><span class="p">[</span><span class="s">&#39;inner&#39;</span><span class="p">,</span> <span class="s">&#39;content&#39;</span><span class="p">,</span> <span class="s">&#39;stem&#39;</span><span class="p">,</span> <span class="s">&#39;north&#39;</span><span class="p">,</span> <span class="s">&#39;east&#39;</span><span class="p">,</span> <span class="s">&#39;south&#39;</span><span class="p">,</span> <span class="s">&#39;west&#39;</span><span class="p">,</span> <span class="s">&#39;follow&#39;</span><span class="p">,</span> <span class="s">&#39;trigger&#39;</span><span class="p">]</span>
+        <span class="p">(</span><span class="nx">classNames</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">pre</span><span class="si">}#{</span><span class="nx">key</span><span class="si">}</span><span class="s">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">keys</span>
+        <span class="nv">classNames.tip = </span><span class="s">&#39;js-tip&#39;</span>
+        <span class="nx">classNames</span>
+
+  <span class="nv">hlf.tip.snap =</span>
+    <span class="nv">debug: </span><span class="kc">off</span>
+    <span class="nv">toString: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(context) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">context</span>
+        <span class="k">when</span> <span class="s">&#39;event&#39;</span>  <span class="k">then</span> <span class="s">&#39;.hlf.snap-tip&#39;</span>
+        <span class="k">when</span> <span class="s">&#39;data&#39;</span>   <span class="k">then</span> <span class="s">&#39;hlf-snap-tip&#39;</span>
+        <span class="k">when</span> <span class="s">&#39;class&#39;</span>  <span class="k">then</span> <span class="s">&#39;js-snap-tips&#39;</span>
+        <span class="k">else</span> <span class="s">&#39;hlf.tip.snap&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="snaptip-options">SnapTip Options</h2>
+
+<p>These options extend the tip options.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">defaults: </span><span class="nx">do</span> <span class="nf">(pre = &#39;js-snap-tip-&#39;) -&gt;</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="p">(</span><span class="nv">deep = </span><span class="kc">yes</span><span class="p">),</span> <span class="p">{},</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">tip</span><span class="p">.</span><span class="nx">defaults</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>snap.toXAxis</code> is the switch for snapping along x-axis. Off by default.</li>
+<li><code>snap.toYAxis</code> is the switch for snapping along y-axis. Off by default.</li>
+<li><code>snap.toTrigger</code> is the switch snapping to trigger that builds on top of
+axis-snapping. On by default.</li>
+</ul></div></div><div class="code"><div class="wrapper">        <span class="nv">snap:</span>
+          <span class="nv">toTrigger: </span><span class="kc">on</span>
+          <span class="nv">toXAxis: </span><span class="kc">off</span>
+          <span class="nv">toYAxis: </span><span class="kc">off</span>
+        <span class="nv">classNames: </span><span class="nx">do</span> <span class="nf">-&gt;</span>
+          <span class="nv">classNames =</span>
+            <span class="nv">snap: </span><span class="p">{}</span>
+          <span class="nv">dictionary =</span>
+            <span class="nv">toXAxis: </span>  <span class="s">&#39;x-side&#39;</span>
+            <span class="nv">toYAxis: </span>  <span class="s">&#39;y-side&#39;</span>
+            <span class="nv">toTrigger: </span><span class="s">&#39;trigger&#39;</span>
+          <span class="p">(</span><span class="nx">classNames</span><span class="p">.</span><span class="nx">snap</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">pre</span><span class="si">}#{</span><span class="nx">value</span><span class="si">}</span><span class="s">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">dictionary</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Update our tip class.</p></div></div><div class="code"><div class="wrapper">          <span class="nv">classNames.tip = </span><span class="s">&#39;js-tip js-snap-tip&#39;</span>
+          <span class="nx">classNames</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="tip-api">Tip API</h2>
+
+<p>Note that most of the interface is intended as protected.</p></div></div><div class="code"><div class="wrapper">  <span class="k">class</span> <span class="nx">Tip</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base constructor mostly does setup work that uses other subroutines
+when needed. Note that we're also keeping <code>$triggers</code> and <code>$context</code> as
+properties.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">constructor: </span><span class="nf">(@$triggers, options, @$context) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Per convention, bind handler methods here.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;_onTriggerMouseMove&#39;</span><span class="p">,</span> <span class="s">&#39;_setBounds&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Extend self with <code>options</code>. <br />
+See default options for property names.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="p">(</span><span class="nv">deep = </span><span class="kc">yes</span><span class="p">),</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">options</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The element represented by this API is <code>$tip</code>. We build it.</p></div></div><div class="code"><div class="wrapper">      <span class="vi">@$tip = </span><span class="nx">$</span> <span class="s">&#39;&lt;div&gt;&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Infer <code>doStem</code> and <code>doFollow</code> flags from respective <code>classNames</code> entries.</p></div></div><div class="code"><div class="wrapper">      <span class="vi">@doStem = </span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">stem</span> <span class="o">isnt</span> <span class="s">&#39;&#39;</span>
+      <span class="vi">@doFollow = </span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">follow</span> <span class="o">isnt</span> <span class="s">&#39;&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_state</code> toggles between: <code>awake</code>, <code>asleep</code>, <code>waking</code>, <code>sleeping</code>. The
+use case behind these states is the tip will remain visible and <code>awake</code>
+as long as there is a high enough frequency of relevant mouse activity.
+This is achieved with a simple base implementation around timers
+<code>_sleepCountdown</code> and <code>_wakeCountdown</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="vi">@_state = </span><span class="s">&#39;asleep&#39;</span>
+      <span class="vi">@_wakeCountdown = </span><span class="kc">null</span>
+      <span class="vi">@_sleepCountdown = </span><span class="kc">null</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_$currentTrigger</code> helps manage trigger-related state.</p></div></div><div class="code"><div class="wrapper">      <span class="vi">@_$currentTrigger = </span><span class="kc">null</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Tip instances start off rendered and bound.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">@_render</span><span class="p">()</span>
+      <span class="nx">@_bind</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Process <code>$triggers</code> and setup content, event, and positioning aspects.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">@$triggers</span><span class="p">.</span><span class="nx">each</span> <span class="nf">(i, el) =&gt;</span>
+        <span class="nv">$trigger = </span><span class="nx">$</span> <span class="nx">el</span>
+        <span class="nx">$trigger</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">trigger</span>
+        <span class="nx">@_saveTriggerContent</span> <span class="nx">$trigger</span>
+        <span class="nx">@_bindTrigger</span> <span class="nx">$trigger</span>
+        <span class="nx">@_updateDirectionByTrigger</span> <span class="nx">$trigger</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_defaultHtml</code> provides a basic html structure for tip content. It can be
+customized via the <code>tipTemplate</code> external option, or by subclasses using
+the <code>htmlOnRender</code> hook.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_defaultHtml: </span><span class="nf">-&gt;</span>
+      <span class="nv">directionClass = </span><span class="nx">$</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">reduce</span> <span class="nx">@defaultDirection</span><span class="p">,</span> <span class="nf">(classListMemo, directionComponent) =&gt;</span>
+          <span class="s">&quot;</span><span class="si">#{</span><span class="nx">classListMemo</span><span class="si">}</span><span class="s"> </span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">[</span><span class="nx">directionComponent</span><span class="p">]</span><span class="si">}</span><span class="s">&quot;</span>
+        <span class="p">,</span> <span class="s">&#39;&#39;</span>
+      <span class="p">)</span>
+      <span class="nv">containerClass = </span><span class="nx">$</span><span class="p">.</span><span class="nx">trim</span> <span class="p">[</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">tip</span><span class="p">,</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">follow</span><span class="p">,</span> <span class="nx">directionClass</span><span class="p">].</span><span class="nx">join</span> <span class="s">&#39; &#39;</span>
+      <span class="nv">html = </span><span class="nx">@tipTemplate</span> <span class="nx">containerClass</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_saveTriggerContent</code> comes with a very simple base implementation that's
+more for links and their <code>title</code> attribute. We take that content and store
+it into a <code>content</code> jQuery data value on the trigger.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_saveTriggerContent: </span><span class="nf">($trigger) -&gt;</span>
+      <span class="nv">title = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;title&#39;</span>
+      <span class="k">if</span> <span class="nx">title</span><span class="o">?</span>
+        <span class="nx">$trigger</span>
+          <span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;content&#39;</span><span class="p">),</span> <span class="nx">title</span>
+          <span class="p">.</span><span class="nx">removeAttr</span> <span class="s">&#39;title&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_bindTrigger</code> links the trigger to the tip for: 1) possible appearance
+changes during mouseenter, mouseleave (uses special events) and 2)
+following on mousemove only if <code>doFollow</code> is on. Also note for our
+<code>onMouseMove</code> handler, it's throttled by <code>requestAnimationFrame</code> when
+available, otherwise manually at hopefully 60fps.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_bindTrigger: </span><span class="nf">($trigger) -&gt;</span>
+      <span class="nx">$trigger</span><span class="p">.</span><span class="nx">on</span> <span class="nx">@evt</span><span class="p">(</span><span class="s">&#39;truemouseenter&#39;</span><span class="p">),</span> <span class="nf">(event) =&gt;</span>
+        <span class="nx">@debugLog</span> <span class="nx">event</span>
+        <span class="nx">@_onTriggerMouseMove</span> <span class="nx">event</span>
+      <span class="nx">$trigger</span><span class="p">.</span><span class="nx">on</span> <span class="nx">@evt</span><span class="p">(</span><span class="s">&#39;truemouseleave&#39;</span><span class="p">),</span> <span class="nf">(event) =&gt;</span> <span class="nx">@sleepByTrigger</span> <span class="nx">$trigger</span>
+      <span class="k">if</span> <span class="nx">@doFollow</span> <span class="o">is</span> <span class="kc">on</span>
+        <span class="k">if</span> <span class="nb">window</span><span class="p">.</span><span class="nx">requestAnimationFrame</span><span class="o">?</span>
+          <span class="nv">onMouseMove = </span><span class="nf">(event) =&gt;</span>
+            <span class="nx">requestAnimationFrame</span> <span class="nf">(timestamp) =&gt;</span>
+              <span class="nx">@_onTriggerMouseMove</span> <span class="nx">event</span>
+        <span class="k">else</span> 
+          <span class="nv">onMouseMove = </span><span class="nx">_</span><span class="p">.</span><span class="nx">throttle</span> <span class="nx">@_onTriggerMouseMove</span><span class="p">,</span> <span class="mi">16</span>
+        <span class="nx">$trigger</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;mousemove&#39;</span><span class="p">,</span> <span class="nx">onMouseMove</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_bind</code> adds event handlers to <code>$tip</code>, mostly so state can be updated such
+that the handlers on <code>_$currentTrigger</code> make an exception. The desired
+behavior is the cursor leaving the trigger for the tip doesn't cause the
+tip to dismiss.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_bind: </span><span class="nf">-&gt;</span>
+      <span class="nx">@$tip</span>
+        <span class="p">.</span><span class="nx">on</span> <span class="s">&#39;mouseenter&#39;</span><span class="p">,</span> <span class="nf">(event) =&gt;</span>
+          <span class="nx">@debugLog</span> <span class="s">&#39;enter tip&#39;</span>
+          <span class="k">if</span> <span class="nx">@_$currentTrigger</span><span class="o">?</span>
+            <span class="nx">@_$currentTrigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;is-active&#39;</span><span class="p">),</span> <span class="kc">yes</span>
+            <span class="nx">@wakeByTrigger</span> <span class="nx">@_$currentTrigger</span>
+        <span class="p">.</span><span class="nx">on</span> <span class="s">&#39;mouseleave&#39;</span><span class="p">,</span> <span class="nf">(event) =&gt;</span>
+          <span class="nx">@debugLog</span> <span class="s">&#39;leave tip&#39;</span>
+          <span class="k">if</span> <span class="nx">@_$currentTrigger</span><span class="o">?</span>
+            <span class="nx">@_$currentTrigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;is-active&#39;</span><span class="p">),</span> <span class="kc">no</span>
+            <span class="nx">@sleepByTrigger</span> <span class="nx">@_$currentTrigger</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Additionally, track viewport <code>_bounds</code> at a reasonable rate, so that
+<code>_updateDirectionByTrigger</code> can work properly.</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="nx">@autoDirection</span> <span class="o">is</span> <span class="kc">on</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">resize</span> <span class="nx">_</span><span class="p">.</span><span class="nx">debounce</span> <span class="nx">@_setBounds</span><span class="p">,</span> <span class="mi">300</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_render</code> comes with a base implementation that fills in and attaches
+<code>$tip</code> to the DOM, specifically at the beginning of <code>$context</code>. It uses
+the result of <code>htmlOnRender</code> and falls back to that of <code>_defaultHtml</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_render: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="nx">@$tip</span><span class="p">.</span><span class="nx">html</span><span class="p">().</span><span class="nx">length</span>
+      <span class="nv">html = </span><span class="nx">@htmlOnRender</span><span class="p">()</span>
+      <span class="k">if</span> <span class="o">not</span> <span class="p">(</span><span class="nx">html</span><span class="o">?</span> <span class="o">and</span> <span class="nx">html</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="k">then</span> <span class="nv">html = </span><span class="nx">@_defaultHtml</span><span class="p">()</span>
+      <span class="vi">@$tip = </span><span class="nx">$</span><span class="p">(</span><span class="nx">html</span><span class="p">).</span><span class="nx">addClass</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">follow</span>
+      <span class="nx">@$tip</span><span class="p">.</span><span class="nx">prependTo</span> <span class="nx">@$context</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_inflateByTrigger</code> will reset and update <code>$tip</code> for the given trigger, so
+that it is ready to present, i.e. it is 'inflated'. Mostly it's just the
+content and class list that get updated.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_inflateByTrigger: </span><span class="nf">($trigger) -&gt;</span>
+      <span class="nv">compoundDirection = </span><span class="k">if</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;direction&#39;</span><span class="p">))</span> <span class="k">then</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;direction&#39;</span><span class="p">)).</span><span class="nx">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nx">@defaultDirection</span>
+      <span class="nx">@debugLog</span> <span class="s">&#39;update direction class&#39;</span><span class="p">,</span> <span class="nx">compoundDirection</span>
+      <span class="nx">@$tip</span>
+        <span class="p">.</span><span class="nx">find</span> <span class="s">&quot;.</span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">content</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="p">.</span><span class="nx">text</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;content&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">removeClass</span> <span class="p">[</span>
+          <span class="nx">@classNames</span><span class="p">.</span><span class="nx">north</span>
+          <span class="nx">@classNames</span><span class="p">.</span><span class="nx">south</span> 
+          <span class="nx">@classNames</span><span class="p">.</span><span class="nx">east</span>
+          <span class="nx">@classNames</span><span class="p">.</span><span class="nx">west</span>
+        <span class="p">].</span><span class="nx">join</span> <span class="s">&#39; &#39;</span>
+        <span class="p">.</span><span class="nx">addClass</span> <span class="nx">$</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span>
+          <span class="nx">_</span><span class="p">.</span><span class="nx">reduce</span> <span class="nx">compoundDirection</span><span class="p">,</span> <span class="nf">(classListMemo, directionComponent) =&gt;</span>
+            <span class="s">&quot;</span><span class="si">#{</span><span class="nx">classListMemo</span><span class="si">}</span><span class="s"> </span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">[</span><span class="nx">directionComponent</span><span class="p">]</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="p">,</span> <span class="s">&#39;&#39;</span>
+        <span class="p">)</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_onTriggerMouseMove</code> is actually the main tip toggling handler. To
+explain, first we take into account of child elements triggering the mouse
+event by deducing the event's actual <code>$trigger</code> element. Then we
+<code>wakeByTrigger</code> if needed, and provide a completion callback that will
+properly update the tip offset per <code>offsetOnTriggerMouseMove</code> and
+<code>isDirection</code>. Also note that <code>cursorHeight</code> gets factored in.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_onTriggerMouseMove: </span><span class="nf">(event) -&gt;</span>
+      <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">event</span><span class="p">.</span><span class="nx">pageX</span><span class="o">?</span>
+      <span class="nv">$trigger = </span><span class="k">if</span> <span class="p">(</span>
+        <span class="p">(</span><span class="nv">$trigger = </span><span class="nx">$</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">currentTarget</span><span class="p">))</span> <span class="o">and</span>
+        <span class="nx">$trigger</span><span class="p">.</span><span class="nx">hasClass</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">trigger</span>
+      <span class="p">)</span> <span class="k">then</span> <span class="nx">$trigger</span> <span class="k">else</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">closest</span><span class="p">(</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">trigger</span><span class="p">)</span>
+      <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">length</span>
+      <span class="nx">@wakeByTrigger</span> <span class="nx">$trigger</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="o">=&gt;</span>
+        <span class="nv">offset =</span>
+          <span class="nv">top: </span><span class="nx">event</span><span class="p">.</span><span class="nx">pageY</span>
+          <span class="nv">left: </span><span class="nx">event</span><span class="p">.</span><span class="nx">pageX</span>
+        <span class="nv">offset = </span><span class="nx">@offsetOnTriggerMouseMove</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">$trigger</span><span class="p">)</span> <span class="o">or</span> <span class="nx">offset</span>
+        <span class="k">if</span> <span class="nx">@isDirection</span><span class="p">(</span><span class="s">&#39;north&#39;</span><span class="p">,</span> <span class="nx">$trigger</span><span class="p">)</span> <span class="k">then</span> <span class="nx">offset</span><span class="p">.</span><span class="nx">top</span> <span class="o">-=</span> <span class="nx">@$tip</span><span class="p">.</span><span class="nx">outerHeight</span><span class="p">()</span> <span class="o">+</span> <span class="nx">@cursorHeight</span>
+        <span class="k">if</span> <span class="nx">@isDirection</span><span class="p">(</span><span class="s">&#39;west&#39;</span><span class="p">,</span>  <span class="nx">$trigger</span><span class="p">)</span> <span class="k">then</span> <span class="nx">offset</span><span class="p">.</span><span class="nx">left</span> <span class="o">-=</span> <span class="nx">@$tip</span><span class="p">.</span><span class="nx">outerWidth</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nx">@isDirection</span><span class="p">(</span><span class="s">&#39;south&#39;</span><span class="p">,</span> <span class="nx">$trigger</span><span class="p">)</span> <span class="k">then</span> <span class="nx">offset</span><span class="p">.</span><span class="nx">top</span> <span class="o">+=</span> <span class="nx">@cursorHeight</span>
+        <span class="nx">offset</span><span class="p">.</span><span class="nx">top</span> <span class="o">+=</span> <span class="nx">@cursorHeight</span>
+        <span class="nx">@$tip</span><span class="p">.</span><span class="nx">css</span> <span class="nx">offset</span>
+        <span class="nx">@debugLog</span> <span class="s">&#39;_onTriggerMouseMove&#39;</span><span class="p">,</span> <span class="nx">@_state</span><span class="p">,</span> <span class="nx">offset</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_updateDirectionByTrigger</code> is the main provider of auto-direction
+support. Given the <code>$context</code>'s <code>_bounds</code>, it changes to the best
+direction as needed. The current <code>direction</code> is stored as jQuery data with
+trigger.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_updateDirectionByTrigger: </span><span class="nf">($trigger) -&gt;</span>
+      <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="nx">@autoDirection</span> <span class="o">is</span> <span class="kc">off</span>
+      <span class="nv">triggerPosition = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">position</span><span class="p">()</span>
+      <span class="nv">triggerWidth    = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">outerWidth</span><span class="p">()</span>
+      <span class="nv">triggerHeight   = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">outerHeight</span><span class="p">()</span>
+      <span class="nv">tipSize         = </span><span class="nx">@sizeForTrigger</span> <span class="nx">$trigger</span>
+      <span class="nv">newDirection    = </span><span class="nx">_</span><span class="p">.</span><span class="nx">clone</span> <span class="nx">@defaultDirection</span>
+      <span class="k">for</span> <span class="nx">component</span> <span class="k">in</span> <span class="nx">@defaultDirection</span>
+        <span class="k">if</span> <span class="o">not</span> <span class="nx">@_bounds</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@_setBounds</span><span class="p">()</span>
+        <span class="nv">ok = </span><span class="kc">yes</span>
+        <span class="k">switch</span> <span class="nx">component</span>
+          <span class="k">when</span> <span class="s">&#39;south&#39;</span> <span class="k">then</span> <span class="nv">ok = </span><span class="p">(</span><span class="nv">edge = </span><span class="nx">triggerPosition</span><span class="p">.</span><span class="nx">top</span> <span class="o">+</span> <span class="nx">triggerHeight</span> <span class="o">+</span> <span class="nx">tipSize</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span> <span class="o">and</span> <span class="nx">@_bounds</span><span class="p">.</span><span class="nx">bottom</span> <span class="o">&gt;</span> <span class="nx">edge</span>
+          <span class="k">when</span> <span class="s">&#39;east&#39;</span>  <span class="k">then</span> <span class="nv">ok = </span><span class="p">(</span><span class="nv">edge = </span><span class="nx">triggerPosition</span><span class="p">.</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">tipSize</span><span class="p">.</span><span class="nx">width</span><span class="p">)</span> <span class="o">and</span> <span class="nx">@_bounds</span><span class="p">.</span><span class="nx">right</span> <span class="o">&gt;</span> <span class="nx">edge</span>
+          <span class="k">when</span> <span class="s">&#39;north&#39;</span> <span class="k">then</span> <span class="nv">ok = </span><span class="p">(</span><span class="nv">edge = </span><span class="nx">triggerPosition</span><span class="p">.</span><span class="nx">top</span> <span class="o">-</span> <span class="nx">tipSize</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span> <span class="o">and</span> <span class="nx">@_bounds</span><span class="p">.</span><span class="nx">top</span> <span class="o">&lt;</span> <span class="nx">edge</span>
+          <span class="k">when</span> <span class="s">&#39;west&#39;</span>  <span class="k">then</span> <span class="nv">ok = </span><span class="p">(</span><span class="nv">edge = </span><span class="nx">triggerPosition</span><span class="p">.</span><span class="nx">left</span> <span class="o">-</span> <span class="nx">tipSize</span><span class="p">.</span><span class="nx">width</span><span class="p">)</span> <span class="o">and</span> <span class="nx">@_bounds</span><span class="p">.</span><span class="nx">left</span> <span class="o">&lt;</span> <span class="nx">edge</span>
+        <span class="nx">@debugLog</span> <span class="s">&#39;checkDirectionComponent&#39;</span><span class="p">,</span> <span class="s">&quot;&#39;</span><span class="si">#{</span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">html</span><span class="p">()</span><span class="si">}</span><span class="s">&#39;&quot;</span><span class="p">,</span> <span class="nx">component</span><span class="p">,</span> <span class="nx">edge</span><span class="p">,</span> <span class="nx">tipSize</span>
+        <span class="k">if</span> <span class="o">not</span> <span class="nx">ok</span>
+          <span class="k">switch</span> <span class="nx">component</span>
+            <span class="k">when</span> <span class="s">&#39;south&#39;</span> <span class="k">then</span> <span class="nx">newDirection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;north&#39;</span>
+            <span class="k">when</span> <span class="s">&#39;east&#39;</span>  <span class="k">then</span> <span class="nx">newDirection</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;west&#39;</span>
+            <span class="k">when</span> <span class="s">&#39;north&#39;</span> <span class="k">then</span> <span class="nx">newDirection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;south&#39;</span>
+            <span class="k">when</span> <span class="s">&#39;west&#39;</span>  <span class="k">then</span> <span class="nx">newDirection</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;east&#39;</span>
+          <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;direction&#39;</span><span class="p">),</span> <span class="nx">newDirection</span><span class="p">.</span><span class="nx">join</span> <span class="s">&#39; &#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_setBounds</code> updates <code>_bounds</code> per <code>$context</code>'s inner bounds, and those
+measures get used by <code>_updateDirectionByTrigger</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_setBounds: </span><span class="nf">-&gt;</span>
+      <span class="nv">$context = </span><span class="k">if</span> <span class="nx">@$context</span><span class="p">.</span><span class="o">is</span><span class="p">(</span><span class="s">&#39;body&#39;</span><span class="p">)</span> <span class="k">then</span> <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">)</span> <span class="k">else</span> <span class="nx">@$context</span>
+      <span class="vi">@_bounds =</span>
+        <span class="nv">top: </span>   <span class="nb">parseInt</span> <span class="nx">@$context</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s">&#39;padding-top&#39;</span><span class="p">),</span> <span class="mi">10</span>
+        <span class="nv">left: </span>  <span class="nb">parseInt</span> <span class="nx">@$context</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s">&#39;padding-left&#39;</span><span class="p">),</span> <span class="mi">10</span>
+        <span class="nv">bottom: </span><span class="nx">$context</span><span class="p">.</span><span class="nx">innerHeight</span><span class="p">()</span>
+        <span class="nv">right: </span> <span class="nx">$context</span><span class="p">.</span><span class="nx">innerWidth</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>sizeForTrigger</code> does a stealth render to find tip size by temporarily un-
+hiding and making invisible. It will return saved data if possible before
+doing a measure. The measures, used by <code>_updateDirectionByTrigger</code>, are
+stored on the trigger as namespaced, <code>width</code> and <code>height</code> jQuery data
+values.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">sizeForTrigger: </span><span class="nf">($trigger, force=no) -&gt;</span>
+      <span class="nv">size =</span>
+        <span class="nv">width: </span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;width&#39;</span><span class="p">)</span>
+        <span class="nv">height: </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;height&#39;</span><span class="p">)</span>
+      <span class="k">return</span> <span class="nx">size</span> <span class="k">if</span> <span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">and</span> <span class="nx">size</span><span class="p">.</span><span class="nx">height</span>
+      <span class="nx">@$tip</span>
+        <span class="p">.</span><span class="nx">find</span> <span class="s">&quot;.</span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">content</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="p">.</span><span class="nx">text</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;content&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">css</span>
+          <span class="nv">display: </span><span class="s">&#39;block&#39;</span>
+          <span class="nv">visibility: </span><span class="s">&#39;hidden&#39;</span>
+      <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;width&#39;</span><span class="p">),</span>  <span class="p">(</span><span class="nv">size.width = </span><span class="nx">@$tip</span><span class="p">.</span><span class="nx">outerWidth</span><span class="p">())</span>
+      <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;height&#39;</span><span class="p">),</span> <span class="p">(</span><span class="nv">size.height = </span><span class="nx">@$tip</span><span class="p">.</span><span class="nx">outerHeight</span><span class="p">())</span>
+      <span class="nx">@$tip</span><span class="p">.</span><span class="nx">css</span>
+        <span class="nv">display: </span><span class="s">&#39;none&#39;</span><span class="p">,</span>
+        <span class="nv">visibility: </span><span class="s">&#39;visible&#39;</span>
+      <span class="nx">size</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>isDirection</code> is a helper to deduce if <code>$tip</code> currently has the given
+<code>directionComponent</code>. The tip is considered to have the same direction as
+the given <code>$trigger</code> if it has the classes or if there is no trigger or
+saved direction value and the directionComponent is part of
+<code>defaultDirection</code>. Note that this latter check is placed last for
+performance savings.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">isDirection: </span><span class="nf">(directionComponent, $trigger) -&gt;</span>
+      <span class="p">(</span>
+        <span class="nx">@$tip</span><span class="p">.</span><span class="nx">hasClass</span><span class="p">(</span><span class="nx">@classNames</span><span class="p">[</span><span class="nx">directionComponent</span><span class="p">])</span> <span class="o">or</span> <span class="p">(</span>
+          <span class="p">(</span><span class="o">not</span> <span class="nx">$trigger</span><span class="o">?</span> <span class="o">or</span> <span class="o">not</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;direction&#39;</span><span class="p">)))</span> <span class="o">and</span> 
+          <span class="nx">_</span><span class="p">.</span><span class="nx">include</span><span class="p">(</span><span class="nx">@defaultDirection</span><span class="p">,</span> <span class="nx">directionComponent</span><span class="p">)</span>
+        <span class="p">)</span>
+      <span class="p">)</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>wakeByTrigger</code> is the main toggler and a <code>_state</code> updater. It takes an
+<code>onWake</code> callback, which is usually to update position. The toggling and
+main changes only happen if the delay is passed. It will return a bool for
+success.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">wakeByTrigger: </span><span class="nf">($trigger, event, onWake) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Store current trigger info.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">triggerChanged = </span><span class="o">not</span> <span class="nx">$trigger</span><span class="p">.</span><span class="o">is</span> <span class="nx">@_$currentTrigger</span>
+      <span class="k">if</span> <span class="nx">triggerChanged</span>
+        <span class="nx">@_inflateByTrigger</span> <span class="nx">$trigger</span>
+        <span class="vi">@_$currentTrigger = </span><span class="nx">$trigger</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Go directly to the position updating if no toggling is needed.</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="nx">@_state</span> <span class="o">is</span> <span class="s">&#39;awake&#39;</span> <span class="o">and</span> <span class="nx">onWake</span><span class="o">?</span>
+        <span class="nx">onWake</span><span class="p">()</span>
+        <span class="nx">@debugLog</span> <span class="s">&#39;quick update&#39;</span>
+        <span class="k">return</span> <span class="kc">yes</span>
+      <span class="k">if</span> <span class="nx">event</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@debugLog</span> <span class="nx">event</span><span class="p">.</span><span class="nx">type</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Don't toggle if awake or waking, or if event isn't <code>truemouseenter</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="nx">@_state</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;awake&#39;</span><span class="p">,</span> <span class="s">&#39;waking&#39;</span><span class="p">]</span>
+      <span class="nv">delay = </span><span class="nx">@ms</span><span class="p">.</span><span class="nx">delay</span><span class="p">.</span><span class="nx">in</span>
+      <span class="nv">duration = </span><span class="nx">@ms</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nx">in</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Our <code>wake</code> subroutine runs the timed-out logic, which includes the fade
+transition. The latter is also affected by <code>safeToggle</code>. The <code>onShow</code>
+and <code>afterShow</code> hook methods are also run.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">wake = </span><span class="o">=&gt;</span>
+        <span class="nx">@onShow</span> <span class="nx">triggerChanged</span><span class="p">,</span> <span class="nx">event</span>
+        <span class="nx">@$tip</span><span class="p">.</span><span class="nx">fadeIn</span> <span class="nx">duration</span><span class="p">,</span> <span class="o">=&gt;</span>
+          <span class="k">if</span> <span class="nx">triggerChanged</span>
+            <span class="nx">onWake</span><span class="p">()</span> <span class="k">if</span> <span class="nx">onWake</span><span class="o">?</span>
+          <span class="k">if</span> <span class="nx">@safeToggle</span> <span class="o">is</span> <span class="kc">on</span> <span class="k">then</span> <span class="nx">@$tip</span><span class="p">.</span><span class="nx">siblings</span><span class="p">(</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">tip</span><span class="p">).</span><span class="nx">fadeOut</span><span class="p">()</span>
+          <span class="nx">@afterShow</span> <span class="nx">triggerChanged</span><span class="p">,</span> <span class="nx">event</span>
+          <span class="vi">@_state = </span><span class="s">&#39;awake&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Wake up depending on current state. <br />
+If we are in the middle of sleeping, stop sleeping by updating
+<code>_sleepCountdown</code> and wake up sooner.</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="nx">@_state</span> <span class="o">is</span> <span class="s">&#39;sleeping&#39;</span>
+        <span class="nx">@debugLog</span> <span class="s">&#39;clear sleep&#39;</span>
+        <span class="nx">clearTimeout</span> <span class="nx">@_sleepCountdown</span>
+        <span class="nv">duration = </span><span class="mi">0</span>
+        <span class="nx">wake</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Start the normal wakeup and update <code>_wakeCountdown</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="k">else</span> <span class="k">if</span> <span class="nx">event</span><span class="o">?</span> <span class="o">and</span> <span class="nx">event</span><span class="p">.</span><span class="nx">type</span> <span class="o">is</span> <span class="s">&#39;truemouseenter&#39;</span>
+        <span class="nv">triggerChanged = </span><span class="kc">yes</span>
+        <span class="vi">@_state = </span><span class="s">&#39;waking&#39;</span>
+        <span class="vi">@_wakeCountdown = </span><span class="nx">setTimeout</span> <span class="nx">wake</span><span class="p">,</span> <span class="nx">delay</span>
+      <span class="kc">yes</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>sleepByTrigger</code> is a much simpler toggler compared to its counterpart
+<code>wakeByTrigger</code>. It also updates <code>_state</code> and returns a bool for success.
+As long as the tip isn't truly visible, sleep is unneeded.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">sleepByTrigger: </span><span class="nf">($trigger) -&gt;</span>
+      <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="nx">@_state</span> <span class="o">isnt</span> <span class="s">&#39;awake&#39;</span>
+      <span class="vi">@_state = </span><span class="s">&#39;sleeping&#39;</span>
+      <span class="nx">clearTimeout</span> <span class="nx">@_wakeCountdown</span>
+      <span class="vi">@_sleepCountdown = </span><span class="nx">setTimeout</span> <span class="o">=&gt;</span>
+        <span class="nx">@onHide</span><span class="p">()</span>
+        <span class="nx">@$tip</span><span class="p">.</span><span class="nx">fadeOut</span> <span class="nx">@ms</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nx">out</span><span class="p">,</span> <span class="o">=&gt;</span>
+          <span class="vi">@_state = </span><span class="s">&#39;asleep&#39;</span>
+          <span class="nx">@afterHide</span><span class="p">()</span>
+      <span class="p">,</span> <span class="nx">@ms</span><span class="p">.</span><span class="nx">delay</span><span class="p">.</span><span class="nx">out</span>
+      <span class="kc">yes</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>These methods are hooks for custom functionality from subclasses. Some are
+set to no-ops becase they are given no arguments.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">onShow: </span><span class="nf">(triggerChanged, event) -&gt;</span> <span class="kc">undefined</span>
+    <span class="nv">onHide: </span><span class="nx">$</span><span class="p">.</span><span class="nx">noop</span>
+    <span class="nv">afterShow: </span><span class="nf">(triggerChanged, event) -&gt;</span> <span class="kc">undefined</span>
+    <span class="nv">afterHide: </span><span class="nx">$</span><span class="p">.</span><span class="nx">noop</span>
+    <span class="nv">htmlOnRender: </span><span class="nx">$</span><span class="p">.</span><span class="nx">noop</span>
+    <span class="nv">offsetOnTriggerMouseMove: </span><span class="nf">(event, offset, $trigger) -&gt;</span> <span class="kc">no</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="snaptip-api">SnapTip API</h2>
+
+<p>With such a complete base API, extending it with an implementation with
+snapping becomes almost trivial.</p></div></div><div class="code"><div class="wrapper">  <span class="k">class</span> <span class="nx">SnapTip</span> <span class="k">extends</span> <span class="nx">Tip</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Continue setting up <code>$tip</code> and other properties.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">constructor: </span><span class="nf">($triggers, options, $context) -&gt;</span>
+      <span class="k">super</span> <span class="nx">$triggers</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">$context</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Infer <code>snap.toTrigger</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toTrigger</span> <span class="o">is</span> <span class="kc">off</span>
+        <span class="vi">@snap.toTrigger = </span><span class="nx">@snap</span><span class="p">.</span><span class="nx">toXAxis</span> <span class="o">is</span> <span class="kc">on</span> <span class="o">or</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toYAxis</span> <span class="o">is</span> <span class="kc">on</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Tweak <code>cursorHeight</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toXAxis</span> <span class="o">is</span> <span class="kc">on</span> <span class="k">then</span> <span class="vi">@cursorHeight = </span><span class="mi">0</span>
+      <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toYAxis</span> <span class="o">is</span> <span class="kc">on</span> <span class="k">then</span> <span class="vi">@cursorHeight = </span><span class="mi">2</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_offsetStart</code> stores the original offset, which is used for snapping.</p></div></div><div class="code"><div class="wrapper">      <span class="vi">@_offsetStart = </span><span class="kc">null</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Add snapping config as classes.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">@$tip</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">snap</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">active</span> <span class="k">of</span> <span class="nx">@snap</span> <span class="k">when</span> <span class="nx">active</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_moveToTrigger</code> is the main positioner. The <code>baseOffset</code> given is
+expected to be the trigger offset. <br />
+TODO: Still needs to support all the directions.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_moveToTrigger: </span><span class="nf">($trigger, baseOffset) -&gt;</span>
+      <span class="c1">#@debugLog baseOffset</span>
+      <span class="nv">offset = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">offset</span><span class="p">()</span>
+      <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toXAxis</span> <span class="o">is</span> <span class="kc">on</span>
+        <span class="k">if</span> <span class="nx">@isDirection</span> <span class="s">&#39;south&#39;</span> <span class="k">then</span> <span class="nx">offset</span><span class="p">.</span><span class="nx">top</span> <span class="o">+=</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">outerHeight</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toYAxis</span> <span class="o">is</span> <span class="kc">off</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Note arbitrary buffer offset.</p></div></div><div class="code"><div class="wrapper">          <span class="nv">offset.left = </span><span class="nx">baseOffset</span><span class="p">.</span><span class="nx">left</span> <span class="o">-</span> <span class="p">(</span><span class="nx">@$tip</span><span class="p">.</span><span class="nx">outerWidth</span><span class="p">()</span> <span class="o">-</span> <span class="mi">12</span><span class="p">)</span><span class="o">/</span> <span class="mi">2</span>
+      <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toYAxis</span> <span class="o">is</span> <span class="kc">on</span>
+        <span class="k">if</span> <span class="nx">@isDirection</span> <span class="s">&#39;east&#39;</span> <span class="k">then</span> <span class="nx">offset</span><span class="p">.</span><span class="nx">left</span> <span class="o">+=</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">outerWidth</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toXAxis</span> <span class="o">is</span> <span class="kc">off</span>
+          <span class="nv">offset.top = </span><span class="nx">baseOffset</span><span class="p">.</span><span class="nx">top</span> <span class="o">-</span> <span class="nx">@$tip</span><span class="p">.</span><span class="nx">outerHeight</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+      <span class="nx">offset</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Extend <code>_bindTrigger</code> to get initial position for snapping. This is only
+for snapping without snapping to the trigger, which is only what's
+currently supported. See <code>afterShow</code> hook.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_bindTrigger: </span><span class="nf">($trigger) -&gt;</span>
+      <span class="k">super</span> <span class="nx">$trigger</span>
+      <span class="nx">$trigger</span><span class="p">.</span><span class="nx">on</span> <span class="nx">@evt</span><span class="p">(</span><span class="s">&#39;truemouseleave&#39;</span><span class="p">),</span> <span class="nf">(event) =&gt;</span> <span class="vi">@_offsetStart = </span><span class="kc">null</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>onShow</code> and <code>afterShow</code> are implemented such that they make the tip
+invisible while it's being positioned and then reveal it.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">onShow: </span><span class="nf">(triggerChanged, event) -&gt;</span>
+      <span class="k">if</span> <span class="nx">triggerChanged</span> <span class="o">is</span> <span class="kc">yes</span>
+        <span class="nx">@$tip</span><span class="p">.</span><span class="nx">css</span> <span class="s">&#39;visibility&#39;</span><span class="p">,</span> <span class="s">&#39;hidden&#39;</span>
+    <span class="nv">afterShow: </span><span class="nf">(triggerChanged, event) -&gt;</span>
+      <span class="k">if</span> <span class="nx">triggerChanged</span> <span class="o">is</span> <span class="kc">yes</span>
+        <span class="nx">@$tip</span><span class="p">.</span><span class="nx">css</span> <span class="s">&#39;visibility&#39;</span><span class="p">,</span> <span class="s">&#39;visible&#39;</span>
+        <span class="vi">@_offsetStart =</span>
+          <span class="nv">top: </span><span class="nx">event</span><span class="p">.</span><span class="nx">pageY</span>
+          <span class="nv">left: </span><span class="nx">event</span><span class="p">.</span><span class="nx">pageX</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>offsetOnTriggerMouseMove</code> is implemented as the main snapping positioning
+handler. Instead of returning false, we return our custom, snapping
+offset, so it gets used in lieu of the base <code>offset</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">offsetOnTriggerMouseMove: </span><span class="nf">(event, offset, $trigger) -&gt;</span>
+      <span class="nv">newOffset = </span><span class="nx">_</span><span class="p">.</span><span class="nx">clone</span> <span class="nx">offset</span>
+      <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toTrigger</span> <span class="o">is</span> <span class="kc">on</span>
+        <span class="nv">newOffset = </span><span class="nx">@_moveToTrigger</span> <span class="nx">$trigger</span><span class="p">,</span> <span class="nx">newOffset</span>
+      <span class="k">else</span>
+        <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toXAxis</span> <span class="o">is</span> <span class="kc">on</span>
+          <span class="nv">newOffset.top = </span><span class="nx">@_offsetStart</span><span class="p">.</span><span class="nx">top</span>
+          <span class="nx">@debugLog</span> <span class="s">&#39;xSnap&#39;</span>
+        <span class="k">if</span> <span class="nx">@snap</span><span class="p">.</span><span class="nx">toYAxis</span> <span class="o">is</span> <span class="kc">on</span>
+          <span class="nv">newOffset.left = </span><span class="nx">@_offsetStart</span><span class="p">.</span><span class="nx">left</span>
+          <span class="nx">@debugLog</span> <span class="s">&#39;ySnap&#39;</span>
+      <span class="nx">newOffset</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2>
+
+<p>Both are exported with the <code>asSingleton</code> flag set to true.</p></div></div><div class="code"><div class="wrapper">  <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span>
+    <span class="nv">name: </span><span class="s">&#39;tip&#39;</span>
+    <span class="nv">namespace: </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">tip</span>
+    <span class="nv">apiClass: </span><span class="nx">Tip</span>
+    <span class="nv">asSingleton: </span><span class="kc">yes</span>
+  <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span>
+    <span class="nv">name: </span><span class="s">&#39;snapTip&#39;</span>
+    <span class="nv">namespace: </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">tip</span><span class="p">.</span><span class="nx">snap</span>
+    <span class="nv">apiClass: </span><span class="nx">SnapTip</span>
+    <span class="nv">asSingleton: </span><span class="kc">yes</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper"><span class="k">if</span> <span class="nx">define</span><span class="o">?</span> <span class="o">and</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="o">?</span>
+  <span class="nx">define</span> <span class="p">[</span>
+    <span class="s">&#39;jquery&#39;</span>
+    <span class="s">&#39;underscore&#39;</span>
+    <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
+    <span class="s">&#39;hlf/jquery.extension.hlf.event&#39;</span>
+  <span class="p">],</span> <span class="nx">plugin</span>
+<span class="k">else</span>
+  <span class="nx">plugin</span> <span class="nx">jQuery</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">hlf</span></div></div></div></div></body></html>

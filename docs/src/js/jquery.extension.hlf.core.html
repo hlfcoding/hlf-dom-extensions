@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.extension.hlf.core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.extension.hlf.core"><meta name="groc-project-path" content="src/js/jquery.extension.hlf.core.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.extension.hlf.core.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-core-jquery-extension">HLF Core jQuery Extension</h1>
+
+<p>Released under the MIT License <br />
+Written with jQuery 1.7.2  </p></div></div><div class="code"><div class="wrapper"><span class="nv">extension = </span><span class="nf">($, _, hlf) -&gt;</span>
+
+  <span class="nv">_.templateSettings = interpolate: </span><span class="sr">/\{\{(.+?)\}\}/g</span>
+
+  <span class="nv">$.hlf =</span>
+
+    <span class="nv">createPlugin: </span><span class="nf">(options) -&gt;</span>
+      <span class="nv">name = </span><span class="nx">options</span><span class="p">.</span><span class="nx">name</span>
+      <span class="nv">safeName = </span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">@toString</span><span class="p">()</span><span class="si">}#{</span><span class="nx">name</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toUpperCase</span><span class="p">()</span><span class="si">}#{</span><span class="nx">name</span><span class="p">[</span><span class="mi">1</span><span class="p">..]</span><span class="si">}</span><span class="s">&quot;</span>
+      <span class="nv">namespace = </span><span class="nx">options</span><span class="p">.</span><span class="nx">namespace</span>
+      <span class="nv">apiClass = namespace.apiClass = </span><span class="nx">options</span><span class="p">.</span><span class="nx">apiClass</span>
+      <span class="nv">_noConflict = </span><span class="nx">namespace</span><span class="p">.</span><span class="nx">noConflict</span>
+      <span class="nx">@noConflicts</span><span class="p">.</span><span class="nx">push</span> <span class="p">(</span><span class="nv">namespace.noConflict = </span><span class="nf">-&gt;</span>
+        <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">_noConflict</span><span class="p">)</span> <span class="k">then</span> <span class="nx">_noConflict</span><span class="p">()</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_plugin</span>
+      <span class="p">)</span>
+      <span class="nv">_plugin = </span><span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+      <span class="nv">plugin = </span><span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">safeName</span><span class="p">]</span> <span class="o">=</span> <span class="nf">(options, $context) -&gt;</span>
+        <span class="nv">$el = </span><span class="kc">null</span> <span class="c1"># Set to right scope.</span>
+
+        <span class="nv">boilerplate = </span><span class="nf">-&gt;</span>
+          <span class="nv">$root = </span><span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">asSingleton</span> <span class="o">is</span> <span class="kc">no</span> <span class="k">then</span> <span class="nx">$el</span> <span class="k">else</span> <span class="nx">$context</span>
+          <span class="nx">$root</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span> <span class="s">&#39;class&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Memoize naming helpers for better performance.</li>
+</ul></div></div><div class="code"><div class="wrapper">          <span class="nx">apiClass</span><span class="o">::</span><span class="nx">evt</span> <span class="o">?=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(name) -&gt;</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">name</span><span class="si">}#{</span><span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span> <span class="s">&#39;event&#39;</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="nx">apiClass</span><span class="o">::</span><span class="nx">attr</span> <span class="o">?=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(name) -&gt;</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span> <span class="s">&#39;data&#39;</span><span class="si">}#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&quot;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Plugin-specific debugging.</li>
+</ul></div></div><div class="code"><div class="wrapper">          <span class="nx">apiClass</span><span class="o">::</span><span class="nx">debugLog</span> <span class="o">?=</span> <span class="k">if</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">debug</span> <span class="o">is</span> <span class="kc">off</span> <span class="k">then</span> <span class="nx">$</span><span class="p">.</span><span class="nx">noop</span> <span class="k">else</span>
+            <span class="nf">-&gt;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span><span class="p">.</span><span class="nx">debugLog</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">),</span> <span class="nx">arguments</span><span class="p">...</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Instantiate and store instance.</li>
+</ul></div></div><div class="code"><div class="wrapper">          <span class="nx">$root</span><span class="p">.</span><span class="nx">data</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">),</span> <span class="k">new</span> <span class="nx">apiClass</span> <span class="nx">$el</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">$context</span>
+
+        <span class="nx">$context</span> <span class="o">?=</span> <span class="nx">$</span> <span class="s">&#39;body&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>First, try returning existing plugin api if no options are passed in.</li>
+</ul></div></div><div class="code"><div class="wrapper">        <span class="nv">api = </span><span class="nx">@first</span><span class="p">().</span><span class="nx">data</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nx">api</span> <span class="k">if</span> <span class="nx">api</span><span class="o">?</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">options</span><span class="o">?</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Re-apply plugin, and handle requests for singletons.</li>
+</ul></div></div><div class="code"><div class="wrapper">        <span class="nv">options = </span><span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="p">(</span><span class="nv">deep = </span><span class="kc">on</span><span class="p">),</span> <span class="p">{},</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">defaults</span><span class="p">,</span> <span class="nx">options</span>
+        <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">asSingleton</span> <span class="o">is</span> <span class="kc">no</span>
+          <span class="k">return</span> <span class="nx">@each</span> <span class="nf">-&gt;</span>
+            <span class="nv">$el = </span><span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">)</span>
+            <span class="nx">boilerplate</span><span class="p">()</span>
+        <span class="k">else</span>
+          <span class="nv">$el = </span><span class="nx">@</span>
+          <span class="nx">boilerplate</span><span class="p">()</span>
+
+        <span class="nx">@</span>
+      <span class="nx">plugin</span>
+
+    <span class="nv">noConflicts: </span><span class="p">[],</span>
+    <span class="nv">noConflict: </span><span class="nf">-&gt;</span> <span class="p">(</span><span class="nx">fn</span><span class="p">()</span> <span class="k">for</span> <span class="nx">fn</span> <span class="k">in</span> <span class="nx">@noConflicts</span><span class="p">).</span><span class="nx">length</span>
+
+    <span class="nv">debug: </span><span class="kc">on</span> <span class="c1"># Turn this off when going to production.</span>
+    <span class="nv">toString: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(context) -&gt;</span> <span class="s">&#39;hlf&#39;</span>
+
+  <span class="nv">$.hlf.debugLog = </span><span class="k">if</span> <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span><span class="p">.</span><span class="nx">debug</span> <span class="o">is</span> <span class="kc">off</span> <span class="k">then</span> <span class="nx">$</span><span class="p">.</span><span class="nx">noop</span> <span class="k">else</span>
+    <span class="p">(</span><span class="k">if</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">bind</span> <span class="k">then</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">console</span><span class="p">)</span> <span class="k">else</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span>
+
+  <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span><span class="p">,</span> <span class="s">&#39;createPlugin&#39;</span>
+
+  <span class="nv">_createPlugin = </span><span class="nx">$</span><span class="p">.</span><span class="nx">createPlugin</span>
+  <span class="nv">$.createPlugin = </span><span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span>
+  <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span><span class="p">.</span><span class="nx">noConflicts</span><span class="p">.</span><span class="nx">push</span> <span class="nf">-&gt;</span> <span class="nv">$.createPlugin = </span><span class="nx">_createPlugin</span>
+
+  <span class="k">return</span> <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper"><span class="k">if</span> <span class="nx">define</span><span class="o">?</span> <span class="o">and</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="o">?</span>
+  <span class="nx">define</span> <span class="p">[</span><span class="s">&#39;jquery&#39;</span><span class="p">,</span> <span class="s">&#39;underscore&#39;</span><span class="p">],</span> <span class="nx">extension</span>
+<span class="k">else</span>
+  <span class="nx">extension</span> <span class="nx">jQuery</span><span class="p">,</span> <span class="nx">_</span></div></div></div></div></body></html>
