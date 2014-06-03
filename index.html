@@ -46,58 +46,82 @@
 
 
       <section id="main_content">
-        <h1>
-<a name="hlf-jquery-library" class="anchor" href="#hlf-jquery-library"><span class="octicon octicon-link"></span></a>HLF jQuery Library</h1>
-
-<p>jQuery plugins for quality UI.</p>
-
-<h2>
-<a name="extensions" class="anchor" href="#extensions"><span class="octicon octicon-link"></span></a>Extensions</h2>
-
+        <h1 id="hlf-jquery-library">HLF jQuery Library</h1>
+<p>jQuery extensions and plugins for quality UI. All modules have scoped debug flags, jQuery namespaces, and no-conflict support with jQuery.</p>
+<p>Bower support forthcoming. For now, use <code>npm install &amp;&amp; grunt dist</code> to build.</p>
+<p><a href="docs/index.html">Annotated source code is available.</a></p>
+<h2 id="extensions">Extensions</h2>
 <p>All extensions have AMD-compatible versions.</p>
-
-<h3>
-<a name="core" class="anchor" href="#core"><span class="octicon octicon-link"></span></a>Core</h3>
-
+<h3 id="core">Core</h3>
 <p>Main features:</p>
-
-<h3>
-<a name="event" class="anchor" href="#event"><span class="octicon octicon-link"></span></a>Event</h3>
-
+<ul>
+<li>Generate jQuery plugin methods from plugin definitions.</li>
+<li>Provide no-conflict support.</li>
+</ul>
+<h3 id="event">Event</h3>
 <p>Main features:</p>
-
-<h2>
-<a name="plugins" class="anchor" href="#plugins"><span class="octicon octicon-link"></span></a>Plugins</h2>
-
+<ul>
+<li>Hover-intent provides rate-limited versions of mouseenter and mouseleave events through a customizable delay.</li>
+</ul>
+<h2 id="plugins">Plugins</h2>
 <p>All plugins have test pages and sample styles.</p>
-
-<h3>
-<a name="hlf-tip" class="anchor" href="#hlf-tip"><span class="octicon octicon-link"></span></a>HLF Tip</h3>
-
+<h3 id="hlf-tip">HLF Tip</h3>
+<p><a href="tests/jquery.hlf.tip/tip.html">Test is available.</a></p>
 <p>Main features:</p>
-
 <ul>
 <li>Uses custom hover intent events that allow for custom delays.</li>
 <li>Re-use the same tip for a group of triggers.</li>
 <li>Has a snapping extension that allows snapping to the trigger or tracking in either direction.</li>
-</ul><p>Additional features:</p>
-
+</ul>
+<p>Additional features:</p>
 <ul>
 <li>Sample styling that draws tip stems with CSS borders.</li>
 <li>Detailed API.</li>
-</ul><p>View the examples.</p>
-
-<h2>
-<a name="development" class="anchor" href="#development"><span class="octicon octicon-link"></span></a>Development</h2>
-
+</ul>
+<p>View the examples.</p>
+<h2 id="development">Development</h2>
 <p>Start off with <code>npm install</code>.</p>
-
-<h3>
-<a name="grunt-tasks" class="anchor" href="#grunt-tasks"><span class="octicon octicon-link"></span></a>Grunt Tasks</h3>
-
+<h3 id="grunt-tasks">Grunt Tasks</h3>
 <p>Use <code>grunt</code> to start developing.</p>
-
 <p>Use <code>grunt docs</code> to generate Groc documentation.</p>
+<h3 id="sample-st2-project-file">Sample ST2 Project File</h3>
+<pre><code class="lang-json">{
+  &quot;folders&quot;:
+  [
+    {
+      &quot;path&quot;: &quot;&lt;projects&gt;&quot;,
+      &quot;file_exclude_patterns&quot;:
+      [
+        &quot;dist/*&quot;,
+        &quot;docs/*&quot;,
+        &quot;jquery/tests/*.css&quot;,
+        &quot;jquery/tests/*.js&quot;
+      ]
+    }
+  ]
+}</code></pre>
+<h2 id="license">License</h2>
+<p>The MIT License (MIT)</p>
+<pre><code>Copyright (c) 2014 Peng Wang
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the &quot;Software&quot;),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.</code></pre>
+
       </section>
 
       <footer>
