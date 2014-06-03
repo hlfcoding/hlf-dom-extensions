@@ -1,6 +1,10 @@
 # HLF jQuery Library
 
-jQuery plugins for quality UI. Use `npm install && grunt dist` to build.
+jQuery extensions and plugins for quality UI. All modules have scoped debug flags, jQuery namespaces, and no-conflict support with jQuery.
+
+Bower support forthcoming. For now, use `npm install && grunt dist` to build.
+
+[Annotated source code is available.](docs/index.html)
 
 ## Extensions
 
@@ -10,15 +14,22 @@ All extensions have AMD-compatible versions.
 
 Main features:
 
+- Generate jQuery plugin methods from plugin definitions.
+- Provide no-conflict support.
+
 ### Event
 
 Main features:
+
+- Hover-intent provides rate-limited versions of mouseenter and mouseleave events through a customizable delay.
 
 ## Plugins
 
 All plugins have test pages and sample styles.
 
 ### HLF Tip
+
+[Test is available.](tests/jquery.hlf.tip/tip.html)
 
 Main features:
 
