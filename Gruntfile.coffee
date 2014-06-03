@@ -27,6 +27,11 @@ module.exports = (grunt) ->
         'lib/*'
         '!lib/.gitignore'
       ]
+      'gh-pages': [
+        'gh-pages/*'
+        '!gh-pages/.gitignore'
+        '!gh-pages/template.html'
+      ]
     coffee:
       src:
         expand: yes
@@ -40,6 +45,22 @@ module.exports = (grunt) ->
         src: 'tests/**/*.coffee'
         ext: '.js'
         extDot: 'last'
+    copy:
+      'gh-pages':
+        src: [
+          'dist/**/*'
+          'docs/**/*'
+          'examples/**/*'
+          'lib/**/*'
+          'tests/**/*.{css,html,js}'
+          'README.md'
+        ]
+        dest: 'gh-pages/'
+    'gh-pages':
+      options:
+        base: 'gh-pages'
+        add: yes
+      src: [ '**' ]
     groc:
       all:
         src: [
@@ -49,6 +70,12 @@ module.exports = (grunt) ->
         ]
       options:
         out: 'docs/'
+    markdown:
+      'gh-pages':
+        options:
+          template: 'gh-pages/template.html'
+        src: 'gh-pages/README.md'
+        dest: 'gh-pages/index.html'
     sass:
       src:
         expand: yes
@@ -87,3 +114,11 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'docs', ['clean:docs', 'groc']
+
+  grunt.registerTask 'pages', [
+    'dist'
+    'clean:gh-pages'
+    'copy:gh-pages'
+    'markdown:gh-pages'
+    'gh-pages'
+  ]
