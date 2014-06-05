@@ -26,7 +26,18 @@ Written with jQuery 1.7.2
 # protected given their name. Access the plugin singleton is as simple as via
 # `$('body').tip()` or `$('body').snapTip()`, although using the `toString` and
 # jQuery data methods is the same.
-plugin = ($, _, hlf) ->
+
+# Export. Prefer AMD.
+((plugin) ->
+  if define? and define.amd?
+    define [
+      'jquery'
+      'underscore'
+      'hlf/jquery.extension.hlf.core'
+      'hlf/jquery.extension.hlf.event'
+    ], plugin
+  else plugin jQuery, _, jQuery.hlf
+)(($, _, hlf) ->
   
   hlf.tip =
     debug: off
@@ -505,14 +516,4 @@ plugin = ($, _, hlf) ->
     apiClass: SnapTip
     asSingleton: yes
 
-# Export. Prefer AMD.
-if define? and define.amd?
-  define [
-    'jquery'
-    'underscore'
-    'hlf/jquery.extension.hlf.core'
-    'hlf/jquery.extension.hlf.event'
-  ], plugin
-else
-  plugin jQuery, _, jQuery.hlf
-
+)

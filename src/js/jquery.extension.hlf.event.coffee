@@ -13,7 +13,18 @@ Written with jQuery 1.7.2
 # 1. Extend main namespace with properties to store global state.
 # 2. Private functions to implement certain behaviors.
 # 3. Adapting the behaviors to custom events.
-extension = ($, _, hlf) ->
+
+# Export. Prefer AMD. Note that we don't actually provide any exports because
+# ours are attached to jQuery.
+((extension) ->
+  if define? and define.amd?
+    define [
+      'jquery'
+      'underscore'
+      'hlf/jquery.extension.hlf.core'
+    ], extension
+  else extension jQuery, _, jQuery.hlf
+)(($, _, hlf) ->
 
   # I. Hover-Intent
   # ---------------
@@ -172,14 +183,5 @@ extension = ($, _, hlf) ->
       teardown: (data, namespaces) ->
         $(@).off  { mouseleave: check }
 
-# Export. Prefer AMD. Note that we don't actually provide any exports because
-# ours are attached to jQuery.
-if define? and define.amd?
-  define [
-    'jquery'
-    'underscore'
-    'hlf/jquery.extension.hlf.core'
-  ], extension
-else
-  extension jQuery, _, jQuery.hlf
+)
 

@@ -5,7 +5,15 @@ Released under the MIT License
 Written with jQuery 1.7.2  
 ###
 
-extension = ($, _, hlf) ->
+# Export. Prefer AMD.
+((extension) ->
+  if define? and define.amd?
+    define [
+      'jquery'
+      'underscore'
+    ], extension
+  else extension jQuery, _
+)(($, _, hlf) ->
 
   _.templateSettings = interpolate: /\{\{(.+?)\}\}/g
 
@@ -70,9 +78,4 @@ extension = ($, _, hlf) ->
   $.hlf.noConflicts.push -> $.createPlugin = _createPlugin
 
   return $.hlf
-
-# Export. Prefer AMD.
-if define? and define.amd?
-  define ['jquery', 'underscore'], extension
-else
-  extension jQuery, _
+)
