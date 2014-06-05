@@ -4,6 +4,20 @@ module.exports = (grunt) ->
 
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
+    autoprefixer:
+      options:
+        browsers: ['last 2 versions', 'ie 9']
+        cascade: yes
+      src:
+        expand: yes
+        src: 'dist/**/*.css'
+        ext: '.css'
+        extDot: 'last'
+      tests:
+        expand: yes
+        src: 'tests/**/*.css'
+        ext: '.css'
+        extDot: 'last'
     bower:
       install:
         options:
@@ -93,7 +107,7 @@ module.exports = (grunt) ->
       # Caveat: These watch tasks do not clean.
       css:
         files: '{src,tests}/**/*.scss'
-        tasks: ['sass']
+        tasks: ['sass', 'autoprefixer']
       js:
         files: '{src,tests}/**/*.coffee'
         tasks: ['coffee']
@@ -111,6 +125,7 @@ module.exports = (grunt) ->
     'clean:dist'
     'coffee'
     'sass'
+    'autoprefixer'
   ]
 
   grunt.registerTask 'docs', ['clean:docs', 'groc']
