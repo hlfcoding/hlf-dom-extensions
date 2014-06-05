@@ -62,7 +62,7 @@ Written with jQuery 1.7.2
         @
       plugin
 
-    noConflicts: [],
+    noConflicts: []
     noConflict: -> (fn() for fn in @noConflicts).length
 
     debug: on # Turn this off when going to production.
@@ -73,9 +73,12 @@ Written with jQuery 1.7.2
 
   _.bindAll $.hlf, 'createPlugin'
 
-  _createPlugin = $.createPlugin
-  $.createPlugin = $.hlf.createPlugin
-  $.hlf.noConflicts.push -> $.createPlugin = _createPlugin
+  safeSet = (key, toContext=$, fromContext=$.hlf) ->
+    _oldValue = toContext[key]
+    toContext[key] = fromContext[key]
+    $.hlf.noConflicts.push -> toContext[key] = _oldValue
+
+  safeSet 'createPlugin'
 
   return $.hlf
 )
