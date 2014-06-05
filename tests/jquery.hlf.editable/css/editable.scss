@@ -1,0 +1,6 @@
+@import "../../../src/css/jquery.hlf.editable.scss";
+
+.js-editable-inline {
+  @include editable-skin-inline;
+  @include editable-layout-inline;
+}

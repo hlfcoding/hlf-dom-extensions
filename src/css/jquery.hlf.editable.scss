@@ -1,0 +1,46 @@
+
+%skin-clear {
+  border-color: transparent;
+  background-color: transparent;
+  &:focus {
+    outline-style: none;
+  }
+}
+%spacing-none {
+  margin: 0;
+  padding: 0;
+}
+
+$editable-selectors: (text:'.js-text', input:'.js-input input');
+@mixin editable-skin-inline ($style:clear,
+                             $rule-color:black,
+                             $selectors:$editable-selectors)
+{
+  @if $style == clear {
+    #{map-get($selectors, text)},
+    #{map-get($selectors, input)} {
+      @extend %skin-clear;
+    }
+  }
+  #{map-get($selectors, input)} {
+    border-bottom-color: $rule-color;
+  }
+}
+
+@mixin editable-layout-inline ($width:160px,
+                               $selectors:$editable-selectors)
+{
+  #{map-get($selectors, text)},
+  #{map-get($selectors, input)} {
+    @extend %spacing-none;
+    border-width: 1px;
+    width: $width;
+  }
+  #{map-get($selectors, text)} {
+    overflow-x: hidden;
+    white-space: nowrap;
+  }
+  #{map-get($selectors, input)} {
+    margin: -1px;
+  }
+}

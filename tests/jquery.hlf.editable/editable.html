@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>HLF Editable Test</title>
+    <link rel="stylesheet" href="../../lib/normalize.css" media="all" />
+    <link rel="stylesheet" href="../base.css" media="all" />
+    <link rel="stylesheet" href="css/editable.css" media="all" />
+    <!-- Uncomment to test without AMD -->
+    <!--
+    <script src="../../lib/jquery.js" ></script>
+    <script src="../../lib/underscore.js" ></script>
+    <script src="../../dist/jquery.extension.hlf.core.js"></script>
+    <script src="../../dist/jquery.hlf.editable.js"></script>
+    <script src="editable.js"></script>
+    -->
+    <script data-main="js/main" src="../../lib/require.js"></script>
+  </head>
+  <body id="override">
+    <h1>HLF Editable Test</h1>
+    <div id="main">
+      <section class="default-call">
+        <header>Inline Type Editable</header>
+        <div class="box">
+          <fieldset data-hlf-editable='{
+              "types": "inline"
+            }'>
+            <legend>Humanized Field Name</legend>
+            <div class="js-text">Default value</div>
+            <div class="js-input"><input name="fieldName" type="text" /></div>
+          </fieldset>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
