@@ -117,6 +117,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'pages', [
     'dist'
+    'docs'
     'clean:gh-pages'
     'copy:gh-pages'
     'markdown:gh-pages'
