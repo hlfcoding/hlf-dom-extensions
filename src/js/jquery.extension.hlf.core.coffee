@@ -19,11 +19,11 @@ Written with jQuery 1.7.2
 
   $.hlf =
 
-    createPlugin: (options) ->
-      name = options.name
+    createPlugin: (createOptions) ->
+      name = createOptions.name
       safeName = "#{@toString()}#{name[0].toUpperCase()}#{name[1..]}"
-      namespace = options.namespace
-      apiClass = namespace.apiClass = options.apiClass
+      namespace = createOptions.namespace
+      apiClass = namespace.apiClass = createOptions.apiClass
       _noConflict = namespace.noConflict
       @noConflicts.push (namespace.noConflict = ->
         if _.isFunction(_noConflict) then _noConflict()
@@ -34,7 +34,7 @@ Written with jQuery 1.7.2
         $el = null # Set to right scope.
 
         boilerplate = ->
-          $root = if options.asSingleton is no then $el else $context
+          $root = if createOptions.asSingleton is no then $el else $context
           $root.addClass namespace.toString 'class'
           # - Memoize naming helpers for better performance.
           apiClass::evt ?= _.memoize (name) -> "#{name}#{namespace.toString 'event'}"
@@ -51,7 +51,7 @@ Written with jQuery 1.7.2
         return api if api? and not options?
         # - Re-apply plugin, and handle requests for singletons.
         options = $.extend (deep = on), {}, namespace.defaults, options
-        if options.asSingleton is no
+        if createOptions.asSingleton is no
           return @each ->
             $el = $(@)
             boilerplate()
