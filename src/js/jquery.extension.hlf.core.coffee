@@ -63,7 +63,7 @@ Written with jQuery 1.7.2
       if createOptions.apiClass?
         apiClass = namespace.apiClass = createOptions.apiClass
         _.extend apiClass::, apiAdditions
-      else if createOptions.apiMixins?
+      if createOptions.apiMixins?
         mixinFilter = createOptions.mixinFilter
         mixinFilter ?= (mixin) -> mixin
         apiMixins = namespace.apiMixins = createOptions.apiMixins
@@ -125,6 +125,10 @@ Written with jQuery 1.7.2
 
       if apiClass?
         instance = new apiClass $el, finalOptions, $context
+        if createOptions.baseMixins?
+          $.hlf.applyMixins instance, namespace, createOptions.baseMixins...
+        if createOptions.apiMixins?
+          $.hlf.applyMixins instance, namespace, createOptions.apiMixins...
       else if apiMixins?
         instance = { $el, options: finalOptions }
         if finalOptions.selectors? then instance.selectors = finalOptions.selectors
@@ -138,7 +142,7 @@ Written with jQuery 1.7.2
           .without(apiMixins.base)
           .value()
         $.hlf.applyMixins instance, namespace, otherMixins...
-        instance.init()
+      if _.isFunction(instance.init) then instance.init()
 
       if instance.cls isnt $.noop then $root.addClass instance.cls()
 

@@ -130,15 +130,17 @@ Written with jQuery 1.7.2
   # Note that most of the interface is intended as protected.
   class Tip
 
-    # The base constructor mostly does setup work that uses other subroutines
-    # when needed. Note that we're also keeping `$triggers` and `$context` as
-    # properties.
+    # The base constructor and `init` mostly do setup work that uses other 
+    # subroutines when needed. Note that we're also keeping `$triggers` and 
+    # `$context` as properties.
     constructor: (@$triggers, options, @$context) ->
       # Per convention, bind handler methods here.
       _.bindAll @, '_onTriggerMouseMove', '_setBounds'
       # Extend self with `options`.  
       # See default options for property names.
       $.extend (deep = yes), @, options
+
+    init: ->
       # The element represented by this API is `$tip`. We build it.
       @$tip = $ '<div>'
       # Infer `doStem` and `doFollow` flags from respective `classNames` entries.
@@ -437,8 +439,8 @@ Written with jQuery 1.7.2
   class SnapTip extends Tip
 
     # Continue setting up `$tip` and other properties.
-    constructor: ($triggers, options, $context) ->
-      super $triggers, options, $context
+    init: ->
+      super()
       # Infer `snap.toTrigger`.
       if @snap.toTrigger is off
         @snap.toTrigger = @snap.toXAxis is on or @snap.toYAxis is on
