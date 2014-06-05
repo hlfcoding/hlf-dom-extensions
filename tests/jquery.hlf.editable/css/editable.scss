@@ -1,6 +1,9 @@
 @import "../../../src/css/jquery.hlf.editable.scss";
 
-.js-editable-inline {
-  @include editable-skin-inline;
-  @include editable-layout-inline;
+#{map-get($editable-inline-selectors, container)} {
+  @include editable-inline-skin;
+  @include editable-inline-layout;
+  #{map-get($editable-inline-selectors, text)} {
+    transition: background-color 0.2s ease-in-out;
+  }
 }

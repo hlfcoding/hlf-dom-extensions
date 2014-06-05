@@ -11,10 +11,15 @@
   padding: 0;
 }
 
-$editable-selectors: (text:'.js-text', input:'.js-input input');
-@mixin editable-skin-inline ($style:clear,
+$editable-inline-selectors: (
+  container:'.js-editable-inline',
+  text:'.js-text', 
+  input:'.js-input input'
+);
+@mixin editable-inline-skin ($style:clear,
                              $rule-color:black,
-                             $selectors:$editable-selectors)
+                             $hover-background-color:rgba(black, 0.1),
+                             $selectors:$editable-inline-selectors)
 {
   @if $style == clear {
     #{map-get($selectors, text)},
@@ -22,13 +27,19 @@ $editable-selectors: (text:'.js-text', input:'.js-input input');
       @extend %skin-clear;
     }
   }
+  #{map-get($selectors, text)} {
+    cursor: text;
+    &:hover {
+      background-color: $hover-background-color;
+    }
+  }
   #{map-get($selectors, input)} {
     border-bottom-color: $rule-color;
   }
 }
 
-@mixin editable-layout-inline ($width:160px,
-                               $selectors:$editable-selectors)
+@mixin editable-inline-layout ($width:160px,
+                               $selectors:$editable-inline-selectors)
 {
   #{map-get($selectors, text)},
   #{map-get($selectors, input)} {
