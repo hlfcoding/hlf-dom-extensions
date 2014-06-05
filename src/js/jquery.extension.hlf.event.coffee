@@ -88,7 +88,7 @@ Written with jQuery 1.7.2
     # value if it looks like it will be assigned by reference.
     getComputedState = ($trigger) ->
       state = {}
-      for key, value of defaultState
+      for own key, value of defaultState
         if $.isPlainObject value then value = _.clone value
         state[key] = $trigger.data(attr(key)) or value
       state

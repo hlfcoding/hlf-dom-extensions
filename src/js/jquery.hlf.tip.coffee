@@ -120,7 +120,7 @@ Written with jQuery 1.7.2
             toXAxis:   'x-side'
             toYAxis:   'y-side'
             toTrigger: 'trigger'
-          (classNames.snap[key] = "#{pre}#{value}") for key, value of dictionary
+          (classNames.snap[key] = "#{pre}#{value}") for own key, value of dictionary
           # Update our tip class.
           classNames.tip = 'js-tip js-snap-tip'
           classNames
@@ -448,7 +448,7 @@ Written with jQuery 1.7.2
       # `_offsetStart` stores the original offset, which is used for snapping.
       @_offsetStart = null
       # Add snapping config as classes.
-      @$tip.addClass @classNames.snap[key] for key, active of @snap when active
+      @$tip.addClass(@classNames.snap[key]) for own key, active of @snap when active
 
     # `_moveToTrigger` is the main positioner. The `baseOffset` given is
     # expected to be the trigger offset.  
