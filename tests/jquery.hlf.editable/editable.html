@@ -27,7 +27,10 @@
             }'>
             <legend>Humanized Field Name</legend>
             <div class="js-text">Default value</div>
-            <div class="js-input"><input name="fieldName" type="text" /></div>
+            <!-- If must be inline-block, set data-hlf-editable-display likewise. -->
+            <div class="js-input" style="display: none">
+              <input name="fieldName" type="text" />
+            </div>
           </fieldset>
         </div>
       </section>

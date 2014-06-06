@@ -85,9 +85,13 @@ Written with jQuery 1.7.2
       @isEditing = state
       toggleOriginalDisplay = ($el, state) =>
         display = $el.data @attr('display')
-        if state is on then $el.css { display }
+        if state is on
+          display ?= 'block'
+          $el.css { display }
         else if state is off
-          if not display? then $el.data @attr('display'), $el.css('display')
+          if not display?
+            display = $el.css 'display'
+            if display isnt 'none' then $el.data @attr('display'), display
           $el.hide()
       if state is on
         toggleOriginalDisplay @$text, off
