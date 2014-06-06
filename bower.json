@@ -1,6 +1,6 @@
 {
   "name": "hlf-jquery",
-  "version": "1.0.0",
+  "version": "1.0.0-dev",
   "dependencies": {
     "jquery": "~2.1.1",
     "modernizr": "~2.8.2",
