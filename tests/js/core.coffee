@@ -35,8 +35,16 @@ require [
         @.mixin =
           someMethod: -> 'foo'
           someProperty: 'bar'
+        @.dynamicMixin = (dependencies) ->
+          someMethod: -> dependencies.valueA
+          someProperty: dependencies.valueB
         @.mixinName = 'foo'
+        @.dynamicMixinName = 'bar'
         @.instance = {}
+        @.dependencies =
+          valueA: 'foo'
+          valueB: 'bar'
+
     QUnit.test 'createMixin', (assert) ->
       result = hlf.createMixin @mixins, @mixinName, @mixin
       assert.strictEqual result, @mixin,
@@ -49,4 +57,34 @@ require [
       result = hlf.createMixin @mixins, @mixinName, @mixin
       assert.strictEqual result, no,
         'Mixin should not have been re-added to mixin collection.'
+
+    assertMixinInstance = (assert) ->
+      assert.ok @instance.someMethod,
+        'Mixin method should have been added to instance.'
+      assert.strictEqual @instance.someMethod(), 'foo',
+        'Mixin method should have been generated properly.'
+
+    QUnit.test 'applyMixin', (assert) ->
+      result = hlf.createMixin @mixins, @mixinName, @mixin
+      hlf.applyMixins @instance, @dependencies, @mixin
+      assertMixinInstance.call @, assert
+
+    assertDynamicMixinInstance = (assert) ->
+      assert.ok @instance.someMethod,
+        'Dynamic mixin method should have been added to instance.'
+      assert.strictEqual @instance.someMethod(), @dependencies.valueA,
+        'Dynamic mixin method should have been generated properly.'
+
+    QUnit.test 'applyMixin with dynamicMixin', (assert) ->
+      result = hlf.createMixin @mixins, @dynamicMixinName, @dynamicMixin
+      hlf.applyMixins @instance, @dependencies, @dynamicMixin
+      assertDynamicMixinInstance.call @, assert
+
+    QUnit.test 'applyMixins', (assert) ->
+      hlf.createMixin @mixins, @mixinName, @mixin
+      hlf.createMixin @mixins, @dynamicMixinName, @dynamicMixin
+      hlf.applyMixins @instance, @dependencies, _.values(@mixins)...
+      assertMixinInstance.call @, assert
+      assertDynamicMixinInstance.call @, assert
+
     QUnit.start()
