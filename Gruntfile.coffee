@@ -119,10 +119,14 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks plugin for plugin in matchdep.filterDev 'grunt-*'
 
   grunt.registerTask 'default', [
-    'clean:lib'
-    'bower'
+    'lib'
     'dist'
     'watch'
+  ]
+
+  grunt.registerTask 'lib', [
+    'clean:lib'
+    'bower'
   ]
 
   grunt.registerTask 'dist', [
