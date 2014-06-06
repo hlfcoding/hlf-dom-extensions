@@ -1,4 +1,4 @@
-@import "../../../src/css/jquery.hlf.editable.scss";
+@import "../../src/css/jquery.hlf.editable.scss";
 
 #{map-get($editable-inline-selectors, container)} {
   @include editable-inline-skin;

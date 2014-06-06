@@ -29,7 +29,7 @@ All plugins have test pages and sample styles.
 
 ### HLF Tip
 
-[Test is available.](tests/jquery.hlf.tip/tip.html)
+[Test is available.](tests/tip.visual.html)
 
 Main features:
 
