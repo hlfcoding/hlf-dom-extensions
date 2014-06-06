@@ -4,8 +4,6 @@ require.config
     hlf: '../dist'
     test: '../tests/js'
 
-QUnit.config.autostart = no
-
 require [
   'jquery'
   'underscore'

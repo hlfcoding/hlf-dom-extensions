@@ -90,6 +90,10 @@ module.exports = (grunt) ->
           template: 'gh-pages/template.html'
         src: 'gh-pages/README.md'
         dest: 'gh-pages/index.html'
+    qunit:
+      all:
+        expand: yes
+        src: 'tests/*.unit.html'
     sass:
       src:
         expand: yes
@@ -138,3 +142,5 @@ module.exports = (grunt) ->
     'markdown:gh-pages'
     'gh-pages'
   ]
+
+  grunt.registerTask 'test', ['qunit']
