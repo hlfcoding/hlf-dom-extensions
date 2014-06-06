@@ -38,8 +38,11 @@ Written with jQuery 1.7.2
       @applyMixin context, dependencies, mixin for mixin in mixins
 
     createMixin: (mixins, name, mixin) ->
+      mixins ?= $.hlf.mixins
+      return no if name of mixins
       mixins[name] = mixin
-      (prop.mixin = name) for own name, prop of mixin when _.isFunction(prop)
+      if $.isPlainObject(mixin)
+        (prop.mixin = name) for own k, prop of mixin when _.isFunction(prop)
       mixin
 
     createPlugin: (createOptions) ->
