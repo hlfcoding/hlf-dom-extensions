@@ -4,6 +4,8 @@ require.config
     hlf: '../dist'
     test: '../tests/js'
 
+QUnit.config.autostart = no
+
 require [
   'jquery'
   'underscore'
@@ -15,16 +17,16 @@ require [
   else
 
     QUnit.test 'exports', (assert) ->
-      assert.notStrictEqual $.hlf, undefined,
+      assert.ok hlf,
         'Namespace should exist.'
 
     QUnit.test 'noConflict', (assert) ->
-      assert.notStrictEqual $.createPlugin, undefined, 
+      assert.ok $.createPlugin,
         'Method shortcut for createPlugin should exist.'
-      $.hlf.noConflict()
+      hlf.noConflict()
       assert.strictEqual $.createPlugin, undefined,
         'Method shortcut for createPlugin should be back to original value.'
-      assert.notStrictEqual $.hlf.createPlugin, undefined, 
+      assert.ok hlf.createPlugin,
         'Original method for createPlugin should still exist.'
 
     QUnit.module 'mixins',
