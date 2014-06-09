@@ -31,6 +31,7 @@ require [
       setup: ->
         @.mixins = {}
         @.mixin =
+          decorate: -> @someOtherProperty = 'baz'
           someMethod: -> 'foo'
           someProperty: 'bar'
         @.dynamicMixin = (dependencies) ->
@@ -61,6 +62,10 @@ require [
         'Mixin method should have been added to instance.'
       assert.strictEqual @instance.someMethod(), 'foo',
         'Mixin method should have been generated properly.'
+      assert.strictEqual @instance.decorate, undefined,
+        'Mixin once method should have been removed after invoking.'
+      assert.strictEqual @instance.someOtherProperty, 'baz',
+        'Mixin once method should have invoked properly.'
 
     QUnit.test 'applyMixin', (assert) ->
       result = hlf.createMixin @mixins, @mixinName, @mixin
