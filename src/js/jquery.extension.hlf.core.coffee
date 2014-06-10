@@ -45,10 +45,10 @@ Written with jQuery 1.7.2
       if createOptions.baseMixins?
         hlf.applyMixins instance, namespace, createOptions.baseMixins...
       hlf.applyMixin instance, namespace, apiMixins.base
-      otherMixins = _.chain(apiMixins)
-        .filter(mixinFilter, instance)
+      otherMixins = _.chain apiMixins
+        .filter mixinFilter, instance
         .values()
-        .without(apiMixins.base)
+        .without apiMixins.base
         .value()
       hlf.applyMixins instance, namespace, otherMixins...
     if _.isFunction(instance.init) then instance.init()
@@ -56,6 +56,18 @@ Written with jQuery 1.7.2
     if instance.cls isnt $.noop then $root.addClass instance.cls()
 
     $root.data instance.attr(), instance
+
+  _createPluginAPIAdditions = (name, namespace) ->
+    evt: _.memoize (name) -> "#{name}#{namespace.toString 'event'}"
+    attr: _.memoize (name) ->
+      name = if name? then "-#{name}" else ''
+      namespace.toString('data') + name
+    cls: if namespace.toString('class') is namespace.toString() then $.noop else
+      _.memoize (name) ->
+        name = if name? then "-#{name}" else ''
+        namespace.toString('class') + name
+    debugLog: if namespace.debug is off then $.noop else
+      -> hlf.debugLog namespace.toString('log'), arguments...
 
   _.extend hlf,
 
@@ -91,17 +103,7 @@ Written with jQuery 1.7.2
       safeName = "#{@toString()}#{name[0].toUpperCase()}#{name[1..]}"
       namespace = createOptions.namespace
       
-      apiAdditions =
-        evt: _.memoize (name) -> "#{name}#{namespace.toString 'event'}"
-        attr: _.memoize (name) -> 
-          name = if name? then "-#{name}" else ''
-          namespace.toString('data') + name
-        cls: if namespace.toString('class') is namespace.toString() then $.noop else
-          _.memoize (name) -> 
-            name = if name? then "-#{name}" else ''
-            namespace.toString('class') + name
-        debugLog: if namespace.debug is off then $.noop else
-          -> hlf.debugLog namespace.toString('log'), arguments...
+      apiAdditions = _createPluginAPIAdditions name, namespace
         
       if createOptions.apiClass?
         apiClass = namespace.apiClass = createOptions.apiClass
