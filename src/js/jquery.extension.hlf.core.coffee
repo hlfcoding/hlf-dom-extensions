@@ -17,9 +17,19 @@ Written with jQuery 1.7.2
 
   _.templateSettings = interpolate: /\{\{(.+?)\}\}/g
 
-  hlf = {}
+  hlf =
+    debug: on # Turn this off when going to production.
+    toString: _.memoize (context) -> 'hlf'
 
   _noConflicts = []
+
+  _.extend hlf,
+    noConflict: -> (fn() for fn in _noConflicts).length
+    debugLog: if hlf.debug is off then $.noop else
+      (if console.log.bind then console.log.bind(console) else console.log)
+
+  # Plugin Support
+  # --------------
 
   _createPluginInstance = ($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions) ->
     data = $el.data namespace.toString('data')
@@ -79,32 +89,6 @@ Written with jQuery 1.7.2
       -> hlf.debugLog namespace.toString('log'), arguments...
 
   _.extend hlf,
-
-    applyMixin: (context, dependencies, mixin) ->
-      if _.isString(mixin) then mixin = @mixins[mixin] 
-      return unless mixin?
-      if _.isFunction(mixin) then mixin = mixin dependencies
-      onceMethods = []
-      handlerNames = []
-      for own name, prop of mixin when _.isFunction(prop)
-        if name in @mixinOnceNames then onceMethods.push prop
-        if name.indexOf('handle') is 0 and name isnt 'handleCommand'
-          handlerNames.push name
-      mixinToApply = _.omit mixin, @mixinOnceNames
-      _.extend context, mixinToApply
-      method.call(context) for method in onceMethods
-      if handlerNames.length then _.bindAll context, handlerNames...
-
-    applyMixins: (context, dependencies, mixins...) ->
-      @applyMixin context, dependencies, mixin for mixin in mixins
-
-    createMixin: (mixins, name, mixin) ->
-      mixins ?= hlf.mixins
-      return no if name of mixins
-      mixins[name] = mixin
-      if $.isPlainObject(mixin)
-        (prop.mixin = name) for own k, prop of mixin when _.isFunction(prop)
-      mixin
 
     createPlugin: (createOptions) ->
       
@@ -166,6 +150,39 @@ Written with jQuery 1.7.2
       
       plugin
 
+  _.bindAll hlf, 'createPlugin'
+
+  # Mixin Support
+  # -------------
+
+  _.extend hlf,
+
+    applyMixin: (context, dependencies, mixin) ->
+      if _.isString(mixin) then mixin = @mixins[mixin] 
+      return unless mixin?
+      if _.isFunction(mixin) then mixin = mixin dependencies
+      onceMethods = []
+      handlerNames = []
+      for own name, prop of mixin when _.isFunction(prop)
+        if name in @mixinOnceNames then onceMethods.push prop
+        if name.indexOf('handle') is 0 and name isnt 'handleCommand'
+          handlerNames.push name
+      mixinToApply = _.omit mixin, @mixinOnceNames
+      _.extend context, mixinToApply
+      method.call(context) for method in onceMethods
+      if handlerNames.length then _.bindAll context, handlerNames...
+
+    applyMixins: (context, dependencies, mixins...) ->
+      @applyMixin context, dependencies, mixin for mixin in mixins
+
+    createMixin: (mixins, name, mixin) ->
+      mixins ?= hlf.mixins
+      return no if name of mixins
+      mixins[name] = mixin
+      if $.isPlainObject(mixin)
+        (prop.mixin = name) for own k, prop of mixin when _.isFunction(prop)
+      mixin
+
     mixinOnceNames: [
       'decorate'
       'decorateOptions'
@@ -200,15 +217,8 @@ Written with jQuery 1.7.2
           for own name, selector of @selectors
             @["$#{name}"] = @$el.find selector
 
-    noConflict: -> (fn() for fn in _noConflicts).length
-
-    debug: on # Turn this off when going to production.
-    toString: _.memoize (context) -> 'hlf'
-
-  hlf.debugLog = if hlf.debug is off then $.noop else
-    (if console.log.bind then console.log.bind(console) else console.log)
-
-  _.bindAll hlf, 'createPlugin'
+  # Export
+  # ------
 
   safeSet = (key, toContext=$, fromContext=hlf) ->
     _oldValue = toContext[key]
