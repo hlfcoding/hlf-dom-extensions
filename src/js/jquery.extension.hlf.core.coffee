@@ -40,8 +40,6 @@ Written with jQuery 1.7.2
         hlf.applyMixins instance, namespace, createOptions.apiMixins...
     else if apiMixins?
       instance = { $el, options: finalOptions }
-      if finalOptions.selectors? then instance.selectors = finalOptions.selectors
-      if finalOptions.classNames? then instance.classNames = finalOptions.classNames
       if createOptions.baseMixins?
         hlf.applyMixins instance, namespace, createOptions.baseMixins...
       hlf.applyMixin instance, namespace, apiMixins.base
@@ -51,6 +49,17 @@ Written with jQuery 1.7.2
         .without apiMixins.base
         .value()
       hlf.applyMixins instance, namespace, otherMixins...
+
+    if createOptions.compactOptions is yes
+      $.extend (deep = yes), instance, finalOptions
+      delete instance.options
+    else
+      if finalOptions.selectors? then instance.selectors = finalOptions.selectors
+      if finalOptions.classNames? then instance.classNames = finalOptions.classNames
+
+    if createOptions.autoSelect is yes and _.isFunction(instance.select)
+      instance.select()
+
     if _.isFunction(instance.init) then instance.init()
 
     if instance.cls isnt $.noop then $root.addClass instance.cls()

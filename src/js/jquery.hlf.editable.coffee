@@ -53,7 +53,6 @@ Written with jQuery 1.7.2
     init: ->
       @trigger 'will-init'
       @$el.addClass @classNames.container
-      @select()
       @bind()
       if @toggleEditing? then @toggleEditing off
       @trigger 'did-init'
@@ -119,7 +118,7 @@ Written with jQuery 1.7.2
     # Onces
     
     decorateOptions: ->
-      @classNames.container += " #{@cls('inline')}"
+      @options.classNames.container += " #{@cls('inline')}"
     decorate: ->
       @on 'did-init', => @initInline()
       @on 'will-commit', (e) => @renderText e.userInfo.text
@@ -206,4 +205,6 @@ Written with jQuery 1.7.2
       'event'
       'selection'
     ]
+    autoSelect: yes
+    compactOptions: yes
 )

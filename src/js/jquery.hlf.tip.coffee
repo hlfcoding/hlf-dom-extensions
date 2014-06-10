@@ -136,9 +136,6 @@ Written with jQuery 1.7.2
     constructor: (@$triggers, options, @$context) ->
       # Per convention, bind handler methods here.
       _.bindAll @, '_onTriggerMouseMove', '_setBounds'
-      # Extend self with `options`.  
-      # See default options for property names.
-      $.extend (deep = yes), @, options
 
     init: ->
       # The element represented by this API is `$tip`. We build it.
@@ -512,10 +509,12 @@ Written with jQuery 1.7.2
     namespace: hlf.tip
     apiClass: Tip
     asSingleton: yes
+    compactOptions: yes
   hlf.createPlugin
     name: 'snapTip'
     namespace: hlf.tip.snap
     apiClass: SnapTip
     asSingleton: yes
+    compactOptions: yes
 
 )
