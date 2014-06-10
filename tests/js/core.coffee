@@ -8,7 +8,9 @@ require [
   'jquery'
   'underscore'
   'hlf/jquery.extension.hlf.core'
+  'test/base'
   'test/core.mixin'
+  'test/core.plugin'
 ], ($, _, hlf) ->
   shouldRunVisualTests = $('#qunit').length is 0
 
