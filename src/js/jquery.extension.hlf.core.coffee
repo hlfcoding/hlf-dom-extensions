@@ -17,7 +17,47 @@ Written with jQuery 1.7.2
 
   _.templateSettings = interpolate: /\{\{(.+?)\}\}/g
 
-  $.hlf =
+  hlf = {}
+
+  _noConflicts = []
+
+  _createPluginInstance = ($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions) ->
+    data = $el.data namespace.toString('data')
+    finalOptions = options
+    if $.isPlainObject(data)
+      finalOptions = $.extend (deep = on), {}, options, data
+      $root = $el
+    else if not createOptions.asSingleton
+      $root = $el
+    else
+      $root = $context
+
+    if apiClass?
+      instance = new apiClass $el, finalOptions, $context
+      if createOptions.baseMixins?
+        hlf.applyMixins instance, namespace, createOptions.baseMixins...
+      if createOptions.apiMixins?
+        hlf.applyMixins instance, namespace, createOptions.apiMixins...
+    else if apiMixins?
+      instance = { $el, options: finalOptions }
+      if finalOptions.selectors? then instance.selectors = finalOptions.selectors
+      if finalOptions.classNames? then instance.classNames = finalOptions.classNames
+      if createOptions.baseMixins?
+        hlf.applyMixins instance, namespace, createOptions.baseMixins...
+      hlf.applyMixin instance, namespace, apiMixins.base
+      otherMixins = _.chain(apiMixins)
+        .filter(mixinFilter, instance)
+        .values()
+        .without(apiMixins.base)
+        .value()
+      hlf.applyMixins instance, namespace, otherMixins...
+    if _.isFunction(instance.init) then instance.init()
+
+    if instance.cls isnt $.noop then $root.addClass instance.cls()
+
+    $root.data instance.attr(), instance
+
+  _.extend hlf,
 
     applyMixin: (context, dependencies, mixin) ->
       if _.isString(mixin) then mixin = @mixins[mixin] 
@@ -38,7 +78,7 @@ Written with jQuery 1.7.2
       @applyMixin context, dependencies, mixin for mixin in mixins
 
     createMixin: (mixins, name, mixin) ->
-      mixins ?= $.hlf.mixins
+      mixins ?= hlf.mixins
       return no if name of mixins
       mixins[name] = mixin
       if $.isPlainObject(mixin)
@@ -61,7 +101,7 @@ Written with jQuery 1.7.2
             name = if name? then "-#{name}" else ''
             namespace.toString('class') + name
         debugLog: if namespace.debug is off then $.noop else
-          -> $.hlf.debugLog namespace.toString('log'), arguments...
+          -> hlf.debugLog namespace.toString('log'), arguments...
         
       if createOptions.apiClass?
         apiClass = namespace.apiClass = createOptions.apiClass
@@ -74,7 +114,7 @@ Written with jQuery 1.7.2
 
       _noConflict = namespace.noConflict
       _plugin = $.fn[name]
-      @noConflicts.push (namespace.noConflict = ->
+      _noConflicts.push (namespace.noConflict = ->
         if _.isFunction(_noConflict) then _noConflict()
         $.fn[name] = _plugin
       )
@@ -108,48 +148,12 @@ Written with jQuery 1.7.2
         $el = @
         ( ->
           args = arguments
-          if createOptions.asSingleton is yes then $.hlf.createPluginInstance $el, args...
-          else $el.each -> $.hlf.createPluginInstance $(@), args...
+          if createOptions.asSingleton is yes then _createPluginInstance $el, args...
+          else $el.each -> _createPluginInstance $(@), args...
         )(options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions)
         return @
       
       plugin
-
-    createPluginInstance: ($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions) ->
-      data = $el.data namespace.toString('data')
-      finalOptions = options
-      if $.isPlainObject(data)
-        finalOptions = $.extend (deep = on), {}, options, data
-        $root = $el
-      else if not createOptions.asSingleton
-        $root = $el
-      else
-        $root = $context
-
-      if apiClass?
-        instance = new apiClass $el, finalOptions, $context
-        if createOptions.baseMixins?
-          $.hlf.applyMixins instance, namespace, createOptions.baseMixins...
-        if createOptions.apiMixins?
-          $.hlf.applyMixins instance, namespace, createOptions.apiMixins...
-      else if apiMixins?
-        instance = { $el, options: finalOptions }
-        if finalOptions.selectors? then instance.selectors = finalOptions.selectors
-        if finalOptions.classNames? then instance.classNames = finalOptions.classNames
-        if createOptions.baseMixins?
-          $.hlf.applyMixins instance, namespace, createOptions.baseMixins...
-        $.hlf.applyMixin instance, namespace, apiMixins.base
-        otherMixins = _.chain(apiMixins)
-          .filter(mixinFilter, instance)
-          .values()
-          .without(apiMixins.base)
-          .value()
-        $.hlf.applyMixins instance, namespace, otherMixins...
-      if _.isFunction(instance.init) then instance.init()
-
-      if instance.cls isnt $.noop then $root.addClass instance.cls()
-
-      $root.data instance.attr(), instance
 
     mixinOnceNames: [
       'decorate'
@@ -185,21 +189,20 @@ Written with jQuery 1.7.2
           for own name, selector of @selectors
             @["$#{name}"] = @$el.find selector
 
-    noConflicts: []
-    noConflict: -> (fn() for fn in @noConflicts).length
+    noConflict: -> (fn() for fn in _noConflicts).length
 
     debug: on # Turn this off when going to production.
     toString: _.memoize (context) -> 'hlf'
 
-  $.hlf.debugLog = if $.hlf.debug is off then $.noop else
+  hlf.debugLog = if hlf.debug is off then $.noop else
     (if console.log.bind then console.log.bind(console) else console.log)
 
-  _.bindAll $.hlf, 'createPlugin', 'createPluginInstance'
+  _.bindAll hlf, 'createPlugin'
 
-  safeSet = (key, toContext=$, fromContext=$.hlf) ->
+  safeSet = (key, toContext=$, fromContext=hlf) ->
     _oldValue = toContext[key]
     toContext[key] = fromContext[key]
-    $.hlf.noConflicts.push -> toContext[key] = _oldValue
+    _noConflicts.push -> toContext[key] = _oldValue
 
   safeSet 'applyMixin'
   safeSet 'applyMixins'
@@ -207,6 +210,8 @@ Written with jQuery 1.7.2
   safeSet 'createPlugin'
   safeSet 'mixinOnceNames'
   safeSet 'mixins'
+
+  $.hlf = hlf
 
   return $.hlf
 )
