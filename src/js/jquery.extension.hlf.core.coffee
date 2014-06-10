@@ -144,7 +144,7 @@ Written with jQuery 1.7.2
           return @
         else
           instance = @first().data namespace.toString('data')
-          return instance if instance? and not arguments.length?
+          return instance if instance? and instance.$el? and not arguments.length
 
         options = $.extend (deep = on), {}, namespace.defaults, options
         $el = @
