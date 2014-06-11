@@ -93,5 +93,13 @@ define [
     assert.strictEqual result.someOtherMixinProperty, 'bar',
       'Mixin property should have been set on deferred initialization.'
 
+  QUnit.test 'createPlugin with apiClass and baseMixins and asSingleton', (assert) ->
+    createOptions = @baseCreateOptions
+    createOptions.asSingleton = yes
+    hlf.createPlugin createOptions
+    result = assertGeneralPlugin.call @, assert
+    assert.strictEqual result, $('body').data('somePlugin'),
+      'Plugin singleton should be stored with context element.'
+
 
   yes
