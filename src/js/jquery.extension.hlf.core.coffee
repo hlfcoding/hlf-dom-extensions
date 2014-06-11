@@ -15,8 +15,6 @@ Written with jQuery 1.7.2
   else extension jQuery, _
 )(($, _) ->
 
-  _.templateSettings = interpolate: /\{\{(.+?)\}\}/g
-
   hlf =
     debug: on # Turn this off when going to production.
     toString: _.memoize (context) -> 'hlf'
