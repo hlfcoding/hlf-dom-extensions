@@ -3,7 +3,7 @@ define [
   'underscore'
   'hlf/jquery.extension.hlf.core'
 ], ($, _, hlf) ->
-  
+
   QUnit.module 'mixin',
     setup: ->
       @.mixins = {}
@@ -27,7 +27,6 @@ define [
       'Mixin should have been added to mixin collection.'
     assert.strictEqual @mixins[@mixinName], @mixin,
       'Mixin should be accessible.'
-    console.log @mixins[@mixinName].someMethod
     assert.strictEqual @mixins[@mixinName].someMethod.mixin, @mixinName,
       'Mixin method should have mixin name attached.'
     result = hlf.createMixin @mixins, @mixinName, @mixin
