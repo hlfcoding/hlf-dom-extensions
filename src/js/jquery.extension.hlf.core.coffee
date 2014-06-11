@@ -136,7 +136,8 @@ Written with jQuery 1.7.2
               instance.handleCommand command, sender
           return @
         else
-          instance = @first().data namespace.toString('data')
+          $el = if createOptions.asSingleton is yes then $context else @first()
+          instance = $el.data namespace.toString('data')
           return instance if instance? and instance.$el? and not arguments.length
 
         options = $.extend (deep = on), {}, namespace.defaults, options
