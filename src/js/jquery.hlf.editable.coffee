@@ -143,49 +143,109 @@ Written with jQuery 1.7.2
     # Action Overrides
     
     inputValue: ->
+      switch @editorName
+        when 'CodeMirror' then @editor.getValue()
+        else ''
 
     renderText: (text) ->
+      switch @editorName
+        when 'CodeMirror' then @editor.setValue text
+        else
 
     # Onces
     
     decorateOptions: ->
+      @opts.selectors.markup = '.editor-markup'
     decorate: ->
+      delete @toggleEditing # Unneeded action.
+      @on 'will-init', =>
+      @on 'did-init', => @initEditor()
 
     # Own
     
     initEditor: ->
+      @editorName = @data 'editor'
+      switch @editorName
+        when 'CodeMirror'
+          opts = @data 'editor-options'
+          opts.value = @$markup.text()
+          location = (el) =>
+            @$editor = el
+            @$markup.replaceWith @$editor
+          @editor = CodeMirror location, opts
+        else didInit = no
+      @bindEditor()
+      didInit isnt no
 
     bindEditor: ->
+      switch @editorName
+        when 'CodeMirror'
+          @editor.on 'blur', @handleValueChange
+        else
 
   $.createMixin mixins, 'color-picker',
 
     # Onces
     
     decorateOptions: ->
+      @opts.selectors.well = '.color-well'
     decorate: ->
+      @on 'will-commit', (e) => @renderColor e.userInfo.text
+      @on 'did-init', => @initColorPicker()
 
     # Own
     
     initColorPicker: ->
+      _.bindAll @, 'handleColorPickerChange'
+      @pickerName = @data 'color-picker'
+      switch @pickerName
+        when 'Spectrum'
+          opts = @data 'color-picker-options'
+          opts.color = "##{@$input.val()}"
+          opts.change = @handleColorPickerChange
+          @$well.spectrum opts
+        else didInit = no
+      @bindColorPicker()
+      didInit isnt no
 
     bindColorPicker: ->
 
     handleColorPickerChange: (color) ->
+      switch @pickerName
+        when 'Spectrum' then color = color.toHexString().substring(1)
+      @$input
+        .val color
+        .trigger 'change'
 
     # Actions
     
     renderColor: (color) ->
+      switch @pickerName
+        when 'Spectrum' then @$well.spectrum 'set', color
 
   $.createMixin mixins, 'file-uploader',
 
     # Onces
     
     decorateOptions: ->
+      @opts.selectors.text = '.preview > figcaption'
+      @opts.selectors.thumb = '.preview > .thumb'
     decorate: ->
+      delete @toggleEditing # Unneeded action.
+      @on 'will-commit', (e) =>
+      @on 'did-init', => @initFileUploader()
 
     # Own
     
     initFileUploader: ->
+      @uploaderName = @data 'file-uploader'
+      switch @uploaderName
+        when 'jQueryFileUpload'
+          opts = @data 'file-uploader-options'
+          @$input.fileupload opts
+        else didInit = no
+      @bindFileUploader()
+      didInit isnt no
 
     bindFileUploader: ->
 
