@@ -22,7 +22,8 @@ Main features:
 
 Main features:
 
-- Hover-intent provides rate-limited versions of mouseenter and mouseleave events through a customizable delay.
+- Hover-intent provides rate-limited versions of mouseenter and mouseleave 
+  events through a customizable delay.
 
 ## Plugins
 
@@ -30,20 +31,33 @@ All plugins have test pages and sample styles.
 
 ### HLF Tip
 
+(WIP)
+
 [Test is available.](tests/tip.visual.html)
 
 Main features:
 
 - Uses custom hover intent events that allow for custom delays.
 - Re-use the same tip for a group of triggers.
-- Has a snapping extension that allows snapping to the trigger or tracking in either direction.
+- Has a snapping extension that allows snapping to the trigger or tracking in
+  either direction.
 
 Additional features:
 
 - Sample styling that draws tip stems with CSS borders.
 - Detailed API.
 
-View the examples.
+### HLF Editable
+
+(WIP)
+
+[Test is available.](tests/editable.visual.html)
+
+Main features:
+
+- Uses mixins for encapsulate editing behaviors, so plugin instances can be
+  composed based on data-attribute configuration. 
+- Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).
 
 ## Development
 
