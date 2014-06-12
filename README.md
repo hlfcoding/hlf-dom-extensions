@@ -15,6 +15,7 @@ All extensions have AMD-compatible versions.
 Main features:
 
 - Generate jQuery plugin methods from plugin definitions.
+- Helpers to create mixins that can be used for plugin API.
 - Provide no-conflict support.
 
 ### Event
