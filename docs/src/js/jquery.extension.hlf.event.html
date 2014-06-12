@@ -6,7 +6,16 @@ composed of three parts:</p></div></div></div><div class="segment"><div class="c
 <li>Extend main namespace with properties to store global state.</li>
 <li>Private functions to implement certain behaviors.</li>
 <li>Adapting the behaviors to custom events.</li>
-</ol></div></div><div class="code"><div class="wrapper"><span class="nv">extension = </span><span class="nf">($, _, hlf) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="i-hover-intent">I. Hover-Intent</h2></div></div><div class="code"><div class="wrapper">  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>A set of custom events based on a distance check with a customizable
+</ol></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD. Note that we don't actually provide any exports because
+ours are attached to jQuery.</p></div></div><div class="code"><div class="wrapper"><span class="p">(</span><span class="nf">(extension) -&gt;</span>
+  <span class="k">if</span> <span class="nx">define</span><span class="o">?</span> <span class="o">and</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="o">?</span>
+    <span class="nx">define</span> <span class="p">[</span>
+      <span class="s">&#39;jquery&#39;</span>
+      <span class="s">&#39;underscore&#39;</span>
+      <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
+    <span class="p">],</span> <span class="nx">extension</span>
+  <span class="k">else</span> <span class="nx">extension</span> <span class="nx">jQuery</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">hlf</span>
+<span class="p">)(</span><span class="nf">($, _, hlf) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="i-hover-intent">I. Hover-Intent</h2></div></div><div class="code"><div class="wrapper">  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>A set of custom events based on a distance check with a customizable
 <code>interval</code> of delay to limit 'un-intentional' mouse-enter's and mouse-
 leave's. Allows for customization based on <code>sensitivity</code> to movement.</p></div></div><div class="code"><div class="wrapper">  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Also, unlike the jQuery <code>mouseenter</code> and <code>mouseleave</code> events,
 <code>truemouseenter</code> and <code>truemouseleave</code> provide <code>pageX</code> and <code>pageY</code> values.</p></div></div><div class="code"><div class="wrapper">  <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">hlf</span><span class="p">,</span>
@@ -37,7 +46,7 @@ both default to the default extension options.</p></div></div><div class="code">
 state and using any <code>defaultState</code> as fallback. Note that we clone the
 value if it looks like it will be assigned by reference.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">getComputedState = </span><span class="nf">($trigger) -&gt;</span>
       <span class="nv">state = </span><span class="p">{}</span>
-      <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">defaultState</span>
+      <span class="k">for</span> <span class="k">own</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">defaultState</span>
         <span class="k">if</span> <span class="nx">$</span><span class="p">.</span><span class="nx">isPlainObject</span> <span class="nx">value</span> <span class="k">then</span> <span class="nv">value = </span><span class="nx">_</span><span class="p">.</span><span class="nx">clone</span> <span class="nx">value</span>
         <span class="nx">state</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">attr</span><span class="p">(</span><span class="nx">key</span><span class="p">))</span> <span class="o">or</span> <span class="nx">value</span>
       <span class="nx">state</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>check</code> is the main routine that uses the state, setup, and teardown
@@ -108,12 +117,6 @@ intent's.</p></div></div><div class="code"><div class="wrapper">    <span class=
       <span class="nv">setup: </span><span class="nf">(data, namespaces) -&gt;</span>
         <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">on</span>   <span class="p">{</span> <span class="nv">mouseleave: </span><span class="nx">check</span> <span class="p">}</span>
       <span class="nv">teardown: </span><span class="nf">(data, namespaces) -&gt;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">off</span>  <span class="p">{</span> <span class="nv">mouseleave: </span><span class="nx">check</span> <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD. Note that we don't actually provide any exports because
-ours are attached to jQuery.</p></div></div><div class="code"><div class="wrapper"><span class="k">if</span> <span class="nx">define</span><span class="o">?</span> <span class="o">and</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="o">?</span>
-  <span class="nx">define</span> <span class="p">[</span>
-    <span class="s">&#39;jquery&#39;</span>
-    <span class="s">&#39;underscore&#39;</span>
-    <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
-  <span class="p">],</span> <span class="nx">extension</span>
-<span class="k">else</span>
-  <span class="nx">extension</span> <span class="nx">jQuery</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">hlf</span></div></div></div></div></body></html>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">off</span>  <span class="p">{</span> <span class="nv">mouseleave: </span><span class="nx">check</span> <span class="p">}</span>
+
+<span class="p">)</span></div></div></div></div></body></html>

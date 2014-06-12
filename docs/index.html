@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>index</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="index"><meta name="groc-project-path" content="README.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">README.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-jquery-library">HLF jQuery Library</h1>
+<!DOCTYPE html><html lang="en"><head><title>index</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="index"><meta name="groc-project-path" content="README.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">README.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlfjquerylibrarybuildstatushttpstravisciorghlfcodinghlfjquerysvgbranchmasterhttpstravisciorghlfcodinghlfjquery">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master" alt="Build Status" title="" /></a></h1>
 
 <p>jQuery extensions and plugins for quality UI. All modules have scoped debug flags, jQuery namespaces, and no-conflict support with jQuery.</p>
 
@@ -16,6 +16,7 @@
 
 <ul>
 <li>Generate jQuery plugin methods from plugin definitions.</li>
+<li>Helpers to create mixins that can be used for plugin API.</li>
 <li>Provide no-conflict support.</li>
 </ul>
 
@@ -24,7 +25,8 @@
 <p>Main features:</p>
 
 <ul>
-<li>Hover-intent provides rate-limited versions of mouseenter and mouseleave events through a customizable delay.</li>
+<li>Hover-intent provides rate-limited versions of mouseenter and mouseleave 
+events through a customizable delay.</li>
 </ul>
 
 <h2 id="plugins">Plugins</h2>
@@ -33,14 +35,17 @@
 
 <h3 id="hlf-tip">HLF Tip</h3>
 
-<p><a href="tests/jquery.hlf.tip/tip.html">Test is available.</a></p>
+<p>(WIP)</p>
+
+<p><a href="tests/tip.visual.html">Test is available.</a></p>
 
 <p>Main features:</p>
 
 <ul>
 <li>Uses custom hover intent events that allow for custom delays.</li>
 <li>Re-use the same tip for a group of triggers.</li>
-<li>Has a snapping extension that allows snapping to the trigger or tracking in either direction.</li>
+<li>Has a snapping extension that allows snapping to the trigger or tracking in
+either direction.</li>
 </ul>
 
 <p>Additional features:</p>
@@ -50,7 +55,19 @@
 <li>Detailed API.</li>
 </ul>
 
-<p>View the examples.</p>
+<h3 id="hlf-editable">HLF Editable</h3>
+
+<p>(WIP)</p>
+
+<p><a href="tests/tip.editable.html">Test is available.</a></p>
+
+<p>Main features:</p>
+
+<ul>
+<li>Uses mixins for encapsulate editing behaviors, so plugin instances can be
+composed based on data-attribute configuration. </li>
+<li>Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).</li>
+</ul>
 
 <h2 id="development">Development</h2>
 

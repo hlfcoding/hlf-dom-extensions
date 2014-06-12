@@ -7,11 +7,16 @@ Written with jQuery 1.7.2
  */
 
 (function() {
-  var plugin,
-    __hasProp = {}.hasOwnProperty,
+  var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  plugin = function($, _, hlf) {
+  (function(plugin) {
+    if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
+      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core', 'hlf/jquery.extension.hlf.event'], plugin);
+    } else {
+      return plugin(jQuery, _, jQuery.hlf);
+    }
+  })(function($, _, hlf) {
     var SnapTip, Tip;
     hlf.tip = {
       debug: false,
@@ -97,6 +102,7 @@ Written with jQuery 1.7.2
               toTrigger: 'trigger'
             };
             for (key in dictionary) {
+              if (!__hasProp.call(dictionary, key)) continue;
               value = dictionary[key];
               classNames.snap[key] = "" + pre + value;
             }
@@ -108,11 +114,12 @@ Written with jQuery 1.7.2
     };
     Tip = (function() {
       function Tip($triggers, options, $context) {
-        var deep;
         this.$triggers = $triggers;
         this.$context = $context;
         _.bindAll(this, '_onTriggerMouseMove', '_setBounds');
-        $.extend((deep = true), this, options);
+      }
+
+      Tip.prototype.init = function() {
         this.$tip = $('<div>');
         this.doStem = this.classNames.stem !== '';
         this.doFollow = this.classNames.follow !== '';
@@ -122,7 +129,7 @@ Written with jQuery 1.7.2
         this._$currentTrigger = null;
         this._render();
         this._bind();
-        this.$triggers.each((function(_this) {
+        return this.$triggers.each((function(_this) {
           return function(i, el) {
             var $trigger;
             $trigger = $(el);
@@ -132,7 +139,7 @@ Written with jQuery 1.7.2
             return _this._updateDirectionByTrigger($trigger);
           };
         })(this));
-      }
+      };
 
       Tip.prototype._defaultHtml = function() {
         var containerClass, directionClass, html;
@@ -448,9 +455,13 @@ Written with jQuery 1.7.2
     SnapTip = (function(_super) {
       __extends(SnapTip, _super);
 
-      function SnapTip($triggers, options, $context) {
-        var active, key, _ref;
-        SnapTip.__super__.constructor.call(this, $triggers, options, $context);
+      function SnapTip() {
+        return SnapTip.__super__.constructor.apply(this, arguments);
+      }
+
+      SnapTip.prototype.init = function() {
+        var active, key, _ref, _results;
+        SnapTip.__super__.init.call(this);
         if (this.snap.toTrigger === false) {
           this.snap.toTrigger = this.snap.toXAxis === true || this.snap.toYAxis === true;
         }
@@ -462,13 +473,16 @@ Written with jQuery 1.7.2
         }
         this._offsetStart = null;
         _ref = this.snap;
+        _results = [];
         for (key in _ref) {
+          if (!__hasProp.call(_ref, key)) continue;
           active = _ref[key];
           if (active) {
-            this.$tip.addClass(this.classNames.snap[key]);
+            _results.push(this.$tip.addClass(this.classNames.snap[key]));
           }
         }
-      }
+        return _results;
+      };
 
       SnapTip.prototype._moveToTrigger = function($trigger, baseOffset) {
         var offset;
@@ -542,20 +556,16 @@ Written with jQuery 1.7.2
       name: 'tip',
       namespace: hlf.tip,
       apiClass: Tip,
-      asSingleton: true
+      asSingleton: true,
+      compactOptions: true
     });
     return hlf.createPlugin({
       name: 'snapTip',
       namespace: hlf.tip.snap,
       apiClass: SnapTip,
-      asSingleton: true
+      asSingleton: true,
+      compactOptions: true
     });
-  };
-
-  if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
-    define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core', 'hlf/jquery.extension.hlf.event'], plugin);
-  } else {
-    plugin(jQuery, _, jQuery.hlf);
-  }
+  });
 
 }).call(this);

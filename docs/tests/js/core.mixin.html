@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><title>tests/js/core.mixin</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core.mixin"><meta name="groc-project-path" content="tests/js/core.mixin.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.mixin.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;jquery&#39;</span>
+  <span class="s">&#39;underscore&#39;</span>
+  <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
+<span class="p">],</span> <span class="nf">($, _, hlf) -&gt;</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;mixin&#39;</span><span class="p">,</span>
+    <span class="nv">setup: </span><span class="nf">-&gt;</span>
+      <span class="nx">@</span><span class="p">.</span><span class="nv">mixins = </span><span class="p">{}</span>
+      <span class="nx">@</span><span class="p">.</span><span class="nv">mixin =</span>
+        <span class="nv">decorate: </span><span class="nf">-&gt;</span> <span class="vi">@someOtherProperty = </span><span class="s">&#39;baz&#39;</span>
+        <span class="nv">someMethod: </span><span class="nf">-&gt;</span> <span class="s">&#39;foo&#39;</span>
+        <span class="nv">someProperty: </span><span class="s">&#39;bar&#39;</span>
+      <span class="nx">@</span><span class="p">.</span><span class="nv">dynamicMixin = </span><span class="nf">(dependencies) -&gt;</span>
+        <span class="nv">someMethod: </span><span class="nf">-&gt;</span> <span class="nx">dependencies</span><span class="p">.</span><span class="nx">valueA</span>
+        <span class="nv">someProperty: </span><span class="nx">dependencies</span><span class="p">.</span><span class="nx">valueB</span>
+      <span class="nx">@</span><span class="p">.</span><span class="nv">mixinName = </span><span class="s">&#39;foo&#39;</span>
+      <span class="nx">@</span><span class="p">.</span><span class="nv">dynamicMixinName = </span><span class="s">&#39;bar&#39;</span>
+      <span class="nx">@</span><span class="p">.</span><span class="nv">instance = </span><span class="p">{}</span>
+      <span class="nx">@</span><span class="p">.</span><span class="nv">dependencies =</span>
+        <span class="nv">valueA: </span><span class="s">&#39;foo&#39;</span>
+        <span class="nv">valueB: </span><span class="s">&#39;bar&#39;</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;createMixin&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+    <span class="nv">result = </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="nx">@mixinName</span><span class="p">,</span> <span class="nx">@mixin</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">@mixin</span><span class="p">,</span>
+      <span class="s">&#39;Mixin should have been added to mixin collection.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">@mixins</span><span class="p">[</span><span class="nx">@mixinName</span><span class="p">],</span> <span class="nx">@mixin</span><span class="p">,</span>
+      <span class="s">&#39;Mixin should be accessible.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">@mixins</span><span class="p">[</span><span class="nx">@mixinName</span><span class="p">].</span><span class="nx">someMethod</span><span class="p">.</span><span class="nx">mixin</span><span class="p">,</span> <span class="nx">@mixinName</span><span class="p">,</span>
+      <span class="s">&#39;Mixin method should have mixin name attached.&#39;</span>
+    <span class="nv">result = </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="nx">@mixinName</span><span class="p">,</span> <span class="nx">@mixin</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">,</span> <span class="kc">no</span><span class="p">,</span>
+      <span class="s">&#39;Mixin should not have been re-added to mixin collection.&#39;</span>
+
+  <span class="nv">assertMixinInstance = </span><span class="nf">(assert) -&gt;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">@instance</span><span class="p">.</span><span class="nx">someMethod</span><span class="p">,</span>
+      <span class="s">&#39;Mixin method should have been added to instance.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">@instance</span><span class="p">.</span><span class="nx">someMethod</span><span class="p">(),</span> <span class="s">&#39;foo&#39;</span><span class="p">,</span>
+      <span class="s">&#39;Mixin method should have been generated properly.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">@instance</span><span class="p">.</span><span class="nx">decorate</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span>
+      <span class="s">&#39;Mixin once method should have been removed after invoking.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">@instance</span><span class="p">.</span><span class="nx">someOtherProperty</span><span class="p">,</span> <span class="s">&#39;baz&#39;</span><span class="p">,</span>
+      <span class="s">&#39;Mixin once method should have invoked properly.&#39;</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;applyMixin&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+    <span class="nv">result = </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="nx">@mixinName</span><span class="p">,</span> <span class="nx">@mixin</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixins</span> <span class="nx">@instance</span><span class="p">,</span> <span class="nx">@dependencies</span><span class="p">,</span> <span class="nx">@mixin</span>
+    <span class="nx">assertMixinInstance</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
+
+  <span class="nv">assertDynamicMixinInstance = </span><span class="nf">(assert) -&gt;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">@instance</span><span class="p">.</span><span class="nx">someMethod</span><span class="p">,</span>
+      <span class="s">&#39;Dynamic mixin method should have been added to instance.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">@instance</span><span class="p">.</span><span class="nx">someMethod</span><span class="p">(),</span> <span class="nx">@dependencies</span><span class="p">.</span><span class="nx">valueA</span><span class="p">,</span>
+      <span class="s">&#39;Dynamic mixin method should have been generated properly.&#39;</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;applyMixin with dynamicMixin&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+    <span class="nv">result = </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="nx">@dynamicMixinName</span><span class="p">,</span> <span class="nx">@dynamicMixin</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixins</span> <span class="nx">@instance</span><span class="p">,</span> <span class="nx">@dependencies</span><span class="p">,</span> <span class="nx">@dynamicMixin</span>
+    <span class="nx">assertDynamicMixinInstance</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;applyMixins&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="nx">@mixinName</span><span class="p">,</span> <span class="nx">@mixin</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="nx">@dynamicMixinName</span><span class="p">,</span> <span class="nx">@dynamicMixin</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixins</span> <span class="nx">@instance</span><span class="p">,</span> <span class="nx">@dependencies</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">values</span><span class="p">(</span><span class="nx">@mixins</span><span class="p">)...</span>
+    <span class="nx">assertMixinInstance</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
+    <span class="nx">assertDynamicMixinInstance</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
+
+  <span class="kc">yes</span></div></div></div></div></body></html>

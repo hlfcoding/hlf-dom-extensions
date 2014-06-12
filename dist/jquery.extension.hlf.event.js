@@ -7,10 +7,16 @@ Written with jQuery 1.7.2
  */
 
 (function() {
-  var extension,
-    __slice = [].slice;
+  var __slice = [].slice,
+    __hasProp = {}.hasOwnProperty;
 
-  extension = function($, _, hlf) {
+  (function(extension) {
+    if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
+      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], extension);
+    } else {
+      return extension(jQuery, _, jQuery.hlf);
+    }
+  })(function($, _, hlf) {
     $.extend(true, hlf, {
       hoverIntent: {
         debug: false,
@@ -60,6 +66,7 @@ Written with jQuery 1.7.2
         var key, state, value;
         state = {};
         for (key in defaultState) {
+          if (!__hasProp.call(defaultState, key)) continue;
           value = defaultState[key];
           if ($.isPlainObject(value)) {
             value = _.clone(value);
@@ -167,12 +174,6 @@ Written with jQuery 1.7.2
         }
       };
     })(hlf.hoverIntent, hlf.hoverIntent.mouse);
-  };
-
-  if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
-    define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], extension);
-  } else {
-    extension(jQuery, _, jQuery.hlf);
-  }
+  });
 
 }).call(this);

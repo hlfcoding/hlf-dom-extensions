@@ -1,4 +1,4 @@
-# HLF jQuery Library
+# HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery)
 
 jQuery extensions and plugins for quality UI. All modules have scoped debug flags, jQuery namespaces, and no-conflict support with jQuery.
 
@@ -15,13 +15,15 @@ All extensions have AMD-compatible versions.
 Main features:
 
 - Generate jQuery plugin methods from plugin definitions.
+- Helpers to create mixins that can be used for plugin API.
 - Provide no-conflict support.
 
 ### Event
 
 Main features:
 
-- Hover-intent provides rate-limited versions of mouseenter and mouseleave events through a customizable delay.
+- Hover-intent provides rate-limited versions of mouseenter and mouseleave 
+  events through a customizable delay.
 
 ## Plugins
 
@@ -29,20 +31,33 @@ All plugins have test pages and sample styles.
 
 ### HLF Tip
 
-[Test is available.](tests/jquery.hlf.tip/tip.html)
+(WIP)
+
+[Test is available.](tests/tip.visual.html)
 
 Main features:
 
 - Uses custom hover intent events that allow for custom delays.
 - Re-use the same tip for a group of triggers.
-- Has a snapping extension that allows snapping to the trigger or tracking in either direction.
+- Has a snapping extension that allows snapping to the trigger or tracking in
+  either direction.
 
 Additional features:
 
 - Sample styling that draws tip stems with CSS borders.
 - Detailed API.
 
-View the examples.
+### HLF Editable
+
+(WIP)
+
+[Test is available.](tests/tip.editable.html)
+
+Main features:
+
+- Uses mixins for encapsulate editing behaviors, so plugin instances can be
+  composed based on data-attribute configuration. 
+- Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).
 
 ## Development
 

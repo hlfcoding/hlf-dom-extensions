@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en"><head><title>tests/js/core.plugin</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core.plugin"><meta name="groc-project-path" content="tests/js/core.plugin.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.plugin.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;jquery&#39;</span>
+  <span class="s">&#39;underscore&#39;</span>
+  <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
+  <span class="s">&#39;test/base&#39;</span>
+<span class="p">],</span> <span class="nf">($, _, hlf) -&gt;</span>
+
+  <span class="k">class</span> <span class="nx">SomePlugin</span>
+    <span class="nv">constructor: </span><span class="nf">(@$el, options, @$context) -&gt;</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;plugin&#39;</span><span class="p">,</span>
+    <span class="nv">setup: </span><span class="nf">-&gt;</span>
+      <span class="vi">@namespace = </span>
+        <span class="nv">debug: </span><span class="kc">off</span>
+        <span class="nv">toString: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(context) -&gt;</span>
+          <span class="k">switch</span> <span class="nx">context</span>
+            <span class="k">when</span> <span class="s">&#39;event&#39;</span> <span class="k">then</span> <span class="s">&#39;.some-plugin&#39;</span>
+            <span class="k">when</span> <span class="s">&#39;data&#39;</span>  <span class="k">then</span> <span class="s">&#39;some-plugin&#39;</span>
+            <span class="k">else</span> <span class="s">&#39;somePlugin&#39;</span>
+        <span class="nv">defaults:</span>
+          <span class="nv">someOption: </span><span class="s">&#39;foo&#39;</span>
+          <span class="nv">someOptionGroup:</span>
+            <span class="nv">someOption: </span><span class="s">&#39;bar&#39;</span>
+          <span class="nv">selectors: </span>
+            <span class="nv">someElement: </span><span class="s">&#39;.foo&#39;</span>
+          <span class="nv">classNames:</span>
+            <span class="nv">someElement: </span><span class="s">&#39;foo&#39;</span>
+
+      <span class="vi">@mixins = </span><span class="p">{}</span>
+
+      <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="s">&#39;base&#39;</span><span class="p">,</span>
+        <span class="nv">init: </span><span class="nf">-&gt;</span>
+          <span class="nx">@trigger</span> <span class="s">&#39;did-init&#39;</span>
+
+      <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="s">&#39;someMixin&#39;</span><span class="p">,</span>
+        <span class="nv">decorate: </span><span class="nf">-&gt;</span>
+          <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initSomeMixin</span><span class="p">()</span>
+        <span class="nv">initSomeMixin: </span><span class="nf">-&gt;</span>
+          <span class="vi">@someMixinProperty = </span><span class="s">&#39;foo&#39;</span>
+        <span class="nv">someMixinMethod: </span><span class="nf">-&gt;</span> <span class="s">&#39;foo&#39;</span>
+
+      <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">@mixins</span><span class="p">,</span> <span class="s">&#39;someOtherMixin&#39;</span><span class="p">,</span>
+        <span class="nv">decorate: </span><span class="nf">-&gt;</span>
+          <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initSomeOtherMixin</span><span class="p">()</span>
+        <span class="nv">initSomeOtherMixin: </span><span class="nf">-&gt;</span>
+          <span class="vi">@someOtherMixinProperty = </span><span class="s">&#39;bar&#39;</span>
+        <span class="nv">someOtherMixinMethod: </span><span class="nf">-&gt;</span> <span class="s">&#39;bar&#39;</span>
+
+      <span class="vi">@baseCreateOptions = </span>
+        <span class="nv">name: </span><span class="s">&#39;somePlugin&#39;</span>
+        <span class="nv">namespace: </span><span class="nx">@namespace</span>
+        <span class="nv">apiClass: </span><span class="nx">SomePlugin</span>
+        <span class="nv">baseMixins: </span><span class="p">[</span><span class="s">&#39;selection&#39;</span><span class="p">]</span>
+        <span class="nv">autoSelect: </span><span class="kc">yes</span>
+        <span class="nv">compactOptions: </span><span class="kc">yes</span>
+
+      <span class="vi">@$someElement = </span><span class="nx">$</span> <span class="s">&#39;&lt;div&gt;&#39;</span>
+
+  <span class="nv">assertGeneralPlugin = </span><span class="nf">(assert) -&gt;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">@$someElement</span><span class="p">.</span><span class="nx">somePlugin</span><span class="p">,</span>
+      <span class="s">&#39;Plugin method should have been created and attached to jQuery elements.&#39;</span>
+    <span class="nx">@$someElement</span><span class="p">.</span><span class="nx">somePlugin</span><span class="p">()</span>
+    <span class="nv">result = </span><span class="nx">@$someElement</span><span class="p">.</span><span class="nx">somePlugin</span><span class="p">()</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">hasFunctions</span> <span class="nx">result</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;evt&#39;</span><span class="p">,</span> <span class="s">&#39;attr&#39;</span><span class="p">,</span> <span class="s">&#39;cls&#39;</span><span class="p">,</span> <span class="s">&#39;debugLog&#39;</span><span class="p">,</span> <span class="s">&#39;select&#39;</span><span class="p">],</span>
+      <span class="s">&#39;Plugin instance should have generated API additions.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">hasOwnProperties</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">@namespace</span><span class="p">.</span><span class="nx">defaults</span><span class="p">),</span>
+      <span class="s">&#39;Plugin instance should have options merged in as properties.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">result</span><span class="p">.</span><span class="nx">$someElement</span><span class="p">,</span>
+      <span class="s">&#39;Plugin instance should have auto-selected sub elements based on selectors option.&#39;</span>
+    <span class="k">return</span> <span class="nx">result</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;createPlugin with apiClass and baseMixins&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span> <span class="nx">@baseCreateOptions</span>
+    <span class="nv">result = </span><span class="nx">assertGeneralPlugin</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">result</span> <span class="k">instanceof</span> <span class="nx">SomePlugin</span><span class="p">,</span>
+      <span class="s">&#39;Plugin method should return instance upon re-invocation without any parameters.&#39;</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;createPlugin with apiMixins and baseMixins&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+    <span class="nv">createOptions = </span><span class="nx">@baseCreateOptions</span>
+    <span class="nv">createOptions.apiClass = </span><span class="kc">null</span>
+    <span class="nv">createOptions.apiMixins = </span><span class="nx">@mixins</span>
+    <span class="nx">createOptions</span><span class="p">.</span><span class="nx">baseMixins</span><span class="p">.</span><span class="nx">push</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;event&#39;</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span> <span class="nx">createOptions</span>
+    <span class="nv">result = </span><span class="nx">assertGeneralPlugin</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">hasFunctions</span> <span class="nx">result</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;on&#39;</span><span class="p">,</span> <span class="s">&#39;off&#39;</span><span class="p">,</span> <span class="s">&#39;trigger&#39;</span><span class="p">],</span>
+      <span class="s">&#39;Base mixin methods should have been added to instance.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">.</span><span class="nx">someMixinMethod</span><span class="p">(),</span> <span class="s">&#39;foo&#39;</span><span class="p">,</span>
+      <span class="s">&#39;Mixin method attached to instance should work.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">.</span><span class="nx">someOtherMixinMethod</span><span class="p">(),</span> <span class="s">&#39;bar&#39;</span><span class="p">,</span>
+      <span class="s">&#39;Mixin method attached to instance should work.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">.</span><span class="nx">someMixinProperty</span><span class="p">,</span> <span class="s">&#39;foo&#39;</span><span class="p">,</span>
+      <span class="s">&#39;Mixin property should have been set on deferred initialization.&#39;</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">.</span><span class="nx">someOtherMixinProperty</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">,</span>
+      <span class="s">&#39;Mixin property should have been set on deferred initialization.&#39;</span>
+
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;createPlugin with apiClass and baseMixins and asSingleton&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+    <span class="nv">createOptions = </span><span class="nx">@baseCreateOptions</span>
+    <span class="nv">createOptions.asSingleton = </span><span class="kc">yes</span>
+    <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span> <span class="nx">createOptions</span>
+    <span class="nv">result = </span><span class="nx">assertGeneralPlugin</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
+    <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="s">&#39;body&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s">&#39;somePlugin&#39;</span><span class="p">),</span>
+      <span class="s">&#39;Plugin singleton should be stored with context element.&#39;</span>
+
+
+  <span class="kc">yes</span></div></div></div></div></body></html>

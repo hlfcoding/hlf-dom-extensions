@@ -17,101 +17,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "projectPath": "README.md",
         "targetPath": "index",
         "pageTitle": "index",
-        "firstHeader": {
-          "type": "heading",
-          "data": {
-            "level": 1,
-            "title": "HLF jQuery Library",
-            "slug": "hlf-jquery-library",
-            "isFileHeader": true
-          },
-          "depth": 1,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Extensions",
-                "slug": "extensions"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "Core",
-                    "slug": "core"
-                  },
-                  "depth": 3
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "Event",
-                    "slug": "event"
-                  },
-                  "depth": 3
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Plugins",
-                "slug": "plugins"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "HLF Tip",
-                    "slug": "hlf-tip"
-                  },
-                  "depth": 3
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Development",
-                "slug": "development"
-              },
-              "depth": 2,
-              "children": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "Grunt Tasks",
-                    "slug": "grunt-tasks"
-                  },
-                  "depth": 3
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 3,
-                    "title": "Sample ST2 Project File",
-                    "slug": "sample-st2-project-file"
-                  },
-                  "depth": 3
-                }
-              ]
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "License",
-                "slug": "license"
-              },
-              "depth": 2
-            }
-          ]
-        },
-        "title": "HLF jQuery Library"
+        "title": "index"
       },
       "depth": 1,
       "outline": [
@@ -157,6 +63,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "level": 3,
                 "title": "HLF Tip",
                 "slug": "hlf-tip"
+              },
+              "depth": 3
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 3,
+                "title": "HLF Editable",
+                "slug": "hlf-editable"
               },
               "depth": 3
             }
@@ -226,6 +140,26 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "foldPrefix": "^",
                   "name": "SCSS"
                 },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/src/css/jquery.hlf.editable.scss",
+                "projectPath": "src/css/jquery.hlf.editable.scss",
+                "targetPath": "src/css/jquery.hlf.editable",
+                "pageTitle": "src/css/jquery.hlf.editable",
+                "title": "jquery.hlf.editable"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".scss"],
+                  "pygmentsLexer": "scss",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "SCSS"
+                },
                 "sourcePath": "/Users/destrado/Sites/_Main/jquery/src/css/jquery.hlf.tip.scss",
                 "projectPath": "src/css/jquery.hlf.tip.scss",
                 "targetPath": "src/css/jquery.hlf.tip",
@@ -279,12 +213,65 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     "slug": "hlf-core-jquery-extension",
                     "isFileHeader": true
                   },
-                  "depth": 1
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Plugin Support",
+                        "slug": "plugin-support"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Mixin Support",
+                        "slug": "mixin-support"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Export",
+                        "slug": "export"
+                      },
+                      "depth": 2
+                    }
+                  ]
                 },
                 "title": "HLF Core jQuery Extension"
               },
               "depth": 3,
-              "outline": []
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Plugin Support",
+                    "slug": "plugin-support"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Mixin Support",
+                    "slug": "mixin-support"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Export",
+                    "slug": "export"
+                  },
+                  "depth": 2
+                }
+              ]
             }, {
               "type": "file",
               "data": {
@@ -333,6 +320,74 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     "level": 2,
                     "title": "I. Hover-Intent",
                     "slug": "i-hover-intent"
+                  },
+                  "depth": 2
+                }
+              ]
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/src/js/jquery.hlf.editable.coffee",
+                "projectPath": "src/js/jquery.hlf.editable.coffee",
+                "targetPath": "src/js/jquery.hlf.editable",
+                "pageTitle": "src/js/jquery.hlf.editable",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Editable jQuery Plugin",
+                    "slug": "hlf-editable-jquery-plugin",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Base Mixin",
+                        "slug": "base-mixin"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Export",
+                        "slug": "export"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "HLF Editable jQuery Plugin"
+              },
+              "depth": 3,
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Base Mixin",
+                    "slug": "base-mixin"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Export",
+                    "slug": "export"
                   },
                   "depth": 2
                 }
@@ -487,115 +542,209 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
       "depth": 1,
       "children": [
         {
-          "type": "file",
-          "data": {
-            "language": {
-              "nameMatchers": [".scss"],
-              "pygmentsLexer": "scss",
-              "multiLineComment": ["/*", "*", "*/"],
-              "singleLineComment": ["//"],
-              "ignorePrefix": "}",
-              "foldPrefix": "^",
-              "name": "SCSS"
-            },
-            "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/base.scss",
-            "projectPath": "tests/base.scss",
-            "targetPath": "tests/base",
-            "pageTitle": "tests/base",
-            "title": "base"
-          },
-          "depth": 2,
-          "outline": []
-        }, {
           "type": "folder",
           "data": {
-            "path": "tests/jquery.hlf.tip",
-            "title": "jquery.hlf.tip"
+            "path": "tests/css",
+            "title": "css"
           },
           "depth": 2,
           "children": [
             {
-              "type": "folder",
+              "type": "file",
               "data": {
-                "path": "tests/jquery.hlf.tip/css",
-                "title": "css"
+                "language": {
+                  "nameMatchers": [".scss"],
+                  "pygmentsLexer": "scss",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "SCSS"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/css/base.scss",
+                "projectPath": "tests/css/base.scss",
+                "targetPath": "tests/css/base",
+                "pageTitle": "tests/css/base",
+                "title": "base"
               },
               "depth": 3,
-              "children": [
-                {
-                  "type": "file",
-                  "data": {
-                    "language": {
-                      "nameMatchers": [".scss"],
-                      "pygmentsLexer": "scss",
-                      "multiLineComment": ["/*", "*", "*/"],
-                      "singleLineComment": ["//"],
-                      "ignorePrefix": "}",
-                      "foldPrefix": "^",
-                      "name": "SCSS"
-                    },
-                    "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/jquery.hlf.tip/css/tip.scss",
-                    "projectPath": "tests/jquery.hlf.tip/css/tip.scss",
-                    "targetPath": "tests/jquery.hlf.tip/css/tip",
-                    "pageTitle": "tests/jquery.hlf.tip/css/tip",
-                    "title": "tip"
-                  },
-                  "depth": 4,
-                  "outline": []
-                }
-              ]
+              "outline": []
             }, {
-              "type": "folder",
+              "type": "file",
               "data": {
-                "path": "tests/jquery.hlf.tip/js",
-                "title": "js"
+                "language": {
+                  "nameMatchers": [".scss"],
+                  "pygmentsLexer": "scss",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "SCSS"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/css/editable.scss",
+                "projectPath": "tests/css/editable.scss",
+                "targetPath": "tests/css/editable",
+                "pageTitle": "tests/css/editable",
+                "title": "editable"
               },
               "depth": 3,
-              "children": [
-                {
-                  "type": "file",
-                  "data": {
-                    "language": {
-                      "nameMatchers": [".coffee", "Cakefile"],
-                      "pygmentsLexer": "coffee-script",
-                      "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                      "strictMultiLineEnd": false,
-                      "singleLineComment": ["#"],
-                      "ignorePrefix": "}",
-                      "foldPrefix": "^",
-                      "name": "CoffeeScript"
-                    },
-                    "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/jquery.hlf.tip/js/main.coffee",
-                    "projectPath": "tests/jquery.hlf.tip/js/main.coffee",
-                    "targetPath": "tests/jquery.hlf.tip/js/main",
-                    "pageTitle": "tests/jquery.hlf.tip/js/main",
-                    "title": "main"
-                  },
-                  "depth": 4,
-                  "outline": []
-                }, {
-                  "type": "file",
-                  "data": {
-                    "language": {
-                      "nameMatchers": [".coffee", "Cakefile"],
-                      "pygmentsLexer": "coffee-script",
-                      "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                      "strictMultiLineEnd": false,
-                      "singleLineComment": ["#"],
-                      "ignorePrefix": "}",
-                      "foldPrefix": "^",
-                      "name": "CoffeeScript"
-                    },
-                    "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/jquery.hlf.tip/js/tip.coffee",
-                    "projectPath": "tests/jquery.hlf.tip/js/tip.coffee",
-                    "targetPath": "tests/jquery.hlf.tip/js/tip",
-                    "pageTitle": "tests/jquery.hlf.tip/js/tip",
-                    "title": "tip"
-                  },
-                  "depth": 4,
-                  "outline": []
-                }
-              ]
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".scss"],
+                  "pygmentsLexer": "scss",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "SCSS"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/css/tip.scss",
+                "projectPath": "tests/css/tip.scss",
+                "targetPath": "tests/css/tip",
+                "pageTitle": "tests/css/tip",
+                "title": "tip"
+              },
+              "depth": 3,
+              "outline": []
+            }
+          ]
+        }, {
+          "type": "folder",
+          "data": {
+            "path": "tests/js",
+            "title": "js"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/js/base.coffee",
+                "projectPath": "tests/js/base.coffee",
+                "targetPath": "tests/js/base",
+                "pageTitle": "tests/js/base",
+                "title": "base"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/js/core.coffee",
+                "projectPath": "tests/js/core.coffee",
+                "targetPath": "tests/js/core",
+                "pageTitle": "tests/js/core",
+                "title": "core"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/js/core.mixin.coffee",
+                "projectPath": "tests/js/core.mixin.coffee",
+                "targetPath": "tests/js/core.mixin",
+                "pageTitle": "tests/js/core.mixin",
+                "title": "core.mixin"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/js/core.plugin.coffee",
+                "projectPath": "tests/js/core.plugin.coffee",
+                "targetPath": "tests/js/core.plugin",
+                "pageTitle": "tests/js/core.plugin",
+                "title": "core.plugin"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/js/editable.coffee",
+                "projectPath": "tests/js/editable.coffee",
+                "targetPath": "tests/js/editable",
+                "pageTitle": "tests/js/editable",
+                "title": "editable"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Sites/_Main/jquery/tests/js/tip.coffee",
+                "projectPath": "tests/js/tip.coffee",
+                "targetPath": "tests/js/tip",
+                "pageTitle": "tests/js/tip",
+                "title": "tip"
+              },
+              "depth": 3,
+              "outline": []
             }
           ]
         }

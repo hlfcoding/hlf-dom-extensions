@@ -1,0 +1,31 @@
+.js-editable-inline .js-text,
+.js-editable-inline .js-input input {
+  border-color: transparent;
+  background-color: transparent; }
+  .js-editable-inline .js-text:focus,
+  .js-editable-inline .js-input input:focus {
+    outline-style: none; }
+
+.js-editable-inline .js-text,
+.js-editable-inline .js-input input {
+  margin: 0;
+  padding: 0; }
+
+.js-editable-inline .js-text {
+  cursor: text; }
+  .js-editable-inline .js-text:hover {
+    background-color: rgba(0, 0, 0, 0.1); }
+.js-editable-inline .js-input input {
+  border-bottom-color: black; }
+.js-editable-inline .js-text,
+.js-editable-inline .js-input input {
+  border-width: 1px;
+  width: 160px; }
+.js-editable-inline .js-text {
+  overflow-x: hidden;
+  white-space: nowrap; }
+.js-editable-inline .js-input input {
+  margin: -1px; }
+.js-editable-inline .js-text {
+  -webkit-transition: background-color 0.2s ease-in-out;
+          transition: background-color 0.2s ease-in-out; }

@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.editable"><meta name="groc-project-path" content="src/js/jquery.hlf.editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.editable.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-editable-jquery-plugin">HLF Editable jQuery Plugin</h1>
+
+<p>Released under the MIT License <br />
+Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper"><span class="p">(</span><span class="nf">(plugin) -&gt;</span>
+  <span class="k">if</span> <span class="nx">define</span><span class="o">?</span> <span class="o">and</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="o">?</span>
+    <span class="nx">define</span> <span class="p">[</span>
+      <span class="s">&#39;jquery&#39;</span>
+      <span class="s">&#39;underscore&#39;</span>
+      <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
+    <span class="p">],</span> <span class="nx">plugin</span>
+  <span class="k">else</span>
+    <span class="nx">plugin</span> <span class="nx">jQuery</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">hlf</span>
+<span class="p">)(</span><span class="nf">($, _, hlf) -&gt;</span>
+
+  <span class="nv">hlf.editable =</span>
+    <span class="nv">debug: </span><span class="kc">on</span>
+    <span class="nv">toString: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(context) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">context</span>
+        <span class="k">when</span> <span class="s">&#39;event&#39;</span>  <span class="k">then</span> <span class="s">&#39;.hlf.editable&#39;</span>
+        <span class="k">when</span> <span class="s">&#39;data&#39;</span>   <span class="k">then</span> <span class="s">&#39;hlf-editable&#39;</span>
+        <span class="k">when</span> <span class="s">&#39;class&#39;</span>  <span class="k">then</span> <span class="s">&#39;js-editable&#39;</span>
+        <span class="k">else</span> <span class="s">&#39;hlf.editable&#39;</span>
+
+    <span class="nv">defaults:</span>
+      <span class="nv">selectors:</span>
+        <span class="nv">text: </span>      <span class="s">&#39;.js-text&#39;</span>
+        <span class="nv">input: </span>     <span class="s">&#39;.js-input input&#39;</span>
+        <span class="nv">inputWrap: </span> <span class="s">&#39;.js-input&#39;</span>
+      <span class="nv">classNames:</span>
+        <span class="nv">container: </span> <span class="s">&#39;&#39;</span>
+
+    <span class="nv">types: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">-&gt;</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">chain</span> <span class="nx">mixins</span>
+        <span class="p">.</span><span class="nx">keys</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">without</span> <span class="s">&#39;base&#39;</span>
+        <span class="p">.</span><span class="nx">value</span><span class="p">()</span>
+
+  <span class="nv">mixins = </span><span class="p">{}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base-mixin">Base Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;base&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">isEditing: </span><span class="kc">null</span>
+
+    <span class="nv">init: </span><span class="nf">-&gt;</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;will-init&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">container</span>
+      <span class="nx">@bind</span><span class="p">()</span>
+      <span class="k">if</span> <span class="nx">@toggleEditing</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@toggleEditing</span> <span class="kc">off</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;did-init&#39;</span>
+
+    <span class="nv">bind: </span><span class="nf">-&gt;</span>
+      <span class="k">if</span> <span class="nx">@toggleEditing</span><span class="o">?</span>
+        <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="nx">@selectors</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@toggleEditing</span> <span class="kc">on</span>
+        <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;blur&#39;</span><span class="p">,</span> <span class="nx">@selectors</span><span class="p">.</span><span class="nx">input</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@toggleEditing</span> <span class="kc">off</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;change&#39;</span><span class="p">,</span> <span class="nx">@selectors</span><span class="p">.</span><span class="nx">input</span><span class="p">,</span> <span class="nx">@handleValueChange</span>
+
+    <span class="nv">handleCommand: </span><span class="nf">(command, sender) -&gt;</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;before-command&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">command</span> <span class="p">}</span>
+      <span class="k">switch</span> <span class="nx">command</span><span class="p">.</span><span class="nx">type</span>
+        <span class="k">when</span> <span class="s">&#39;update&#39;</span> <span class="k">then</span> <span class="nx">@renderText</span> <span class="nx">command</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">text</span>
+        <span class="k">else</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;after-command&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">command</span> <span class="p">}</span>
+
+    <span class="nv">handleValueChange: </span><span class="nf">(sender) -&gt;</span>
+      <span class="nv">text = </span><span class="nx">@inputValue</span><span class="p">()</span>
+      <span class="nv">text = </span><span class="nx">@textOnValueChange</span> <span class="nx">text</span>
+      <span class="nv">userInfo = </span><span class="p">{</span> <span class="nx">text</span> <span class="p">}</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nx">userInfo</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event commit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="nx">@trigger</span> <span class="s">&#39;commit&#39;</span><span class="p">,</span> <span class="nx">userInfo</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">toggleEditing: </span><span class="nf">(state) -&gt;</span>
+      <span class="vi">@isEditing = </span><span class="nx">state</span>
+      <span class="nv">toggleOriginalDisplay = </span><span class="nf">($el, state) =&gt;</span>
+        <span class="nv">display = </span><span class="nx">$el</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;display&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">on</span>
+          <span class="nx">display</span> <span class="o">?=</span> <span class="s">&#39;block&#39;</span>
+          <span class="nx">$el</span><span class="p">.</span><span class="nx">css</span> <span class="p">{</span> <span class="nx">display</span> <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">off</span>
+          <span class="k">if</span> <span class="o">not</span> <span class="nx">display</span><span class="o">?</span>
+            <span class="nv">display = </span><span class="nx">$el</span><span class="p">.</span><span class="nx">css</span> <span class="s">&#39;display&#39;</span>
+            <span class="k">if</span> <span class="nx">display</span> <span class="o">isnt</span> <span class="s">&#39;none&#39;</span> <span class="k">then</span> <span class="nx">$el</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;display&#39;</span><span class="p">),</span> <span class="nx">display</span>
+          <span class="nx">$el</span><span class="p">.</span><span class="nx">hide</span><span class="p">()</span>
+      <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">on</span>
+        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$text</span><span class="p">,</span> <span class="kc">off</span>
+        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$inputWrap</span><span class="p">,</span> <span class="kc">on</span>
+        <span class="nx">@$input</span><span class="p">.</span><span class="nx">focus</span><span class="p">()</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">off</span>
+        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$text</span><span class="p">,</span> <span class="kc">on</span>
+        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$inputWrap</span><span class="p">,</span> <span class="kc">off</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event toggle-edit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="nx">@trigger</span> <span class="s">&#39;toggle-edit&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">state</span> <span class="p">}</span>
+
+    <span class="nv">renderText: </span><span class="nf">(text) -&gt;</span> <span class="nx">@$text</span><span class="p">.</span><span class="nx">text</span> <span class="nx">text</span>
+
+    <span class="nv">inputValue: </span><span class="nf">-&gt;</span> <span class="nx">@$input</span><span class="p">.</span><span class="nx">val</span><span class="p">()</span>
+
+    <span class="nv">textOnValueChange: </span><span class="nf">(text) -&gt;</span>
+
+  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;inline&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">textOnValueChange: </span><span class="nf">(text) -&gt;</span>
+      <span class="k">if</span> <span class="o">not</span> <span class="nx">text</span><span class="p">.</span><span class="nx">length</span> <span class="k">then</span> <span class="nx">@$input</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;placeholder&#39;</span> <span class="k">else</span> <span class="nx">text</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
+      <span class="nx">@options</span><span class="p">.</span><span class="nx">classNames</span><span class="p">.</span><span class="nx">container</span> <span class="o">+=</span> <span class="s">&quot; </span><span class="si">#{</span><span class="nx">@cls</span><span class="p">(</span><span class="s">&#39;inline&#39;</span><span class="p">)</span><span class="si">}</span><span class="s">&quot;</span>
+    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initInline</span><span class="p">()</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@renderText</span> <span class="nx">e</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">text</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;after-command&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span>
+        <span class="nv">command = </span><span class="nx">e</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">command</span>
+        <span class="k">switch</span> <span class="nx">command</span><span class="p">.</span><span class="nx">type</span>
+          <span class="k">when</span> <span class="s">&#39;update&#39;</span> <span class="k">then</span> <span class="nx">@updatePlaceholder</span><span class="p">()</span>
+          <span class="k">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">initInline: </span><span class="nf">-&gt;</span>
+      <span class="nx">@updatePlaceholder</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">updatePlaceholder: </span><span class="nf">-&gt;</span>
+      <span class="nx">@$input</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;placeholder&#39;</span><span class="p">,</span> <span class="nx">@$text</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span>
+
+  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;editor&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">inputValue: </span><span class="nf">-&gt;</span>
+      <span class="k">switch</span> <span class="nx">@editorName</span>
+        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span> <span class="k">then</span> <span class="nx">@editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span>
+        <span class="k">else</span> <span class="s">&#39;&#39;</span>
+
+    <span class="nv">renderText: </span><span class="nf">(text) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">@editorName</span>
+        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span> <span class="k">then</span> <span class="nx">@editor</span><span class="p">.</span><span class="nx">setValue</span> <span class="nx">text</span>
+        <span class="k">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
+      <span class="vi">@opts.selectors.markup = </span><span class="s">&#39;.editor-markup&#39;</span>
+    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
+      <span class="k">delete</span> <span class="nx">@toggleEditing</span> <span class="c1"># Unneeded action.</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initEditor</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">initEditor: </span><span class="nf">-&gt;</span>
+      <span class="vi">@editorName = </span><span class="nx">@data</span> <span class="s">&#39;editor&#39;</span>
+      <span class="k">switch</span> <span class="nx">@editorName</span>
+        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span>
+          <span class="nv">opts = </span><span class="nx">@data</span> <span class="s">&#39;editor-options&#39;</span>
+          <span class="nv">opts.value = </span><span class="nx">@$markup</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span>
+          <span class="nv">location = </span><span class="nf">(el) =&gt;</span>
+            <span class="vi">@$editor = </span><span class="nx">el</span>
+            <span class="nx">@$markup</span><span class="p">.</span><span class="nx">replaceWith</span> <span class="nx">@$editor</span>
+          <span class="vi">@editor = </span><span class="nx">CodeMirror</span> <span class="nx">location</span><span class="p">,</span> <span class="nx">opts</span>
+        <span class="k">else</span> <span class="nv">didInit = </span><span class="kc">no</span>
+      <span class="nx">@bindEditor</span><span class="p">()</span>
+      <span class="nx">didInit</span> <span class="o">isnt</span> <span class="kc">no</span>
+
+    <span class="nv">bindEditor: </span><span class="nf">-&gt;</span>
+      <span class="k">switch</span> <span class="nx">@editorName</span>
+        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span>
+          <span class="nx">@editor</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;blur&#39;</span><span class="p">,</span> <span class="nx">@handleValueChange</span>
+        <span class="k">else</span>
+
+  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;color-picker&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
+      <span class="vi">@opts.selectors.well = </span><span class="s">&#39;.color-well&#39;</span>
+    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@renderColor</span> <span class="nx">e</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">text</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initColorPicker</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">initColorPicker: </span><span class="nf">-&gt;</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;handleColorPickerChange&#39;</span>
+      <span class="vi">@pickerName = </span><span class="nx">@data</span> <span class="s">&#39;color-picker&#39;</span>
+      <span class="k">switch</span> <span class="nx">@pickerName</span>
+        <span class="k">when</span> <span class="s">&#39;Spectrum&#39;</span>
+          <span class="nv">opts = </span><span class="nx">@data</span> <span class="s">&#39;color-picker-options&#39;</span>
+          <span class="nv">opts.color = </span><span class="s">&quot;</span><span class="err">#</span><span class="si">#{</span><span class="nx">@$input</span><span class="p">.</span><span class="nx">val</span><span class="p">()</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="nv">opts.change = </span><span class="nx">@handleColorPickerChange</span>
+          <span class="nx">@$well</span><span class="p">.</span><span class="nx">spectrum</span> <span class="nx">opts</span>
+        <span class="k">else</span> <span class="nv">didInit = </span><span class="kc">no</span>
+      <span class="nx">@bindColorPicker</span><span class="p">()</span>
+      <span class="nx">didInit</span> <span class="o">isnt</span> <span class="kc">no</span>
+
+    <span class="nv">bindColorPicker: </span><span class="nf">-&gt;</span>
+
+    <span class="nv">handleColorPickerChange: </span><span class="nf">(color) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">@pickerName</span>
+        <span class="k">when</span> <span class="s">&#39;Spectrum&#39;</span> <span class="k">then</span> <span class="nv">color = </span><span class="nx">color</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">().</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+      <span class="nx">@$input</span>
+        <span class="p">.</span><span class="nx">val</span> <span class="nx">color</span>
+        <span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;change&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">renderColor: </span><span class="nf">(color) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">@pickerName</span>
+        <span class="k">when</span> <span class="s">&#39;Spectrum&#39;</span> <span class="k">then</span> <span class="nx">@$well</span><span class="p">.</span><span class="nx">spectrum</span> <span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="nx">color</span>
+
+  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;file-uploader&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
+      <span class="vi">@opts.selectors.text = </span><span class="s">&#39;.preview &gt; figcaption&#39;</span>
+      <span class="vi">@opts.selectors.thumb = </span><span class="s">&#39;.preview &gt; .thumb&#39;</span>
+    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
+      <span class="k">delete</span> <span class="nx">@toggleEditing</span> <span class="c1"># Unneeded action.</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initFileUploader</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="nv">initFileUploader: </span><span class="nf">-&gt;</span>
+      <span class="vi">@uploaderName = </span><span class="nx">@data</span> <span class="s">&#39;file-uploader&#39;</span>
+      <span class="k">switch</span> <span class="nx">@uploaderName</span>
+        <span class="k">when</span> <span class="s">&#39;jQueryFileUpload&#39;</span>
+          <span class="nv">opts = </span><span class="nx">@data</span> <span class="s">&#39;file-uploader-options&#39;</span>
+          <span class="nx">@$input</span><span class="p">.</span><span class="nx">fileupload</span> <span class="nx">opts</span>
+        <span class="k">else</span> <span class="nv">didInit = </span><span class="kc">no</span>
+      <span class="nx">@bindFileUploader</span><span class="p">()</span>
+      <span class="nx">didInit</span> <span class="o">isnt</span> <span class="kc">no</span>
+
+    <span class="nv">bindFileUploader: </span><span class="nf">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  
+  <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span>
+    <span class="nv">name: </span><span class="s">&#39;editable&#39;</span>
+    <span class="nv">namespace: </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">editable</span>
+    <span class="nv">apiMixins: </span><span class="nx">mixins</span>
+    <span class="nv">mixinFilter: </span><span class="nf">(mixin, name) -&gt;</span>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">types</span><span class="p">)</span>
+        <span class="vi">@options.types = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">split</span> <span class="s">&#39; &#39;</span>
+      <span class="nx">name</span> <span class="k">in</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">types</span> <span class="o">and</span> <span class="nx">name</span> <span class="k">in</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">editable</span><span class="p">.</span><span class="nx">types</span><span class="p">()</span>
+    <span class="nv">baseMixins: </span><span class="p">[</span>
+      <span class="s">&#39;data&#39;</span>
+      <span class="s">&#39;event&#39;</span>
+      <span class="s">&#39;selection&#39;</span>
+    <span class="p">]</span>
+    <span class="nv">autoSelect: </span><span class="kc">yes</span>
+    <span class="nv">compactOptions: </span><span class="kc">yes</span>
+<span class="p">)</span></div></div></div></div></body></html>

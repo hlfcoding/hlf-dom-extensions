@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head><title>tests/css/base</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/css/base"><meta name="groc-project-path" content="tests/css/base.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/css/base.scss</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nv">$line-color</span><span class="o">:</span> <span class="mh">#ccc</span><span class="p">;</span>
+<span class="nv">$radius</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+
+<span class="err">%</span><span class="nt">container-skin</span> <span class="p">{</span>
+  <span class="na">background-color</span><span class="o">:</span> <span class="mh">#fff</span><span class="p">;</span>
+  <span class="na">border</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="nv">$line-color</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">body</span> <span class="p">{</span>
+  <span class="na">background-color</span><span class="o">:</span> <span class="mh">#eaeae6</span><span class="p">;</span>
+  <span class="na">padding</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
+  <span class="na">font</span><span class="o">:</span> <span class="p">{</span>
+    <span class="na">family</span><span class="o">:</span> <span class="n">Helvetica</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
+    <span class="na">size</span><span class="o">:</span> <span class="mi">14</span><span class="kt">px</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="nt">h1</span> <span class="p">{</span>
+  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.5</span><span class="kt">em</span><span class="p">;</span>
+  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">p</span> <span class="p">{</span>
+  <span class="na">padding</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nn">#main</span> <span class="p">{</span>
+  <span class="na">padding</span><span class="o">:</span> <span class="mi">2</span><span class="kt">em</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.box</span> <span class="p">{</span>
+  <span class="k">@extend</span> <span class="err">%</span><span class="nt">container-skin</span><span class="o">;</span>
+  <span class="nt">width</span><span class="nd">:</span> <span class="nt">600px</span><span class="o">;</span>
+  <span class="nt">padding</span><span class="nd">:</span> <span class="nt">1em</span><span class="o">;</span>
+  <span class="nt">margin</span><span class="nd">:</span> <span class="nt">1em</span> <span class="nt">0</span><span class="o">;</span>
+  <span class="nt">border-radius</span><span class="nd">:</span> <span class="err">$</span><span class="nt">radius</span><span class="o">;</span>
+<span class="p">}</span>
+<span class="nc">.menu</span> <span class="p">{</span>
+  <span class="na">width</span><span class="o">:</span> <span class="mi">300</span><span class="kt">px</span><span class="p">;</span>
+  <span class="na">margin</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nt">li</span> <span class="p">{</span>
+    <span class="nt">a</span> <span class="p">{</span>
+      <span class="k">@extend</span> <span class="err">%</span><span class="nt">container-skin</span><span class="o">;</span>
+      <span class="nt">display</span><span class="nd">:</span> <span class="nt">block</span><span class="o">;</span>
+      <span class="nt">padding</span><span class="nd">:</span> <span class="nt">1em</span><span class="o">;</span>
+      <span class="nt">border-bottom-width</span><span class="nd">:</span> <span class="nt">0</span><span class="o">;</span>
+    <span class="p">}</span>
+    <span class="k">&amp;</span><span class="nd">:first-child</span> <span class="nt">a</span> <span class="p">{</span>
+      <span class="na">border-top</span><span class="o">:</span> <span class="p">{</span>
+        <span class="na">left-radius</span><span class="o">:</span> <span class="nv">$radius</span><span class="p">;</span>
+        <span class="na">right-radius</span><span class="o">:</span> <span class="nv">$radius</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">&amp;</span><span class="nd">:last-child</span> <span class="nt">a</span> <span class="p">{</span>
+      <span class="na">border-bottom</span><span class="o">:</span> <span class="p">{</span>
+        <span class="na">width</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span><span class="p">;</span>
+        <span class="na">left-radius</span><span class="o">:</span> <span class="nv">$radius</span><span class="p">;</span>
+        <span class="na">right-radius</span><span class="o">:</span> <span class="nv">$radius</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></div></div></div></div></body></html>
