@@ -51,7 +51,7 @@ Additional features:
 
 (WIP)
 
-[Test is available.](tests/tip.editable.html)
+[Test is available.](tests/editable.visual.html)
 
 Main features:
 
