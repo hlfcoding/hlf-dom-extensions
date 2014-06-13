@@ -200,7 +200,7 @@ Written with jQuery 1.7.2
           $context = arguments[1] if arguments.length > 1
         # The element's `$context` will default to document body.
         $context ?= $ 'body'
-        # With the command route, there is a plugin instance and it can
+        # With the command route, if there is a plugin instance and it can
         # `handleCommand`, call the method, but invoke `userInfo` if needed
         # beforehand. With the normal route, if there is a plugin instance and
         # no arguments are provided we assume the call is to access the
