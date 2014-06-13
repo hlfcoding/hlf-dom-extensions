@@ -37,14 +37,14 @@ module.exports = (grunt) ->
         'docs/*'
         '!docs/.gitignore'
       ]
-      lib: [
-        'lib/*'
-        '!lib/.gitignore'
-      ]
       'gh-pages': [
         'gh-pages/*'
         '!gh-pages/.gitignore'
         '!gh-pages/template.html'
+      ]
+      lib: [
+        'lib/*'
+        '!lib/.gitignore'
       ]
     coffee:
       src:
@@ -124,11 +124,6 @@ module.exports = (grunt) ->
     'watch'
   ]
 
-  grunt.registerTask 'lib', [
-    'clean:lib'
-    'bower'
-  ]
-
   grunt.registerTask 'dist', [
     'clean:dist'
     'coffee'
@@ -136,7 +131,15 @@ module.exports = (grunt) ->
     'autoprefixer'
   ]
 
-  grunt.registerTask 'docs', ['clean:docs', 'groc']
+  grunt.registerTask 'docs', [
+    'clean:docs'
+    'groc'
+  ]
+
+  grunt.registerTask 'lib', [
+    'clean:lib'
+    'bower'
+  ]
 
   grunt.registerTask 'pages', [
     'dist'
