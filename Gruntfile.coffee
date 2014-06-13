@@ -28,6 +28,14 @@ module.exports = (grunt) ->
           layout: (type, component) -> type # Just the file.
           targetDir: './lib'
           verbose: yes
+    bump:
+      options:
+        files: [
+          'bower.json'
+          'package.json'
+        ]
+        commitFiles: ['.']
+        pushTo: 'origin'
     clean:
       dist: [
         'dist/*'
