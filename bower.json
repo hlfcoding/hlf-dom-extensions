@@ -1,6 +1,6 @@
 {
   "name": "hlf-jquery",
-  "version": "1.0.0-dev",
+  "version": "0.1.0",
   "main": [
     "release/jquery.extension.hlf.core.js",
     "release/jquery.extension.hlf.event.js ",
@@ -15,9 +15,11 @@
     "jquery": "~2.1.1",
     "modernizr": "~2.8.2",
     "normalize-css": "~3.0.1",
-    "qunit": "~1.14.0",
     "requirejs": "~2.1.11",
     "underscore": "~1.6.0"
+  },
+  "devDependencies": {
+    "qunit": "~1.14.0"
   },
   "exportsOverride": {
     "jquery": {
