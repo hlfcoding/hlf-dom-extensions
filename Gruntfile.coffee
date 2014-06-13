@@ -46,6 +46,9 @@ module.exports = (grunt) ->
         'lib/*'
         '!lib/.gitignore'
       ]
+      release: [
+        'release/*'
+      ]
     coffee:
       src:
         expand: yes
@@ -76,6 +79,12 @@ module.exports = (grunt) ->
           'README.md'
         ]
         dest: 'gh-pages/'
+      release:
+        expand: yes
+        src: 'dist/*'
+        dest: 'release/'
+        extDot: 'last'
+        flatten: yes
     'gh-pages':
       options:
         base: 'gh-pages'
@@ -155,6 +164,12 @@ module.exports = (grunt) ->
     'copy:gh-pages'
     'markdown:gh-pages'
     'gh-pages'
+  ]
+
+  grunt.registerTask 'release', [
+    'dist'
+    'clean:release'
+    'copy:release'
   ]
 
   grunt.registerTask 'test', ['qunit']

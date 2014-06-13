@@ -1,6 +1,16 @@
 {
   "name": "hlf-jquery",
   "version": "1.0.0-dev",
+  "main": [
+    "release/jquery.extension.hlf.core.js",
+    "release/jquery.extension.hlf.event.js ",
+    "release/jquery.hlf.editable.css ",
+    "release/jquery.hlf.editable.scss ",
+    "release/jquery.hlf.editable.js",
+    "release/jquery.hlf.tip.css",
+    "release/jquery.hlf.tip.scss",
+    "release/jquery.hlf.tip.js"
+  ],
   "dependencies": {
     "jquery": "~2.1.1",
     "modernizr": "~2.8.2",
