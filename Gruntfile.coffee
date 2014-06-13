@@ -60,6 +60,12 @@ module.exports = (grunt) ->
         ext: '.js'
         extDot: 'last'
     copy:
+      dist:
+        expand: yes
+        src: 'src/**/*.scss'
+        dest: 'dist/'
+        extDot: 'last'
+        flatten: yes
       'gh-pages':
         src: [
           'dist/**/*'
@@ -126,6 +132,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'dist', [
     'clean:dist'
+    'copy:dist'
     'coffee'
     'sass'
     'autoprefixer'
