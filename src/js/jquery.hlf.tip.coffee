@@ -277,7 +277,13 @@ Written with jQuery 1.7.2
           left: event.pageX
         offset = @offsetOnTriggerMouseMove(event, offset, $trigger) or offset
         if @isDirection('north', $trigger) then offset.top -= @$tip.outerHeight() + @cursorHeight
-        if @isDirection('west',  $trigger) then offset.left -= @$tip.outerWidth()
+        if @isDirection('west',  $trigger)
+          tipWidth = @$tip.outerWidth()
+          triggerWidth = $trigger.outerWidth()
+          offset.left -= tipWidth
+          # If direction changed due to tip being wider than trigger.
+          if tipWidth > triggerWidth
+            offset.left += triggerWidth
         if @isDirection('south', $trigger) then offset.top += @cursorHeight
         offset.top += @cursorHeight
         @$tip.css offset
