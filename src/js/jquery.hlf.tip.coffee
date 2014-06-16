@@ -261,9 +261,7 @@ Written with jQuery 1.7.2
     # `_onTriggerMouseMove` is actually the main tip toggling handler. To
     # explain, first we take into account of child elements triggering the mouse
     # event by deducing the event's actual `$trigger` element. Then we
-    # `wakeByTrigger` if needed, and provide a completion callback that will
-    # properly update the tip offset per `offsetOnTriggerMouseMove` and
-    # `isDirection`. Also note that `cursorHeight` gets factored in.
+    # `wakeByTrigger` if needed.
     _onTriggerMouseMove: (event) ->
       return no if not event.pageX?
       $trigger = if (
@@ -271,23 +269,28 @@ Written with jQuery 1.7.2
         $trigger.hasClass @classNames.trigger
       ) then $trigger else $trigger.closest(@classNames.trigger)
       return no if not $trigger.length
-      @wakeByTrigger $trigger, event, =>
-        offset =
-          top: event.pageY
-          left: event.pageX
-        offset = @offsetOnTriggerMouseMove(event, offset, $trigger) or offset
-        if @isDirection('north', $trigger) then offset.top -= @$tip.outerHeight() + @cursorHeight
-        if @isDirection('west',  $trigger)
-          tipWidth = @$tip.outerWidth()
-          triggerWidth = $trigger.outerWidth()
-          offset.left -= tipWidth
-          # If direction changed due to tip being wider than trigger.
-          if tipWidth > triggerWidth
-            offset.left += triggerWidth
-        if @isDirection('south', $trigger) then offset.top += @cursorHeight
-        offset.top += @cursorHeight
-        @$tip.css offset
-        @debugLog '_onTriggerMouseMove', @_state, offset
+      @wakeByTrigger $trigger, event
+
+    # `_positionToTrigger` will properly update the tip offset per
+    # `offsetOnTriggerMouseMove` and `isDirection`. Also note that `cursorHeight`
+    # gets factored in.
+    _positionToTrigger: ($trigger, mouseEvent) ->
+      offset =
+        top: mouseEvent.pageY
+        left: mouseEvent.pageX
+      offset = @offsetOnTriggerMouseMove(mouseEvent, offset, $trigger) or offset
+      if @isDirection('north', $trigger) then offset.top -= @$tip.outerHeight() + @cursorHeight
+      if @isDirection('west',  $trigger)
+        tipWidth = @$tip.outerWidth()
+        triggerWidth = $trigger.outerWidth()
+        offset.left -= tipWidth
+        # If direction changed due to tip being wider than trigger.
+        if tipWidth > triggerWidth
+          offset.left += triggerWidth
+      if @isDirection('south', $trigger) then offset.top += @cursorHeight
+      offset.top += @cursorHeight
+      @$tip.css offset
+
 
     # `_updateDirectionByTrigger` is the main provider of auto-direction
     # support. Given the `$context`'s `_bounds`, it changes to the best
@@ -376,8 +379,10 @@ Written with jQuery 1.7.2
         @_inflateByTrigger $trigger
         @_$currentTrigger = $trigger
       # Go directly to the position updating if no toggling is needed.
-      if @_state is 'awake' and onWake?
-        onWake()
+      if @_state is 'awake'
+        @_positionToTrigger $trigger, event
+        @onShow triggerChanged, event
+        if onWake? then onWake()
         @debugLog 'quick update'
         return yes
       if event? then @debugLog event.type
@@ -389,6 +394,7 @@ Written with jQuery 1.7.2
       # transition. The latter is also affected by `safeToggle`. The `onShow`
       # and `afterShow` hook methods are also run.
       wake = =>
+        @_positionToTrigger $trigger, event
         @onShow triggerChanged, event
         @$tip.fadeIn duration, =>
           if triggerChanged
