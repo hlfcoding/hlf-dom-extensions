@@ -120,8 +120,8 @@ Written with jQuery 1.7.2
     # mouse-leave and will always trigger `truemouseleave`.
     teardownCheckIfNeeded = (event, $trigger, state) ->
       return no if event.type isnt 'mouseleave'
-      debugLog 'teardown'
       if state.timer.cleared is no
+        debugLog 'teardown'
         clearTimeout state.timer.timeout
         $trigger
           .removeData attr('timer')
