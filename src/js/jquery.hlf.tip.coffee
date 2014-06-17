@@ -275,6 +275,7 @@ Written with jQuery 1.7.2
     # `offsetOnTriggerMouseMove` and `isDirection`. Also note that `cursorHeight`
     # gets factored in.
     _positionToTrigger: ($trigger, mouseEvent) ->
+      return no if not mouseEvent?
       offset =
         top: mouseEvent.pageY
         left: mouseEvent.pageX
