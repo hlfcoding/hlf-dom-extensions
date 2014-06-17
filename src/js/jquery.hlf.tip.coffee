@@ -143,12 +143,12 @@ Written with jQuery 1.7.2
       # Infer `doStem` and `doFollow` flags from respective `classNames` entries.
       @doStem = @classNames.stem isnt ''
       @doFollow = @classNames.follow isnt ''
-      # `_state` toggles between: `awake`, `asleep`, `waking`, `sleeping`. The
-      # use case behind these states is the tip will remain visible and `awake`
-      # as long as there is a high enough frequency of relevant mouse activity.
-      # This is achieved with a simple base implementation around timers
-      # `_sleepCountdown` and `_wakeCountdown`.
-      @_state = 'asleep'
+      # Updated with `_setState`, `_state` toggles between: `awake`, `asleep`,
+      # `waking`, `sleeping`. The use case behind these states is the tip will
+      # remain visible and `awake` as long as there is a high enough frequency
+      # of relevant mouse activity. This is achieved with a simple base
+      # implementation around timers `_sleepCountdown` and `_wakeCountdown`.
+      @_setState 'asleep'
       @_wakeCountdown = null
       @_sleepCountdown = null
       # `_$currentTrigger` helps manage trigger-related state.
@@ -334,6 +334,11 @@ Written with jQuery 1.7.2
         bottom: $context.innerHeight()
         right:  $context.innerWidth()
 
+    _setState: (state) ->
+      return no if state is @_state
+      @_state = state
+      @debugLog @_state
+
     # `sizeForTrigger` does a stealth render to find tip size by temporarily un-
     # hiding and making invisible. It will return saved data if possible before
     # doing a measure. The measures, used by `_updateDirectionByTrigger`, are
@@ -405,7 +410,7 @@ Written with jQuery 1.7.2
             onWake() if onWake?
           if @safeToggle is on then @$tip.siblings(@classNames.tip).fadeOut()
           @afterShow triggerChanged, event
-          @_state = 'awake'
+          @_setState 'awake'
       # Wake up depending on current state.  
       # If we are in the middle of sleeping, stop sleeping by updating
       # `_sleepCountdown` and wake up sooner.
@@ -417,7 +422,7 @@ Written with jQuery 1.7.2
       # Start the normal wakeup and update `_wakeCountdown`.
       else if event? and event.type is 'truemouseenter'
         triggerChanged = yes
-        @_state = 'waking'
+        @_setState 'waking'
         @_wakeCountdown = setTimeout wake, delay
       yes
 
@@ -425,14 +430,14 @@ Written with jQuery 1.7.2
     # `wakeByTrigger`. It also updates `_state` and returns a bool for success.
     # As long as the tip isn't truly visible, sleep is unneeded.
     sleepByTrigger: ($trigger) ->
-      @_state = 'sleeping'
       # Don't toggle if asleep or sleeping.
       return no if @_state in ['asleep', 'sleeping']
+      @_setState 'sleeping'
       clearTimeout @_wakeCountdown
       @_sleepCountdown = setTimeout =>
         @onHide()
         @$tip.stop().fadeOut @ms.duration.out, =>
-          @_state = 'asleep'
+          @_setState 'asleep'
           @afterHide()
       , @ms.delay.out
       yes
