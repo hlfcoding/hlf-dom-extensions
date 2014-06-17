@@ -396,7 +396,7 @@ Written with jQuery 1.7.2
       wake = =>
         @_positionToTrigger $trigger, event
         @onShow triggerChanged, event
-        @$tip.fadeIn duration, =>
+        @$tip.stop().fadeIn duration, =>
           if triggerChanged
             onWake() if onWake?
           if @safeToggle is on then @$tip.siblings(@classNames.tip).fadeOut()
@@ -426,7 +426,7 @@ Written with jQuery 1.7.2
       clearTimeout @_wakeCountdown
       @_sleepCountdown = setTimeout =>
         @onHide()
-        @$tip.fadeOut @ms.duration.out, =>
+        @$tip.stop().fadeOut @ms.duration.out, =>
           @_state = 'asleep'
           @afterHide()
       , @ms.delay.out
