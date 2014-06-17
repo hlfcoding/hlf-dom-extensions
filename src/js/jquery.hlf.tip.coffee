@@ -422,8 +422,9 @@ Written with jQuery 1.7.2
     # `wakeByTrigger`. It also updates `_state` and returns a bool for success.
     # As long as the tip isn't truly visible, sleep is unneeded.
     sleepByTrigger: ($trigger) ->
-      return no if @_state isnt 'awake'
       @_state = 'sleeping'
+      # Don't toggle if asleep or sleeping.
+      return no if @_state in ['asleep', 'sleeping']
       clearTimeout @_wakeCountdown
       @_sleepCountdown = setTimeout =>
         @onHide()
