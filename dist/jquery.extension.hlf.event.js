@@ -102,8 +102,8 @@ Written with jQuery 1.7.2
         if (event.type !== 'mouseleave') {
           return false;
         }
-        debugLog('teardown');
         if (state.timer.cleared === false) {
+          debugLog('teardown');
           clearTimeout(state.timer.timeout);
           $trigger.removeData(attr('timer')).removeData(attr('intentional'));
         }

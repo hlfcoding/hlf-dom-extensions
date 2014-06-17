@@ -69,8 +69,8 @@ the timer state, but only if the timer state is properly reset.</p></div></div><
 thereby defaulting them (see <code>getComputedState</code>). It will only work on
 mouse-leave and will always trigger <code>truemouseleave</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">teardownCheckIfNeeded = </span><span class="nf">(event, $trigger, state) -&gt;</span>
       <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="nx">event</span><span class="p">.</span><span class="nx">type</span> <span class="o">isnt</span> <span class="s">&#39;mouseleave&#39;</span>
-      <span class="nx">debugLog</span> <span class="s">&#39;teardown&#39;</span>
       <span class="k">if</span> <span class="nx">state</span><span class="p">.</span><span class="nx">timer</span><span class="p">.</span><span class="nx">cleared</span> <span class="o">is</span> <span class="kc">no</span>
+        <span class="nx">debugLog</span> <span class="s">&#39;teardown&#39;</span>
         <span class="nx">clearTimeout</span> <span class="nx">state</span><span class="p">.</span><span class="nx">timer</span><span class="p">.</span><span class="nx">timeout</span>
         <span class="nx">$trigger</span>
           <span class="p">.</span><span class="nx">removeData</span> <span class="nx">attr</span><span class="p">(</span><span class="s">&#39;timer&#39;</span><span class="p">)</span>

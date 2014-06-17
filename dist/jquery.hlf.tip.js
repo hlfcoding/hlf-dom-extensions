@@ -19,7 +19,7 @@ Written with jQuery 1.7.2
   })(function($, _, hlf) {
     var SnapTip, Tip;
     hlf.tip = {
-      debug: false,
+      debug: true,
       toString: _.memoize(function(context) {
         switch (context) {
           case 'event':
@@ -123,7 +123,7 @@ Written with jQuery 1.7.2
         this.$tip = $('<div>');
         this.doStem = this.classNames.stem !== '';
         this.doFollow = this.classNames.follow !== '';
-        this._state = 'asleep';
+        this._setState('asleep');
         this._wakeCountdown = null;
         this._sleepCountdown = null;
         this._$currentTrigger = null;
@@ -164,12 +164,13 @@ Written with jQuery 1.7.2
         var onMouseMove;
         $trigger.on(this.evt('truemouseenter'), (function(_this) {
           return function(event) {
-            _this.debugLog(event);
+            _this.debugLog(event.type);
             return _this._onTriggerMouseMove(event);
           };
         })(this));
         $trigger.on(this.evt('truemouseleave'), (function(_this) {
           return function(event) {
+            _this.debugLog(event.type);
             return _this.sleepByTrigger($trigger);
           };
         })(this));
@@ -245,28 +246,35 @@ Written with jQuery 1.7.2
         if (!$trigger.length) {
           return false;
         }
-        return this.wakeByTrigger($trigger, event, (function(_this) {
-          return function() {
-            var offset;
-            offset = {
-              top: event.pageY,
-              left: event.pageX
-            };
-            offset = _this.offsetOnTriggerMouseMove(event, offset, $trigger) || offset;
-            if (_this.isDirection('north', $trigger)) {
-              offset.top -= _this.$tip.outerHeight() + _this.cursorHeight;
-            }
-            if (_this.isDirection('west', $trigger)) {
-              offset.left -= _this.$tip.outerWidth();
-            }
-            if (_this.isDirection('south', $trigger)) {
-              offset.top += _this.cursorHeight;
-            }
-            offset.top += _this.cursorHeight;
-            _this.$tip.css(offset);
-            return _this.debugLog('_onTriggerMouseMove', _this._state, offset);
-          };
-        })(this));
+        return this.wakeByTrigger($trigger, event);
+      };
+
+      Tip.prototype._positionToTrigger = function($trigger, mouseEvent) {
+        var offset, tipWidth, triggerWidth;
+        if (mouseEvent == null) {
+          return false;
+        }
+        offset = {
+          top: mouseEvent.pageY,
+          left: mouseEvent.pageX
+        };
+        offset = this.offsetOnTriggerMouseMove(mouseEvent, offset, $trigger) || offset;
+        if (this.isDirection('north', $trigger)) {
+          offset.top -= this.$tip.outerHeight() + this.cursorHeight;
+        }
+        if (this.isDirection('west', $trigger)) {
+          tipWidth = this.$tip.outerWidth();
+          triggerWidth = $trigger.outerWidth();
+          offset.left -= tipWidth;
+          if (tipWidth > triggerWidth) {
+            offset.left += triggerWidth;
+          }
+        }
+        if (this.isDirection('south', $trigger)) {
+          offset.top += this.cursorHeight;
+        }
+        offset.top += this.cursorHeight;
+        return this.$tip.css(offset);
       };
 
       Tip.prototype._updateDirectionByTrigger = function($trigger) {
@@ -279,6 +287,12 @@ Written with jQuery 1.7.2
         triggerHeight = $trigger.outerHeight();
         tipSize = this.sizeForTrigger($trigger);
         newDirection = _.clone(this.defaultDirection);
+        this.debugLog({
+          triggerPosition: triggerPosition,
+          triggerWidth: triggerWidth,
+          triggerHeight: triggerHeight,
+          tipSize: tipSize
+        });
         _ref = this.defaultDirection;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -300,7 +314,10 @@ Written with jQuery 1.7.2
             case 'west':
               ok = (edge = triggerPosition.left - tipSize.width) && this._bounds.left < edge;
           }
-          this.debugLog('checkDirectionComponent', "'" + ($trigger.html()) + "'", component, edge, tipSize);
+          this.debugLog('checkDirectionComponent', {
+            component: component,
+            edge: edge
+          });
           if (!ok) {
             switch (component) {
               case 'south':
@@ -332,6 +349,14 @@ Written with jQuery 1.7.2
           bottom: $context.innerHeight(),
           right: $context.innerWidth()
         };
+      };
+
+      Tip.prototype._setState = function(state) {
+        if (state === this._state) {
+          return false;
+        }
+        this._state = state;
+        return this.debugLog(this._state);
       };
 
       Tip.prototype.sizeForTrigger = function($trigger, force) {
@@ -370,8 +395,12 @@ Written with jQuery 1.7.2
           this._inflateByTrigger($trigger);
           this._$currentTrigger = $trigger;
         }
-        if (this._state === 'awake' && (onWake != null)) {
-          onWake();
+        if (this._state === 'awake') {
+          this._positionToTrigger($trigger, event);
+          this.onShow(triggerChanged, event);
+          if (onWake != null) {
+            onWake();
+          }
           this.debugLog('quick update');
           return true;
         }
@@ -385,8 +414,9 @@ Written with jQuery 1.7.2
         duration = this.ms.duration["in"];
         wake = (function(_this) {
           return function() {
+            _this._positionToTrigger($trigger, event);
             _this.onShow(triggerChanged, event);
-            return _this.$tip.fadeIn(duration, function() {
+            return _this.$tip.stop().fadeIn(duration, function() {
               if (triggerChanged) {
                 if (onWake != null) {
                   onWake();
@@ -396,7 +426,7 @@ Written with jQuery 1.7.2
                 _this.$tip.siblings(_this.classNames.tip).fadeOut();
               }
               _this.afterShow(triggerChanged, event);
-              return _this._state = 'awake';
+              return _this._setState('awake');
             });
           };
         })(this);
@@ -407,23 +437,24 @@ Written with jQuery 1.7.2
           wake();
         } else if ((event != null) && event.type === 'truemouseenter') {
           triggerChanged = true;
-          this._state = 'waking';
+          this._setState('waking');
           this._wakeCountdown = setTimeout(wake, delay);
         }
         return true;
       };
 
       Tip.prototype.sleepByTrigger = function($trigger) {
-        if (this._state !== 'awake') {
+        var _ref;
+        if ((_ref = this._state) === 'asleep' || _ref === 'sleeping') {
           return false;
         }
-        this._state = 'sleeping';
+        this._setState('sleeping');
         clearTimeout(this._wakeCountdown);
         this._sleepCountdown = setTimeout((function(_this) {
           return function() {
             _this.onHide();
-            return _this.$tip.fadeOut(_this.ms.duration.out, function() {
-              _this._state = 'asleep';
+            return _this.$tip.stop().fadeOut(_this.ms.duration.out, function() {
+              _this._setState('asleep');
               return _this.afterHide();
             });
           };
