@@ -193,9 +193,11 @@ Written with jQuery 1.7.2
     # available, otherwise manually at hopefully 60fps.
     _bindTrigger: ($trigger) ->
       $trigger.on @evt('truemouseenter'), (event) =>
-        @debugLog event
+        @debugLog event.type
         @_onTriggerMouseMove event
-      $trigger.on @evt('truemouseleave'), (event) => @sleepByTrigger $trigger
+      $trigger.on @evt('truemouseleave'), (event) =>
+        @debugLog event.type
+        @sleepByTrigger $trigger
       if @doFollow is on
         if window.requestAnimationFrame?
           onMouseMove = (event) =>
@@ -304,6 +306,7 @@ Written with jQuery 1.7.2
       triggerHeight   = $trigger.outerHeight()
       tipSize         = @sizeForTrigger $trigger
       newDirection    = _.clone @defaultDirection
+      @debugLog { triggerPosition, triggerWidth, triggerHeight, tipSize }
       for component in @defaultDirection
         if not @_bounds? then @_setBounds()
         ok = yes
@@ -312,7 +315,7 @@ Written with jQuery 1.7.2
           when 'east'  then ok = (edge = triggerPosition.left + tipSize.width) and @_bounds.right > edge
           when 'north' then ok = (edge = triggerPosition.top - tipSize.height) and @_bounds.top < edge
           when 'west'  then ok = (edge = triggerPosition.left - tipSize.width) and @_bounds.left < edge
-        @debugLog 'checkDirectionComponent', "'#{$trigger.html()}'", component, edge, tipSize
+        @debugLog 'checkDirectionComponent', { component, edge }
         if not ok
           switch component
             when 'south' then newDirection[0] = 'north'
