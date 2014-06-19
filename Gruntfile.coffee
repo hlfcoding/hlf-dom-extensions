@@ -134,7 +134,7 @@ module.exports = (grunt) ->
       # Caveat: These watch tasks do not clean.
       css:
         files: '{src,tests}/**/*.scss'
-        tasks: ['sass', 'autoprefixer']
+        tasks: ['copy:dist', 'sass', 'autoprefixer']
       js:
         files: '{src,tests}/**/*.coffee'
         tasks: ['coffee']
