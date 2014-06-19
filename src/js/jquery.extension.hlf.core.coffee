@@ -335,10 +335,16 @@ Written with jQuery 1.7.2
           @$el.trigger { type, userInfo }
       # `selection`, when given the context has a property `$el` and a property
       # `selectors`, define cached selector results for each name-selector pair.
+      # Also provide selection helpers for common tasks.
       selection: ->
         select: ->
           for own name, selector of @selectors
-            @["$#{name}"] = @$el.find selector
+            if (result = @$el.find selector)?
+              @["$#{name}"] = result
+        selectByClass: (className) ->
+          classNames = @options?.classNames
+          classNames ?= @classNames
+          @$el.find ".#{@classNames[className]}"
 
   # Export
   # ------
