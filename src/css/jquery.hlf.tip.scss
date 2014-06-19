@@ -78,27 +78,33 @@
 // Base
 // ----
 
-// Root.
 .js-tip {
+  display: none;
   position: absolute;
   z-index: 9999;
-  display: none;
-}
-// ->
-.js-tip-inner {
-  position: relative;
-}
-// ->
-.js-tip-stem {
-  border: {
-    width: 0;
-    style: solid;
-    color: transparent;
+  > .js-tip-inner {
+    position: relative;
   }
-  background: none;
-  position: absolute;
-  width: 0;
-  height: 0;
+}
+.js-tip-inner {
+  > .js-tip-stem {
+    border: {
+      width: 0;
+      style: solid;
+      color: transparent;
+    }
+    background: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+  > .js-tip-content {
+    overflow: hidden;
+    position: relative;
+    // Position adjusted by to stem style mixin.
+  }  
+}
+.js-tip-stem {
   .js-tip-east.js-snap-tip-y-side &, // Reapply.
   .js-tip-east & {
     left: 0;
@@ -125,9 +131,4 @@
     top: 50%;
     border-color: transparent; // Partial reset.
   }
-}
-.js-tip-content {
-  overflow: hidden;
-  position: relative;
-  // Position adjusted by to stem style mixin.
 }
