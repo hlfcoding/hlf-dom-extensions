@@ -247,10 +247,12 @@ Written with jQuery 1.7.2
     _inflateByTrigger: ($trigger) ->
       compoundDirection = if $trigger.data(@attr('direction')) then $trigger.data(@attr('direction')).split(' ') else @defaultDirection
       @debugLog 'update direction class', compoundDirection
+      $content = @selectByClass('content')
+      $content.text $trigger.data @attr('content')
+      $content
+        .width contentSize.width
+        .height contentSize.height
       @$tip
-        .find ".#{@classNames.content}"
-          .text $trigger.data @attr('content')
-        .end()
         .removeClass [
           @classNames.north
           @classNames.south 
@@ -534,12 +536,14 @@ Written with jQuery 1.7.2
     namespace: hlf.tip
     apiClass: Tip
     asSingleton: yes
+    baseMixins: ['selection']
     compactOptions: yes
   hlf.createPlugin
     name: 'snapTip'
     namespace: hlf.tip.snap
     apiClass: SnapTip
     asSingleton: yes
+    baseMixins: ['selection']
     compactOptions: yes
 
 )
