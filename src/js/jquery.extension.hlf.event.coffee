@@ -62,7 +62,7 @@ Written with jQuery 1.7.2
 
     # `attr` is an internal formatter for attribute names,
     # mainly those of jQuery data keys.
-    attr = (name='') -> "#{hoverIntent.toString 'attr'}#{name}"
+    attr = (name='') -> "#{hoverIntent.toString 'attr'}-#{name}"
 
     # `debugLog` is our internal logger. It's optimized to be a noop if
     # hover intent debugging is off.
