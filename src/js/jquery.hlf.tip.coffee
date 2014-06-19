@@ -138,8 +138,10 @@ Written with jQuery 1.7.2
       _.bindAll @, '_onTriggerMouseMove', '_setBounds'
 
     init: ->
-      # The element represented by this API is `$tip`. We build it.
-      @$tip = $ '<div>'
+      # The element represented by this API is `$tip`. We build it. Alias it to
+      # `$el` for any mixins to consume.
+      @_setTip = ($tip) => @$tip = @$el = $tip
+      @_setTip $ '<div>'
       # Infer `doStem` and `doFollow` flags from respective `classNames` entries.
       @doStem = @classNames.stem isnt ''
       @doFollow = @classNames.follow isnt ''
@@ -235,7 +237,8 @@ Written with jQuery 1.7.2
       return no if @$tip.html().length
       html = @htmlOnRender()
       if not (html? and html.length) then html = @_defaultHtml()
-      @$tip = $(html).addClass @classNames.follow
+      $tip = $(html).addClass @classNames.follow
+      @_setTip $tip
       @$tip.prependTo @$context
 
     # `_inflateByTrigger` will reset and update `$tip` for the given trigger, so
