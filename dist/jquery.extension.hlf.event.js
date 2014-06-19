@@ -48,7 +48,7 @@ Written with jQuery 1.7.2
         if (name == null) {
           name = '';
         }
-        return "" + (hoverIntent.toString('attr')) + name;
+        return "" + (hoverIntent.toString('attr')) + "-" + name;
       };
       debugLog = hoverIntent.debug === false ? $.noop : function() {
         return hlf.debugLog.apply(hlf, [hoverIntent.toString('log')].concat(__slice.call(arguments)));

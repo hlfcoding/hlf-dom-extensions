@@ -19,7 +19,7 @@ Written with jQuery 1.7.2
   })(function($, _, hlf) {
     var SnapTip, Tip;
     hlf.tip = {
-      debug: true,
+      debug: false,
       toString: _.memoize(function(context) {
         switch (context) {
           case 'event':
@@ -37,12 +37,19 @@ Written with jQuery 1.7.2
           ms: {
             duration: {
               "in": 200,
-              out: 200
+              out: 200,
+              resize: 300
             },
             delay: {
               "in": 300,
               out: 300
             }
+          },
+          easing: {
+            base: 'ease-in-out'
+          },
+          shouldAnimate: {
+            resize: true
           },
           cursorHeight: 6,
           defaultDirection: ['south', 'east'],
@@ -120,7 +127,12 @@ Written with jQuery 1.7.2
       }
 
       Tip.prototype.init = function() {
-        this.$tip = $('<div>');
+        this._setTip = (function(_this) {
+          return function($tip) {
+            return _this.$tip = _this.$el = $tip;
+          };
+        })(this);
+        this._setTip($('<div>'));
         this.doStem = this.classNames.stem !== '';
         this.doFollow = this.classNames.follow !== '';
         this._setState('asleep');
@@ -214,7 +226,7 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype._render = function() {
-        var html;
+        var $tip, duration, easing, html, transitionStyle;
         if (this.$tip.html().length) {
           return false;
         }
@@ -222,15 +234,33 @@ Written with jQuery 1.7.2
         if (!((html != null) && html.length)) {
           html = this._defaultHtml();
         }
-        this.$tip = $(html).addClass(this.classNames.follow);
-        return this.$tip.prependTo(this.$context);
+        $tip = $(html).addClass(this.classNames.follow);
+        this._setTip($tip);
+        this.$tip.prependTo(this.$context);
+        transitionStyle = [];
+        if (this.shouldAnimate.resize) {
+          duration = this.ms.duration.resize / 1000.0 + 's';
+          easing = this.easing.resize;
+          if (easing == null) {
+            easing = this.easing.base;
+          }
+          transitionStyle.push("width " + duration + " " + easing, "height " + duration + " " + easing);
+        }
+        transitionStyle = transitionStyle.join(',');
+        return this.selectByClass('content').css('transition', transitionStyle);
       };
 
       Tip.prototype._inflateByTrigger = function($trigger) {
-        var compoundDirection;
+        var $content, compoundDirection, contentOnly, contentSize;
         compoundDirection = $trigger.data(this.attr('direction')) ? $trigger.data(this.attr('direction')).split(' ') : this.defaultDirection;
         this.debugLog('update direction class', compoundDirection);
-        return this.$tip.find("." + this.classNames.content).text($trigger.data(this.attr('content'))).end().removeClass([this.classNames.north, this.classNames.south, this.classNames.east, this.classNames.west].join(' ')).addClass($.trim(_.reduce(compoundDirection, (function(_this) {
+        $content = this.selectByClass('content');
+        $content.text($trigger.data(this.attr('content')));
+        if (this.shouldAnimate.resize) {
+          contentSize = this.sizeForTrigger($trigger, (contentOnly = true));
+          $content.width(contentSize.width).height(contentSize.height);
+        }
+        return this.$tip.removeClass([this.classNames.north, this.classNames.south, this.classNames.east, this.classNames.west].join(' ')).addClass($.trim(_.reduce(compoundDirection, (function(_this) {
           return function(classListMemo, directionComponent) {
             return "" + classListMemo + " " + _this.classNames[directionComponent];
           };
@@ -344,8 +374,8 @@ Written with jQuery 1.7.2
         var $context;
         $context = this.$context.is('body') ? $(window) : this.$context;
         return this._bounds = {
-          top: parseInt(this.$context.css('padding-top'), 10),
-          left: parseInt(this.$context.css('padding-left'), 10),
+          top: $.css(this.$context[0], 'padding-top', true),
+          left: $.css(this.$context[0], 'padding-left', true),
           bottom: $context.innerHeight(),
           right: $context.innerWidth()
         };
@@ -359,28 +389,49 @@ Written with jQuery 1.7.2
         return this.debugLog(this._state);
       };
 
-      Tip.prototype.sizeForTrigger = function($trigger, force) {
-        var size;
-        if (force == null) {
-          force = false;
+      Tip.prototype.sizeForTrigger = function($trigger, contentOnly) {
+        var $content, bottom, left, padding, right, side, size, top, _ref;
+        if (contentOnly == null) {
+          contentOnly = false;
         }
         size = {
-          width: $trigger.data(this.attr('width')),
-          height: $trigger.data(this.attr('height'))
+          width: $trigger.data('width'),
+          height: $trigger.data('height')
         };
-        if (size.width && size.height) {
-          return size;
+        $content = this.selectByClass('content');
+        if (!((size.width != null) && (size.height != null))) {
+          $content.text($trigger.data(this.attr('content')));
+          this.$tip.css({
+            display: 'block',
+            visibility: 'hidden'
+          });
+          $trigger.data('width', (size.width = this.$tip.outerWidth()));
+          $trigger.data('height', (size.height = this.$tip.outerHeight()));
+          this.$tip.css({
+            display: 'none',
+            visibility: 'visible'
+          });
         }
-        this.$tip.find("." + this.classNames.content).text($trigger.data(this.attr('content'))).end().css({
-          display: 'block',
-          visibility: 'hidden'
-        });
-        $trigger.data(this.attr('width'), (size.width = this.$tip.outerWidth()));
-        $trigger.data(this.attr('height'), (size.height = this.$tip.outerHeight()));
-        this.$tip.css({
-          display: 'none',
-          visibility: 'visible'
-        });
+        if (contentOnly === true) {
+          padding = $content.css('padding').split(' ');
+          _ref = (function() {
+            var _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = padding.length; _i < _len; _i++) {
+              side = padding[_i];
+              _results.push(parseInt(side, 10));
+            }
+            return _results;
+          })(), top = _ref[0], right = _ref[1], bottom = _ref[2], left = _ref[3];
+          if (bottom == null) {
+            bottom = top;
+          }
+          if (left == null) {
+            left = right;
+          }
+          size.width -= left + right;
+          size.height -= top + bottom + this.selectByClass('stem').height();
+        }
         return size;
       };
 
@@ -588,6 +639,7 @@ Written with jQuery 1.7.2
       namespace: hlf.tip,
       apiClass: Tip,
       asSingleton: true,
+      baseMixins: ['selection'],
       compactOptions: true
     });
     return hlf.createPlugin({
@@ -595,6 +647,7 @@ Written with jQuery 1.7.2
       namespace: hlf.tip.snap,
       apiClass: SnapTip,
       asSingleton: true,
+      baseMixins: ['selection'],
       compactOptions: true
     });
   });

@@ -64,22 +64,31 @@
       <span class="k">@if</span> <span class="nv">$side</span> <span class="o">==</span> <span class="no">right</span> <span class="p">{</span> <span class="na">left</span><span class="o">:</span> <span class="nv">$stem-size</span><span class="p">;</span> <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base">Base</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Root.</p></div></div><div class="code"><div class="wrapper"><span class="nc">.js-tip</span> <span class="p">{</span>
+<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base">Base</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="nc">.js-tip</span> <span class="p">{</span>
+  <span class="na">display</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
   <span class="na">position</span><span class="o">:</span> <span class="no">absolute</span><span class="p">;</span>
   <span class="na">z-index</span><span class="o">:</span> <span class="mi">9999</span><span class="p">;</span>
-  <span class="na">display</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>-></p></div></div><div class="code"><div class="wrapper"><span class="nc">.js-tip-inner</span> <span class="p">{</span>
-  <span class="na">position</span><span class="o">:</span> <span class="no">relative</span><span class="p">;</span>
-<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>-></p></div></div><div class="code"><div class="wrapper"><span class="nc">.js-tip-stem</span> <span class="p">{</span>
-  <span class="na">border</span><span class="o">:</span> <span class="p">{</span>
-    <span class="na">width</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="na">style</span><span class="o">:</span> <span class="no">solid</span><span class="p">;</span>
-    <span class="na">color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span>
+  <span class="o">&gt;</span> <span class="nc">.js-tip-inner</span> <span class="p">{</span>
+    <span class="na">position</span><span class="o">:</span> <span class="no">relative</span><span class="p">;</span>
   <span class="p">}</span>
-  <span class="na">background</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-  <span class="na">position</span><span class="o">:</span> <span class="no">absolute</span><span class="p">;</span>
-  <span class="na">width</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="na">height</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nc">.js-tip-inner</span> <span class="p">{</span>
+  <span class="o">&gt;</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span>
+    <span class="na">border</span><span class="o">:</span> <span class="p">{</span>
+      <span class="na">width</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="na">style</span><span class="o">:</span> <span class="no">solid</span><span class="p">;</span>
+      <span class="na">color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="na">background</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
+    <span class="na">position</span><span class="o">:</span> <span class="no">absolute</span><span class="p">;</span>
+    <span class="na">width</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="na">height</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="o">&gt;</span> <span class="nc">.js-tip-content</span> <span class="p">{</span>
+    <span class="na">overflow</span><span class="o">:</span> <span class="no">hidden</span><span class="p">;</span>
+    <span class="na">position</span><span class="o">:</span> <span class="no">relative</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Position adjusted by to stem style mixin.</p></div></div><div class="code"><div class="wrapper">  <span class="p">}</span>  
+<span class="p">}</span>
+<span class="nc">.js-tip-stem</span> <span class="p">{</span>
   <span class="nc">.js-tip-east.js-snap-tip-y-side</span> <span class="k">&amp;</span><span class="o">,</span> <span class="o">//</span> <span class="nt">Reapply</span><span class="nc">.</span>
   <span class="nc">.js-tip-east</span> <span class="k">&amp;</span> <span class="p">{</span>
     <span class="na">left</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
@@ -104,7 +113,4 @@ come last.</p></div></div><div class="code"><div class="wrapper">  <span class="
     <span class="na">top</span><span class="o">:</span> <span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
     <span class="na">border-color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span> <span class="c1">// Partial reset.</span>
   <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.js-tip-content</span> <span class="p">{</span>
-  <span class="na">overflow</span><span class="o">:</span> <span class="no">hidden</span><span class="p">;</span>
-  <span class="na">position</span><span class="o">:</span> <span class="no">relative</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Position adjusted by to stem style mixin.</p></div></div><div class="code"><div class="wrapper"><span class="p">}</span></div></div></div></div></body></html>
+<span class="p">}</span></div></div></div></div></body></html>
