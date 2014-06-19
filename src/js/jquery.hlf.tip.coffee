@@ -58,9 +58,19 @@ Written with jQuery 1.7.2
         duration:
           in: 200
           out: 200
+          resize: 300
         delay:
           in: 300
           out: 300
+      # - `easing` stores the custom easing for baked-in animation support. The
+      #   keys are the same as those of `shouldAnimate` and work if they are
+      #   specified, with `base` being the default easing
+      easing:
+        base: 'ease-in-out'
+      # - `shouldAnimate` provides baked-in animation support. The `resize`
+      #   animation is like `$.fn.show` but with CSS transitions.
+      shouldAnimate:
+        resize: on
       cursorHeight: 6
       # - Note that the direction data structure must be an array of
       #   `components`, and conventionally with north/south first.
@@ -232,7 +242,8 @@ Written with jQuery 1.7.2
 
     # `_render` comes with a base implementation that fills in and attaches
     # `$tip` to the DOM, specifically at the beginning of `$context`. It uses
-    # the result of `htmlOnRender` and falls back to that of `_defaultHtml`.
+    # the result of `htmlOnRender` and falls back to that of `_defaultHtml`. 
+    # Render also sets up any animations per the `shouldAnimate` option.
     _render: ->
       return no if @$tip.html().length
       html = @htmlOnRender()
@@ -240,18 +251,30 @@ Written with jQuery 1.7.2
       $tip = $(html).addClass @classNames.follow
       @_setTip $tip
       @$tip.prependTo @$context
+      transitionStyle = []
+      if @shouldAnimate.resize
+        duration = @ms.duration.resize / 1000.0 + 's'
+        easing = @easing.resize
+        easing ?= @easing.base
+        transitionStyle.push "width #{duration} #{easing}", "height #{duration} #{easing}"
+      transitionStyle = transitionStyle.join(',')
+      @selectByClass('content').css 'transition', transitionStyle
 
     # `_inflateByTrigger` will reset and update `$tip` for the given trigger, so
     # that it is ready to present, i.e. it is 'inflated'. Mostly it's just the
-    # content and class list that get updated.
+    # content element and class list that get updated. If the `resize` animation
+    # is desired, we need to also specify the content element's dimensions for
+    # respective transitions to take effect.
     _inflateByTrigger: ($trigger) ->
       compoundDirection = if $trigger.data(@attr('direction')) then $trigger.data(@attr('direction')).split(' ') else @defaultDirection
       @debugLog 'update direction class', compoundDirection
       $content = @selectByClass('content')
       $content.text $trigger.data @attr('content')
-      $content
-        .width contentSize.width
-        .height contentSize.height
+      if @shouldAnimate.resize
+        contentSize = @sizeForTrigger $trigger, (contentOnly = yes)
+        $content
+          .width contentSize.width
+          .height contentSize.height
       @$tip
         .removeClass [
           @classNames.north
@@ -348,24 +371,33 @@ Written with jQuery 1.7.2
     # hiding and making invisible. It will return saved data if possible before
     # doing a measure. The measures, used by `_updateDirectionByTrigger`, are
     # stored on the trigger as namespaced, `width` and `height` jQuery data
-    # values.
-    sizeForTrigger: ($trigger, force=no) ->
+    # values. If on, `contentOnly` will factor in content padding into the size
+    # value for the current size.
+    sizeForTrigger: ($trigger, contentOnly=no) ->
+      # Short on existing data.
       size =
-        width:  $trigger.data @attr('width')
-        height: $trigger.data @attr('height')
-      return size if size.width and size.height
-      @$tip
-        .find ".#{@classNames.content}"
-          .text $trigger.data @attr('content')
-        .end()
-        .css
+        width:  $trigger.data 'width'
+        height: $trigger.data 'height'
+      # Get size.
+      $content = @selectByClass('content')
+      if not (size.width? and size.height?)
+        $content.text $trigger.data @attr('content')
+        @$tip.css
           display: 'block'
           visibility: 'hidden'
-      $trigger.data @attr('width'),  (size.width = @$tip.outerWidth())
-      $trigger.data @attr('height'), (size.height = @$tip.outerHeight())
-      @$tip.css
-        display: 'none',
-        visibility: 'visible'
+        $trigger.data 'width',  (size.width = @$tip.outerWidth())
+        $trigger.data 'height', (size.height = @$tip.outerHeight())
+        @$tip.css
+          display: 'none',
+          visibility: 'visible'
+      # Get content size.
+      if contentOnly is yes
+        padding = $content.css('padding').split(' ')
+        [top, right, bottom, left] = (parseInt side, 10 for side in padding)
+        bottom ?= top
+        left ?= right
+        size.width -= left + right
+        size.height -= top + bottom + @selectByClass('stem').height() # TODO: This isn't always true.
       size
 
     # `isDirection` is a helper to deduce if `$tip` currently has the given
@@ -478,8 +510,7 @@ Written with jQuery 1.7.2
 
     # `_moveToTrigger` is the main positioner. The `baseOffset` given is
     # expected to be the trigger offset.  
-    # TODO: Still needs to support all the directions.
-    _moveToTrigger: ($trigger, baseOffset) ->
+    _moveToTrigger: ($trigger, baseOffset) -> # TODO: Still needs to support all the directions.
       #@debugLog baseOffset
       offset = $trigger.offset()
       if @snap.toXAxis is on
