@@ -334,8 +334,8 @@ Written with jQuery 1.7.2
     _setBounds: ->
       $context = if @$context.is('body') then $(window) else @$context
       @_bounds =
-        top:    parseInt @$context.css('padding-top'), 10
-        left:   parseInt @$context.css('padding-left'), 10
+        top:    $.css @$context[0], 'padding-top', yes
+        left:   $.css @$context[0], 'padding-left', yes
         bottom: $context.innerHeight()
         right:  $context.innerWidth()
 
