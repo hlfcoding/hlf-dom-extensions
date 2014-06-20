@@ -1,14 +1,16 @@
 <!DOCTYPE html><html lang="en"><head><title>index</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="index"><meta name="groc-project-path" content="README.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">README.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlfjquerylibrarybuildstatushttpstravisciorghlfcodinghlfjquerysvgbranchmasterhttpstravisciorghlfcodinghlfjquery">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master" alt="Build Status" title="" /></a></h1>
 
-<p>jQuery extensions and plugins for quality UI. All modules have scoped debug flags, jQuery namespaces, and no-conflict support with jQuery.</p>
+<p>jQuery extensions and plugins for quality UI. All modules have scoped debug
+flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
+AMD-compatible versions, so you can pick and choose what to use. The only other
+hard dependencies are UnderscoreJS and (obviously) RequireJS. Other dependencies
+(see Bower file) are for tests and demos.</p>
 
-<p>Bower support forthcoming. For now, use <code>npm install &amp;&amp; grunt dist</code> to build.</p>
-
-<p><a href="docs/index.html">Annotated source code is available.</a></p>
+<p>The <a href="http://hlfcoding.github.io/hlf-jquery/docs/index.html">annotated source code</a> is also available.</p>
 
 <h2 id="extensions">Extensions</h2>
 
-<p>All extensions have AMD-compatible versions.</p>
+<p>All extensions should have test pages.</p>
 
 <h3 id="core">Core</h3>
 
@@ -31,13 +33,12 @@ events through a customizable delay.</li>
 
 <h2 id="plugins">Plugins</h2>
 
-<p>All plugins have test pages and sample styles.</p>
+<p>All plugins should have test pages and sample styles. Some plugins may have
+required styles. When possible, styles are made customizeable as SCSS mixins.</p>
 
 <h3 id="hlf-tip">HLF Tip</h3>
 
-<p>(WIP)</p>
-
-<p><a href="tests/tip.visual.html">Test is available.</a></p>
+<p>A <a href="http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html">visual test for Tip</a> is available.</p>
 
 <p>Main features:</p>
 
@@ -57,9 +58,7 @@ either direction.</li>
 
 <h3 id="hlf-editable">HLF Editable</h3>
 
-<p>(WIP)</p>
-
-<p><a href="tests/editable.visual.html">Test is available.</a></p>
+<p>A <a href="http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html">(WIP) visual test for Editable</a> is available.</p>
 
 <p>Main features:</p>
 
@@ -75,9 +74,12 @@ composed based on data-attribute configuration. </li>
 
 <h3 id="grunt-tasks">Grunt Tasks</h3>
 
-<p>Use <code>grunt</code> to start developing.</p>
-
-<p>Use <code>grunt docs</code> to generate Groc documentation.</p>
+<ul>
+<li>Use <code>grunt</code> to start developing.</li>
+<li>Use <code>grunt dist</code> to build.</li>
+<li>Use <code>grunt docs</code> to generate Groc documentation.</li>
+<li>Use <code>grunt test</code> to test.</li>
+</ul>
 
 <h3 id="sample-st2-project-file">Sample ST2 Project File</h3>
 

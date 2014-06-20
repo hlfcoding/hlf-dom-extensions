@@ -47,11 +47,14 @@
 
       <section id="main_content">
         <h1 id="hlf-jquery-library-build-status-https-travis-ci-org-hlfcoding-hlf-jquery-svg-branch-master-https-travis-ci-org-hlfcoding-hlf-jquery-">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master" alt="Build Status"></a></h1>
-<p>jQuery extensions and plugins for quality UI. All modules have scoped debug flags, jQuery namespaces, and no-conflict support with jQuery.</p>
-<p>Bower support forthcoming. For now, use <code>npm install &amp;&amp; grunt dist</code> to build.</p>
-<p><a href="docs/index.html">Annotated source code is available.</a></p>
+<p>jQuery extensions and plugins for quality UI. All modules have scoped debug
+flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
+AMD-compatible versions, so you can pick and choose what to use. The only other
+hard dependencies are UnderscoreJS and (obviously) RequireJS. Other dependencies
+(see Bower file) are for tests and demos.</p>
+<p>The <a href="http://hlfcoding.github.io/hlf-jquery/docs/index.html">annotated source code</a> is also available.</p>
 <h2 id="extensions">Extensions</h2>
-<p>All extensions have AMD-compatible versions.</p>
+<p>All extensions should have test pages.</p>
 <h3 id="core">Core</h3>
 <p>Main features:</p>
 <ul>
@@ -66,10 +69,10 @@
 events through a customizable delay.</li>
 </ul>
 <h2 id="plugins">Plugins</h2>
-<p>All plugins have test pages and sample styles.</p>
+<p>All plugins should have test pages and sample styles. Some plugins may have
+required styles. When possible, styles are made customizeable as SCSS mixins.</p>
 <h3 id="hlf-tip">HLF Tip</h3>
-<p>(WIP)</p>
-<p><a href="tests/tip.visual.html">Test is available.</a></p>
+<p>A <a href="http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html">visual test for Tip</a> is available.</p>
 <p>Main features:</p>
 <ul>
 <li>Uses custom hover intent events that allow for custom delays.</li>
@@ -83,8 +86,7 @@ either direction.</li>
 <li>Detailed API.</li>
 </ul>
 <h3 id="hlf-editable">HLF Editable</h3>
-<p>(WIP)</p>
-<p><a href="tests/editable.visual.html">Test is available.</a></p>
+<p>A <a href="http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html">(WIP) visual test for Editable</a> is available.</p>
 <p>Main features:</p>
 <ul>
 <li>Uses mixins for encapsulate editing behaviors, so plugin instances can be
@@ -94,8 +96,12 @@ composed based on data-attribute configuration. </li>
 <h2 id="development">Development</h2>
 <p>Start off with <code>npm install</code>.</p>
 <h3 id="grunt-tasks">Grunt Tasks</h3>
-<p>Use <code>grunt</code> to start developing.</p>
-<p>Use <code>grunt docs</code> to generate Groc documentation.</p>
+<ul>
+<li>Use <code>grunt</code> to start developing.</li>
+<li>Use <code>grunt dist</code> to build.</li>
+<li>Use <code>grunt docs</code> to generate Groc documentation.</li>
+<li>Use <code>grunt test</code> to test.</li>
+</ul>
 <h3 id="sample-st2-project-file">Sample ST2 Project File</h3>
 <pre><code class="lang-json">{
   &quot;folders&quot;:
