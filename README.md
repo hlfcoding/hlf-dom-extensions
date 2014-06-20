@@ -1,14 +1,16 @@
 # HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery)
 
-jQuery extensions and plugins for quality UI. All modules have scoped debug flags, jQuery namespaces, and no-conflict support with jQuery.
+jQuery extensions and plugins for quality UI. All modules have scoped debug
+flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
+AMD-compatible versions, so you can pick and choose what to use. The only other
+hard dependencies are UnderscoreJS and (obviously) RequireJS. Other dependencies
+(see Bower file) are for tests and demos.
 
-Bower support forthcoming. For now, use `npm install && grunt dist` to build.
-
-[Annotated source code is available.](docs/index.html)
+The [annotated source code][] is also available.
 
 ## Extensions
 
-All extensions have AMD-compatible versions.
+All extensions should have test pages.
 
 ### Core
 
@@ -27,13 +29,12 @@ Main features:
 
 ## Plugins
 
-All plugins have test pages and sample styles.
+All plugins should have test pages and sample styles. Some plugins may have
+required styles. When possible, styles are made customizeable as SCSS mixins.
 
 ### HLF Tip
 
-(WIP)
-
-[Test is available.](tests/tip.visual.html)
+A [visual test for Tip][] is available.
 
 Main features:
 
@@ -49,9 +50,7 @@ Additional features:
 
 ### HLF Editable
 
-(WIP)
-
-[Test is available.](tests/editable.visual.html)
+A [(WIP) visual test for Editable][] is available.
 
 Main features:
 
@@ -65,9 +64,10 @@ Start off with `npm install`.
 
 ### Grunt Tasks
 
-Use `grunt` to start developing.
-
-Use `grunt docs` to generate Groc documentation.
+- Use `grunt` to start developing.
+- Use `grunt dist` to build.
+- Use `grunt docs` to generate Groc documentation.
+- Use `grunt test` to test.
 
 ### Sample ST2 Project File
 
@@ -112,3 +112,7 @@ The MIT License (MIT)
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
+
+[annotated source code]: http://hlfcoding.github.io/hlf-jquery/docs/index.html
+[visual test for Tip]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
+[(WIP) visual test for Editable]: http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html
