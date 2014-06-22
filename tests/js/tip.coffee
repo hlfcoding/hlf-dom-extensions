@@ -18,9 +18,9 @@ require [
       $el.find('[title]').snapTip 
         $triggerContext: $el 
         snap: { toYAxis: true }
-    do ($el = $ '.box-call') ->
+    do ($el = $ '.bar-call') ->
       $el.find('[title]').snapTip 
         $triggerContext: $el 
         snap: { toXAxis: true }
-    $('.border-test[title]').snapTip()
+    $('.edge-call > .visual-test-fragment[title]').snapTip()
 

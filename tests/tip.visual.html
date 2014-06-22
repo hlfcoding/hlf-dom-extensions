@@ -30,10 +30,10 @@
     -->
     <script data-main="js/tip" src="../lib/require.js"></script>
   </head>
-  <body id="override">
+  <body id="override" class="edge-call">
     <h1>HLF Tip Test</h1>
     <div id="main">
-      <section class="default-call">
+      <section class="default-call visual-test">
         <header>default</header>
         <p>
           <a class="trigger" href="#" title="foo">tooltip trigger</a> |
@@ -41,45 +41,43 @@
           <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">tooltip trigger</a>
         </p>
       </section>
-      <section class="list-call">
+      <section class="list-call visual-test">
         <header>a list</header>
-        <ul class="menu">
+        <ul class="list">
           <li><a class="trigger" href="#" title="This is tooltip 1">
             tooltip trigger
           </a></li>
           <li><a class="trigger" href="#" title="This is tooltip 2">
             tooltip trigger
           </a></li>
-          <li class="chF"><a class="trigger" href="#" title="This is tooltip 3">
+          <li><a class="trigger" href="#" title="This is tooltip 3">
             tooltip trigger
           </a></li>
         </ul>
       </section>
-      <section class="box-call">
-        <header>in a box</header>
-        <div class="box">
-          <p>
-            <a class="trigger" href="#" title="This is tooltip 1">
-              tooltip trigger
-            </a> |
-            <a class="trigger" href="#" title="This is tooltip 2">
-              tooltip trigger
-            </a> |
-            <a class="trigger" href="#" title="This is tooltip 3">
-              tooltip trigger
-            </a>
-          </p>
-        </div>
+      <section class="bar-call visual-test">
+        <header>in a bar</header>
+        <nav class="bar">
+          <a class="trigger" href="#" title="This is tooltip 1">
+            tooltip trigger
+          </a>
+          <a class="trigger" href="#" title="This is tooltip 2">
+            tooltip trigger
+          </a>
+          <a class="trigger" href="#" title="This is tooltip 3">
+            tooltip trigger
+          </a>
+        </nav>
       </section>
     </div>
-    <a id="upper_right" class="border-test trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla, vel, ratione tenetur iste ipsam nisi nostrum error dolores corporis inventore architecto similique at dolor blanditiis accusamus dolorem quidem necessitatibus? Nemo.">
-      upper right corner
+    <a class="visual-test-fragment trigger top right" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla, vel, ratione tenetur iste ipsam nisi nostrum error dolores corporis inventore architecto similique at dolor blanditiis accusamus dolorem quidem necessitatibus? Nemo.">
+      top right corner
     </a>
-    <a id="lower_left" class="border-test trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, corporis, neque, eos modi autem placeat quas velit qui quasi enim quidem excepturi iure? Quod, praesentium, pariatur impedit provident a cupiditate.">
-      lower left corner
+    <a class="visual-test-fragment trigger bottom left" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, corporis, neque, eos modi autem placeat quas velit qui quasi enim quidem excepturi iure? Quod, praesentium, pariatur impedit provident a cupiditate.">
+      bottom left corner
     </a>
-    <a id="lower_right" class="border-test trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, ipsum, reiciendis, porro quasi asperiores ad adipisci laudantium amet tempore perspiciatis placeat laboriosam suscipit repudiandae dignissimos ut unde quis molestiae! Ut.">
-      lower right corner
+    <a class="visual-test-fragment trigger bottom right" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, ipsum, reiciendis, porro quasi asperiores ad adipisci laudantium amet tempore perspiciatis placeat laboriosam suscipit repudiandae dignissimos ut unde quis molestiae! Ut.">
+      bottom right corner
     </a>
   </body>
 </html>
