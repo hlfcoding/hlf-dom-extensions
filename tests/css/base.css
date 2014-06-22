@@ -1,40 +1,87 @@
-.box, .menu li a {
-  background-color: #fff;
+.box, .list-item, .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a, .bar-item, .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
+  background-color: white;
   border: 1px solid #cccccc; }
 
 body {
   background-color: #eaeae6;
-  padding: 1em;
   font-family: Helvetica, sans-serif;
-  font-size: 14px; }
+  font-size: 14px;
+  padding: 14px; }
 
 h1 {
-  font-size: 1.5em;
+  font-size: 21px;
   letter-spacing: -1px; }
 
 p {
-  padding: 1em 0; }
+  padding: 14px 0; }
 
 #main {
-  padding: 2em 0; }
+  padding: 28px 0; }
+
+section.visual-test header {
+  font-weight: bold; }
+  section.visual-test header::after {
+    content: ':'; }
 
 .box {
-  width: 600px;
-  padding: 1em;
-  margin: 1em 0;
-  border-radius: 10px; }
+  border-radius: 10px;
+  margin: 14px 0;
+  padding: 14px; }
 
-.menu {
-  width: 300px;
-  margin: 1em 0; }
-  .menu li a {
-    display: block;
-    padding: 1em;
-    border-bottom-width: 0; }
-  .menu li:first-child a {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px; }
-  .menu li:last-child a {
-    border-bottom-width: 1px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px; }
+.list-item, .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a {
+  border-bottom-width: 0;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
+  display: block;
+  padding: 14px; }
+
+.list-item-first, .list > a:first-child, .list li.no-a:first-child, .list li:not(.no-a):first-child > a {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px; }
+
+.list-item-last, .list > a:last-child, .list li.no-a:last-child, .list li:not(.no-a):last-child > a {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom-width: 1px; }
+
+.list {
+  margin: 14px 0; }
+  .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a {
+    width: 300px; }
+
+.bar-item, .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
+  border-right-width: 0;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
+  display: block;
+  float: left;
+  padding: 14px; }
+
+.bar-item-first, .bar > a:first-child, .bar li.no-a:first-child, .bar li:not(.no-a):first-child > a {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px; }
+
+.bar-item-last, .bar > a:last-child, .bar li.no-a:last-child, .bar li:not(.no-a):last-child > a {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-width: 1px; }
+
+.bar {
+  margin: 14px 0; }
+  .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
+    height: 60px;
+    line-height: 32px; }
+
+.edge, .edge-call > .visual-test-fragment {
+  position: absolute; }
+  .edge.top, .edge-call > .top.visual-test-fragment {
+    top: 14px; }
+  .edge.right, .edge-call > .right.visual-test-fragment {
+    right: 14px; }
+  .edge.bottom, .edge-call > .bottom.visual-test-fragment {
+    bottom: 14px; }
+  .edge.left, .edge-call > .left.visual-test-fragment {
+    left: 14px; }
+
+.edge-call:not(body) {
+  position: relative; }

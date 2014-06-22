@@ -152,25 +152,25 @@ Written with jQuery 1.7.2
           return $(this).on({
             mouseover: check,
             mousemove: trackMouse
-          });
+          }, data != null ? data.selector : void 0);
         },
         teardown: function(data, namespaces) {
           return $(this).off({
             mouseover: check,
             mousemove: trackMouse
-          });
+          }, data != null ? data.selector : void 0);
         }
       };
       return $.event.special.truemouseleave = {
         setup: function(data, namespaces) {
           return $(this).on({
             mouseleave: check
-          });
+          }, data != null ? data.selector : void 0);
         },
         teardown: function(data, namespaces) {
           return $(this).off({
             mouseleave: check
-          });
+          }, data != null ? data.selector : void 0);
         }
       };
     })(hlf.hoverIntent, hlf.hoverIntent.mouse);

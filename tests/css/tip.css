@@ -81,18 +81,3 @@
 .js-tip.js-snap-tip-y-side .js-tip-stem {
   margin-top: -9px;
   border-width: 9px 0; }
-
-.border-test {
-  position: absolute; }
-
-#upper_right {
-  right: 1em;
-  top: 1em; }
-
-#lower_right {
-  right: 1em;
-  bottom: 1em; }
-
-#lower_left {
-  left: 1em;
-  bottom: 1em; }

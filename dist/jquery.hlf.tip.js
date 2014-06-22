@@ -34,6 +34,7 @@ Written with jQuery 1.7.2
       }),
       defaults: (function(pre) {
         return {
+          $triggerContext: null,
           ms: {
             duration: {
               "in": 200,
@@ -127,6 +128,7 @@ Written with jQuery 1.7.2
       }
 
       Tip.prototype.init = function() {
+        var shouldDelegate;
         this._setTip = (function(_this) {
           return function($tip) {
             return _this.$tip = _this.$el = $tip;
@@ -141,16 +143,22 @@ Written with jQuery 1.7.2
         this._$currentTrigger = null;
         this._render();
         this._bind();
-        return this.$triggers.each((function(_this) {
+        shouldDelegate = this.$triggerContext != null;
+        this.$triggers.each((function(_this) {
           return function(i, el) {
             var $trigger;
             $trigger = $(el);
             $trigger.addClass(_this.classNames.trigger);
             _this._saveTriggerContent($trigger);
-            _this._bindTrigger($trigger);
-            return _this._updateDirectionByTrigger($trigger);
+            _this._updateDirectionByTrigger($trigger);
+            if (shouldDelegate === false) {
+              return _this._bindTrigger($trigger);
+            }
           };
         })(this));
+        if (shouldDelegate) {
+          return this._bindTrigger();
+        }
       };
 
       Tip.prototype._defaultHtml = function() {
@@ -173,17 +181,30 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype._bindTrigger = function($trigger) {
-        var onMouseMove;
-        $trigger.on(this.evt('truemouseenter'), (function(_this) {
+        var $bindTarget, onMouseMove, selector;
+        $bindTarget = $trigger;
+        if (($bindTarget == null) && this.$triggerContext) {
+          $bindTarget = this.$triggerContext;
+          selector = "." + this.classNames.trigger;
+        } else {
+          return false;
+        }
+        if (selector == null) {
+          selector = null;
+        }
+        $bindTarget.on([this.evt('truemouseenter'), this.evt('truemouseleave')].join(' '), selector, {
+          selector: selector
+        }, (function(_this) {
           return function(event) {
             _this.debugLog(event.type);
-            return _this._onTriggerMouseMove(event);
-          };
-        })(this));
-        $trigger.on(this.evt('truemouseleave'), (function(_this) {
-          return function(event) {
-            _this.debugLog(event.type);
-            return _this.sleepByTrigger($trigger);
+            switch (event.type) {
+              case 'truemouseenter':
+                return _this._onTriggerMouseMove(event);
+              case 'truemouseleave':
+                return _this.sleepByTrigger($(event.target));
+              default:
+                return _this.debugLog('unknown event type', event.type);
+            }
           };
         })(this));
         if (this.doFollow === true) {
@@ -198,7 +219,7 @@ Written with jQuery 1.7.2
           } else {
             onMouseMove = _.throttle(this._onTriggerMouseMove, 16);
           }
-          return $trigger.on('mousemove', onMouseMove);
+          return $bindTarget.on('mousemove', selector, onMouseMove);
         }
       };
 
@@ -235,8 +256,6 @@ Written with jQuery 1.7.2
           html = this._defaultHtml();
         }
         $tip = $(html).addClass(this.classNames.follow);
-        this._setTip($tip);
-        this.$tip.prependTo(this.$context);
         transitionStyle = [];
         if (this.shouldAnimate.resize) {
           duration = this.ms.duration.resize / 1000.0 + 's';
@@ -247,7 +266,9 @@ Written with jQuery 1.7.2
           transitionStyle.push("width " + duration + " " + easing, "height " + duration + " " + easing);
         }
         transitionStyle = transitionStyle.join(',');
-        return this.selectByClass('content').css('transition', transitionStyle);
+        this.selectByClass('content').css('transition', transitionStyle);
+        this._setTip($tip);
+        return this.$tip.prependTo(this.$context);
       };
 
       Tip.prototype._inflateByTrigger = function($trigger) {
@@ -589,8 +610,22 @@ Written with jQuery 1.7.2
       };
 
       SnapTip.prototype._bindTrigger = function($trigger) {
-        SnapTip.__super__._bindTrigger.call(this, $trigger);
-        return $trigger.on(this.evt('truemouseleave'), (function(_this) {
+        var $bindTarget, didBind, selector;
+        didBind = SnapTip.__super__._bindTrigger.call(this, $trigger);
+        if (didBind === false) {
+          return false;
+        }
+        $bindTarget = $trigger;
+        if (($bindTarget == null) && this.$triggerContext) {
+          $bindTarget = this.$triggerContext;
+          selector = "." + this.classNames.trigger;
+        }
+        if (selector == null) {
+          selector = null;
+        }
+        return $bindTarget.on(this.evt('truemouseleave'), selector, {
+          selector: selector
+        }, (function(_this) {
           return function(event) {
             return _this._offsetStart = null;
           };

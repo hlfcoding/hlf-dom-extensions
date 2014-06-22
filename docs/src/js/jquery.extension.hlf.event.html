@@ -109,14 +109,18 @@ binding over binding to <code>mouseover</code>, <code>mousemove</code>, and <cod
 not using <code>mouseenter</code>, since its detection mechanism conflicts with hover
 intent's.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">$.event.special.truemouseenter =</span>
       <span class="nv">setup: </span><span class="nf">(data, namespaces) -&gt;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">on</span>   <span class="p">{</span> <span class="nv">mouseover: </span><span class="nx">check</span><span class="p">,</span> <span class="nv">mousemove: </span><span class="nx">trackMouse</span> <span class="p">}</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">on</span>  <span class="p">{</span> <span class="nv">mouseover: </span><span class="nx">check</span><span class="p">,</span> <span class="nv">mousemove: </span><span class="nx">trackMouse</span> <span class="p">},</span>
+          <span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">selector</span>
       <span class="nv">teardown: </span><span class="nf">(data, namespaces) -&gt;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">off</span>  <span class="p">{</span> <span class="nv">mouseover: </span><span class="nx">check</span><span class="p">,</span> <span class="nv">mousemove: </span><span class="nx">trackMouse</span> <span class="p">}</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">off</span> <span class="p">{</span> <span class="nv">mouseover: </span><span class="nx">check</span><span class="p">,</span> <span class="nv">mousemove: </span><span class="nx">trackMouse</span> <span class="p">},</span>
+          <span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">selector</span>
 
     <span class="nv">$.event.special.truemouseleave =</span>
       <span class="nv">setup: </span><span class="nf">(data, namespaces) -&gt;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">on</span>   <span class="p">{</span> <span class="nv">mouseleave: </span><span class="nx">check</span> <span class="p">}</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">on</span>  <span class="p">{</span> <span class="nv">mouseleave: </span><span class="nx">check</span> <span class="p">},</span>
+          <span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">selector</span>
       <span class="nv">teardown: </span><span class="nf">(data, namespaces) -&gt;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">off</span>  <span class="p">{</span> <span class="nv">mouseleave: </span><span class="nx">check</span> <span class="p">}</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">off</span> <span class="p">{</span> <span class="nv">mouseleave: </span><span class="nx">check</span> <span class="p">},</span>
+          <span class="nx">data</span><span class="o">?</span><span class="p">.</span><span class="nx">selector</span>
 
 <span class="p">)</span></div></div></div></div></body></html>
