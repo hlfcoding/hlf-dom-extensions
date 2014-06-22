@@ -4,8 +4,3 @@
   @include tip-skin(#666, #fff);
   @include tip-layout;
 }
-
-.border-test { position: absolute; }
-#upper_right { right: 1em; top: 1em; }
-#lower_right { right: 1em; bottom: 1em; }
-#lower_left { left: 1em; bottom: 1em; }

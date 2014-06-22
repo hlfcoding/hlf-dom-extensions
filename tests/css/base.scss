@@ -1,58 +1,138 @@
 $line-color: #ccc;
-$radius: 10px;
-
-%container-skin {
-  background-color: #fff;
+$fill-color: #fff;
+$radius-size: 10px;
+$text-size: 14px;
+$line-size: 20px;
+%panel-skin {
+  background-color: $fill-color;
   border: 1px solid $line-color;
 }
 
 body {
   background-color: #eaeae6;
-  padding: 1em;
   font: {
     family: Helvetica, sans-serif;
-    size: 14px;
+    size: $text-size;
   }
+  padding: $text-size;
 }
 h1 {
-  font-size: 1.5em;
+  font-size: 1.5 * $text-size;
   letter-spacing: -1px;
 }
 p {
-  padding: 1em 0;
+  padding: $text-size 0;
 }
+
 #main {
-  padding: 2em 0;
+  padding: (2 * $text-size) 0;
 }
-.box {
-  @extend %container-skin;
-  width: 600px;
-  padding: 1em;
-  margin: 1em 0;
-  border-radius: $radius;
-}
-.menu {
-  width: 300px;
-  margin: 1em 0;
-  li {
-    a {
-      @extend %container-skin;
-      display: block;
-      padding: 1em;
-      border-bottom-width: 0;
-    }
-    &:first-child a {
-      border-top: {
-        left-radius: $radius;
-        right-radius: $radius;
-      }
-    }
-    &:last-child a {
-      border-bottom: {
-        width: 1px;
-        left-radius: $radius;
-        right-radius: $radius;
-      }
+
+section.visual-test {
+  header {
+    font-weight: bold;
+    &::after {
+      content: ':';
     }
   }
+}
+
+.box {
+  @extend %panel-skin;
+  border-radius: $radius-size;
+  margin: $text-size 0;
+  padding: $text-size;
+}
+
+.list-item {
+  @extend %panel-skin;
+  border-bottom-width: 0;
+  box-sizing: border-box;
+  display: block;
+  padding: $text-size;
+}
+.list-item-first {
+  border-top: {
+    left-radius: $radius-size;
+    right-radius: $radius-size;
+  }
+}
+.list-item-last {
+  border-bottom: {
+    left-radius: $radius-size;
+    right-radius: $radius-size;
+    width: 1px;
+  }
+}
+.list {
+  margin: $text-size 0;
+  .item {
+    width: 300px;
+    @extend .list-item;
+  }
+  > a, li.no-a {
+    @extend .item;
+    &:first-child { @extend .list-item-first; }
+    &:last-child { @extend .list-item-last; }
+  }
+  li:not(.no-a) {
+    > a { @extend .item; }
+    &:first-child > a { @extend .list-item-first; }
+    &:last-child > a { @extend .list-item-last; }
+  }
+}
+
+.bar-item {
+  @extend %panel-skin;
+  border-right-width: 0;
+  box-sizing: border-box;
+  display: block;
+  float: left;
+  padding: $text-size;
+}
+.bar-item-first {
+  border: {
+    top-left-radius: $radius-size;
+    bottom-left-radius: $radius-size;
+  }
+}
+.bar-item-last {
+  border: {
+    top-right-radius: $radius-size;
+    bottom-right-radius: $radius-size;
+    width: 1px;
+  }
+}
+.bar {
+  margin: $text-size 0;
+  .item {
+    $height: 60px;
+    @extend .bar-item;
+    height: $height;
+    line-height: $height - 2 * $text-size;
+  }
+  > a, li.no-a {
+    @extend .item;
+    &:first-child { @extend .bar-item-first; }
+    &:last-child { @extend .bar-item-last; }
+  }
+  li:not(.no-a) {
+    > a { @extend .item; }
+    &:first-child > a { @extend .bar-item-first; }
+    &:last-child > a { @extend .bar-item-last; }
+  }
+}
+
+.edge {
+  position: absolute;
+  &.top { top: $text-size; }
+  &.right { right: $text-size; }
+  &.bottom { bottom: $text-size; }
+  &.left { left: $text-size; }
+}
+.edge-call {
+  &:not(body) {
+    position: relative;
+  }
+  > .visual-test-fragment { @extend .edge; }
 }
