@@ -12,8 +12,15 @@ require [
   shouldRunVisualTests = $('#qunit').length is 0
 
   if shouldRunVisualTests then $ ->
-    $('.default-call [title]').tip()
-    $('.list-call [title]').snapTip { snap: { toYAxis: true } }
-    $('.box-call [title]').snapTip { snap: { toXAxis: true } }
+    do ($el = $ '.default-call') ->
+      $el.find('[title]').tip { $triggerContext: $el }
+    do ($el = $ '.list-call') ->
+      $el.find('[title]').snapTip 
+        $triggerContext: $el 
+        snap: { toYAxis: true }
+    do ($el = $ '.box-call') ->
+      $el.find('[title]').snapTip 
+        $triggerContext: $el 
+        snap: { toXAxis: true }
     $('.border-test[title]').snapTip()
 

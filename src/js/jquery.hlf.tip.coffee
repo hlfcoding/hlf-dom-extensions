@@ -52,6 +52,10 @@ Written with jQuery 1.7.2
     # -----------
     # Note the plugin instance gets extended with the options.
     defaults: do (pre = 'js-tip-') ->
+      # - `$triggerContext` can be provided to avoid directly binding event
+      #   listeners to triggers, which can improve performance and allow dynamic
+      #   binding.
+      $triggerContext: null
       # - `ms.duration` are the durations of sleep and wake animations.
       # - `ms.delay` are the delays before sleeping and waking.
       ms:
@@ -169,12 +173,14 @@ Written with jQuery 1.7.2
       @_render()
       @_bind()
       # Process `$triggers` and setup content, event, and positioning aspects.
+      shouldDelegate = @$triggerContext?
       @$triggers.each (i, el) =>
         $trigger = $ el
         $trigger.addClass @classNames.trigger
         @_saveTriggerContent $trigger
-        @_bindTrigger $trigger
         @_updateDirectionByTrigger $trigger
+        if shouldDelegate is no then @_bindTrigger $trigger
+      if shouldDelegate then @_bindTrigger()
 
     # `_defaultHtml` provides a basic html structure for tip content. It can be
     # customized via the `tipTemplate` external option, or by subclasses using
@@ -198,18 +204,34 @@ Written with jQuery 1.7.2
           .data @attr('content'), title
           .removeAttr 'title'
 
-    # `_bindTrigger` links the trigger to the tip for: 1) possible appearance
+    # `_bindTrigger` links each trigger to the tip for: 1) possible appearance
     # changes during mouseenter, mouseleave (uses special events) and 2)
     # following on mousemove only if `doFollow` is on. Also note for our
     # `onMouseMove` handler, it's throttled by `requestAnimationFrame` when
-    # available, otherwise manually at hopefully 60fps.
+    # available, otherwise manually at hopefully 60fps. It does direct binding
+    # by default, can also do delegation (preferred) if `$trigger` isn't given
+    # but `$triggerContext` is.
     _bindTrigger: ($trigger) ->
-      $trigger.on @evt('truemouseenter'), (event) =>
-        @debugLog event.type
-        @_onTriggerMouseMove event
-      $trigger.on @evt('truemouseleave'), (event) =>
-        @debugLog event.type
-        @sleepByTrigger $trigger
+      $bindTarget = $trigger
+      if not $bindTarget? and @$triggerContext
+        $bindTarget = @$triggerContext
+        selector = ".#{@classNames.trigger}"
+      else return no
+      selector ?= null
+      # Base bindings.
+      $bindTarget.on [
+          @evt('truemouseenter')
+          @evt('truemouseleave')
+        ].join(' '),
+        selector,
+        { selector },
+        (event) =>
+          @debugLog event.type
+          switch event.type
+            when 'truemouseenter' then @_onTriggerMouseMove event
+            when 'truemouseleave' then @sleepByTrigger $(event.target)
+            else @debugLog 'unknown event type', event.type
+      # Follow binding.
       if @doFollow is on
         if window.requestAnimationFrame?
           onMouseMove = (event) =>
@@ -217,7 +239,7 @@ Written with jQuery 1.7.2
               @_onTriggerMouseMove event
         else 
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
-        $trigger.on 'mousemove', onMouseMove
+        $bindTarget.on 'mousemove', selector, onMouseMove
 
     # `_bind` adds event handlers to `$tip`, mostly so state can be updated such
     # that the handlers on `_$currentTrigger` make an exception. The desired
@@ -249,8 +271,7 @@ Written with jQuery 1.7.2
       html = @htmlOnRender()
       if not (html? and html.length) then html = @_defaultHtml()
       $tip = $(html).addClass @classNames.follow
-      @_setTip $tip
-      @$tip.prependTo @$context
+      # Animation setup.
       transitionStyle = []
       if @shouldAnimate.resize
         duration = @ms.duration.resize / 1000.0 + 's'
@@ -259,6 +280,9 @@ Written with jQuery 1.7.2
         transitionStyle.push "width #{duration} #{easing}", "height #{duration} #{easing}"
       transitionStyle = transitionStyle.join(',')
       @selectByClass('content').css 'transition', transitionStyle
+      # /Animation setup.
+      @_setTip $tip
+      @$tip.prependTo @$context
 
     # `_inflateByTrigger` will reset and update `$tip` for the given trigger, so
     # that it is ready to present, i.e. it is 'inflated'. Mostly it's just the
@@ -528,8 +552,16 @@ Written with jQuery 1.7.2
     # for snapping without snapping to the trigger, which is only what's
     # currently supported. See `afterShow` hook.
     _bindTrigger: ($trigger) ->
-      super $trigger
-      $trigger.on @evt('truemouseleave'), (event) => @_offsetStart = null
+      didBind = super $trigger
+      return no if didBind is no
+      $bindTarget = $trigger
+      if not $bindTarget? and @$triggerContext
+        $bindTarget = @$triggerContext
+        selector = ".#{@classNames.trigger}"
+      selector ?= null
+      # Modify base binding.
+      $bindTarget.on @evt('truemouseleave'), selector, { selector }, 
+        (event) => @_offsetStart = null
 
     # `onShow` and `afterShow` are implemented such that they make the tip
     # invisible while it's being positioned and then reveal it.

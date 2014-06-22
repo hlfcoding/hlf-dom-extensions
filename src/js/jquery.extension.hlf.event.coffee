@@ -173,15 +173,19 @@ Written with jQuery 1.7.2
 
     $.event.special.truemouseenter =
       setup: (data, namespaces) ->
-        $(@).on   { mouseover: check, mousemove: trackMouse }
+        $(@).on  { mouseover: check, mousemove: trackMouse },
+          data?.selector
       teardown: (data, namespaces) ->
-        $(@).off  { mouseover: check, mousemove: trackMouse }
+        $(@).off { mouseover: check, mousemove: trackMouse },
+          data?.selector
 
     $.event.special.truemouseleave =
       setup: (data, namespaces) ->
-        $(@).on   { mouseleave: check }
+        $(@).on  { mouseleave: check },
+          data?.selector
       teardown: (data, namespaces) ->
-        $(@).off  { mouseleave: check }
+        $(@).off { mouseleave: check },
+          data?.selector
 
 )
 
