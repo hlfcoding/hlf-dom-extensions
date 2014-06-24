@@ -75,7 +75,9 @@ Written with jQuery 1.7.2
       #   animation is like `$.fn.show` but with CSS transitions.
       shouldAnimate:
         resize: on
-      cursorHeight: 6
+      # - `cursorHeight` is the browser's cursor height. We need to know this to
+      #   properly offset the tip to avoid cases of cursor-tip-stem overlap.
+      cursorHeight: 12
       # - Note that the direction data structure must be an array of
       #   `components`, and conventionally with top/bottom first.
       defaultDirection: ['bottom', 'right']
@@ -292,7 +294,7 @@ Written with jQuery 1.7.2
     _inflateByTrigger: ($trigger) ->
       compoundDirection = if $trigger.data(@attr('direction')) then $trigger.data(@attr('direction')).split(' ') else @defaultDirection
       @debugLog 'update direction class', compoundDirection
-      $content = @selectByClass('content')
+      $content = @selectByClass 'content'
       $content.text $trigger.data @attr('content')
       if @shouldAnimate.resize
         contentSize = @sizeForTrigger $trigger, (contentOnly = yes)
@@ -326,15 +328,18 @@ Written with jQuery 1.7.2
       @wakeByTrigger $trigger, event
 
     # `_positionToTrigger` will properly update the tip offset per
-    # `offsetOnTriggerMouseMove` and `isDirection`. Also note that `cursorHeight`
+    # `offsetOnTriggerMouseMove` and `isDirection`. Also note that `stemSize`
     # gets factored in.
-    _positionToTrigger: ($trigger, mouseEvent) ->
+    _positionToTrigger: ($trigger, mouseEvent, cursorHeight=@cursorHeight) ->
       return no if not mouseEvent?
       offset =
         top: mouseEvent.pageY
         left: mouseEvent.pageX
       offset = @offsetOnTriggerMouseMove(mouseEvent, offset, $trigger) or offset
-      if @isDirection('top', $trigger) then offset.top -= @$tip.outerHeight() + @cursorHeight
+      if @isDirection('top', $trigger)
+        offset.top -= @$tip.outerHeight() + @stemSize()
+      else if @isDirection('bottom', $trigger)
+        offset.top += @stemSize() + cursorHeight
       if @isDirection('left',  $trigger)
         tipWidth = @$tip.outerWidth()
         triggerWidth = $trigger.outerWidth()
@@ -342,10 +347,24 @@ Written with jQuery 1.7.2
         # If direction changed due to tip being wider than trigger.
         if tipWidth > triggerWidth
           offset.left += triggerWidth
-      if @isDirection('bottom', $trigger) then offset.top += @cursorHeight
-      offset.top += @cursorHeight
       @$tip.css offset
 
+    # `stemSize` does a stealth render via `_wrapStealthRender` to find stem
+    # `size. The stem layout styles will add offset to the tip content based on
+    # `the tip direction. Knowing the size helps operations like overall tip
+    # positioning.
+    stemSize: ->
+      key = @attr 'stem-size'
+      size = @$tip.data key
+      return size if size?
+      $content = @selectByClass 'content'
+      wrapped = @_wrapStealthRender =>
+        for direction, offset in $content.position()
+          if offset > 0
+            size = Math.abs offset
+            @$tip.data key, size
+        0
+      return wrapped()
 
     # `_updateDirectionByTrigger` is the main provider of auto-direction
     # support. Given the `$context`'s `_bounds`, it changes to the best
@@ -391,12 +410,12 @@ Written with jQuery 1.7.2
       @_state = state
       @debugLog @_state
 
-    # `sizeForTrigger` does a stealth render to find tip size by temporarily un-
-    # hiding and making invisible. It will return saved data if possible before
-    # doing a measure. The measures, used by `_updateDirectionByTrigger`, are
-    # stored on the trigger as namespaced, `width` and `height` jQuery data
-    # values. If on, `contentOnly` will factor in content padding into the size
-    # value for the current size.
+    # `sizeForTrigger` does a stealth render via `_wrapStealthRender` to find tip
+    # size. It will return saved data if possible before doing a measure. The
+    # measures, used by `_updateDirectionByTrigger`, are stored on the trigger
+    # as namespaced, `width` and `height` jQuery data values. If on,
+    # `contentOnly` will factor in content padding into the size value for the
+    # current size.
     sizeForTrigger: ($trigger, contentOnly=no) ->
       # Short on existing data.
       size =
@@ -421,8 +440,8 @@ Written with jQuery 1.7.2
       size
 
     # `_wrapStealthRender` is a helper mostly for size detection on tips and
-    # triggers. Without rendering the elements, we can't do `getComputedStyle`
-    # on them.
+    # triggers. Without stealth rendering the elements by temporarily un-hiding
+    # and making invisible, we can't do `getComputedStyle` on them.
     _wrapStealthRender: (func) ->
       =>
         return func.apply @, arguments if not @$tip.is(':hidden')
@@ -535,9 +554,6 @@ Written with jQuery 1.7.2
       # Infer `snap.toTrigger`.
       if @snap.toTrigger is off
         @snap.toTrigger = @snap.toXAxis is on or @snap.toYAxis is on
-      # Tweak `cursorHeight`.
-      if @snap.toXAxis is on then @cursorHeight = 0
-      if @snap.toYAxis is on then @cursorHeight = 2
       # `_offsetStart` stores the original offset, which is used for snapping.
       @_offsetStart = null
       # Add snapping config as classes.
@@ -573,6 +589,11 @@ Written with jQuery 1.7.2
       # Modify base binding.
       $bindTarget.on @evt('truemouseleave'), selector, { selector }, 
         (event) => @_offsetStart = null
+
+    # Extend `_positionToTrigger` to set `cursorHeight` to 0, since it won't
+    # need to be factored in if we're snapping.
+    _positionToTrigger: ($trigger, mouseEvent, cursorHeight=@cursorHeight) ->
+      super $trigger, mouseEvent, 0
 
     # `onShow` and `afterShow` are implemented such that they make the tip
     # invisible while it's being positioned and then reveal it.
