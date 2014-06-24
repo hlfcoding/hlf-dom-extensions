@@ -281,9 +281,9 @@ Written with jQuery 1.7.2
         easing ?= @easing.base
         transitionStyle.push "width #{duration} #{easing}", "height #{duration} #{easing}"
       transitionStyle = transitionStyle.join(',')
-      @selectByClass('content').css 'transition', transitionStyle
       # /Animation setup.
       @_setTip $tip
+      @selectByClass('content').css 'transition', transitionStyle
       @$tip.prependTo @$context
 
     # `_inflateByTrigger` will reset and update `$tip` for the given trigger, so
