@@ -77,8 +77,8 @@ Written with jQuery 1.7.2
         resize: on
       cursorHeight: 6
       # - Note that the direction data structure must be an array of
-      #   `components`, and conventionally with north/south first.
-      defaultDirection: ['south', 'east']
+      #   `components`, and conventionally with top/bottom first.
+      defaultDirection: ['bottom', 'right']
       # - `safeToggle` prevents orphan tips, since timers are sometimes unreliable.
       safeToggle: on
       # - `autoDirection` automatically changes the direction so the tip can
@@ -100,7 +100,7 @@ Written with jQuery 1.7.2
       # - `classNames.follow` - Empty string to disable cursor following.
       classNames: do ->
         classNames = {}
-        keys = ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger']
+        keys = ['inner', 'content', 'stem', 'top', 'right', 'bottom', 'left', 'follow', 'trigger']
         (classNames[key] = "#{pre}#{key}") for key in keys
         classNames.tip = 'js-tip'
         classNames
@@ -301,10 +301,10 @@ Written with jQuery 1.7.2
           .height contentSize.height
       @$tip
         .removeClass [
-          @classNames.north
-          @classNames.south 
-          @classNames.east
-          @classNames.west
+          @classNames.top
+          @classNames.bottom
+          @classNames.right
+          @classNames.left
         ].join ' '
         .addClass $.trim(
           _.reduce compoundDirection, (classListMemo, directionComponent) =>
@@ -334,15 +334,15 @@ Written with jQuery 1.7.2
         top: mouseEvent.pageY
         left: mouseEvent.pageX
       offset = @offsetOnTriggerMouseMove(mouseEvent, offset, $trigger) or offset
-      if @isDirection('north', $trigger) then offset.top -= @$tip.outerHeight() + @cursorHeight
-      if @isDirection('west',  $trigger)
+      if @isDirection('top', $trigger) then offset.top -= @$tip.outerHeight() + @cursorHeight
+      if @isDirection('left',  $trigger)
         tipWidth = @$tip.outerWidth()
         triggerWidth = $trigger.outerWidth()
         offset.left -= tipWidth
         # If direction changed due to tip being wider than trigger.
         if tipWidth > triggerWidth
           offset.left += triggerWidth
-      if @isDirection('south', $trigger) then offset.top += @cursorHeight
+      if @isDirection('bottom', $trigger) then offset.top += @cursorHeight
       offset.top += @cursorHeight
       @$tip.css offset
 
@@ -363,17 +363,17 @@ Written with jQuery 1.7.2
         if not @_bounds? then @_setBounds()
         ok = yes
         switch component
-          when 'south' then ok = (edge = triggerPosition.top + triggerHeight + tipSize.height) and @_bounds.bottom > edge
-          when 'east'  then ok = (edge = triggerPosition.left + tipSize.width) and @_bounds.right > edge
-          when 'north' then ok = (edge = triggerPosition.top - tipSize.height) and @_bounds.top < edge
-          when 'west'  then ok = (edge = triggerPosition.left - tipSize.width) and @_bounds.left < edge
+          when 'bottom' then ok = (edge = triggerPosition.top + triggerHeight + tipSize.height) and @_bounds.bottom > edge
+          when 'right'  then ok = (edge = triggerPosition.left + tipSize.width) and @_bounds.right > edge
+          when 'top'    then ok = (edge = triggerPosition.top - tipSize.height) and @_bounds.top < edge
+          when 'left'   then ok = (edge = triggerPosition.left - tipSize.width) and @_bounds.left < edge
         @debugLog 'checkDirectionComponent', { component, edge }
         if not ok
           switch component
-            when 'south' then newDirection[0] = 'north'
-            when 'east'  then newDirection[1] = 'west'
-            when 'north' then newDirection[0] = 'south'
-            when 'west'  then newDirection[1] = 'east'
+            when 'bottom' then newDirection[0] = 'top'
+            when 'right'  then newDirection[1] = 'left'
+            when 'top'    then newDirection[0] = 'bottom'
+            when 'left'   then newDirection[1] = 'right'
           $trigger.data @attr('direction'), newDirection.join ' '
 
     # `_setBounds` updates `_bounds` per `$context`'s inner bounds, and those
@@ -538,12 +538,12 @@ Written with jQuery 1.7.2
       #@debugLog baseOffset
       offset = $trigger.offset()
       if @snap.toXAxis is on
-        if @isDirection 'south' then offset.top += $trigger.outerHeight()
+        if @isDirection 'bottom' then offset.top += $trigger.outerHeight()
         if @snap.toYAxis is off
           # Note arbitrary buffer offset.
           offset.left = baseOffset.left - (@$tip.outerWidth() - 12)/ 2
       if @snap.toYAxis is on
-        if @isDirection 'east' then offset.left += $trigger.outerWidth()
+        if @isDirection 'right' then offset.left += $trigger.outerWidth()
         if @snap.toXAxis is off
           offset.top = baseOffset.top - @$tip.outerHeight() / 2
       offset

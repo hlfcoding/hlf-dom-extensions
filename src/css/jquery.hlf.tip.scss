@@ -6,10 +6,10 @@
     color: $text-color;
   }
   // Declaration structure from base styles.
-  &.js-tip-east.js-snap-tip-y-side .js-tip-stem, &.js-tip-east .js-tip-stem { @include _stem-skin(right, $stem-color); }
-  &.js-tip-west.js-snap-tip-y-side .js-tip-stem, &.js-tip-west .js-tip-stem { @include _stem-skin(left, $stem-color); }
-  &.js-tip-south.js-snap-tip-x-side .js-tip-stem, &.js-tip-south .js-tip-stem { @include _stem-skin(bottom, $stem-color); }
-  &.js-tip-north.js-snap-tip-x-side .js-tip-stem, &.js-tip-north .js-tip-stem { @include _stem-skin(top, $stem-color); }
+  &.js-tip-right.js-snap-tip-y-side .js-tip-stem, &.js-tip-right .js-tip-stem { @include _stem-skin(right, $stem-color); }
+  &.js-tip-left.js-snap-tip-y-side .js-tip-stem, &.js-tip-left .js-tip-stem { @include _stem-skin(left, $stem-color); }
+  &.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, &.js-tip-bottom .js-tip-stem { @include _stem-skin(bottom, $stem-color); }
+  &.js-tip-top.js-snap-tip-x-side .js-tip-stem, &.js-tip-top .js-tip-stem { @include _stem-skin(top, $stem-color); }
 }
 
 @mixin _stem-skin ($side, $stem-color) {
@@ -44,10 +44,10 @@
     padding: #{$content-padding};
   }
   // Declaration structure from base styles.
-  &.js-tip-east.js-snap-tip-y-side .js-tip-stem, &.js-tip-east .js-tip-stem { @include _stem-layout(right, $stem-size); }
-  &.js-tip-west.js-snap-tip-y-side .js-tip-stem, &.js-tip-west .js-tip-stem { @include _stem-layout(left, $stem-size); }
-  &.js-tip-south.js-snap-tip-x-side .js-tip-stem, &.js-tip-south .js-tip-stem { @include _stem-layout(bottom, $stem-size); }
-  &.js-tip-north.js-snap-tip-x-side .js-tip-stem, &.js-tip-north .js-tip-stem { @include _stem-layout(top, $stem-size); }
+  &.js-tip-right.js-snap-tip-y-side .js-tip-stem, &.js-tip-right .js-tip-stem { @include _stem-layout(right, $stem-size); }
+  &.js-tip-left.js-snap-tip-y-side .js-tip-stem, &.js-tip-left .js-tip-stem { @include _stem-layout(left, $stem-size); }
+  &.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, &.js-tip-bottom .js-tip-stem { @include _stem-layout(bottom, $stem-size); }
+  &.js-tip-top.js-snap-tip-x-side .js-tip-stem, &.js-tip-top .js-tip-stem { @include _stem-layout(top, $stem-size); }
   &.js-snap-tip-x-side .js-tip-stem {
     margin-left: -$stem-wide-base/2; // Center.
     border-width: 0 ($stem-wide-base/2);
@@ -105,22 +105,22 @@
   }  
 }
 .js-tip-stem {
-  .js-tip-east.js-snap-tip-y-side &, // Reapply.
-  .js-tip-east & {
+  .js-tip-right.js-snap-tip-y-side &, // Reapply.
+  .js-tip-right & {
     left: 0;
   }
-  .js-tip-west.js-snap-tip-y-side &, // Reapply.
-  .js-tip-west & {
+  .js-tip-left.js-snap-tip-y-side &, // Reapply.
+  .js-tip-left & {
     right: 0;
   }
-  // By default north and south have precedence in growing the stem, so they
+  // By default top and bottom have precedence in growing the stem, so they
   // come last.
-  .js-tip-south.js-snap-tip-x-side &, // Reapply.
-  .js-tip-south & {
+  .js-tip-bottom.js-snap-tip-x-side &, // Reapply.
+  .js-tip-bottom & {
     top: 0;
   }
-  .js-tip-north.js-snap-tip-x-side &, // Reapply.
-  .js-tip-north & {
+  .js-tip-top.js-snap-tip-x-side &, // Reapply.
+  .js-tip-top & {
     bottom: 0;
   }
   .js-snap-tip-x-side & {
