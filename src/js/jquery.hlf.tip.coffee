@@ -406,14 +406,10 @@ Written with jQuery 1.7.2
       $content = @selectByClass('content')
       if not (size.width? and size.height?)
         $content.text $trigger.data @attr('content')
-        @$tip.css
-          display: 'block'
-          visibility: 'hidden'
-        $trigger.data 'width',  (size.width = @$tip.outerWidth())
-        $trigger.data 'height', (size.height = @$tip.outerHeight())
-        @$tip.css
-          display: 'none',
-          visibility: 'visible'
+        wrapped = @_wrapStealthRender ->
+          $trigger.data 'width',  (size.width = @$tip.outerWidth())
+          $trigger.data 'height', (size.height = @$tip.outerHeight())
+        wrapped()
       # Get content size.
       if contentOnly is yes
         padding = $content.css('padding').split(' ')
@@ -423,6 +419,21 @@ Written with jQuery 1.7.2
         size.width -= left + right
         size.height -= top + bottom + @selectByClass('stem').height() # TODO: This isn't always true.
       size
+
+    # `_wrapStealthRender` is a helper mostly for size detection on tips and
+    # triggers. Without rendering the elements, we can't do `getComputedStyle`
+    # on them.
+    _wrapStealthRender: (func) ->
+      =>
+        return func.apply @, arguments if not @$tip.is(':hidden')
+        @$tip.css
+          display: 'block'
+          visibility: 'hidden'
+        result = func.apply @, arguments
+        @$tip.css
+          display: 'none',
+          visibility: 'visible'
+        return result
 
     # `isDirection` is a helper to deduce if `$tip` currently has the given
     # `directionComponent`. The tip is considered to have the same direction as
