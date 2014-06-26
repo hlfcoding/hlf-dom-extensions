@@ -197,7 +197,7 @@ Written with jQuery 1.7.2
             userInfo: arguments[1]
         else
           options = arguments[0]
-          $context = arguments[1] if arguments.length > 1
+          $context = arguments[1] if arguments[1]?
         # The element's `$context` will default to document body.
         $context ?= $ 'body'
         # With the command route, if there is a plugin instance and it can

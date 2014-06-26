@@ -562,18 +562,20 @@ Written with jQuery 1.7.2
       # Add snapping config as classes.
       @$tip.addClass(@classNames.snap[key]) for own key, active of @snap when active
 
-    # `_moveToTrigger` is the main positioner. The `baseOffset` given is
-    # expected to be the trigger offset.  
+    # `_moveToTrigger` is the main positioner. The `baseOffset` given is expected
+    # to be the trigger offset.
     _moveToTrigger: ($trigger, baseOffset) -> # TODO: Still needs to support all the directions.
       #@debugLog baseOffset
       offset = $trigger.offset()
       if @snap.toXAxis is on
-        if @isDirection 'bottom' then offset.top += $trigger.outerHeight()
+        if @isDirection 'bottom', $trigger
+          offset.top += $trigger.outerHeight()
         if @snap.toYAxis is off
           # Note arbitrary buffer offset.
-          offset.left = baseOffset.left - (@$tip.outerWidth() - 12)/ 2
+          offset.left = baseOffset.left - (@$tip.outerWidth() - 12) / 2
       if @snap.toYAxis is on
-        if @isDirection 'right' then offset.left += $trigger.outerWidth()
+        if @isDirection 'right', $trigger
+          offset.left += $trigger.outerWidth()
         if @snap.toXAxis is off
           offset.top = baseOffset.top - @$tip.outerHeight() / 2
       offset
