@@ -12,26 +12,22 @@
     shouldRunVisualTests = $('#qunit').length === 0;
     if (shouldRunVisualTests) {
       return $(function() {
-        (function($el) {
-          return $el.find('[title]').tip({
-            $triggerContext: $el
-          });
+        (function($context) {
+          return $context.find('[title]').tip(null, $context);
         })($('.default-call'));
-        (function($el) {
-          return $el.find('[title]').snapTip({
-            $triggerContext: $el,
+        (function($context) {
+          return $context.find('[title]').snapTip({
             snap: {
               toYAxis: true
             }
-          });
+          }, $context);
         })($('.list-call'));
-        (function($el) {
-          return $el.find('[title]').snapTip({
-            $triggerContext: $el,
+        (function($context) {
+          return $context.find('[title]').snapTip({
             snap: {
               toXAxis: true
             }
-          });
+          }, $context);
         })($('.bar-call'));
         return $('.edge-call > .visual-test-fragment[title]').snapTip();
       });

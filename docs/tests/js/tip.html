@@ -12,14 +12,10 @@
   <span class="nv">shouldRunVisualTests = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#qunit&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
 
   <span class="k">if</span> <span class="nx">shouldRunVisualTests</span> <span class="k">then</span> <span class="nx">$</span> <span class="nf">-&gt;</span>
-    <span class="nx">do</span> <span class="nf">($el = $ &#39;.default-call&#39;) -&gt;</span>
-      <span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">tip</span> <span class="p">{</span> <span class="nv">$triggerContext: </span><span class="nx">$el</span> <span class="p">}</span>
-    <span class="nx">do</span> <span class="nf">($el = $ &#39;.list-call&#39;) -&gt;</span>
-      <span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span> 
-        <span class="nv">$triggerContext: </span><span class="nx">$el</span> 
-        <span class="nv">snap: </span><span class="p">{</span> <span class="nv">toYAxis: </span><span class="kc">true</span> <span class="p">}</span>
-    <span class="nx">do</span> <span class="nf">($el = $ &#39;.bar-call&#39;) -&gt;</span>
-      <span class="nx">$el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span> 
-        <span class="nv">$triggerContext: </span><span class="nx">$el</span> 
-        <span class="nv">snap: </span><span class="p">{</span> <span class="nv">toXAxis: </span><span class="kc">true</span> <span class="p">}</span>
+    <span class="nx">do</span> <span class="nf">($context = $ &#39;.default-call&#39;) -&gt;</span>
+      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">tip</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">$context</span>
+    <span class="nx">do</span> <span class="nf">($context = $ &#39;.list-call&#39;) -&gt;</span>
+      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span> <span class="p">{</span> <span class="nv">snap: </span><span class="p">{</span> <span class="nv">toYAxis: </span><span class="kc">true</span> <span class="p">}</span> <span class="p">},</span> <span class="nx">$context</span>
+    <span class="nx">do</span> <span class="nf">($context = $ &#39;.bar-call&#39;) -&gt;</span>
+      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span> <span class="p">{</span> <span class="nv">snap: </span><span class="p">{</span> <span class="nv">toXAxis: </span><span class="kc">true</span> <span class="p">}</span> <span class="p">},</span> <span class="nx">$context</span>
     <span class="nx">$</span><span class="p">(</span><span class="s">&#39;.edge-call &gt; .visual-test-fragment[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span><span class="p">()</span></div></div></div></div></body></html>

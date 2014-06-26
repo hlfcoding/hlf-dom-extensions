@@ -17,13 +17,13 @@
   overflow: hidden;
   position: relative; }
 
-.js-tip-east.js-snap-tip-y-side .js-tip-stem, .js-tip-east .js-tip-stem {
+.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip-right .js-tip-stem {
   left: 0; }
-.js-tip-west.js-snap-tip-y-side .js-tip-stem, .js-tip-west .js-tip-stem {
+.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip-left .js-tip-stem {
   right: 0; }
-.js-tip-south.js-snap-tip-x-side .js-tip-stem, .js-tip-south .js-tip-stem {
+.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip-bottom .js-tip-stem {
   top: 0; }
-.js-tip-north.js-snap-tip-x-side .js-tip-stem, .js-tip-north .js-tip-stem {
+.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip-top .js-tip-stem {
   bottom: 0; }
 .js-snap-tip-x-side .js-tip-stem {
   left: 50%;

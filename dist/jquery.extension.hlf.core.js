@@ -48,10 +48,10 @@ Written with jQuery 1.7.2
       if ($.isPlainObject(data)) {
         finalOptions = $.extend((deep = true), {}, options, data);
         $root = $el;
-      } else if (!createOptions.asSingleton) {
-        $root = $el;
-      } else {
+      } else if (createOptions.asSharedInstance) {
         $root = $context;
+      } else {
+        $root = $el;
       }
       if (apiClass != null) {
         instance = new apiClass($el, finalOptions, $context);
@@ -155,7 +155,7 @@ Written with jQuery 1.7.2
             };
           } else {
             options = arguments[0];
-            if (arguments.length > 1) {
+            if (arguments[1] != null) {
               $context = arguments[1];
             }
           }
@@ -177,7 +177,7 @@ Written with jQuery 1.7.2
             });
             return this;
           } else {
-            $el = createOptions.asSingleton === true ? $context : this.first();
+            $el = createOptions.asSharedInstance === true ? $context : this.first();
             instance = $el.data(namespace.toString('data'));
             if ((instance != null) && (instance.$el != null) && !arguments.length) {
               return instance;
@@ -188,7 +188,7 @@ Written with jQuery 1.7.2
           (function() {
             var args;
             args = arguments;
-            if (createOptions.asSingleton === true) {
+            if (createOptions.asSharedInstance === true) {
               return _createPluginInstance.apply(null, [$el].concat(__slice.call(args)));
             } else {
               return $el.each(function() {

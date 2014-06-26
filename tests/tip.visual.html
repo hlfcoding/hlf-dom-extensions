@@ -11,8 +11,8 @@
       .js-tip .wrap {
         width: 18em;
       }
-      #override .js-tip .north .js-tip-stem { border-top-color: #666; bottom: -1em; }
-      #override .js-tip .south .js-tip-stem { border-bottom-color: #666; top: -1em; }
+      #override .js-tip .top .js-tip-stem { border-top-color: #666; bottom: -1em; }
+      #override .js-tip .bottom .js-tip-stem { border-bottom-color: #666; top: -1em; }
       #override .js-tip .js-tip-stem {
         border-color: orange;
         filter: chroma(color=orange);
@@ -34,7 +34,7 @@
     <h1>HLF Tip Test</h1>
     <div id="main">
       <section class="default-call visual-test">
-        <header>default</header>
+        <header>by default</header>
         <p>
           <a class="trigger" href="#" title="foo">tooltip trigger</a> |
           <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">tooltip trigger</a> |
@@ -42,7 +42,7 @@
         </p>
       </section>
       <section class="list-call visual-test">
-        <header>a list</header>
+        <header>snapping with a list</header>
         <ul class="list">
           <li><a class="trigger" href="#" title="This is tooltip 1">
             tooltip trigger
@@ -56,7 +56,7 @@
         </ul>
       </section>
       <section class="bar-call visual-test">
-        <header>in a bar</header>
+        <header>snapping with a bar</header>
         <nav class="bar">
           <a class="trigger" href="#" title="This is tooltip 1">
             tooltip trigger

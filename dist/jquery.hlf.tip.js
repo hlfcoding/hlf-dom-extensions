@@ -34,7 +34,8 @@ Written with jQuery 1.7.2
       }),
       defaults: (function(pre) {
         return {
-          $triggerContext: null,
+          $viewport: $('body'),
+          shouldDelegate: true,
           ms: {
             duration: {
               "in": 200,
@@ -52,8 +53,8 @@ Written with jQuery 1.7.2
           shouldAnimate: {
             resize: true
           },
-          cursorHeight: 6,
-          defaultDirection: ['south', 'east'],
+          cursorHeight: 12,
+          defaultDirection: ['bottom', 'right'],
           safeToggle: true,
           autoDirection: true,
           tipTemplate: function(containerClass) {
@@ -66,7 +67,7 @@ Written with jQuery 1.7.2
           classNames: (function() {
             var classNames, key, keys, _i, _len;
             classNames = {};
-            keys = ['inner', 'content', 'stem', 'north', 'east', 'south', 'west', 'follow', 'trigger'];
+            keys = ['inner', 'content', 'stem', 'top', 'right', 'bottom', 'left', 'follow', 'trigger'];
             for (_i = 0, _len = keys.length; _i < _len; _i++) {
               key = keys[_i];
               classNames[key] = "" + pre + key;
@@ -124,11 +125,10 @@ Written with jQuery 1.7.2
       function Tip($triggers, options, $context) {
         this.$triggers = $triggers;
         this.$context = $context;
-        _.bindAll(this, '_onTriggerMouseMove', '_setBounds');
       }
 
       Tip.prototype.init = function() {
-        var shouldDelegate;
+        _.bindAll(this, '_onTriggerMouseMove', '_setBounds');
         this._setTip = (function(_this) {
           return function($tip) {
             return _this.$tip = _this.$el = $tip;
@@ -143,7 +143,6 @@ Written with jQuery 1.7.2
         this._$currentTrigger = null;
         this._render();
         this._bind();
-        shouldDelegate = this.$triggerContext != null;
         this.$triggers.each((function(_this) {
           return function(i, el) {
             var $trigger;
@@ -151,12 +150,12 @@ Written with jQuery 1.7.2
             $trigger.addClass(_this.classNames.trigger);
             _this._saveTriggerContent($trigger);
             _this._updateDirectionByTrigger($trigger);
-            if (shouldDelegate === false) {
+            if (_this.shouldDelegate === false) {
               return _this._bindTrigger($trigger);
             }
           };
         })(this));
-        if (shouldDelegate) {
+        if (this.shouldDelegate) {
           return this._bindTrigger();
         }
       };
@@ -183,11 +182,14 @@ Written with jQuery 1.7.2
       Tip.prototype._bindTrigger = function($trigger) {
         var $bindTarget, onMouseMove, selector;
         $bindTarget = $trigger;
-        if (($bindTarget == null) && this.$triggerContext) {
-          $bindTarget = this.$triggerContext;
-          selector = "." + this.classNames.trigger;
-        } else {
-          return false;
+        if ($bindTarget == null) {
+          if (this.$context) {
+            $bindTarget = this.$context;
+            selector = "." + this.classNames.trigger;
+          } else {
+            this.debugLog('invalid argument(s)');
+            return false;
+          }
         }
         if (selector == null) {
           selector = null;
@@ -199,12 +201,15 @@ Written with jQuery 1.7.2
             _this.debugLog(event.type);
             switch (event.type) {
               case 'truemouseenter':
-                return _this._onTriggerMouseMove(event);
+                _this._onTriggerMouseMove(event);
+                break;
               case 'truemouseleave':
-                return _this.sleepByTrigger($(event.target));
+                _this.sleepByTrigger($(event.target));
+                break;
               default:
-                return _this.debugLog('unknown event type', event.type);
+                _this.debugLog('unknown event type', event.type);
             }
+            return event.stopPropagation();
           };
         })(this));
         if (this.doFollow === true) {
@@ -266,9 +271,9 @@ Written with jQuery 1.7.2
           transitionStyle.push("width " + duration + " " + easing, "height " + duration + " " + easing);
         }
         transitionStyle = transitionStyle.join(',');
-        this.selectByClass('content').css('transition', transitionStyle);
         this._setTip($tip);
-        return this.$tip.prependTo(this.$context);
+        this.selectByClass('content').css('transition', transitionStyle);
+        return this.$tip.prependTo(this.$viewport);
       };
 
       Tip.prototype._inflateByTrigger = function($trigger) {
@@ -281,7 +286,7 @@ Written with jQuery 1.7.2
           contentSize = this.sizeForTrigger($trigger, (contentOnly = true));
           $content.width(contentSize.width).height(contentSize.height);
         }
-        return this.$tip.removeClass([this.classNames.north, this.classNames.south, this.classNames.east, this.classNames.west].join(' ')).addClass($.trim(_.reduce(compoundDirection, (function(_this) {
+        return this.$tip.removeClass([this.classNames.top, this.classNames.bottom, this.classNames.right, this.classNames.left].join(' ')).addClass($.trim(_.reduce(compoundDirection, (function(_this) {
           return function(classListMemo, directionComponent) {
             return "" + classListMemo + " " + _this.classNames[directionComponent];
           };
@@ -300,8 +305,11 @@ Written with jQuery 1.7.2
         return this.wakeByTrigger($trigger, event);
       };
 
-      Tip.prototype._positionToTrigger = function($trigger, mouseEvent) {
+      Tip.prototype._positionToTrigger = function($trigger, mouseEvent, cursorHeight) {
         var offset, tipWidth, triggerWidth;
+        if (cursorHeight == null) {
+          cursorHeight = this.cursorHeight;
+        }
         if (mouseEvent == null) {
           return false;
         }
@@ -310,10 +318,12 @@ Written with jQuery 1.7.2
           left: mouseEvent.pageX
         };
         offset = this.offsetOnTriggerMouseMove(mouseEvent, offset, $trigger) || offset;
-        if (this.isDirection('north', $trigger)) {
-          offset.top -= this.$tip.outerHeight() + this.cursorHeight;
+        if (this.isDirection('top', $trigger)) {
+          offset.top -= this.$tip.outerHeight() + this.stemSize();
+        } else if (this.isDirection('bottom', $trigger)) {
+          offset.top += this.stemSize() + cursorHeight;
         }
-        if (this.isDirection('west', $trigger)) {
+        if (this.isDirection('left', $trigger)) {
           tipWidth = this.$tip.outerWidth();
           triggerWidth = $trigger.outerWidth();
           offset.left -= tipWidth;
@@ -321,11 +331,32 @@ Written with jQuery 1.7.2
             offset.left += triggerWidth;
           }
         }
-        if (this.isDirection('south', $trigger)) {
-          offset.top += this.cursorHeight;
-        }
-        offset.top += this.cursorHeight;
         return this.$tip.css(offset);
+      };
+
+      Tip.prototype.stemSize = function() {
+        var $content, key, size, wrapped;
+        key = this.attr('stem-size');
+        size = this.$tip.data(key);
+        if (size != null) {
+          return size;
+        }
+        $content = this.selectByClass('content');
+        wrapped = this._wrapStealthRender((function(_this) {
+          return function() {
+            var direction, offset, _i, _len, _ref;
+            _ref = $content.position();
+            for (offset = _i = 0, _len = _ref.length; _i < _len; offset = ++_i) {
+              direction = _ref[offset];
+              if (offset > 0) {
+                size = Math.abs(offset);
+                _this.$tip.data(key, size);
+              }
+            }
+            return 0;
+          };
+        })(this));
+        return wrapped();
       };
 
       Tip.prototype._updateDirectionByTrigger = function($trigger) {
@@ -353,16 +384,16 @@ Written with jQuery 1.7.2
           }
           ok = true;
           switch (component) {
-            case 'south':
+            case 'bottom':
               ok = (edge = triggerPosition.top + triggerHeight + tipSize.height) && this._bounds.bottom > edge;
               break;
-            case 'east':
+            case 'right':
               ok = (edge = triggerPosition.left + tipSize.width) && this._bounds.right > edge;
               break;
-            case 'north':
+            case 'top':
               ok = (edge = triggerPosition.top - tipSize.height) && this._bounds.top < edge;
               break;
-            case 'west':
+            case 'left':
               ok = (edge = triggerPosition.left - tipSize.width) && this._bounds.left < edge;
           }
           this.debugLog('checkDirectionComponent', {
@@ -371,17 +402,17 @@ Written with jQuery 1.7.2
           });
           if (!ok) {
             switch (component) {
-              case 'south':
-                newDirection[0] = 'north';
+              case 'bottom':
+                newDirection[0] = 'top';
                 break;
-              case 'east':
-                newDirection[1] = 'west';
+              case 'right':
+                newDirection[1] = 'left';
                 break;
-              case 'north':
-                newDirection[0] = 'south';
+              case 'top':
+                newDirection[0] = 'bottom';
                 break;
-              case 'west':
-                newDirection[1] = 'east';
+              case 'left':
+                newDirection[1] = 'right';
             }
             _results.push($trigger.data(this.attr('direction'), newDirection.join(' ')));
           } else {
@@ -392,13 +423,13 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype._setBounds = function() {
-        var $context;
-        $context = this.$context.is('body') ? $(window) : this.$context;
+        var $viewport;
+        $viewport = this.$viewport.is('body') ? $(window) : this.$viewport;
         return this._bounds = {
-          top: $.css(this.$context[0], 'padding-top', true),
-          left: $.css(this.$context[0], 'padding-left', true),
-          bottom: $context.innerHeight(),
-          right: $context.innerWidth()
+          top: $.css(this.$viewport[0], 'padding-top', true),
+          left: $.css(this.$viewport[0], 'padding-left', true),
+          bottom: $viewport.innerHeight(),
+          right: $viewport.innerWidth()
         };
       };
 
@@ -411,7 +442,7 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype.sizeForTrigger = function($trigger, contentOnly) {
-        var $content, bottom, left, padding, right, side, size, top, _ref;
+        var $content, bottom, left, padding, right, side, size, top, wrapped, _ref;
         if (contentOnly == null) {
           contentOnly = false;
         }
@@ -422,16 +453,11 @@ Written with jQuery 1.7.2
         $content = this.selectByClass('content');
         if (!((size.width != null) && (size.height != null))) {
           $content.text($trigger.data(this.attr('content')));
-          this.$tip.css({
-            display: 'block',
-            visibility: 'hidden'
+          wrapped = this._wrapStealthRender(function() {
+            $trigger.data('width', (size.width = this.$tip.outerWidth()));
+            return $trigger.data('height', (size.height = this.$tip.outerHeight()));
           });
-          $trigger.data('width', (size.width = this.$tip.outerWidth()));
-          $trigger.data('height', (size.height = this.$tip.outerHeight()));
-          this.$tip.css({
-            display: 'none',
-            visibility: 'visible'
-          });
+          wrapped();
         }
         if (contentOnly === true) {
           padding = $content.css('padding').split(' ');
@@ -454,6 +480,27 @@ Written with jQuery 1.7.2
           size.height -= top + bottom + this.selectByClass('stem').height();
         }
         return size;
+      };
+
+      Tip.prototype._wrapStealthRender = function(func) {
+        return (function(_this) {
+          return function() {
+            var result;
+            if (!_this.$tip.is(':hidden')) {
+              return func.apply(_this, arguments);
+            }
+            _this.$tip.css({
+              display: 'block',
+              visibility: 'hidden'
+            });
+            result = func.apply(_this, arguments);
+            _this.$tip.css({
+              display: 'none',
+              visibility: 'visible'
+            });
+            return result;
+          };
+        })(this);
       };
 
       Tip.prototype.isDirection = function(directionComponent, $trigger) {
@@ -568,12 +615,6 @@ Written with jQuery 1.7.2
         if (this.snap.toTrigger === false) {
           this.snap.toTrigger = this.snap.toXAxis === true || this.snap.toYAxis === true;
         }
-        if (this.snap.toXAxis === true) {
-          this.cursorHeight = 0;
-        }
-        if (this.snap.toYAxis === true) {
-          this.cursorHeight = 2;
-        }
         this._offsetStart = null;
         _ref = this.snap;
         _results = [];
@@ -588,22 +629,28 @@ Written with jQuery 1.7.2
       };
 
       SnapTip.prototype._moveToTrigger = function($trigger, baseOffset) {
-        var offset;
-        offset = $trigger.offset();
+        var offset, toTriggerOnly;
+        offset = $trigger.position();
+        toTriggerOnly = this.snap.toTrigger === true && this.snap.toXAxis === false && this.snap.toYAxis === false;
         if (this.snap.toXAxis === true) {
-          if (this.isDirection('south')) {
+          if (this.isDirection('bottom', $trigger)) {
             offset.top += $trigger.outerHeight();
           }
           if (this.snap.toYAxis === false) {
-            offset.left = baseOffset.left - (this.$tip.outerWidth() - 12) / 2;
+            offset.left = baseOffset.left - this.$tip.outerWidth() / 2;
           }
         }
         if (this.snap.toYAxis === true) {
-          if (this.isDirection('east')) {
+          if (this.isDirection('right', $trigger)) {
             offset.left += $trigger.outerWidth();
           }
           if (this.snap.toXAxis === false) {
             offset.top = baseOffset.top - this.$tip.outerHeight() / 2;
+          }
+        }
+        if (toTriggerOnly === true) {
+          if (this.isDirection('bottom', $trigger)) {
+            offset.top += $trigger.outerHeight();
           }
         }
         return offset;
@@ -616,8 +663,8 @@ Written with jQuery 1.7.2
           return false;
         }
         $bindTarget = $trigger;
-        if (($bindTarget == null) && this.$triggerContext) {
-          $bindTarget = this.$triggerContext;
+        if (($bindTarget == null) && this.$context) {
+          $bindTarget = this.$context;
           selector = "." + this.classNames.trigger;
         }
         if (selector == null) {
@@ -630,6 +677,13 @@ Written with jQuery 1.7.2
             return _this._offsetStart = null;
           };
         })(this));
+      };
+
+      SnapTip.prototype._positionToTrigger = function($trigger, mouseEvent, cursorHeight) {
+        if (cursorHeight == null) {
+          cursorHeight = this.cursorHeight;
+        }
+        return SnapTip.__super__._positionToTrigger.call(this, $trigger, mouseEvent, 0);
       };
 
       SnapTip.prototype.onShow = function(triggerChanged, event) {
@@ -651,18 +705,7 @@ Written with jQuery 1.7.2
       SnapTip.prototype.offsetOnTriggerMouseMove = function(event, offset, $trigger) {
         var newOffset;
         newOffset = _.clone(offset);
-        if (this.snap.toTrigger === true) {
-          newOffset = this._moveToTrigger($trigger, newOffset);
-        } else {
-          if (this.snap.toXAxis === true) {
-            newOffset.top = this._offsetStart.top;
-            this.debugLog('xSnap');
-          }
-          if (this.snap.toYAxis === true) {
-            newOffset.left = this._offsetStart.left;
-            this.debugLog('ySnap');
-          }
-        }
+        newOffset = this._moveToTrigger($trigger, newOffset);
         return newOffset;
       };
 
@@ -673,7 +716,7 @@ Written with jQuery 1.7.2
       name: 'tip',
       namespace: hlf.tip,
       apiClass: Tip,
-      asSingleton: true,
+      asSharedInstance: true,
       baseMixins: ['selection'],
       compactOptions: true
     });
@@ -681,7 +724,7 @@ Written with jQuery 1.7.2
       name: 'snapTip',
       namespace: hlf.tip.snap,
       apiClass: SnapTip,
-      asSingleton: true,
+      asSharedInstance: true,
       baseMixins: ['selection'],
       compactOptions: true
     });

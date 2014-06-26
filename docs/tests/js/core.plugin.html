@@ -93,9 +93,9 @@
     <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">.</span><span class="nx">someOtherMixinProperty</span><span class="p">,</span> <span class="s">&#39;bar&#39;</span><span class="p">,</span>
       <span class="s">&#39;Mixin property should have been set on deferred initialization.&#39;</span>
 
-  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;createPlugin with apiClass and baseMixins and asSingleton&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
+  <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;createPlugin with apiClass and baseMixins and asSharedInstance&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
     <span class="nv">createOptions = </span><span class="nx">@baseCreateOptions</span>
-    <span class="nv">createOptions.asSingleton = </span><span class="kc">yes</span>
+    <span class="nv">createOptions.asSharedInstance = </span><span class="kc">yes</span>
     <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span> <span class="nx">createOptions</span>
     <span class="nv">result = </span><span class="nx">assertGeneralPlugin</span><span class="p">.</span><span class="nx">call</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">assert</span>
     <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="s">&#39;body&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s">&#39;somePlugin&#39;</span><span class="p">),</span>

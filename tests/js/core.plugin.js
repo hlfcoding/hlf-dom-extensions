@@ -114,10 +114,10 @@
       assert.strictEqual(result.someMixinProperty, 'foo', 'Mixin property should have been set on deferred initialization.');
       return assert.strictEqual(result.someOtherMixinProperty, 'bar', 'Mixin property should have been set on deferred initialization.');
     });
-    QUnit.test('createPlugin with apiClass and baseMixins and asSingleton', function(assert) {
+    QUnit.test('createPlugin with apiClass and baseMixins and asSharedInstance', function(assert) {
       var createOptions, result;
       createOptions = this.baseCreateOptions;
-      createOptions.asSingleton = true;
+      createOptions.asSharedInstance = true;
       hlf.createPlugin(createOptions);
       result = assertGeneralPlugin.call(this, assert);
       return assert.strictEqual(result, $('body').data('somePlugin'), 'Plugin singleton should be stored with context element.');
