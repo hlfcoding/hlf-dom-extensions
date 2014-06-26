@@ -566,7 +566,8 @@ Written with jQuery 1.7.2
     # to be the trigger offset.
     _moveToTrigger: ($trigger, baseOffset) -> # TODO: Still needs to support all the directions.
       #@debugLog baseOffset
-      offset = $trigger.offset()
+      offset = $trigger.position()
+      toTriggerOnly = @snap.toTrigger is on and @snap.toXAxis is off and @snap.toYAxis is off
       if @snap.toXAxis is on
         if @isDirection 'bottom', $trigger
           offset.top += $trigger.outerHeight()
@@ -578,6 +579,9 @@ Written with jQuery 1.7.2
           offset.left += $trigger.outerWidth()
         if @snap.toXAxis is off
           offset.top = baseOffset.top - @$tip.outerHeight() / 2
+      if toTriggerOnly is on
+        if @isDirection 'bottom', $trigger
+          offset.top += $trigger.outerHeight()
       offset
 
     # Extend `_bindTrigger` to get initial position for snapping. This is only
