@@ -52,7 +52,7 @@ Written with jQuery 1.7.2
     # -----------
     # Note the plugin instance gets extended with the options.
     defaults: do (pre = 'js-tip-') ->
-      # - `viewport` is the element in which the tip must fit into. It is not the
+      # - `$viewport` is the element in which the tip must fit into. It is not the
       #   context, which stores the tip instance and by convention contains the
       #   triggers.
       $viewport: $ 'body'
