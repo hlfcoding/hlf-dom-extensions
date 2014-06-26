@@ -625,19 +625,19 @@ Written with jQuery 1.7.2
 
   # Export
   # ------
-  # Both are exported with the `asSingleton` flag set to true.
+  # Both are exported with the `asSharedInstance` flag set to true.
   hlf.createPlugin
     name: 'tip'
     namespace: hlf.tip
     apiClass: Tip
-    asSingleton: yes
+    asSharedInstance: yes
     baseMixins: ['selection']
     compactOptions: yes
   hlf.createPlugin
     name: 'snapTip'
     namespace: hlf.tip.snap
     apiClass: SnapTip
-    asSingleton: yes
+    asSharedInstance: yes
     baseMixins: ['selection']
     compactOptions: yes
 

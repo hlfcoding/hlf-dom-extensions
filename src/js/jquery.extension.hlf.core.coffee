@@ -69,9 +69,9 @@ Written with jQuery 1.7.2
       finalOptions = $.extend (deep = on), {}, options, data
       # Also decide the `$root` element based on the situation. It's where the
       # plugin instance gets stored and the root plugin class gets added.
-      # Singletons, for example, get stored on the `$context`.
+      # Shared instances, for example, get stored on the `$context`.
       $root = $el
-    else if not createOptions.asSingleton
+    else if not createOptions.asSharedInstance
       $root = $el
     else
       $root = $context
@@ -216,10 +216,10 @@ Written with jQuery 1.7.2
           # Follow plugin return conventions.
           return @
         else
-          # `asSingleton` will decide what the plugin instance's main element
+          # `asSharedInstance` will decide what the plugin instance's main element
           # will be. The notion is that several elements all share the same
           # plugin instance.
-          $el = if createOptions.asSingleton is yes then $context else @first()
+          $el = if createOptions.asSharedInstance is yes then $context else @first()
           instance = $el.data namespace.toString('data')
           return instance if instance? and instance.$el? and not arguments.length
         # Otherwise, continue creating the instance by preparing the options and
@@ -229,7 +229,7 @@ Written with jQuery 1.7.2
         $el = @
         ( ->
           args = arguments
-          if createOptions.asSingleton is yes then _createPluginInstance $el, args...
+          if createOptions.asSharedInstance is yes then _createPluginInstance $el, args...
           else $el.each -> _createPluginInstance $(@), args...
         )(options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions)
         # Follow plugin return conventions.
