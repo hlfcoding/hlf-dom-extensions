@@ -215,10 +215,13 @@ Written with jQuery 1.7.2
     # but `$triggerContext` is.
     _bindTrigger: ($trigger) ->
       $bindTarget = $trigger
-      if not $bindTarget? and @$triggerContext
-        $bindTarget = @$triggerContext
-        selector = ".#{@classNames.trigger}"
-      else return no
+      if not $bindTarget?
+        if @$triggerContext
+          $bindTarget = @$triggerContext
+          selector = ".#{@classNames.trigger}"
+        else
+          @debugLog 'invalid argument(s)'
+          return no
       selector ?= null
       # Base bindings.
       $bindTarget.on [
