@@ -573,7 +573,7 @@ Written with jQuery 1.7.2
           offset.top += $trigger.outerHeight()
         if @snap.toYAxis is off
           # Note arbitrary buffer offset.
-          offset.left = baseOffset.left - (@$tip.outerWidth() - 12) / 2
+          offset.left = baseOffset.left - @$tip.outerWidth() / 2
       if @snap.toYAxis is on
         if @isDirection 'right', $trigger
           offset.left += $trigger.outerWidth()
