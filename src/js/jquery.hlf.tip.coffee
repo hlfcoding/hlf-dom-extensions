@@ -615,15 +615,7 @@ Written with jQuery 1.7.2
     # offset, so it gets used in lieu of the base `offset`.
     offsetOnTriggerMouseMove: (event, offset, $trigger) ->
       newOffset = _.clone offset
-      if @snap.toTrigger is on
-        newOffset = @_moveToTrigger $trigger, newOffset
-      else
-        if @snap.toXAxis is on
-          newOffset.top = @_offsetStart.top
-          @debugLog 'xSnap'
-        if @snap.toYAxis is on
-          newOffset.left = @_offsetStart.left
-          @debugLog 'ySnap'
+      newOffset = @_moveToTrigger $trigger, newOffset
       newOffset
 
   # Export
