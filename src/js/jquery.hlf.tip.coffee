@@ -150,10 +150,10 @@ Written with jQuery 1.7.2
     # subroutines when needed. Note that we're also keeping `$triggers` and 
     # `$context` as properties.
     constructor: (@$triggers, options, @$context) ->
-      # Per convention, bind handler methods here.
-      _.bindAll @, '_onTriggerMouseMove', '_setBounds'
 
     init: ->
+      # Bind handler methods here after class setup completes.
+      _.bindAll @, '_onTriggerMouseMove', '_setBounds'
       # The element represented by this API is `$tip`. We build it. Alias it to
       # `$el` for any mixins to consume.
       @_setTip = ($tip) => @$tip = @$el = $tip
