@@ -69,12 +69,12 @@ Written with jQuery 1.7.2
       finalOptions = $.extend (deep = on), {}, options, data
       # Also decide the `$root` element based on the situation. It's where the
       # plugin instance gets stored and the root plugin class gets added.
-      # Shared instances, for example, get stored on the `$context`.
+      # A shared instance, for example, get stored on the `$context`.
       $root = $el
-    else if not createOptions.asSharedInstance
-      $root = $el
-    else
+    else if createOptions.asSharedInstance
       $root = $context
+    else
+      $root = $el
     # If we're provided with a class for the API, instantiate it. Decorate the
     # instance with additional mixins if applicable.
     if apiClass?

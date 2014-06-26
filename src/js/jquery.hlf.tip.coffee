@@ -52,10 +52,13 @@ Written with jQuery 1.7.2
     # -----------
     # Note the plugin instance gets extended with the options.
     defaults: do (pre = 'js-tip-') ->
-      # - `$triggerContext` can be provided to avoid directly binding event
-      #   listeners to triggers, which can improve performance and allow dynamic
-      #   binding.
-      $triggerContext: null
+      # - `viewport` is the element in which the tip must fit into. It is not the
+      #   context, which stores the tip instance and by convention contains the
+      #   triggers.
+      $viewport: $ 'body'
+      # - `shouldDelegate` is by default and encouraged to be on for improving
+      #   event handling performance.
+      shouldDelegate: on
       # - `ms.duration` are the durations of sleep and wake animations.
       # - `ms.delay` are the delays before sleeping and waking.
       ms:
@@ -146,9 +149,11 @@ Written with jQuery 1.7.2
   # Note that most of the interface is intended as protected.
   class Tip
 
-    # The base constructor and `init` mostly do setup work that uses other 
-    # subroutines when needed. Note that we're also keeping `$triggers` and 
-    # `$context` as properties.
+    # The base constructor and `init` mostly do setup work that uses other
+    # subroutines when needed. Note that we're also keeping `$triggers` and
+    # `$context` as properties. `$context` is partly used to avoid directly
+    # binding event listeners to triggers, which can improve performance and
+    # allow dynamic binding.
     constructor: (@$triggers, options, @$context) ->
 
     init: ->
@@ -175,14 +180,13 @@ Written with jQuery 1.7.2
       @_render()
       @_bind()
       # Process `$triggers` and setup content, event, and positioning aspects.
-      shouldDelegate = @$triggerContext?
       @$triggers.each (i, el) =>
         $trigger = $ el
         $trigger.addClass @classNames.trigger
         @_saveTriggerContent $trigger
         @_updateDirectionByTrigger $trigger
-        if shouldDelegate is no then @_bindTrigger $trigger
-      if shouldDelegate then @_bindTrigger()
+        if @shouldDelegate is no then @_bindTrigger $trigger
+      if @shouldDelegate then @_bindTrigger()
 
     # `_defaultHtml` provides a basic html structure for tip content. It can be
     # customized via the `tipTemplate` external option, or by subclasses using
@@ -216,8 +220,8 @@ Written with jQuery 1.7.2
     _bindTrigger: ($trigger) ->
       $bindTarget = $trigger
       if not $bindTarget?
-        if @$triggerContext
-          $bindTarget = @$triggerContext
+        if @$context
+          $bindTarget = @$context
           selector = ".#{@classNames.trigger}"
         else
           @debugLog 'invalid argument(s)'
@@ -236,6 +240,7 @@ Written with jQuery 1.7.2
             when 'truemouseenter' then @_onTriggerMouseMove event
             when 'truemouseleave' then @sleepByTrigger $(event.target)
             else @debugLog 'unknown event type', event.type
+          event.stopPropagation()
       # Follow binding.
       if @doFollow is on
         if window.requestAnimationFrame?
@@ -268,7 +273,7 @@ Written with jQuery 1.7.2
         $(window).resize _.debounce @_setBounds, 300
 
     # `_render` comes with a base implementation that fills in and attaches
-    # `$tip` to the DOM, specifically at the beginning of `$context`. It uses
+    # `$tip` to the DOM, specifically at the beginning of `$viewport`. It uses
     # the result of `htmlOnRender` and falls back to that of `_defaultHtml`. 
     # Render also sets up any animations per the `shouldAnimate` option.
     _render: ->
@@ -287,7 +292,7 @@ Written with jQuery 1.7.2
       # /Animation setup.
       @_setTip $tip
       @selectByClass('content').css 'transition', transitionStyle
-      @$tip.prependTo @$context
+      @$tip.prependTo @$viewport
 
     # `_inflateByTrigger` will reset and update `$tip` for the given trigger, so
     # that it is ready to present, i.e. it is 'inflated'. Mostly it's just the
@@ -370,7 +375,7 @@ Written with jQuery 1.7.2
       return wrapped()
 
     # `_updateDirectionByTrigger` is the main provider of auto-direction
-    # support. Given the `$context`'s `_bounds`, it changes to the best
+    # support. Given the `$viewport`'s `_bounds`, it changes to the best
     # direction as needed. The current `direction` is stored as jQuery data with
     # trigger.
     _updateDirectionByTrigger: ($trigger) ->
@@ -398,15 +403,15 @@ Written with jQuery 1.7.2
             when 'left'   then newDirection[1] = 'right'
           $trigger.data @attr('direction'), newDirection.join ' '
 
-    # `_setBounds` updates `_bounds` per `$context`'s inner bounds, and those
+    # `_setBounds` updates `_bounds` per `$viewport`'s inner bounds, and those
     # measures get used by `_updateDirectionByTrigger`.
     _setBounds: ->
-      $context = if @$context.is('body') then $(window) else @$context
+      $viewport = if @$viewport.is('body') then $(window) else @$viewport
       @_bounds =
-        top:    $.css @$context[0], 'padding-top', yes
-        left:   $.css @$context[0], 'padding-left', yes
-        bottom: $context.innerHeight()
-        right:  $context.innerWidth()
+        top:    $.css @$viewport[0], 'padding-top', yes
+        left:   $.css @$viewport[0], 'padding-left', yes
+        bottom: $viewport.innerHeight()
+        right:  $viewport.innerWidth()
 
     _setState: (state) ->
       return no if state is @_state
@@ -591,8 +596,8 @@ Written with jQuery 1.7.2
       didBind = super $trigger
       return no if didBind is no
       $bindTarget = $trigger
-      if not $bindTarget? and @$triggerContext
-        $bindTarget = @$triggerContext
+      if not $bindTarget? and @$context
+        $bindTarget = @$context
         selector = ".#{@classNames.trigger}"
       selector ?= null
       # Modify base binding.

@@ -12,15 +12,11 @@ require [
   shouldRunVisualTests = $('#qunit').length is 0
 
   if shouldRunVisualTests then $ ->
-    do ($el = $ '.default-call') ->
-      $el.find('[title]').tip { $triggerContext: $el }
-    do ($el = $ '.list-call') ->
-      $el.find('[title]').snapTip 
-        $triggerContext: $el 
-        snap: { toYAxis: true }
-    do ($el = $ '.bar-call') ->
-      $el.find('[title]').snapTip 
-        $triggerContext: $el 
-        snap: { toXAxis: true }
+    do ($context = $ '.default-call') ->
+      $context.find('[title]').tip null, $context
+    do ($context = $ '.list-call') ->
+      $context.find('[title]').snapTip { snap: { toYAxis: true } }, $context
+    do ($context = $ '.bar-call') ->
+      $context.find('[title]').snapTip { snap: { toXAxis: true } }, $context
     $('.edge-call > .visual-test-fragment[title]').snapTip()
 
