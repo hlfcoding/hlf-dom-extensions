@@ -48,7 +48,7 @@ Written with jQuery 1.7.2
         if (name == null) {
           name = '';
         }
-        return "" + (hoverIntent.toString('attr')) + name;
+        return "" + (hoverIntent.toString('attr')) + "-" + name;
       };
       debugLog = hoverIntent.debug === false ? $.noop : function() {
         return hlf.debugLog.apply(hlf, [hoverIntent.toString('log')].concat(__slice.call(arguments)));
@@ -102,8 +102,8 @@ Written with jQuery 1.7.2
         if (event.type !== 'mouseleave') {
           return false;
         }
-        debugLog('teardown');
         if (state.timer.cleared === false) {
+          debugLog('teardown');
           clearTimeout(state.timer.timeout);
           $trigger.removeData(attr('timer')).removeData(attr('intentional'));
         }
@@ -152,25 +152,25 @@ Written with jQuery 1.7.2
           return $(this).on({
             mouseover: check,
             mousemove: trackMouse
-          });
+          }, data != null ? data.selector : void 0);
         },
         teardown: function(data, namespaces) {
           return $(this).off({
             mouseover: check,
             mousemove: trackMouse
-          });
+          }, data != null ? data.selector : void 0);
         }
       };
       return $.event.special.truemouseleave = {
         setup: function(data, namespaces) {
           return $(this).on({
             mouseleave: check
-          });
+          }, data != null ? data.selector : void 0);
         },
         teardown: function(data, namespaces) {
           return $(this).off({
             mouseleave: check
-          });
+          }, data != null ? data.selector : void 0);
         }
       };
     })(hlf.hoverIntent, hlf.hoverIntent.mouse);

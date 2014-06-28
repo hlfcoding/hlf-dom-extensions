@@ -48,10 +48,10 @@ Written with jQuery 1.7.2
       if ($.isPlainObject(data)) {
         finalOptions = $.extend((deep = true), {}, options, data);
         $root = $el;
-      } else if (!createOptions.asSingleton) {
-        $root = $el;
-      } else {
+      } else if (createOptions.asSharedInstance) {
         $root = $context;
+      } else {
+        $root = $el;
       }
       if (apiClass != null) {
         instance = new apiClass($el, finalOptions, $context);
@@ -155,7 +155,7 @@ Written with jQuery 1.7.2
             };
           } else {
             options = arguments[0];
-            if (arguments.length > 1) {
+            if (arguments[1] != null) {
               $context = arguments[1];
             }
           }
@@ -177,7 +177,7 @@ Written with jQuery 1.7.2
             });
             return this;
           } else {
-            $el = createOptions.asSingleton === true ? $context : this.first();
+            $el = createOptions.asSharedInstance === true ? $context : this.first();
             instance = $el.data(namespace.toString('data'));
             if ((instance != null) && (instance.$el != null) && !arguments.length) {
               return instance;
@@ -188,7 +188,7 @@ Written with jQuery 1.7.2
           (function() {
             var args;
             args = arguments;
-            if (createOptions.asSingleton === true) {
+            if (createOptions.asSharedInstance === true) {
               return _createPluginInstance.apply(null, [$el].concat(__slice.call(args)));
             } else {
               return $el.each(function() {
@@ -319,15 +319,27 @@ Written with jQuery 1.7.2
         selection: function() {
           return {
             select: function() {
-              var name, selector, _ref, _results;
+              var name, result, selector, _ref, _results;
               _ref = this.selectors;
               _results = [];
               for (name in _ref) {
                 if (!__hasProp.call(_ref, name)) continue;
                 selector = _ref[name];
-                _results.push(this["$" + name] = this.$el.find(selector));
+                if ((result = this.$el.find(selector)) != null) {
+                  _results.push(this["$" + name] = result);
+                } else {
+                  _results.push(void 0);
+                }
               }
               return _results;
+            },
+            selectByClass: function(className) {
+              var classNames, _ref;
+              classNames = (_ref = this.options) != null ? _ref.classNames : void 0;
+              if (classNames == null) {
+                classNames = this.classNames;
+              }
+              return this.$el.find("." + this.classNames[className]);
             }
           };
         }
