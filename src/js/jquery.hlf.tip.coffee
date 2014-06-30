@@ -56,6 +56,9 @@ Written with jQuery 1.7.2
       #   context, which stores the tip instance and by convention contains the
       #   triggers.
       $viewport: $ 'body'
+      # - `triggerContent` can be the name of the trigger element's attribute or a
+      #   function that provides custom content when given the trigger element.
+      triggerContent: null
       # - `shouldDelegate` is by default and encouraged to be on for improving
       #   event handling performance.
       shouldDelegate: on
@@ -201,14 +204,27 @@ Written with jQuery 1.7.2
       html = @tipTemplate containerClass
 
     # `_saveTriggerContent` comes with a very simple base implementation that's
-    # more for links and their `title` attribute. We take that content and store
-    # it into a `content` jQuery data value on the trigger.
+    # supports the common `title` and `alt` meta content for an element. Support
+    # is also provided for the `triggerContent` option. We take that content and
+    # store it into a `content` jQuery data value on the trigger.
     _saveTriggerContent: ($trigger) ->
-      title = $trigger.attr 'title'
-      if title?
-        $trigger
-          .data @attr('content'), title
-          .removeAttr 'title'
+      content = null
+      attr = null
+      canRemoveAttr = yes
+      if @triggerContent?
+        if _.isFunction(@triggerContent) then content = @triggerContent $trigger
+        else attr = @triggerContent
+      else
+        if $trigger.is('[title]')
+          attr = 'title'
+        else if $trigger.is('[alt]')
+          attr = 'alt'
+          canRemoveAttr = no
+      if attr?
+        content = $trigger.attr attr
+        if canRemoveAttr then $trigger.removeAttr attr
+      if content?
+        $trigger.data @attr('content'), content
 
     # `_bindTrigger` links each trigger to the tip for: 1) possible appearance
     # changes during mouseenter, mouseleave (uses special events) and 2)
