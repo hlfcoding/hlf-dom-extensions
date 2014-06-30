@@ -7,6 +7,19 @@ $line-size: 20px;
   background-color: $fill-color;
   border: 1px solid $line-color;
 }
+.clearfix {
+  &::before,
+  &::after {
+    content: " ";
+    display: table;
+  }
+  &::after {
+    clear: both;
+  }
+  & {
+    *zoom: 1;
+  }
+}
 
 body {
   background-color: #eaeae6;
@@ -104,6 +117,7 @@ section.visual-test {
   }
 }
 .bar {
+  @extend .clearfix;
   margin: $text-size 0;
   .item {
     $height: 60px;
@@ -135,4 +149,20 @@ section.visual-test {
     position: relative;
   }
   > .visual-test-fragment { @extend .edge; }
+}
+
+.grid-item {
+  float: left;
+  line-height: 0;
+  margin: {
+    bottom: $text-size / 2;
+    right: $text-size / 2;
+  }
+}
+.grid {
+  @extend .clearfix;
+  list-style: none;
+  padding-left: 0;
+  width: 350px;
+  li { @extend .grid-item; }
 }
