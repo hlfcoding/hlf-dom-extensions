@@ -183,12 +183,31 @@ Written with jQuery 1.7.2
       @_render()
       @_bind()
       # Process `$triggers` and setup content, event, and positioning aspects.
-      @$triggers.each (i, el) =>
-        $trigger = $ el
+      processTrigger = ($trigger) =>
+        return no if not $trigger.length
         $trigger.addClass @classNames.trigger
         @_saveTriggerContent $trigger
         @_updateDirectionByTrigger $trigger
         if @shouldDelegate is no then @_bindTrigger $trigger
+      # Do this for initially provided triggers.
+      @$triggers.each (i, el) => processTrigger $(el)
+      # If `doLiveUpdate` is inferred to be true, process triggers added in the
+      # future. Make sure to ignore mutations related to the tip.
+      @doLiveUpdate = window.MutationObserver?
+      if @doLiveUpdate
+        selector = @$triggers.selector
+        onMutations = (mutations) =>
+          for mutation in mutations
+            $target = $ mutation.target
+            continue if $target.hasClass(@classNames.content) # TODO: Limited.
+            if mutation.addedNodes.length
+              $triggers = $(mutation.addedNodes).find('[title],[alt]') # TODO: Limited.
+              $triggers.each (i, el) => processTrigger $(el)
+              @$triggers = @$triggers.add $triggers
+        @_mutationObserver = new MutationObserver onMutations
+        @_mutationObserver.observe @$context[0],
+          childList: yes
+          subtree: yes
       if @shouldDelegate then @_bindTrigger()
 
     # `_defaultHtml` provides a basic html structure for tip content. It can be
