@@ -1,6 +1,6 @@
 {
   "name": "hlf-jquery",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": [
     "release/jquery.extension.hlf.core.js",
     "release/jquery.extension.hlf.event.js ",
