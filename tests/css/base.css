@@ -2,6 +2,14 @@
   background-color: white;
   border: 1px solid #cccccc; }
 
+.clearfix::before, .bar::before, .grid::before, .clearfix::after, .bar::after, .grid::after {
+  content: " ";
+  display: table; }
+.clearfix::after, .bar::after, .grid::after {
+  clear: both; }
+.clearfix, .bar, .grid {
+  *zoom: 1; }
+
 body {
   background-color: #eaeae6;
   font-family: Helvetica, sans-serif;
@@ -22,6 +30,8 @@ section.visual-test header {
   font-weight: bold; }
   section.visual-test header::after {
     content: ':'; }
+section.visual-test footer {
+  margin-bottom: 1em; }
 
 .box {
   border-radius: 10px;
@@ -85,3 +95,14 @@ section.visual-test header {
 
 .edge-call:not(body) {
   position: relative; }
+
+.grid-item, .grid li {
+  float: left;
+  line-height: 0;
+  margin-bottom: 7px;
+  margin-right: 7px; }
+
+.grid {
+  list-style: none;
+  padding-left: 0;
+  width: 350px; }

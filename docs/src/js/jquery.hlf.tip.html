@@ -36,10 +36,13 @@ jQuery data methods is the same.</p></div></div></div><div class="segment"><div 
         <span class="k">else</span> <span class="s">&#39;hlf.tip&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="tip-options">Tip Options</h2>
 
 <p>Note the plugin instance gets extended with the options.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">defaults: </span><span class="nx">do</span> <span class="nf">(pre = &#39;js-tip-&#39;) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
-<li><code>viewport</code> is the element in which the tip must fit into. It is not the
+<li><code>$viewport</code> is the element in which the tip must fit into. It is not the
 context, which stores the tip instance and by convention contains the
 triggers.</li>
 </ul></div></div><div class="code"><div class="wrapper">      <span class="nv">$viewport: </span><span class="nx">$</span> <span class="s">&#39;body&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>triggerContent</code> can be the name of the trigger element's attribute or a
+function that provides custom content when given the trigger element.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="nv">triggerContent: </span><span class="kc">null</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li><code>shouldDelegate</code> is by default and encouraged to be on for improving
 event handling performance.</li>
 </ul></div></div><div class="code"><div class="wrapper">      <span class="nv">shouldDelegate: </span><span class="kc">on</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
@@ -139,12 +142,27 @@ of relevant mouse activity. This is achieved with a simple base
 implementation around timers <code>_sleepCountdown</code> and <code>_wakeCountdown</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">@_setState</span> <span class="s">&#39;asleep&#39;</span>
       <span class="vi">@_wakeCountdown = </span><span class="kc">null</span>
       <span class="vi">@_sleepCountdown = </span><span class="kc">null</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_$currentTrigger</code> helps manage trigger-related state.</p></div></div><div class="code"><div class="wrapper">      <span class="vi">@_$currentTrigger = </span><span class="kc">null</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Tip instances start off rendered and bound.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">@_render</span><span class="p">()</span>
-      <span class="nx">@_bind</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Process <code>$triggers</code> and setup content, event, and positioning aspects.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">@$triggers</span><span class="p">.</span><span class="nx">each</span> <span class="nf">(i, el) =&gt;</span>
-        <span class="nv">$trigger = </span><span class="nx">$</span> <span class="nx">el</span>
+      <span class="nx">@_bind</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Process <code>$triggers</code> and setup content, event, and positioning aspects.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">processTrigger = </span><span class="nf">($trigger) =&gt;</span>
+        <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">length</span>
         <span class="nx">$trigger</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">trigger</span>
         <span class="nx">@_saveTriggerContent</span> <span class="nx">$trigger</span>
         <span class="nx">@_updateDirectionByTrigger</span> <span class="nx">$trigger</span>
-        <span class="k">if</span> <span class="nx">@shouldDelegate</span> <span class="o">is</span> <span class="kc">no</span> <span class="k">then</span> <span class="nx">@_bindTrigger</span> <span class="nx">$trigger</span>
+        <span class="k">if</span> <span class="nx">@shouldDelegate</span> <span class="o">is</span> <span class="kc">no</span> <span class="k">then</span> <span class="nx">@_bindTrigger</span> <span class="nx">$trigger</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Do this for initially provided triggers.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">@$triggers</span><span class="p">.</span><span class="nx">each</span> <span class="nf">(i, el) =&gt;</span> <span class="nx">processTrigger</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">)</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If <code>doLiveUpdate</code> is inferred to be true, process triggers added in the
+future. Make sure to ignore mutations related to the tip.</p></div></div><div class="code"><div class="wrapper">      <span class="vi">@doLiveUpdate = </span><span class="nb">window</span><span class="p">.</span><span class="nx">MutationObserver</span><span class="o">?</span>
+      <span class="k">if</span> <span class="nx">@doLiveUpdate</span>
+        <span class="nv">selector = </span><span class="nx">@$triggers</span><span class="p">.</span><span class="nx">selector</span>
+        <span class="nv">onMutations = </span><span class="nf">(mutations) =&gt;</span>
+          <span class="k">for</span> <span class="nx">mutation</span> <span class="k">in</span> <span class="nx">mutations</span>
+            <span class="nv">$target = </span><span class="nx">$</span> <span class="nx">mutation</span><span class="p">.</span><span class="nx">target</span>
+            <span class="k">continue</span> <span class="k">if</span> <span class="nx">$target</span><span class="p">.</span><span class="nx">hasClass</span><span class="p">(</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">content</span><span class="p">)</span> <span class="c1"># TODO: Limited.</span>
+            <span class="k">if</span> <span class="nx">mutation</span><span class="p">.</span><span class="nx">addedNodes</span><span class="p">.</span><span class="nx">length</span>
+              <span class="nv">$triggers = </span><span class="nx">$</span><span class="p">(</span><span class="nx">mutation</span><span class="p">.</span><span class="nx">addedNodes</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title],[alt]&#39;</span><span class="p">)</span> <span class="c1"># TODO: Limited.</span>
+              <span class="nx">$triggers</span><span class="p">.</span><span class="nx">each</span> <span class="nf">(i, el) =&gt;</span> <span class="nx">processTrigger</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">)</span>
+              <span class="vi">@$triggers = </span><span class="nx">@$triggers</span><span class="p">.</span><span class="nx">add</span> <span class="nx">$triggers</span>
+        <span class="vi">@_mutationObserver = </span><span class="k">new</span> <span class="nx">MutationObserver</span> <span class="nx">onMutations</span>
+        <span class="nx">@_mutationObserver</span><span class="p">.</span><span class="nx">observe</span> <span class="nx">@$context</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+          <span class="nv">childList: </span><span class="kc">yes</span>
+          <span class="nv">subtree: </span><span class="kc">yes</span>
       <span class="k">if</span> <span class="nx">@shouldDelegate</span> <span class="k">then</span> <span class="nx">@_bindTrigger</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_defaultHtml</code> provides a basic html structure for tip content. It can be
 customized via the <code>tipTemplate</code> external option, or by subclasses using
 the <code>htmlOnRender</code> hook.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_defaultHtml: </span><span class="nf">-&gt;</span>
@@ -155,13 +173,26 @@ the <code>htmlOnRender</code> hook.</p></div></div><div class="code"><div class=
       <span class="p">)</span>
       <span class="nv">containerClass = </span><span class="nx">$</span><span class="p">.</span><span class="nx">trim</span> <span class="p">[</span><span class="nx">@classNames</span><span class="p">.</span><span class="nx">tip</span><span class="p">,</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">follow</span><span class="p">,</span> <span class="nx">directionClass</span><span class="p">].</span><span class="nx">join</span> <span class="s">&#39; &#39;</span>
       <span class="nv">html = </span><span class="nx">@tipTemplate</span> <span class="nx">containerClass</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_saveTriggerContent</code> comes with a very simple base implementation that's
-more for links and their <code>title</code> attribute. We take that content and store
-it into a <code>content</code> jQuery data value on the trigger.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_saveTriggerContent: </span><span class="nf">($trigger) -&gt;</span>
-      <span class="nv">title = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;title&#39;</span>
-      <span class="k">if</span> <span class="nx">title</span><span class="o">?</span>
-        <span class="nx">$trigger</span>
-          <span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;content&#39;</span><span class="p">),</span> <span class="nx">title</span>
-          <span class="p">.</span><span class="nx">removeAttr</span> <span class="s">&#39;title&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_bindTrigger</code> links each trigger to the tip for: 1) possible appearance
+supports the common <code>title</code> and <code>alt</code> meta content for an element. Support
+is also provided for the <code>triggerContent</code> option. We take that content and
+store it into a <code>content</code> jQuery data value on the trigger.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">_saveTriggerContent: </span><span class="nf">($trigger) -&gt;</span>
+      <span class="nv">content = </span><span class="kc">null</span>
+      <span class="nv">attr = </span><span class="kc">null</span>
+      <span class="nv">canRemoveAttr = </span><span class="kc">yes</span>
+      <span class="k">if</span> <span class="nx">@triggerContent</span><span class="o">?</span>
+        <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">@triggerContent</span><span class="p">)</span> <span class="k">then</span> <span class="nv">content = </span><span class="nx">@triggerContent</span> <span class="nx">$trigger</span>
+        <span class="k">else</span> <span class="nv">attr = </span><span class="nx">@triggerContent</span>
+      <span class="k">else</span>
+        <span class="k">if</span> <span class="nx">$trigger</span><span class="p">.</span><span class="o">is</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">)</span>
+          <span class="nv">attr = </span><span class="s">&#39;title&#39;</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="nx">$trigger</span><span class="p">.</span><span class="o">is</span><span class="p">(</span><span class="s">&#39;[alt]&#39;</span><span class="p">)</span>
+          <span class="nv">attr = </span><span class="s">&#39;alt&#39;</span>
+          <span class="nv">canRemoveAttr = </span><span class="kc">no</span>
+      <span class="k">if</span> <span class="nx">attr</span><span class="o">?</span>
+        <span class="nv">content = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">attr</span> <span class="nx">attr</span>
+        <span class="k">if</span> <span class="nx">canRemoveAttr</span> <span class="k">then</span> <span class="nx">$trigger</span><span class="p">.</span><span class="nx">removeAttr</span> <span class="nx">attr</span>
+      <span class="k">if</span> <span class="nx">content</span><span class="o">?</span>
+        <span class="nx">$trigger</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;content&#39;</span><span class="p">),</span> <span class="nx">content</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_bindTrigger</code> links each trigger to the tip for: 1) possible appearance
 changes during mouseenter, mouseleave (uses special events) and 2)
 following on mousemove only if <code>doFollow</code> is on. Also note for our
 <code>onMouseMove</code> handler, it's throttled by <code>requestAnimationFrame</code> when

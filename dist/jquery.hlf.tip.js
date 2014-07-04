@@ -35,6 +35,7 @@ Written with jQuery 1.7.2
       defaults: (function(pre) {
         return {
           $viewport: $('body'),
+          triggerContent: null,
           shouldDelegate: true,
           ms: {
             duration: {
@@ -128,6 +129,7 @@ Written with jQuery 1.7.2
       }
 
       Tip.prototype.init = function() {
+        var onMutations, processTrigger, selector;
         _.bindAll(this, '_onTriggerMouseMove', '_setBounds');
         this._setTip = (function(_this) {
           return function($tip) {
@@ -143,10 +145,11 @@ Written with jQuery 1.7.2
         this._$currentTrigger = null;
         this._render();
         this._bind();
-        this.$triggers.each((function(_this) {
-          return function(i, el) {
-            var $trigger;
-            $trigger = $(el);
+        processTrigger = (function(_this) {
+          return function($trigger) {
+            if (!$trigger.length) {
+              return false;
+            }
             $trigger.addClass(_this.classNames.trigger);
             _this._saveTriggerContent($trigger);
             _this._updateDirectionByTrigger($trigger);
@@ -154,7 +157,44 @@ Written with jQuery 1.7.2
               return _this._bindTrigger($trigger);
             }
           };
+        })(this);
+        this.$triggers.each((function(_this) {
+          return function(i, el) {
+            return processTrigger($(el));
+          };
         })(this));
+        this.doLiveUpdate = window.MutationObserver != null;
+        if (this.doLiveUpdate) {
+          selector = this.$triggers.selector;
+          onMutations = (function(_this) {
+            return function(mutations) {
+              var $target, $triggers, mutation, _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = mutations.length; _i < _len; _i++) {
+                mutation = mutations[_i];
+                $target = $(mutation.target);
+                if ($target.hasClass(_this.classNames.content)) {
+                  continue;
+                }
+                if (mutation.addedNodes.length) {
+                  $triggers = $(mutation.addedNodes).find('[title],[alt]');
+                  $triggers.each(function(i, el) {
+                    return processTrigger($(el));
+                  });
+                  _results.push(_this.$triggers = _this.$triggers.add($triggers));
+                } else {
+                  _results.push(void 0);
+                }
+              }
+              return _results;
+            };
+          })(this);
+          this._mutationObserver = new MutationObserver(onMutations);
+          this._mutationObserver.observe(this.$context[0], {
+            childList: true,
+            subtree: true
+          });
+        }
         if (this.shouldDelegate) {
           return this._bindTrigger();
         }
@@ -172,10 +212,32 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype._saveTriggerContent = function($trigger) {
-        var title;
-        title = $trigger.attr('title');
-        if (title != null) {
-          return $trigger.data(this.attr('content'), title).removeAttr('title');
+        var attr, canRemoveAttr, content;
+        content = null;
+        attr = null;
+        canRemoveAttr = true;
+        if (this.triggerContent != null) {
+          if (_.isFunction(this.triggerContent)) {
+            content = this.triggerContent($trigger);
+          } else {
+            attr = this.triggerContent;
+          }
+        } else {
+          if ($trigger.is('[title]')) {
+            attr = 'title';
+          } else if ($trigger.is('[alt]')) {
+            attr = 'alt';
+            canRemoveAttr = false;
+          }
+        }
+        if (attr != null) {
+          content = $trigger.attr(attr);
+          if (canRemoveAttr) {
+            $trigger.removeAttr(attr);
+          }
+        }
+        if (content != null) {
+          return $trigger.data(this.attr('content'), content);
         }
       };
 

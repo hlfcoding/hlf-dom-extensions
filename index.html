@@ -50,7 +50,7 @@
 <p>jQuery extensions and plugins for quality UI. All modules have scoped debug
 flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
 AMD-compatible versions, so you can pick and choose what to use. The only other
-hard dependencies are UnderscoreJS and (obviously) RequireJS. Other dependencies
+hard dependencies is UnderscoreJS. RequireJS is suggested. Other dependencies
 (see Bower file) are for tests and demos.</p>
 <p>The <a href="http://hlfcoding.github.io/hlf-jquery/docs/index.html">annotated source code</a> is also available.</p>
 <h2 id="extensions">Extensions</h2>
@@ -85,6 +85,10 @@ either direction.</li>
 <li>Sample styling that draws tip stems with CSS borders.</li>
 <li>Detailed API.</li>
 </ul>
+<p>Example:</p>
+<pre><code class="lang-javascript">$(&#39;.article-1&#39;).find(&#39;a[title]&#39;).tip(); // Tips will follow cursor.
+$(&#39;.article-2&#39;).find(&#39;a[title]&#39;).snapTip(); // Tips will remain affixed.</code></pre>
+<p>See visual tests for more examples.</p>
 <h3 id="hlf-editable">HLF Editable</h3>
 <p>A <a href="http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html">(WIP) visual test for Editable</a> is available.</p>
 <p>Main features:</p>

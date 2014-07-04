@@ -3,7 +3,7 @@
 jQuery extensions and plugins for quality UI. All modules have scoped debug
 flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
 AMD-compatible versions, so you can pick and choose what to use. The only other
-hard dependencies are UnderscoreJS and (obviously) RequireJS. Other dependencies
+hard dependencies is UnderscoreJS. RequireJS is suggested. Other dependencies
 (see Bower file) are for tests and demos.
 
 The [annotated source code][] is also available.
@@ -47,6 +47,15 @@ Additional features:
 
 - Sample styling that draws tip stems with CSS borders.
 - Detailed API.
+
+Example:
+
+```javascript
+$('.article-1').find('a[title]').tip(); // Tips will follow cursor.
+$('.article-2').find('a[title]').snapTip(); // Tips will remain affixed.
+```
+
+See visual tests for more examples.
 
 ### HLF Editable
 
