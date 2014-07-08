@@ -504,11 +504,9 @@ Written with jQuery 1.7.2
     # `defaultDirection`. Note that this latter check is placed last for
     # performance savings.
     isDirection: (directionComponent, $trigger) ->
-      (
-        @$tip.hasClass(@classNames[directionComponent]) or (
-          (not $trigger? or not $trigger.data(@attr('direction'))) and 
-          _.include(@defaultDirection, directionComponent)
-        )
+      @$tip.hasClass(@classNames[directionComponent]) or (
+        (not $trigger? or not $trigger.data(@attr('direction'))) and
+        _.include(@defaultDirection, directionComponent)
       )
 
     # `wakeByTrigger` is the main toggler and a `_state` updater. It takes an
