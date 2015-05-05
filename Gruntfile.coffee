@@ -115,6 +115,8 @@ module.exports = (grunt) ->
         dest: 'gh-pages/index.html'
     qunit:
       all:
+        options:
+          timeout: 20000
         expand: yes
         src: 'tests/*.unit.html'
     sass:
