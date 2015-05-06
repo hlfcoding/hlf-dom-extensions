@@ -180,4 +180,9 @@ module.exports = (grunt) ->
     'copy:release'
   ]
 
-  grunt.registerTask 'test', ['qunit']
+  grunt.registerTask 'test', [
+    'coffee:tests'
+    'sass:tests'
+    'autoprefixer:tests'
+    'qunit'
+  ]
