@@ -1,135 +1,56 @@
 matchdep = require 'matchdep'
 
+aspects = {} # Like an aspect of work. Somewhat maps to directories and tasks.
+
+aspects[name] = require "./build/#{name}" for name in [
+  'dist', 'docs', 'gh-pages', 'lib', 'release', 'src', 'tests'
+]
+
 module.exports = (grunt) ->
 
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
+
     autoprefixer:
       options:
         browsers: ['last 2 versions', 'ie 9']
         cascade: yes
-      src:
-        expand: yes
-        src: 'dist/**/*.css'
-        ext: '.css'
-        extDot: 'last'
-      tests:
-        expand: yes
-        src: 'tests/**/*.css'
-        ext: '.css'
-        extDot: 'last'
-    bower:
-      install:
-        options:
-          cleanBowerDir: yes
-          cleanTargetDir: no
-          copy: yes
-          install: yes
-          layout: (type, component) -> type # Just the file.
-          targetDir: './lib'
-          verbose: yes
-    bump:
-      options:
-        files: [
-          'bower.json'
-          'package.json'
-        ]
-        commitFiles: ['.']
-        pushTo: 'origin'
+      src: aspects.src.autoprefixer
+      tests: aspects.tests.autoprefixer
+
+    bower: aspects.lib.bower
+
+    bump: aspects.release.bump
+
     clean:
-      dist: [
-        'dist/*'
-        '!dist/.gitignore'
-      ]
-      docs: [
-        'docs/*'
-        '!docs/.gitignore'
-      ]
-      'gh-pages': [
-        'gh-pages/*'
-        '!gh-pages/.gitignore'
-        '!gh-pages/template.html'
-      ]
-      lib: [
-        'lib/*'
-        '!lib/.gitignore'
-      ]
-      release: [
-        'release/*'
-      ]
+      dist: aspects.dist.clean
+      docs: aspects.docs.clean
+      'gh-pages': aspects['gh-pages'].clean
+      lib: aspects.lib.clean
+      release: aspects.release.clean
+
     coffee:
-      src:
-        expand: yes
-        src: 'src/**/*.coffee'
-        dest: 'dist/'
-        ext: '.js'
-        extDot: 'last'
-        flatten: yes
-      tests:
-        expand: yes
-        src: 'tests/**/*.coffee'
-        ext: '.js'
-        extDot: 'last'
+      src: aspects.src.coffee
+      tests: aspects.tests.coffee
+
     copy:
-      dist:
-        expand: yes
-        src: 'src/**/*.scss'
-        dest: 'dist/'
-        extDot: 'last'
-        flatten: yes
-      'gh-pages':
-        src: [
-          'dist/**/*'
-          'docs/**/*'
-          'examples/**/*'
-          'lib/**/*'
-          'tests/**/*.{css,html,js}'
-          'README.md'
-        ]
-        dest: 'gh-pages/'
-      release:
-        expand: yes
-        src: 'dist/*'
-        dest: 'release/'
-        extDot: 'last'
-        flatten: yes
-    'gh-pages':
-      options:
-        base: 'gh-pages'
-        add: yes
-      src: [ '**' ]
-    groc:
-      all:
-        src: [
-          'src/**/*.{coffee,scss}'
-          'tests/**/*.{coffee,scss}'
-          'README.md'
-        ]
-      options:
-        out: 'docs/'
+      dist: aspects.dist.copy
+      'gh-pages': aspects['gh-pages'].copy
+      release: aspects.release.copy
+
+    'gh-pages': aspects['gh-pages']['gh-pages']
+      
+    groc: aspects.docs.groc
+
     markdown:
-      'gh-pages':
-        options:
-          template: 'gh-pages/template.html'
-        src: 'gh-pages/README.md'
-        dest: 'gh-pages/index.html'
-    qunit:
-      all:
-        expand: yes
-        src: 'tests/*.unit.html'
+      'gh-pages': aspects['gh-pages'].markdown
+
+    qunit: aspects.tests.qunit
+
     sass:
-      src:
-        expand: yes
-        src: 'src/**/*.scss'
-        dest: 'dist/'
-        ext: '.css'
-        extDot: 'last'
-        flatten: yes
-      tests:
-        expand: yes
-        src: 'tests/**/*.scss'
-        ext: '.css'
-        extDot: 'last'
+      src: aspects.src.sass
+      tests: aspects.tests.sass
+
     watch:
       # Caveat: These watch tasks do not clean.
       css:
@@ -141,48 +62,6 @@ module.exports = (grunt) ->
 
   grunt.loadNpmTasks plugin for plugin in matchdep.filterDev 'grunt-*'
 
-  grunt.registerTask 'default', [
-    'lib'
-    'dist'
-    'watch'
-  ]
+  grunt.registerTask 'default', ['lib', 'dist', 'watch']
 
-  grunt.registerTask 'dist', [
-    'clean:dist'
-    'copy:dist'
-    'coffee'
-    'sass'
-    'autoprefixer'
-  ]
-
-  grunt.registerTask 'docs', [
-    'clean:docs'
-    'groc'
-  ]
-
-  grunt.registerTask 'lib', [
-    'clean:lib'
-    'bower'
-  ]
-
-  grunt.registerTask 'pages', [
-    'dist'
-    'docs'
-    'clean:gh-pages'
-    'copy:gh-pages'
-    'markdown:gh-pages'
-    'gh-pages'
-  ]
-
-  grunt.registerTask 'release', [
-    'dist'
-    'clean:release'
-    'copy:release'
-  ]
-
-  grunt.registerTask 'test', [
-    'coffee:tests'
-    'sass:tests'
-    'autoprefixer:tests'
-    'qunit'
-  ]
+  aspect.task() for name, aspect of aspects when name isnt 'src'
