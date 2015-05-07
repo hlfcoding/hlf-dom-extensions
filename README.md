@@ -90,8 +90,8 @@ Start off with `npm install`.
       [
         "dist/*",
         "docs/*",
-        "jquery/tests/*.css",
-        "jquery/tests/*.js"
+        "tests/*.css",
+        "tests/*.js"
       ]
     }
   ]
