@@ -6,110 +6,13 @@
     <link rel="stylesheet" href="../lib/normalize.css" media="all" />
     <link rel="stylesheet" href="css/base.css" media="all" />
     <link rel="stylesheet" href="css/tip.css" media="all" />
-<!--[if lte IE 6]>
-    <style type="text/css">
-      .js-tip .wrap {
-        width: 18em;
-      }
-      #override .js-tip .top .js-tip-stem { border-top-color: #666; bottom: -1em; }
-      #override .js-tip .bottom .js-tip-stem { border-bottom-color: #666; top: -1em; }
-      #override .js-tip .js-tip-stem {
-        border-color: orange;
-        filter: chroma(color=orange);
-      }
-    </style>
-<![endif]-->
-    <!-- Uncomment to test without AMD -->
-    <!--
-    <script src="../lib/jquery.js" ></script>
-    <script src="../lib/underscore.js" ></script>
-    <script src="../dist/jquery.extension.hlf.core.js"></script>
-    <script src="../dist/jquery.extension.hlf.event.js"></script>
-    <script src="../dist/jquery.hlf.tip.js"></script>
-    <script src="js/tip.js"></script>
-    -->
     <script data-main="js/tip" src="../lib/require.js"></script>
   </head>
   <body id="override" class="edge-call">
-    <h1>HLF Tip Test</h1>
-    <div id="main">
-      <section class="default-call visual-test">
-        <header>by default</header>
-        <p>
-          <a class="trigger" href="#" title="foo">tooltip trigger</a> |
-          <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">tooltip trigger</a> |
-          <a class="trigger" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">tooltip trigger</a>
-        </p>
-      </section>
-      <section class="list-call visual-test">
-        <header>snapping with a list</header>
-        <ul class="list">
-          <li><a class="trigger" href="#" title="This is tooltip 1">
-            tooltip trigger
-          </a></li>
-          <li><a class="trigger" href="#" title="This is tooltip 2">
-            tooltip trigger
-          </a></li>
-          <li><a class="trigger" href="#" title="This is tooltip 3">
-            tooltip trigger
-          </a></li>
-        </ul>
-        <footer>
-          <button class="list-append">load more</button>
-        </footer>
-      </section>
-      <section class="bar-call visual-test">
-        <header>snapping with a bar</header>
-        <nav class="bar">
-          <a class="trigger" href="#" title="This is tooltip 1">
-            tooltip trigger
-          </a>
-          <a class="trigger" href="#" title="This is tooltip 2">
-            tooltip trigger
-          </a>
-          <a class="trigger" href="#" title="This is tooltip 3">
-            tooltip trigger
-          </a>
-        </nav>
-      </section>
-      <section class="grid-call visual-test">
-        <header>snapping with a grid</header>
-        <ul class="grid">
-          <li><img src="http://placehold.it/32/fff/png/000/&text=1" alt="This is tooltip 1"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=2" alt="This is tooltip 2"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=3" alt="This is tooltip 3"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=4" alt="This is tooltip 4"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=5" alt="This is tooltip 5"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=6" alt="This is tooltip 6"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=7" alt="This is tooltip 7"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=8" alt="This is tooltip 8"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=9" alt="This is tooltip 9"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=10" alt="This is tooltip 10"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=11" alt="This is tooltip 11"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=12" alt="This is tooltip 12"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=13" alt="This is tooltip 13"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=14" alt="This is tooltip 14"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=15" alt="This is tooltip 15"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=16" alt="This is tooltip 16"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=17" alt="This is tooltip 17"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=18" alt="This is tooltip 18"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=19" alt="This is tooltip 19"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=20" alt="This is tooltip 20"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=21" alt="This is tooltip 21"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=22" alt="This is tooltip 22"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=23" alt="This is tooltip 23"></li>
-          <li><img src="http://placehold.it/32/fff/png/000/&text=24" alt="This is tooltip 24"></li>
-        </ul>
-      </section>
-    </div>
-    <a class="visual-test-fragment trigger top right" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla, vel, ratione tenetur iste ipsam nisi nostrum error dolores corporis inventore architecto similique at dolor blanditiis accusamus dolorem quidem necessitatibus? Nemo.">
-      top right corner
-    </a>
-    <a class="visual-test-fragment trigger bottom left" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. A, corporis, neque, eos modi autem placeat quas velit qui quasi enim quidem excepturi iure? Quod, praesentium, pariatur impedit provident a cupiditate.">
-      bottom left corner
-    </a>
-    <a class="visual-test-fragment trigger bottom right" href="#" title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, ipsum, reiciendis, porro quasi asperiores ad adipisci laudantium amet tempore perspiciatis placeat laboriosam suscipit repudiandae dignissimos ut unde quis molestiae! Ut.">
-      bottom right corner
-    </a>
+    <header>
+      <h1>HLF Tip Test</h1>
+      <span>(see <a data-rel="docs" href="../docs/tests/js/tip.html" target="_blank">docs</a> for code)</span>
+    </header>
+    <div id="main"></div>
   </body>
 </html>

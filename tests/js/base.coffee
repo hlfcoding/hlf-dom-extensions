@@ -3,6 +3,9 @@ define [
   'underscore'
 ], ($, _) ->
 
+  # Unit Test Helpers
+  # -----------------
+
   QUnit.extend QUnit.assert,
 
     hasFunctions: (object, names, message) ->
@@ -18,3 +21,5 @@ define [
         .size().isEqual names.length
         .value()
       QUnit.push result, (actual = result), (expected = yes), message
+
+  yes
