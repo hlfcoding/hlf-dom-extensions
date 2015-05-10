@@ -23,13 +23,18 @@ define [
       config.vars ?= {}
       # - Build test template vars.
       vars = _.pick config, 'label', 'className', 'footerHtml'
-      vars.footerHtml ?= ''
+      vars.footerHtml ?= '' unless config.asFragments
       vars.html = _.template config.template, config.vars
-      # - Render test to get container element.
-      $context = $('#main').renderVisualTest vars
+      # - Render test to get test context (or fragments).
+      $container = if config.asFragments then $('body') else $('#main')
+      opts = { template: '<%= html %>' } if config.asFragments
+      $test = $container.renderVisualTest vars, opts
+      if config.asFragments
+        $test = $test.addClass 'visual-test-fragment'
+                     .filter '.visual-test-fragment'
       # - Run tests.
-      config.beforeTest $context if config.beforeTest?
-      config.test $context
+      config.beforeTest $test if config.beforeTest?
+      config.test $test
 
   # Helpers for additional setup.
   _.extend $.visualTest,
