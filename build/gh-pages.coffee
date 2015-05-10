@@ -15,10 +15,10 @@ module.exports =
   ]
 
   copy:
+    expand: yes
     src: [
       'dist/**/*'
       'docs/**/*'
-      'examples/**/*'
       'lib/**/*'
       'tests/**/*.{css,html,js}'
       'README.md'
