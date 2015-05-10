@@ -20,7 +20,8 @@ module.exports =
       'dist/**/*'
       'docs/**/*'
       'lib/**/*'
-      'tests/**/*.{css,html,js}'
+      'tests/**/*'
+      '!tests/**/*.{scss,coffee}'
       'README.md'
     ]
     dest: 'gh-pages/'
