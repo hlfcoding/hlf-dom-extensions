@@ -1,71 +1,155 @@
-$line-color: #ccc;
-$fill-color: #fff;
+/* This is only styling for visual test pages. */
+
+$bg-color: #dadad6;
+$fill-color: rgba(#fff, 0.95);
+$line-color: rgba(#000, 0.1);
+$accent-color: #06d;
+
+$line-size: 3px;
 $radius-size: 10px;
-$text-size: 14px;
-$line-size: 20px;
-%panel-skin {
-  background-color: $fill-color;
-  border: 1px solid $line-color;
-}
-.clearfix {
-  &::before,
-  &::after {
+$rem: 14px; // Until we drop IE 8, rem can't replace this.
+
+%clearfix {
+  &::before, &::after {
     content: " ";
     display: table;
   }
-  &::after {
-    clear: both;
+  &::after { clear: both; }
+}
+
+%dimmed {
+  opacity: 0.5;
+  &:hover, &:focus { opacity: 1.0; }
+}
+
+%panel-skin {
+  background: {
+    color: $fill-color;
+    clip: padding-box;
   }
-  & {
-    *zoom: 1;
+  border: $line-size solid $line-color;
+  box: {
+    shadow: inset 0 0 0 1px rgba(#fff, 0.7), /* highlight */
+            inset 0 0 $rem rgba(#000, 0.05); /* shadow */
+    sizing: border-box;
+  }
+  &:hover {
+    background-color: opacify($fill-color, 0.1);
   }
 }
 
+%pull-left-right {
+  padding: { left: $rem; right: $rem; }
+  margin: { left: -$rem; right: -$rem; }
+}
+
+// Start output:
+
+/* base styling */
+html {
+  font-size: $rem;
+}
 body {
-  background-color: #eaeae6;
-  font: {
-    family: Helvetica, sans-serif;
-    size: $text-size;
+  background-color: $bg-color;
+  font-family: Helvetica, sans-serif;
+  padding: $rem;
+  padding-top: 0;
+}
+a {
+  color: $accent-color;
+  text-decoration: none;
+  &:hover {
+    color: saturate(lighten($accent-color, 10%), 10%);
+    text-decoration: underline;
   }
-  padding: $text-size;
 }
-h1 {
-  font-size: 1.5 * $text-size;
+button {
+  background: {
+    color: lighten($bg-color, 10%);
+    clip: padding-box;
+  }
+  border: 1px solid rgba(#000, 0.5);
+  padding: 0.3em 0.6em;
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.3em rgba(#000, 0.1);
+  }
+}
+
+body > header { /* test page header */
+  @extend %pull-left-right;
+  background: darken($bg-color, 70%);
+  box-shadow: inset 0 30px 40px -20px rgba(#000, 0.4);
+  color: $bg-color;
+  > * { display: inline-block; }
+  > h1 {
+    font-weight: normal; margin: 0; // reset
+    text-shadow: 0 1px rgba(#000, 0.7);
+  }
+  > span {
+    @extend %dimmed;
+    margin-left: $rem;
+  }
+}
+
+h1 { /* test page title */
+  font-size: 1.5 * $rem;
   letter-spacing: -1px;
-}
-p {
-  padding: $text-size 0;
+  padding: { top: 4 * $rem; bottom: $rem; }
 }
 
-#main {
-  padding: (2 * $text-size) 0;
+#main { /* non-edge tests container */
+  padding: $rem 0 (2 * $rem);
 }
 
-section.visual-test {
+p { /* common test content container */
+  padding: $rem 0;
+}
+
+section.visual-test { /* main test styles */
+  $box-shadow: inset 0 1px 4px rgba(#000, 0.3), /* shadow */
+               0 1px 0 rgba(#fff, 0.3); /* highlight */
+  padding-bottom: $rem;
   header {
+    @extend %clearfix, %pull-left-right;
+    background: darken($bg-color, 10%);
+    box-shadow: $box-shadow;
     font-weight: bold;
-    &::after {
-      content: ':';
+    padding: { top: $rem; bottom: $rem / 2; }
+    text-shadow: 0 1px rgba(#fff, 0.3);
+    > .label::after { content: ':'; }
+    > [data-rel=docs] {
+      @extend %dimmed;
+      float: right;
+      font-weight: normal;
     }
   }
-  footer {
-    margin-bottom: 1em;
+  footer:not(:empty) {
+    background: darken($bg-color, 5%);
+    border-radius: $radius-size;
+    box-shadow: $box-shadow;
+    margin-bottom: $rem;
+    padding: $rem / 2;
+    > * { @extend %dimmed; }
+    > button {
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
   }
 }
 
 .box {
   @extend %panel-skin;
   border-radius: $radius-size;
-  margin: $text-size 0;
-  padding: $text-size;
+  margin: $rem 0;
+  padding: $rem;
 }
 
 .list-item {
   @extend %panel-skin;
   border-bottom-width: 0;
-  box-sizing: border-box;
   display: block;
-  padding: $text-size;
+  padding: $rem;
 }
 .list-item-first {
   border-top: {
@@ -77,11 +161,13 @@ section.visual-test {
   border-bottom: {
     left-radius: $radius-size;
     right-radius: $radius-size;
-    width: 1px;
+    width: $line-size;
   }
 }
 .list {
-  margin: $text-size 0;
+  list-style: none;
+  margin: $rem 0;
+  padding: 0;
   .item {
     width: 300px;
     @extend .list-item;
@@ -101,10 +187,9 @@ section.visual-test {
 .bar-item {
   @extend %panel-skin;
   border-right-width: 0;
-  box-sizing: border-box;
   display: block;
   float: left;
-  padding: $text-size;
+  padding: $rem;
 }
 .bar-item-first {
   border: {
@@ -116,18 +201,13 @@ section.visual-test {
   border: {
     top-right-radius: $radius-size;
     bottom-right-radius: $radius-size;
-    width: 1px;
+    width: $line-size;
   }
 }
 .bar {
-  @extend .clearfix;
-  margin: $text-size 0;
-  .item {
-    $height: 60px;
-    @extend .bar-item;
-    height: $height;
-    line-height: $height - 2 * $text-size;
-  }
+  @extend %clearfix;
+  margin: $rem 0;
+  .item { @extend .bar-item; }
   > a, li.no-a {
     @extend .item;
     &:first-child { @extend .bar-item-first; }
@@ -142,28 +222,33 @@ section.visual-test {
 
 .edge {
   position: absolute;
-  &.top { top: $text-size; }
-  &.right { right: $text-size; }
-  &.bottom { bottom: $text-size; }
-  &.left { left: $text-size; }
+  &.affixed { position: fixed; }
+  &.top { top: $rem; }
+  &.right { right: $rem; }
+  &.bottom { bottom: $rem; }
+  &.left { left: $rem; }
 }
 .edge-call {
   &:not(body) {
     position: relative;
   }
-  > .visual-test-fragment { @extend .edge; }
+  > .visual-test-fragment {
+    @extend .edge, %panel-skin;
+    border-radius: $radius-size;
+    padding: $rem;
+  }
 }
 
 .grid-item {
   float: left;
   line-height: 0;
   margin: {
-    bottom: $text-size / 2;
-    right: $text-size / 2;
+    bottom: $rem / 2;
+    right: $rem / 2;
   }
 }
 .grid {
-  @extend .clearfix;
+  @extend %clearfix;
   list-style: none;
   padding-left: 0;
   width: 350px;

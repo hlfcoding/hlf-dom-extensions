@@ -13,7 +13,7 @@ module.exports = (grunt) ->
 
     autoprefixer:
       options:
-        browsers: ['last 2 versions', 'ie 9']
+        browsers: ['last 2 versions', 'ie >= 8']
         cascade: yes
       src: aspects.src.autoprefixer
       tests: aspects.tests.autoprefixer
