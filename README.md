@@ -1,4 +1,4 @@
-# HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery)
+# HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery) ![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg)
 
 jQuery extensions and plugins for quality UI. All modules have scoped debug
 flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
