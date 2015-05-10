@@ -24,6 +24,7 @@ define [
       # - Build test template vars.
       vars = _.pick config, 'label', 'className', 'footerHtml'
       vars.footerHtml ?= '' unless config.asFragments
+      vars.docsUrl = $('body > header [data-rel=docs]').attr('href') + "##{config.anchorName}"
       vars.html = _.template config.template, config.vars
       # - Render test to get test context (or fragments).
       $container = if config.asFragments then $('body') else $('#main')
@@ -61,7 +62,10 @@ define [
   $.fn.renderVisualTest.defaults =
     template: _.template """
               <section class="<%- className %> visual-test">
-                <header><%- label %></header>
+                <header>
+                  <span class="label"><%- label %></span>
+                  <a data-rel="docs" href="<%= docsUrl %>">docs</a>
+                </header>
                 <%= html %>
                 <footer><%= footerHtml %></footer>
               </section>
