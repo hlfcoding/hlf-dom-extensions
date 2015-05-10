@@ -1,121 +1,85 @@
-<!DOCTYPE html><html lang="en"><head><title>index</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="index"><meta name="groc-project-path" content="README.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">README.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlfjquerylibrarybuildstatushttpstravisciorghlfcodinghlfjquerysvgbranchmasterhttpstravisciorghlfcodinghlfjquery">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master" alt="Build Status" title="" /></a></h1>
-
+<!DOCTYPE html><html lang="en"><head><title>index</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="index"><meta name="groc-project-path" content="README.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">README.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-jquery-library-build-status-https-travis-ci-org-hlfcoding-hlf-jquery-svg-branch-master-https-travis-ci-org-hlfcoding-hlf-jquery-">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master" alt="Build Status"></a></h1>
 <p>jQuery extensions and plugins for quality UI. All modules have scoped debug
 flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
 AMD-compatible versions, so you can pick and choose what to use. The only other
-hard dependencies is UnderscoreJS. RequireJS is suggested. Other dependencies
+hard dependency is UnderscoreJS. RequireJS is suggested. Other dependencies
 (see Bower file) are for tests and demos.</p>
-
 <p>The <a href="http://hlfcoding.github.io/hlf-jquery/docs/index.html">annotated source code</a> is also available.</p>
-
 <h2 id="extensions">Extensions</h2>
-
 <p>All extensions should have test pages.</p>
-
 <h3 id="core">Core</h3>
-
 <p>Main features:</p>
-
 <ul>
 <li>Generate jQuery plugin methods from plugin definitions.</li>
 <li>Helpers to create mixins that can be used for plugin API.</li>
 <li>Provide no-conflict support.</li>
 </ul>
-
 <h3 id="event">Event</h3>
-
 <p>Main features:</p>
-
 <ul>
 <li>Hover-intent provides rate-limited versions of mouseenter and mouseleave 
 events through a customizable delay.</li>
 </ul>
-
 <h2 id="plugins">Plugins</h2>
-
 <p>All plugins should have test pages and sample styles. Some plugins may have
 required styles. When possible, styles are made customizeable as SCSS mixins.</p>
-
 <h3 id="hlf-tip">HLF Tip</h3>
-
 <p>A <a href="http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html">visual test for Tip</a> is available.</p>
-
 <p>Main features:</p>
-
 <ul>
 <li>Uses custom hover intent events that allow for custom delays.</li>
 <li>Re-use the same tip for a group of triggers.</li>
 <li>Has a snapping extension that allows snapping to the trigger or tracking in
 either direction.</li>
 </ul>
-
 <p>Additional features:</p>
-
 <ul>
 <li>Sample styling that draws tip stems with CSS borders.</li>
 <li>Detailed API.</li>
 </ul>
-
 <p>Example:</p>
-
-<pre><code class="javascript">$('.article-1').find('a[title]').tip(); // Tips will follow cursor.
-$('.article-2').find('a[title]').snapTip(); // Tips will remain affixed.
-</code></pre>
-
+<pre><code class="lang-javascript">$(<span class="hljs-string">'.article-1'</span>).find(<span class="hljs-string">'a[title]'</span>).tip(); <span class="hljs-comment">// Tips will follow cursor.</span>
+$(<span class="hljs-string">'.article-2'</span>).find(<span class="hljs-string">'a[title]'</span>).snapTip(); <span class="hljs-comment">// Tips will remain affixed.</span></code></pre>
 <p>See visual tests for more examples.</p>
-
 <h3 id="hlf-editable">HLF Editable</h3>
-
 <p>A <a href="http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html">(WIP) visual test for Editable</a> is available.</p>
-
 <p>Main features:</p>
-
 <ul>
 <li>Uses mixins for encapsulate editing behaviors, so plugin instances can be
 composed based on data-attribute configuration. </li>
 <li>Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).</li>
 </ul>
-
 <h2 id="development">Development</h2>
-
 <p>Start off with <code>npm install</code>.</p>
-
 <h3 id="grunt-tasks">Grunt Tasks</h3>
-
 <ul>
 <li>Use <code>grunt</code> to start developing.</li>
 <li>Use <code>grunt dist</code> to build.</li>
 <li>Use <code>grunt docs</code> to generate Groc documentation.</li>
 <li>Use <code>grunt test</code> to test.</li>
 </ul>
-
 <h3 id="sample-st2-project-file">Sample ST2 Project File</h3>
-
-<pre><code class="json">{
-  "folders":
-  [
+<pre><code class="lang-json">{
+  "<span class="hljs-attribute">folders</span>":
+  <span class="hljs-value">[
     {
-      "path": "&lt;projects&gt;",
-      "file_exclude_patterns":
-      [
-        "dist/*",
-        "docs/*",
-        "jquery/tests/*.css",
-        "jquery/tests/*.js"
+      "<span class="hljs-attribute">path</span>": <span class="hljs-value"><span class="hljs-string">"hlf-jquery"</span></span>,
+      "<span class="hljs-attribute">file_exclude_patterns</span>":
+      <span class="hljs-value">[
+        <span class="hljs-string">"dist/*"</span>,
+        <span class="hljs-string">"docs/*"</span>,
+        <span class="hljs-string">"tests/*.css"</span>,
+        <span class="hljs-string">"tests/*.js"</span>
       ]
-    }
+    </span>}
   ]
-}
-</code></pre>
-
+</span>}</code></pre>
 <h2 id="license">License</h2>
-
 <p>The MIT License (MIT)</p>
-
-<pre><code>Copyright (c) 2014 Peng Wang
+<pre><code>Copyright (c) 2014-2015 Peng Wang
 
 Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
+copy of this software and associated documentation files (the &quot;Software&quot;),
 to deal in the Software without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of the Software, and to permit persons to whom the
@@ -124,11 +88,10 @@ Software is furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
-</code></pre></div></div></div></div></body></html>
+DEALINGS IN THE SOFTWARE.</code></pre></div></div></div></div></body></html>

@@ -3,7 +3,7 @@
 jQuery extensions and plugins for quality UI. All modules have scoped debug
 flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
 AMD-compatible versions, so you can pick and choose what to use. The only other
-hard dependencies is UnderscoreJS. RequireJS is suggested. Other dependencies
+hard dependency is UnderscoreJS. RequireJS is suggested. Other dependencies
 (see Bower file) are for tests and demos.
 
 The [annotated source code][] is also available.
@@ -85,13 +85,13 @@ Start off with `npm install`.
   "folders":
   [
     {
-      "path": "<projects>",
+      "path": "hlf-jquery",
       "file_exclude_patterns":
       [
         "dist/*",
         "docs/*",
-        "jquery/tests/*.css",
-        "jquery/tests/*.js"
+        "tests/*.css",
+        "tests/*.js"
       ]
     }
   ]
@@ -102,7 +102,7 @@ Start off with `npm install`.
 
 The MIT License (MIT)
 
-    Copyright (c) 2014 Peng Wang
+    Copyright (c) 2014-2015 Peng Wang
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),

@@ -1,37 +1,37 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core"><meta name="groc-project-path" content="tests/js/core.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nx">require</span><span class="p">.</span><span class="nx">config</span>
-  <span class="nv">baseUrl: </span><span class="s">&#39;../lib&#39;</span>
-  <span class="nv">paths:</span>
-    <span class="nv">hlf: </span><span class="s">&#39;../dist&#39;</span>
-    <span class="nv">test: </span><span class="s">&#39;../tests/js&#39;</span>
+<!DOCTYPE html><html lang="en"><head><title>tests/js/core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core"><meta name="groc-project-path" content="tests/js/core.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
+  <span class="hljs-attribute">baseUrl</span>: <span class="hljs-string">'../lib'</span>
+  <span class="hljs-attribute">paths</span>:
+    <span class="hljs-attribute">hlf</span>: <span class="hljs-string">'../dist'</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-string">'../tests/js'</span>
 
-<span class="nx">require</span> <span class="p">[</span>
-  <span class="s">&#39;jquery&#39;</span>
-  <span class="s">&#39;underscore&#39;</span>
-  <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
-  <span class="s">&#39;test/base&#39;</span>
-  <span class="s">&#39;test/core.mixin&#39;</span>
-  <span class="s">&#39;test/core.plugin&#39;</span>
-<span class="p">],</span> <span class="nf">($, _, hlf) -&gt;</span>
-  <span class="nv">shouldRunVisualTests = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#qunit&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
+<span class="hljs-built_in">require</span> [
+  <span class="hljs-string">'jquery'</span>
+  <span class="hljs-string">'underscore'</span>
+  <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
+  <span class="hljs-string">'test/base'</span>
+  <span class="hljs-string">'test/core.mixin'</span>
+  <span class="hljs-string">'test/core.plugin'</span>
+], <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
+  shouldRunVisualTests = $(<span class="hljs-string">'#qunit'</span>).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
 
-  <span class="k">if</span> <span class="nx">shouldRunVisualTests</span> <span class="k">then</span> <span class="nx">$</span> <span class="nf">-&gt;</span>
-  <span class="k">else</span>
+  <span class="hljs-keyword">if</span> shouldRunVisualTests <span class="hljs-keyword">then</span> $ -&gt;
+  <span class="hljs-keyword">else</span>
 
-    <span class="nx">QUnit</span><span class="p">.</span><span class="nx">module</span> <span class="s">&#39;other&#39;</span>
+    QUnit.<span class="hljs-built_in">module</span> <span class="hljs-string">'other'</span>
 
-    <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;exports&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
-      <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">hlf</span><span class="p">,</span>
-        <span class="s">&#39;Namespace should exist.&#39;</span>
+    QUnit.test <span class="hljs-string">'exports'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
+      assert.ok hlf,
+        <span class="hljs-string">'Namespace should exist.'</span>
 
-    <span class="nx">QUnit</span><span class="p">.</span><span class="nx">test</span> <span class="s">&#39;noConflict&#39;</span><span class="p">,</span> <span class="nf">(assert) -&gt;</span>
-      <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">$</span><span class="p">.</span><span class="nx">createPlugin</span><span class="p">,</span>
-        <span class="s">&#39;Method shortcut for createPlugin should exist.&#39;</span>
-      <span class="nx">hlf</span><span class="p">.</span><span class="nx">noConflict</span><span class="p">()</span>
-      <span class="nx">assert</span><span class="p">.</span><span class="nx">strictEqual</span> <span class="nx">$</span><span class="p">.</span><span class="nx">createPlugin</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span>
-        <span class="s">&#39;Method shortcut for createPlugin should be back to original value.&#39;</span>
-      <span class="nx">assert</span><span class="p">.</span><span class="nx">ok</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span><span class="p">,</span>
-        <span class="s">&#39;Original method for createPlugin should still exist.&#39;</span>
+    QUnit.test <span class="hljs-string">'noConflict'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
+      assert.ok $.createPlugin,
+        <span class="hljs-string">'Method shortcut for createPlugin should exist.'</span>
+      hlf.noConflict()
+      assert.strictEqual $.createPlugin, <span class="hljs-literal">undefined</span>,
+        <span class="hljs-string">'Method shortcut for createPlugin should be back to original value.'</span>
+      assert.ok hlf.createPlugin,
+        <span class="hljs-string">'Original method for createPlugin should still exist.'</span>
 
-    <span class="nx">QUnit</span><span class="p">.</span><span class="nx">start</span><span class="p">()</span>
+    QUnit.start()
 
-  <span class="kc">yes</span></div></div></div></div></body></html>
+  <span class="hljs-literal">yes</span></div></div></div></div></body></html>

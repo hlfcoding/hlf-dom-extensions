@@ -1,116 +1,116 @@
-<!DOCTYPE html><html lang="en"><head><title>src/css/jquery.hlf.tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/css/jquery.hlf.tip"><meta name="groc-project-path" content="src/css/jquery.hlf.tip.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/css/jquery.hlf.tip.scss</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="k">@mixin</span><span class="nf"> tip-skin</span> <span class="p">(</span><span class="nv">$fill-color</span><span class="o">,</span> <span class="nv">$text-color</span><span class="o">,</span> <span class="nv">$stem-color</span><span class="o">:</span><span class="n">null</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="nv">$stem-color</span><span class="o">:</span> <span class="nv">$fill-color</span> <span class="nv">!default</span><span class="p">;</span>
-  <span class="nc">.js-tip-content</span> <span class="p">{</span>
-    <span class="na">background-color</span><span class="o">:</span> <span class="nv">$fill-color</span><span class="p">;</span>
-    <span class="na">color</span><span class="o">:</span> <span class="nv">$text-color</span><span class="p">;</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Declaration structure from base styles.</p></div></div><div class="code"><div class="wrapper">  <span class="k">&amp;</span><span class="nc">.js-tip-right.js-snap-tip-y-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-right</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-skin</span><span class="p">(</span><span class="no">right</span><span class="o">,</span> <span class="nv">$stem-color</span><span class="p">);</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-tip-left.js-snap-tip-y-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-left</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-skin</span><span class="p">(</span><span class="no">left</span><span class="o">,</span> <span class="nv">$stem-color</span><span class="p">);</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-tip-bottom.js-snap-tip-x-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-bottom</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-skin</span><span class="p">(</span><span class="no">bottom</span><span class="o">,</span> <span class="nv">$stem-color</span><span class="p">);</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-tip-top.js-snap-tip-x-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-top</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-skin</span><span class="p">(</span><span class="no">top</span><span class="o">,</span> <span class="nv">$stem-color</span><span class="p">);</span> <span class="p">}</span>
-<span class="p">}</span>
+<!DOCTYPE html><html lang="en"><head><title>src/css/jquery.hlf.tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/css/jquery.hlf.tip"><meta name="groc-project-path" content="src/css/jquery.hlf.tip.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/css/jquery.hlf.tip.scss</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> tip-skin</span> (<span class="hljs-variable">$fill-color</span>, <span class="hljs-variable">$text-color</span>, <span class="hljs-variable">$stem-color</span>:null)
+{</span>
+  <span class="hljs-variable">$stem-color</span><span class="hljs-value">: <span class="hljs-variable">$fill-color</span> !default;</span>
+  <span class="hljs-class">.js-tip-content</span> {
+    <span class="hljs-attribute">background-color</span><span class="hljs-value">: <span class="hljs-variable">$fill-color</span>;</span>
+    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-variable">$text-color</span>;</span>
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Declaration structure from base styles.</p></div></div><div class="code"><div class="wrapper">  &amp;<span class="hljs-class">.js-tip-right</span><span class="hljs-class">.js-snap-tip-y-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-right</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-skin</span>(right, <span class="hljs-variable">$stem-color</span>);</span> }
+  &amp;<span class="hljs-class">.js-tip-left</span><span class="hljs-class">.js-snap-tip-y-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-left</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-skin</span>(left, <span class="hljs-variable">$stem-color</span>);</span> }
+  &amp;<span class="hljs-class">.js-tip-bottom</span><span class="hljs-class">.js-snap-tip-x-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-bottom</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-skin</span>(bottom, <span class="hljs-variable">$stem-color</span>);</span> }
+  &amp;<span class="hljs-class">.js-tip-top</span><span class="hljs-class">.js-snap-tip-x-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-top</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-skin</span>(top, <span class="hljs-variable">$stem-color</span>);</span> }
+}
 
-<span class="k">@mixin</span><span class="nf"> _stem-skin</span> <span class="p">(</span><span class="nv">$side</span><span class="o">,</span> <span class="nv">$stem-color</span><span class="p">)</span> <span class="p">{</span>
-  <span class="na">border-color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span> <span class="c1">// Reset.</span>
-  <span class="nt">border-</span><span class="nn">#</span><span class="p">{</span><span class="err">$</span><span class="nt">side</span><span class="p">}</span><span class="na">-color</span><span class="o">:</span> <span class="nv">$stem-color</span><span class="p">;</span>
-<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Include in root.</p></div></div><div class="code"><div class="wrapper"><span class="k">@mixin</span><span class="nf"> tip-layout</span> <span class="p">(</span><span class="nv">$baseline</span><span class="o">:</span><span class="mi">12</span><span class="kt">px</span><span class="o">,</span>
-                   <span class="nv">$max-width-em</span><span class="o">:</span><span class="mi">18</span><span class="o">,</span>
-                   <span class="nv">$stem-size-em</span><span class="o">:</span><span class="mi">1</span><span class="o">,</span>
-                   <span class="nv">$stem-wide-base-em</span><span class="o">:</span><span class="mi">1</span><span class="mf">.5</span><span class="o">,</span>
-                   <span class="nv">$content-padding-em</span><span class="o">:</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span> <span class="mi">1</span> <span class="mi">5</span><span class="o">/</span><span class="mi">6</span> <span class="mi">1</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="nv">$max-width</span><span class="o">:</span> <span class="nv">$max-width-em</span> <span class="o">*</span> <span class="nv">$baseline</span><span class="p">;</span>
-  <span class="nv">$stem-size</span><span class="o">:</span> <span class="nf">round</span><span class="p">(</span><span class="nv">$stem-size-em</span> <span class="o">*</span> <span class="nv">$baseline</span><span class="p">);</span>
-  <span class="nv">$stem-wide-base</span><span class="o">:</span> <span class="nf">round</span><span class="p">(</span><span class="nv">$stem-wide-base-em</span> <span class="o">*</span> <span class="nv">$stem-size-em</span> <span class="o">*</span> <span class="nv">$baseline</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>TODO: Simplify.</p></div></div><div class="code"><div class="wrapper">  <span class="nv">$content-padding</span><span class="o">:</span> <span class="s1">&#39;</span><span class="s2">&#39;</span><span class="p">;</span>
-  <span class="nv">$i</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">@each</span> <span class="err">$</span><span class="nt">em</span> <span class="nt">in</span> <span class="err">$</span><span class="nt">content-padding-em</span> <span class="p">{</span>
-    <span class="nv">$content-padding</span><span class="o">:</span> <span class="nv">$content-padding</span><span class="o">+</span><span class="p">(</span><span class="nv">$em</span> <span class="o">*</span> <span class="nv">$baseline</span><span class="p">);</span>
-    <span class="nv">$i</span><span class="o">:</span> <span class="nv">$i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
-    <span class="k">@if</span> <span class="nv">$i</span> <span class="o">&lt;</span> <span class="nf">length</span><span class="p">(</span><span class="nv">$content-padding-em</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nv">$content-padding</span><span class="o">:</span> <span class="nv">$content-padding</span><span class="o">+</span><span class="s1">&#39;</span><span class="s2"> &#39;</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="nc">.js-tip-inner</span> <span class="p">{</span>
-    <span class="na">max-width</span><span class="o">:</span> <span class="nv">$max-width</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nc">.js-tip-content</span> <span class="p">{</span>
-    <span class="na">padding</span><span class="o">:</span> <span class="si">#{</span><span class="nv">$content-padding</span><span class="si">}</span><span class="p">;</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Declaration structure from base styles.</p></div></div><div class="code"><div class="wrapper">  <span class="k">&amp;</span><span class="nc">.js-tip-right.js-snap-tip-y-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-right</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-layout</span><span class="p">(</span><span class="no">right</span><span class="o">,</span> <span class="nv">$stem-size</span><span class="p">);</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-tip-left.js-snap-tip-y-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-left</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-layout</span><span class="p">(</span><span class="no">left</span><span class="o">,</span> <span class="nv">$stem-size</span><span class="p">);</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-tip-bottom.js-snap-tip-x-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-bottom</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-layout</span><span class="p">(</span><span class="no">bottom</span><span class="o">,</span> <span class="nv">$stem-size</span><span class="p">);</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-tip-top.js-snap-tip-x-side</span> <span class="nc">.js-tip-stem</span><span class="o">,</span> <span class="k">&amp;</span><span class="nc">.js-tip-top</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span> <span class="k">@include</span><span class="nd"> _stem-layout</span><span class="p">(</span><span class="no">top</span><span class="o">,</span> <span class="nv">$stem-size</span><span class="p">);</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-snap-tip-x-side</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span>
-    <span class="na">margin-left</span><span class="o">:</span> <span class="o">-</span><span class="nv">$stem-wide-base</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="c1">// Center.</span>
-    <span class="na">border-width</span><span class="o">:</span> <span class="mi">0</span> <span class="p">(</span><span class="nv">$stem-wide-base</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.js-snap-tip-y-side</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span>
-    <span class="na">margin-top</span><span class="o">:</span> <span class="o">-</span><span class="nv">$stem-wide-base</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="c1">// Center.</span>
-    <span class="na">border-width</span><span class="o">:</span> <span class="p">(</span><span class="nv">$stem-wide-base</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> _stem-skin</span> (<span class="hljs-variable">$side</span>, <span class="hljs-variable">$stem-color</span>) {</span>
+  <span class="hljs-attribute">border-color</span><span class="hljs-value">: transparent;</span> <span class="hljs-comment">// Reset.</span>
+  <span class="hljs-attribute">border</span>-#{<span class="hljs-variable">$side</span>}-<span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-variable">$stem-color</span>;</span>
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Include in root.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> tip-layout</span> (<span class="hljs-variable">$baseline</span>:<span class="hljs-number">12px</span>,
+                   <span class="hljs-variable">$max-width-em</span>:<span class="hljs-number">18</span>,
+                   <span class="hljs-variable">$stem-size-em</span>:<span class="hljs-number">1</span>,
+                   <span class="hljs-variable">$stem-wide-base-em</span>:<span class="hljs-number">1.5</span>,
+                   <span class="hljs-variable">$content-padding-em</span>:<span class="hljs-number">2</span>/<span class="hljs-number">3</span><span class="hljs-preprocessor"> 1</span><span class="hljs-preprocessor"> 5</span>/<span class="hljs-number">6</span><span class="hljs-preprocessor"> 1</span>)
+{</span>
+  <span class="hljs-variable">$max-width</span><span class="hljs-value">: <span class="hljs-variable">$max-width-em</span> * <span class="hljs-variable">$baseline</span>;</span>
+  <span class="hljs-variable">$stem-size</span><span class="hljs-value">: <span class="hljs-function">round</span>(<span class="hljs-variable">$stem-size-em</span> * <span class="hljs-variable">$baseline</span>);</span>
+  <span class="hljs-variable">$stem-wide-base</span><span class="hljs-value">: <span class="hljs-function">round</span>(<span class="hljs-variable">$stem-wide-base-em</span> * <span class="hljs-variable">$stem-size-em</span> * <span class="hljs-variable">$baseline</span>);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>TODO: Simplify.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-variable">$content-padding</span><span class="hljs-value">: <span class="hljs-string">''</span>;</span>
+  <span class="hljs-variable">$i</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  <span class="hljs-at_rule">@<span class="hljs-keyword">each</span> <span class="hljs-variable">$em</span><span class="hljs-preprocessor"> in</span> <span class="hljs-variable">$content-padding-em</span> {</span>
+    <span class="hljs-variable">$content-padding</span><span class="hljs-value">: <span class="hljs-variable">$content-padding</span>+(<span class="hljs-variable">$em</span> * <span class="hljs-variable">$baseline</span>);</span>
+    <span class="hljs-variable">$i</span><span class="hljs-value">: <span class="hljs-variable">$i</span>+<span class="hljs-number">1</span>;</span>
+    <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$i</span> &lt;<span class="hljs-preprocessor"> length</span>(<span class="hljs-variable">$content-padding-em</span>) {</span>
+      <span class="hljs-variable">$content-padding</span><span class="hljs-value">: <span class="hljs-variable">$content-padding</span>+<span class="hljs-string">' '</span>;</span>
+    }
+  }
+  <span class="hljs-class">.js-tip-inner</span> {
+    <span class="hljs-attribute">max-width</span><span class="hljs-value">: <span class="hljs-variable">$max-width</span>;</span>
+  }
+  <span class="hljs-class">.js-tip-content</span> {
+    <span class="hljs-attribute">padding</span><span class="hljs-value">: #{<span class="hljs-variable">$content-padding</span>};</span>
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Declaration structure from base styles.</p></div></div><div class="code"><div class="wrapper">  &amp;<span class="hljs-class">.js-tip-right</span><span class="hljs-class">.js-snap-tip-y-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-right</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-layout</span>(right, <span class="hljs-variable">$stem-size</span>);</span> }
+  &amp;<span class="hljs-class">.js-tip-left</span><span class="hljs-class">.js-snap-tip-y-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-left</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-layout</span>(left, <span class="hljs-variable">$stem-size</span>);</span> }
+  &amp;<span class="hljs-class">.js-tip-bottom</span><span class="hljs-class">.js-snap-tip-x-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-bottom</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-layout</span>(bottom, <span class="hljs-variable">$stem-size</span>);</span> }
+  &amp;<span class="hljs-class">.js-tip-top</span><span class="hljs-class">.js-snap-tip-x-side</span> <span class="hljs-class">.js-tip-stem</span>, &amp;<span class="hljs-class">.js-tip-top</span> <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> _stem-layout</span>(top, <span class="hljs-variable">$stem-size</span>);</span> }
+  &amp;<span class="hljs-class">.js-snap-tip-x-side</span> <span class="hljs-class">.js-tip-stem</span> {
+    <span class="hljs-attribute">margin-left</span><span class="hljs-value">: -<span class="hljs-variable">$stem-wide-base</span>/<span class="hljs-number">2</span>;</span> <span class="hljs-comment">// Center.</span>
+    <span class="hljs-attribute">border-width</span><span class="hljs-value">: <span class="hljs-number">0</span> (<span class="hljs-variable">$stem-wide-base</span>/<span class="hljs-number">2</span>);</span>
+  }
+  &amp;<span class="hljs-class">.js-snap-tip-y-side</span> <span class="hljs-class">.js-tip-stem</span> {
+    <span class="hljs-attribute">margin-top</span><span class="hljs-value">: -<span class="hljs-variable">$stem-wide-base</span>/<span class="hljs-number">2</span>;</span> <span class="hljs-comment">// Center.</span>
+    <span class="hljs-attribute">border-width</span><span class="hljs-value">: (<span class="hljs-variable">$stem-wide-base</span>/<span class="hljs-number">2</span>) <span class="hljs-number">0</span>;</span>
+  }
+}
 
-<span class="k">@mixin</span><span class="nf"> _stem-layout</span> <span class="p">(</span><span class="nv">$side</span><span class="o">,</span> <span class="nv">$stem-size</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nt">border-</span><span class="nn">#</span><span class="p">{</span><span class="err">$</span><span class="nt">side</span><span class="p">}</span><span class="na">-width</span><span class="o">:</span> <span class="nv">$stem-size</span><span class="p">;</span>
-  <span class="k">@if</span> <span class="nv">$side</span> <span class="o">==</span> <span class="no">top</span> <span class="ow">or</span> <span class="nv">$side</span> <span class="o">==</span> <span class="no">bottom</span> <span class="p">{</span>
-    <span class="k">&amp;</span><span class="o">+</span><span class="nc">.js-tip-content</span> <span class="p">{</span>
-      <span class="na">left</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span> <span class="na">right</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span> <span class="c1">// Reset.</span>
-      <span class="k">@if</span> <span class="nv">$side</span> <span class="o">==</span> <span class="no">top</span> <span class="p">{</span> <span class="na">bottom</span><span class="o">:</span> <span class="nv">$stem-size</span><span class="p">;</span> <span class="p">}</span>
-      <span class="k">@if</span> <span class="nv">$side</span> <span class="o">==</span> <span class="no">bottom</span> <span class="p">{</span> <span class="na">top</span><span class="o">:</span> <span class="nv">$stem-size</span><span class="p">;</span> <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span> <span class="k">@else</span> <span class="nt">if</span> <span class="err">$</span><span class="nt">side</span> <span class="o">==</span> <span class="nt">left</span> <span class="nt">or</span> <span class="err">$</span><span class="nt">side</span> <span class="o">==</span> <span class="nt">right</span> <span class="p">{</span>
-    <span class="k">&amp;</span><span class="o">+</span><span class="nc">.js-tip-content</span> <span class="p">{</span>
-      <span class="na">top</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span> <span class="na">bottom</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span> <span class="c1">// Reset.</span>
-      <span class="k">@if</span> <span class="nv">$side</span> <span class="o">==</span> <span class="no">left</span> <span class="p">{</span> <span class="na">right</span><span class="o">:</span> <span class="nv">$stem-size</span><span class="p">;</span> <span class="p">}</span>
-      <span class="k">@if</span> <span class="nv">$side</span> <span class="o">==</span> <span class="no">right</span> <span class="p">{</span> <span class="na">left</span><span class="o">:</span> <span class="nv">$stem-size</span><span class="p">;</span> <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base">Base</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="nc">.js-tip</span> <span class="p">{</span>
-  <span class="na">display</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-  <span class="na">position</span><span class="o">:</span> <span class="no">absolute</span><span class="p">;</span>
-  <span class="na">z-index</span><span class="o">:</span> <span class="mi">9999</span><span class="p">;</span>
-  <span class="o">&gt;</span> <span class="nc">.js-tip-inner</span> <span class="p">{</span>
-    <span class="na">position</span><span class="o">:</span> <span class="no">relative</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.js-tip-inner</span> <span class="p">{</span>
-  <span class="o">&gt;</span> <span class="nc">.js-tip-stem</span> <span class="p">{</span>
-    <span class="na">border</span><span class="o">:</span> <span class="p">{</span>
-      <span class="na">width</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="na">style</span><span class="o">:</span> <span class="no">solid</span><span class="p">;</span>
-      <span class="na">color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="na">background</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-    <span class="na">position</span><span class="o">:</span> <span class="no">absolute</span><span class="p">;</span>
-    <span class="na">width</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="na">height</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="o">&gt;</span> <span class="nc">.js-tip-content</span> <span class="p">{</span>
-    <span class="na">overflow</span><span class="o">:</span> <span class="no">hidden</span><span class="p">;</span>
-    <span class="na">position</span><span class="o">:</span> <span class="no">relative</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Position adjusted by to stem style mixin.</p></div></div><div class="code"><div class="wrapper">  <span class="p">}</span>  
-<span class="p">}</span>
-<span class="nc">.js-tip-stem</span> <span class="p">{</span>
-  <span class="nc">.js-tip-right.js-snap-tip-y-side</span> <span class="k">&amp;</span><span class="o">,</span> <span class="o">//</span> <span class="nt">Reapply</span><span class="nc">.</span>
-  <span class="nc">.js-tip-right</span> <span class="k">&amp;</span> <span class="p">{</span>
-    <span class="na">left</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nc">.js-tip-left.js-snap-tip-y-side</span> <span class="k">&amp;</span><span class="o">,</span> <span class="o">//</span> <span class="nt">Reapply</span><span class="nc">.</span>
-  <span class="nc">.js-tip-left</span> <span class="k">&amp;</span> <span class="p">{</span>
-    <span class="na">right</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>By default top and bottom have precedence in growing the stem, so they
-come last.</p></div></div><div class="code"><div class="wrapper">  <span class="nc">.js-tip-bottom.js-snap-tip-x-side</span> <span class="k">&amp;</span><span class="o">,</span> <span class="o">//</span> <span class="nt">Reapply</span><span class="nc">.</span>
-  <span class="nc">.js-tip-bottom</span> <span class="k">&amp;</span> <span class="p">{</span>
-    <span class="na">top</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nc">.js-tip-top.js-snap-tip-x-side</span> <span class="k">&amp;</span><span class="o">,</span> <span class="o">//</span> <span class="nt">Reapply</span><span class="nc">.</span>
-  <span class="nc">.js-tip-top</span> <span class="k">&amp;</span> <span class="p">{</span>
-    <span class="na">bottom</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nc">.js-snap-tip-x-side</span> <span class="k">&amp;</span> <span class="p">{</span>
-    <span class="na">left</span><span class="o">:</span> <span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
-    <span class="na">border-color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span> <span class="c1">// Partial reset.</span>
-  <span class="p">}</span>
-  <span class="nc">.js-snap-tip-y-side</span> <span class="k">&amp;</span> <span class="p">{</span>
-    <span class="na">top</span><span class="o">:</span> <span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
-    <span class="na">border-color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span> <span class="c1">// Partial reset.</span>
-  <span class="p">}</span>
-<span class="p">}</span></div></div></div></div></body></html>
+<span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> _stem-layout</span> (<span class="hljs-variable">$side</span>, <span class="hljs-variable">$stem-size</span>) {</span>
+  <span class="hljs-attribute">border</span>-#{<span class="hljs-variable">$side</span>}-<span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span>
+  <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> top</span><span class="hljs-preprocessor"> or</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> bottom</span> {</span>
+    &amp;+<span class="hljs-class">.js-tip-content</span> {
+      <span class="hljs-attribute">left</span><span class="hljs-value">: auto;</span> <span class="hljs-attribute">right</span><span class="hljs-value">: auto;</span> <span class="hljs-comment">// Reset.</span>
+      <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> top</span> {</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
+      <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> bottom</span> {</span> <span class="hljs-attribute">top</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
+    }
+  } <span class="hljs-at_rule">@<span class="hljs-keyword">else</span><span class="hljs-preprocessor"> if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> left</span><span class="hljs-preprocessor"> or</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> right</span> {</span>
+    &amp;+<span class="hljs-class">.js-tip-content</span> {
+      <span class="hljs-attribute">top</span><span class="hljs-value">: auto;</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: auto;</span> <span class="hljs-comment">// Reset.</span>
+      <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> left</span> {</span> <span class="hljs-attribute">right</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
+      <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> right</span> {</span> <span class="hljs-attribute">left</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
+    }
+  }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base">Base</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-class">.js-tip</span> {
+  <span class="hljs-attribute">display</span><span class="hljs-value">: none;</span>
+  <span class="hljs-attribute">position</span><span class="hljs-value">: absolute;</span>
+  <span class="hljs-attribute">z-index</span><span class="hljs-value">: <span class="hljs-number">9999</span>;</span>
+  &gt; <span class="hljs-class">.js-tip-inner</span> {
+    <span class="hljs-attribute">position</span><span class="hljs-value">: relative;</span>
+  }
+}
+<span class="hljs-class">.js-tip-inner</span> {
+  &gt; <span class="hljs-class">.js-tip-stem</span> {
+    <span class="hljs-attribute">border</span><span class="hljs-value">: {
+      width: <span class="hljs-number">0</span>;</span>
+      <span class="hljs-tag">style</span><span class="hljs-value">: solid;</span>
+      <span class="hljs-attribute">color</span><span class="hljs-value">: transparent;</span>
+    }
+    <span class="hljs-attribute">background</span><span class="hljs-value">: none;</span>
+    <span class="hljs-attribute">position</span><span class="hljs-value">: absolute;</span>
+    <span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+    <span class="hljs-attribute">height</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  }
+  &gt; <span class="hljs-class">.js-tip-content</span> {
+    <span class="hljs-attribute">overflow</span><span class="hljs-value">: hidden;</span>
+    <span class="hljs-attribute">position</span><span class="hljs-value">: relative;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Position adjusted by to stem style mixin.</p></div></div><div class="code"><div class="wrapper">  }  
+}
+<span class="hljs-class">.js-tip-stem</span> {
+  <span class="hljs-class">.js-tip-right</span><span class="hljs-class">.js-snap-tip-y-side</span> &amp;, <span class="hljs-comment">// Reapply.</span>
+  <span class="hljs-class">.js-tip-right</span> &amp; {
+    <span class="hljs-attribute">left</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  }
+  <span class="hljs-class">.js-tip-left</span><span class="hljs-class">.js-snap-tip-y-side</span> &amp;, <span class="hljs-comment">// Reapply.</span>
+  <span class="hljs-class">.js-tip-left</span> &amp; {
+    <span class="hljs-attribute">right</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>By default top and bottom have precedence in growing the stem, so they
+come last.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-class">.js-tip-bottom</span><span class="hljs-class">.js-snap-tip-x-side</span> &amp;, <span class="hljs-comment">// Reapply.</span>
+  <span class="hljs-class">.js-tip-bottom</span> &amp; {
+    <span class="hljs-attribute">top</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  }
+  <span class="hljs-class">.js-tip-top</span><span class="hljs-class">.js-snap-tip-x-side</span> &amp;, <span class="hljs-comment">// Reapply.</span>
+  <span class="hljs-class">.js-tip-top</span> &amp; {
+    <span class="hljs-attribute">bottom</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  }
+  <span class="hljs-class">.js-snap-tip-x-side</span> &amp; {
+    <span class="hljs-attribute">left</span><span class="hljs-value">: <span class="hljs-number">50%</span>;</span>
+    <span class="hljs-attribute">border-color</span><span class="hljs-value">: transparent;</span> <span class="hljs-comment">// Partial reset.</span>
+  }
+  <span class="hljs-class">.js-snap-tip-y-side</span> &amp; {
+    <span class="hljs-attribute">top</span><span class="hljs-value">: <span class="hljs-number">50%</span>;</span>
+    <span class="hljs-attribute">border-color</span><span class="hljs-value">: transparent;</span> <span class="hljs-comment">// Partial reset.</span>
+  }
+}</div></div></div></div></body></html>

@@ -1,7 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><title>src/js/jquery.extension.hlf.core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.extension.hlf.core"><meta name="groc-project-path" content="src/js/jquery.extension.hlf.core.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.extension.hlf.core.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-core-jquery-extension">HLF Core jQuery Extension</h1>
-
-<p>Released under the MIT License <br />
-Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The core extension is comprised of several aspects.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<p>Released under the MIT License<br>Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The core extension is comprised of several aspects.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Mixin creation and manipulation, as well as providing base mixins, via:
 <code>$.applyMixin</code>, <code>$.applyMixins</code>, <code>$.createMixins</code>, <code>$.mixins</code>.</li>
 <li>Plugin creation with support for both classes and mixins, via: 
@@ -9,245 +7,246 @@ Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class
 <li>Integrated no-conflict handling and debug-logging, via: <code>$.hlf.noConflict</code>, 
 <code>$.hlf.debugLog</code>.</li>
 </ul></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The extension also creates and provides the <code>hlf</code> jQuery namespace. Namespaces
-for other extensions and plugins are attached to this main namespace.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper"><span class="p">(</span><span class="nf">(extension) -&gt;</span>
-  <span class="k">if</span> <span class="nx">define</span><span class="o">?</span> <span class="o">and</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="o">?</span>
-    <span class="nx">define</span> <span class="p">[</span>
-      <span class="s">&#39;jquery&#39;</span>
-      <span class="s">&#39;underscore&#39;</span>
-    <span class="p">],</span> <span class="nx">extension</span>
-  <span class="k">else</span> <span class="nx">extension</span> <span class="nx">jQuery</span><span class="p">,</span> <span class="nx">_</span>
-<span class="p">)(</span><span class="nf">($, _) -&gt;</span>
+for other extensions and plugins are attached to this main namespace.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(extension)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> define? <span class="hljs-keyword">and</span> define.amd?
+    define [
+      <span class="hljs-string">'jquery'</span>
+      <span class="hljs-string">'underscore'</span>
+    ], extension
+  <span class="hljs-keyword">else</span> extension jQuery, _
+)(<span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
 
-  <span class="nv">hlf =</span>
-    <span class="nv">debug: </span><span class="kc">on</span> <span class="c1"># Turn this off when going to production.</span>
-    <span class="nv">toString: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(context) -&gt;</span> <span class="s">&#39;hlf&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>We keep track of no-conflict procedures with <code>_noConflicts</code>. This is
+  hlf =
+    <span class="hljs-attribute">debug</span>: <span class="hljs-literal">on</span> <span class="hljs-comment"># Turn this off when going to production.</span>
+    <span class="hljs-attribute">toString</span>: _.memoize (context) -&gt; <span class="hljs-string">'hlf'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>We keep track of no-conflict procedures with <code>_noConflicts</code>. This is
 essentially working with a callback queue. Calling <code>$.hlf.noConflict</code> simply
 runs these procedures. Procedures should be simple and idempotent, i.e.
-restoring the property to a saved previous value.</p></div></div><div class="code"><div class="wrapper">  <span class="nv">_noConflicts = </span><span class="p">[]</span>
+restoring the property to a saved previous value.</p></div></div><div class="code"><div class="wrapper">  _noConflicts = []
   
-  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">hlf</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base <code>noConflict</code> behavior will remove assignments to the global
+  _.extend hlf,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base <code>noConflict</code> behavior will remove assignments to the global
 jQuery namespace. Properties will have to be accessed through the <code>$.hlf</code>
 namespace. See <code>safeSet</code> below. Also see <code>createPlugin</code> for its no-
-conflict integration.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">noConflict: </span><span class="nf">-&gt;</span> <span class="p">(</span><span class="nx">fn</span><span class="p">()</span> <span class="k">for</span> <span class="nx">fn</span> <span class="k">in</span> <span class="nx">_noConflicts</span><span class="p">).</span><span class="nx">length</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base debug logging implementation just wraps around <code>console.log</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">debugLog: </span><span class="k">if</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">debug</span> <span class="o">is</span> <span class="kc">off</span> <span class="k">then</span> <span class="nx">$</span><span class="p">.</span><span class="nx">noop</span> <span class="k">else</span>
-      <span class="p">(</span><span class="k">if</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">bind</span> <span class="k">then</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">console</span><span class="p">)</span> <span class="k">else</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="plugin-support">Plugin Support</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Plugin generation is perhaps the most common jQuery boilerplate. Binding
+conflict integration.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">noConflict</span>: <span class="hljs-function">-&gt;</span> (fn() <span class="hljs-keyword">for</span> fn <span class="hljs-keyword">in</span> _noConflicts).length</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base debug logging implementation just wraps around <code>console.log</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">debugLog</span>: <span class="hljs-keyword">if</span> hlf.debug <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span> <span class="hljs-keyword">then</span> $.noop <span class="hljs-keyword">else</span>
+      (<span class="hljs-keyword">if</span> <span class="hljs-built_in">console</span>.log.bind <span class="hljs-keyword">then</span> <span class="hljs-built_in">console</span>.log.bind(<span class="hljs-built_in">console</span>) <span class="hljs-keyword">else</span> <span class="hljs-built_in">console</span>.log)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="plugin-support">Plugin Support</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Plugin generation is perhaps the most common jQuery boilerplate. Binding
 additional state and functionality to jQuery elements is a common task that
 should be abstracted away, with common patterns and conventions around the
 process accounted for, including logging, jQuery namespacing, instance
 access, and sending commands. Furthermore, instead of API classes and
 plugins inheriting from a base layer, that base layer is integrated on
-instantiation.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_createPluginInstance</code> is a private subroutine that's part of
-<code>createPlugin</code>, which has more details on its required input.</p></div></div><div class="code"><div class="wrapper">  <span class="nv">_createPluginInstance = </span><span class="nf">($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Check if plugin element has options set in its plugin data attribute. If
-so, merge those options into our own <code>finalOptions</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">data = </span><span class="nx">$el</span><span class="p">.</span><span class="nx">data</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
-    <span class="nv">finalOptions = </span><span class="nx">options</span>
-    <span class="k">if</span> <span class="nx">$</span><span class="p">.</span><span class="nx">isPlainObject</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
-      <span class="nv">finalOptions = </span><span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="p">(</span><span class="nv">deep = </span><span class="kc">on</span><span class="p">),</span> <span class="p">{},</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">data</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Also decide the <code>$root</code> element based on the situation. It's where the
+instantiation.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_createPluginInstance</code> is a private subroutine that&#39;s part of
+<code>createPlugin</code>, which has more details on its required input.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">  <span class="hljs-title">_createPluginInstance</span> = <span class="hljs-params">($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Check if plugin element has options set in its plugin data attribute. If
+so, merge those options into our own <code>finalOptions</code>.</p></div></div><div class="code"><div class="wrapper">    data = $el.data namespace.toString(<span class="hljs-string">'data'</span>)
+    finalOptions = options
+    <span class="hljs-keyword">if</span> $.isPlainObject(data)
+      finalOptions = $.extend (deep = <span class="hljs-literal">on</span>), {}, options, data</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Also decide the <code>$root</code> element based on the situation. It&#39;s where the
 plugin instance gets stored and the root plugin class gets added.
-A shared instance, for example, get stored on the <code>$context</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">$root = </span><span class="nx">$el</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">asSharedInstance</span>
-      <span class="nv">$root = </span><span class="nx">$context</span>
-    <span class="k">else</span>
-      <span class="nv">$root = </span><span class="nx">$el</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If we're provided with a class for the API, instantiate it. Decorate the
-instance with additional mixins if applicable.</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="nx">apiClass</span><span class="o">?</span>
-      <span class="nv">instance = </span><span class="k">new</span> <span class="nx">apiClass</span> <span class="nx">$el</span><span class="p">,</span> <span class="nx">finalOptions</span><span class="p">,</span> <span class="nx">$context</span>
-      <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">baseMixins</span><span class="o">?</span>
-        <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixins</span> <span class="nx">instance</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">,</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">baseMixins</span><span class="p">...</span>
-      <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">apiMixins</span><span class="o">?</span>
-        <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixins</span> <span class="nx">instance</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">,</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">apiMixins</span><span class="p">...</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If instead we're provided with just mixins for the API, create a plain
+A shared instance, for example, get stored on the <code>$context</code>.</p></div></div><div class="code"><div class="wrapper">      $root = $el
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> createOptions.asSharedInstance
+      $root = $context
+    <span class="hljs-keyword">else</span>
+      $root = $el</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If we&#39;re provided with a class for the API, instantiate it. Decorate the
+instance with additional mixins if applicable.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> apiClass?
+      instance = <span class="hljs-keyword">new</span> apiClass $el, finalOptions, $context
+      <span class="hljs-keyword">if</span> createOptions.baseMixins?
+        hlf.applyMixins instance, namespace, createOptions.baseMixins...
+      <span class="hljs-keyword">if</span> createOptions.apiMixins?
+        hlf.applyMixins instance, namespace, createOptions.apiMixins...</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If instead we&#39;re provided with just mixins for the API, create a plain
 object with the base properties for the instance. Then apply the provided
 mixins in order: the names of the base mixins, the <code>base</code> mixin from the
 provided mixins collection, and the <code>otherMixins</code>. The others are just
-mixins allowed by the provided filter (if any) that also aren't <code>base</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="k">else</span> <span class="k">if</span> <span class="nx">apiMixins</span><span class="o">?</span>
-      <span class="nv">instance = </span><span class="p">{</span> <span class="nx">$el</span><span class="p">,</span> <span class="nv">options: </span><span class="nx">finalOptions</span> <span class="p">}</span>
-      <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">baseMixins</span><span class="o">?</span>
-        <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixins</span> <span class="nx">instance</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">,</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">baseMixins</span><span class="p">...</span>
-      <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixin</span> <span class="nx">instance</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">,</span> <span class="nx">apiMixins</span><span class="p">.</span><span class="nx">base</span>
-      <span class="nv">otherMixins = </span><span class="nx">_</span><span class="p">.</span><span class="nx">chain</span> <span class="nx">apiMixins</span>
-        <span class="p">.</span><span class="nx">filter</span> <span class="nx">mixinFilter</span><span class="p">,</span> <span class="nx">instance</span>
-        <span class="p">.</span><span class="nx">values</span><span class="p">()</span>
-        <span class="p">.</span><span class="nx">without</span> <span class="nx">apiMixins</span><span class="p">.</span><span class="nx">base</span>
-        <span class="p">.</span><span class="nx">value</span><span class="p">()</span>
-      <span class="nx">hlf</span><span class="p">.</span><span class="nx">applyMixins</span> <span class="nx">instance</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">,</span> <span class="nx">otherMixins</span><span class="p">...</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the <code>compactOptions</code> flag is toggled, <code>finalOptions</code> will be merged
+mixins allowed by the provided filter (if any) that also aren&#39;t <code>base</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> apiMixins?
+      instance = { $el, <span class="hljs-attribute">options</span>: finalOptions }
+      <span class="hljs-keyword">if</span> createOptions.baseMixins?
+        hlf.applyMixins instance, namespace, createOptions.baseMixins...
+      hlf.applyMixin instance, namespace, apiMixins.base
+      otherMixins = _.chain apiMixins
+        .filter mixinFilter, instance
+        .values()
+        .without apiMixins.base
+        .value()
+      hlf.applyMixins instance, namespace, otherMixins...</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the <code>compactOptions</code> flag is toggled, <code>finalOptions</code> will be merged
 into the instance. This makes accessing options more convenient, but can
-cause conflicts with larger existing APIs that don't account for such
-naming conflicts, since <em>we don't handle conflicts here</em>. Otherwise, just
-alias the conventional <code>selectors</code> and <code>classNames</code> option groups.</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">compactOptions</span> <span class="o">is</span> <span class="kc">yes</span>
-      <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="p">(</span><span class="nv">deep = </span><span class="kc">yes</span><span class="p">),</span> <span class="nx">instance</span><span class="p">,</span> <span class="nx">finalOptions</span>
-      <span class="k">delete</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">options</span>
-    <span class="k">else</span>
-      <span class="k">if</span> <span class="nx">finalOptions</span><span class="p">.</span><span class="nx">selectors</span><span class="o">?</span> <span class="k">then</span> <span class="nv">instance.selectors = </span><span class="nx">finalOptions</span><span class="p">.</span><span class="nx">selectors</span>
-      <span class="k">if</span> <span class="nx">finalOptions</span><span class="p">.</span><span class="nx">classNames</span><span class="o">?</span> <span class="k">then</span> <span class="nv">instance.classNames = </span><span class="nx">finalOptions</span><span class="p">.</span><span class="nx">classNames</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the <code>autoSelect</code> flag is toggled and a <code>select</code> method is provided
+cause conflicts with larger existing APIs that don&#39;t account for such
+naming conflicts, since <em>we don&#39;t handle conflicts here</em>. Otherwise, just
+alias the conventional <code>selectors</code> and <code>classNames</code> option groups.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> createOptions.compactOptions <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span>
+      $.extend (deep = <span class="hljs-literal">yes</span>), instance, finalOptions
+      <span class="hljs-keyword">delete</span> instance.options
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">if</span> finalOptions.selectors? <span class="hljs-keyword">then</span> instance.selectors = finalOptions.selectors
+      <span class="hljs-keyword">if</span> finalOptions.classNames? <span class="hljs-keyword">then</span> instance.classNames = finalOptions.classNames</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the <code>autoSelect</code> flag is toggled and a <code>select</code> method is provided
 (i.e. via <code>selection</code> mixin), call it and automatically setup element
-references prior to initialization.</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">autoSelect</span> <span class="o">is</span> <span class="kc">yes</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">select</span><span class="p">)</span>
-      <span class="nx">instance</span><span class="p">.</span><span class="nx">select</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the <code>cls</code> API addition exists and provides the root class, add the root
-class to the decided <code>$root</code> prior to initialization.</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">cls</span> <span class="o">isnt</span> <span class="nx">$</span><span class="p">.</span><span class="nx">noop</span> <span class="k">then</span> <span class="nx">$root</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">cls</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If an <code>init</code> method is provided, and one must be if it's just mixins for
-the API, call it. Convention is to always provide it.</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">init</span><span class="p">)</span> <span class="k">then</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">init</span><span class="p">()</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">apiClass</span><span class="o">?</span> <span class="k">then</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">debugLog</span> <span class="s">&#39;ERROR: No `init` method on instance.&#39;</span><span class="p">,</span> <span class="nx">instance</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Lastly, store the instance on <code>$root</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nx">$root</span><span class="p">.</span><span class="nx">data</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">attr</span><span class="p">(),</span> <span class="nx">instance</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_createPluginAPIAdditions</code> is a private subroutine that's part of
-<code>createPlugin</code>, which has more details on its required input.</p></div></div><div class="code"><div class="wrapper">  <span class="nv">_createPluginAPIAdditions = </span><span class="nf">(name, namespace) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+references prior to initialization.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> createOptions.autoSelect <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span> <span class="hljs-keyword">and</span> _.isFunction(instance.select)
+      instance.select()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the <code>cls</code> API addition exists and provides the root class, add the root
+class to the decided <code>$root</code> prior to initialization.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> instance.cls <span class="hljs-keyword">isnt</span> $.noop <span class="hljs-keyword">then</span> $root.addClass instance.cls()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If an <code>init</code> method is provided, and one must be if it&#39;s just mixins for
+the API, call it. Convention is to always provide it.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">if</span> _.isFunction(instance.init) <span class="hljs-keyword">then</span> instance.init()
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> apiClass? <span class="hljs-keyword">then</span> hlf.debugLog <span class="hljs-string">'ERROR: No `init` method on instance.'</span>, instance</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Lastly, store the instance on <code>$root</code>.</p></div></div><div class="code"><div class="wrapper">    $root.data instance.attr(), instance</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_createPluginAPIAdditions</code> is a private subroutine that&#39;s part of
+<code>createPlugin</code>, which has more details on its required input.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">  <span class="hljs-title">_createPluginAPIAdditions</span> = <span class="hljs-params">(name, namespace)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Add the <code>evt</code> method to namespace an event name.</li>
-</ul></div></div><div class="code"><div class="wrapper">    <span class="nv">evt: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(name) -&gt;</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">name</span><span class="si">}#{</span><span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span> <span class="s">&#39;event&#39;</span><span class="si">}</span><span class="s">&quot;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+</ul></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">evt</span>: _.memoize (name) -&gt; <span class="hljs-string">"<span class="hljs-subst">#{name}</span><span class="hljs-subst">#{namespace.toString <span class="hljs-string">'event'</span>}</span>"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Add the <code>attr</code> method to namespace data keys and attribute names.</li>
-</ul></div></div><div class="code"><div class="wrapper">    <span class="nv">attr: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(name) -&gt;</span>
-      <span class="nv">name = </span><span class="k">if</span> <span class="nx">name</span><span class="o">?</span> <span class="k">then</span> <span class="s">&quot;-</span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&quot;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
-      <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nx">name</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+</ul></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">attr</span>: _.memoize (name) -&gt;
+      name = <span class="hljs-keyword">if</span> name? <span class="hljs-keyword">then</span> <span class="hljs-string">"-<span class="hljs-subst">#{name}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+      namespace.toString(<span class="hljs-string">'data'</span>) + name</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Add the <code>cls</code> method and attach functionality instead of a no-op only if
 class namespacing is unique.</li>
-</ul></div></div><div class="code"><div class="wrapper">    <span class="nv">cls: </span><span class="k">if</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;class&#39;</span><span class="p">)</span> <span class="o">is</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="k">then</span> <span class="nx">$</span><span class="p">.</span><span class="nx">noop</span> <span class="k">else</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(name) -&gt;</span>
-        <span class="nv">name = </span><span class="k">if</span> <span class="nx">name</span><span class="o">?</span> <span class="k">then</span> <span class="s">&quot;-</span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&quot;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
-        <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;class&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nx">name</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+</ul></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">cls</span>: <span class="hljs-keyword">if</span> namespace.toString(<span class="hljs-string">'class'</span>) <span class="hljs-keyword">is</span> namespace.toString() <span class="hljs-keyword">then</span> $.noop <span class="hljs-keyword">else</span>
+      _.memoize (name) -&gt;
+        name = <span class="hljs-keyword">if</span> name? <span class="hljs-keyword">then</span> <span class="hljs-string">"-<span class="hljs-subst">#{name}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+        namespace.toString(<span class="hljs-string">'class'</span>) + name</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Add the <code>debugLog</code> method and attach functionality instead of a no-op
 only if namespace <code>debug</code> is on.</li>
-</ul></div></div><div class="code"><div class="wrapper">    <span class="nv">debugLog: </span><span class="k">if</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">debug</span> <span class="o">is</span> <span class="kc">off</span> <span class="k">then</span> <span class="nx">$</span><span class="p">.</span><span class="nx">noop</span> <span class="k">else</span>
-      <span class="nf">-&gt;</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">debugLog</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">),</span> <span class="nx">arguments</span><span class="p">...</span>
+</ul></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">debugLog</span>: <span class="hljs-keyword">if</span> namespace.debug <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span> <span class="hljs-keyword">then</span> $.noop <span class="hljs-keyword">else</span>
+      -&gt; hlf.debugLog namespace.toString(<span class="hljs-string">'log'</span>), arguments...
 
-  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">hlf</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>createPlugin</code>, will return an appropriate jQuery plugin method for the
-<code>given</code>createOptions`, comprised of:</p></div></div><div class="code"><div class="wrapper">    <span class="nv">createPlugin: </span><span class="nf">(createOptions) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>name</code>, which is required and is the name of the method. The <code>safeName</code>
+  _.extend hlf,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>createPlugin</code>, will return an appropriate jQuery plugin method for the
+<code>given</code>createOptions`, comprised of:</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">createPlugin</span>: <span class="hljs-function"><span class="hljs-params">(createOptions)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>name</code>, which is required and is the name of the method. The <code>safeName</code>
 for the method, which needs to be on the jQuery prototype, is prefixed
-by <code>hlf</code> and should be used after <code>noConflict</code> is called.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">name = </span><span class="nx">createOptions</span><span class="p">.</span><span class="nx">name</span>
-      <span class="nv">safeName = </span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">@toString</span><span class="p">()</span><span class="si">}#{</span><span class="nx">name</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">toUpperCase</span><span class="p">()</span><span class="si">}#{</span><span class="nx">name</span><span class="p">[</span><span class="mi">1</span><span class="p">..]</span><span class="si">}</span><span class="s">&quot;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>namespace</code>, which is required and must correctly implement <code>debug</code>,
+by <code>hlf</code> and should be used after <code>noConflict</code> is called.</p></div></div><div class="code"><div class="wrapper">      name = createOptions.name
+      safeName = <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@toString</span>()}</span><span class="hljs-subst">#{name[<span class="hljs-number">0</span>].toUpperCase()}</span><span class="hljs-subst">#{name[<span class="hljs-number">1.</span>.]}</span>"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>namespace</code>, which is required and must correctly implement <code>debug</code>,
 <code>toString</code>, and <code>defaults</code>. It can optionally have a <code>noConflict</code>
-procedure.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">namespace = </span><span class="nx">createOptions</span><span class="p">.</span><span class="nx">namespace</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>An <code>apiClass</code> definition and/or an <code>apiMixins</code> collection. It will get
+procedure.</p></div></div><div class="code"><div class="wrapper">      namespace = createOptions.namespace</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>An <code>apiClass</code> definition and/or an <code>apiMixins</code> collection. It will get
 modified with base API additions. A <code>mixinFilter</code> can be provided to
 limit the mixins in the collection that get applied during
 instantiation. If provided, the <code>apiMixins</code> collection must have a
 <code>base</code> mixin, which will get the API additions. Also note that
 <code>apiClass</code> and <code>apiMixins</code> will get published into the namespace, so
-additional flexibility is possible, especially with non-specific mixins.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">apiAdditions = </span><span class="nx">_createPluginAPIAdditions</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">namespace</span>
-      <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">apiClass</span><span class="o">?</span>
-        <span class="nv">apiClass = namespace.apiClass = </span><span class="nx">createOptions</span><span class="p">.</span><span class="nx">apiClass</span>
-        <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">apiClass</span><span class="o">::</span><span class="p">,</span> <span class="nx">apiAdditions</span>
-      <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">apiMixins</span><span class="o">?</span>
-        <span class="nv">mixinFilter = </span><span class="nx">createOptions</span><span class="p">.</span><span class="nx">mixinFilter</span>
-        <span class="nx">mixinFilter</span> <span class="o">?=</span> <span class="nf">(mixin) -&gt;</span> <span class="nx">mixin</span>
-        <span class="nv">apiMixins = namespace.apiMixins = </span><span class="nx">createOptions</span><span class="p">.</span><span class="nx">apiMixins</span>
-        <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="p">(</span><span class="nv">deep = </span><span class="kc">on</span><span class="p">),</span> <span class="nx">apiMixins</span><span class="p">,</span> <span class="p">{</span> <span class="nv">base: </span><span class="nx">apiAdditions</span> <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The plugin's <code>noConflict</code> procedure, which gets published onto its
+additional flexibility is possible, especially with non-specific mixins.</p></div></div><div class="code"><div class="wrapper">      apiAdditions = _createPluginAPIAdditions name, namespace
+      <span class="hljs-keyword">if</span> createOptions.apiClass?
+        apiClass = namespace.apiClass = createOptions.apiClass
+        _.extend <span class="hljs-attribute">apiClass</span>::, apiAdditions
+      <span class="hljs-keyword">if</span> createOptions.apiMixins?
+        mixinFilter = createOptions.mixinFilter
+        mixinFilter ?= <span class="hljs-function"><span class="hljs-params">(mixin)</span> -&gt;</span> mixin
+        apiMixins = namespace.apiMixins = createOptions.apiMixins
+        $.extend (deep = <span class="hljs-literal">on</span>), apiMixins, { <span class="hljs-attribute">base</span>: apiAdditions }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The plugin&#39;s <code>noConflict</code> procedure, which gets published onto its
 namespace, but default just restores to the previous method. If a
 <code>noConflict</code> procedure is provided by the namespace, it gets run
-beforehand as well.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">_noConflict = </span><span class="nx">namespace</span><span class="p">.</span><span class="nx">noConflict</span>
-      <span class="nv">_plugin = </span><span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
-      <span class="nx">_noConflicts</span><span class="p">.</span><span class="nx">push</span> <span class="p">(</span><span class="nv">namespace.noConflict = </span><span class="nf">-&gt;</span>
-        <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">_noConflict</span><span class="p">)</span> <span class="k">then</span> <span class="nx">_noConflict</span><span class="p">()</span>
-        <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_plugin</span>
-      <span class="p">)</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Generate and publish the plugin method.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">plugin = </span><span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">[</span><span class="nx">safeName</span><span class="p">]</span> <span class="o">=</span> <span class="nf">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The method handles two variations of input. A command <code>type</code> (name)
+beforehand as well.</p></div></div><div class="code"><div class="wrapper">      _noConflict = namespace.noConflict
+      _plugin = $.fn[name]
+      _noConflicts.push (namespace.noConflict = <span class="hljs-function">-&gt;</span>
+        <span class="hljs-keyword">if</span> _.isFunction(_noConflict) <span class="hljs-keyword">then</span> _noConflict()
+        $.fn[name] = _plugin
+      )</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Generate and publish the plugin method.</p></div></div><div class="code"><div class="wrapper">      plugin = $.fn[name] = $.fn[safeName] = <span class="hljs-function">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The method handles two variations of input. A command <code>type</code> (name)
 and <code>userInfo</code> can be passed in to trigger the command route. The
 latter is typically additional, command-specific parameters.
 Otherwise, if the first argument is an options collection, the normal
-route is triggered.</p></div></div><div class="code"><div class="wrapper">        <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-          <span class="nv">command =</span>
-            <span class="nv">type: </span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="nv">userInfo: </span><span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span>
-          <span class="nv">options = </span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-          <span class="nv">$context = </span><span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">?</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The element's <code>$context</code> will default to document body.</p></div></div><div class="code"><div class="wrapper">        <span class="nx">$context</span> <span class="o">?=</span> <span class="nx">$</span> <span class="s">&#39;body&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>With the command route, if there is a plugin instance and it can
+route is triggered.</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-keyword">if</span> _.isString(arguments[<span class="hljs-number">0</span>])
+          command =
+            <span class="hljs-attribute">type</span>: arguments[<span class="hljs-number">0</span>]
+            <span class="hljs-attribute">userInfo</span>: arguments[<span class="hljs-number">1</span>]
+        <span class="hljs-keyword">else</span>
+          options = arguments[<span class="hljs-number">0</span>]
+          $context = arguments[<span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> arguments[<span class="hljs-number">1</span>]?</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The element&#39;s <code>$context</code> will default to document body.</p></div></div><div class="code"><div class="wrapper">        $context ?= $ <span class="hljs-string">'body'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>With the command route, if there is a plugin instance and it can
 <code>handleCommand</code>, call the method, but invoke <code>userInfo</code> if needed
 beforehand. With the normal route, if there is a plugin instance and
 no arguments are provided we assume the call is to access the
-instance, not reset it.</p></div></div><div class="code"><div class="wrapper">        <span class="k">if</span> <span class="nx">command</span><span class="o">?</span>
-          <span class="nx">@each</span> <span class="nf">-&gt;</span>
-            <span class="nv">$el = </span><span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">)</span>
-            <span class="nv">instance = </span><span class="nx">$el</span><span class="p">.</span><span class="nx">data</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">handleCommand</span><span class="p">)</span>
-              <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">command</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">)</span> <span class="k">then</span> <span class="nx">command</span><span class="p">.</span><span class="nx">userInfo</span> <span class="nx">$el</span>
-              <span class="nv">sender = </span><span class="kc">null</span>
-              <span class="nx">instance</span><span class="p">.</span><span class="nx">handleCommand</span> <span class="nx">command</span><span class="p">,</span> <span class="nx">sender</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Follow plugin return conventions.</p></div></div><div class="code"><div class="wrapper">          <span class="k">return</span> <span class="nx">@</span>
-        <span class="k">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>asSharedInstance</code> will decide what the plugin instance's main element
+instance, not reset it.</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-keyword">if</span> command?
+          <span class="hljs-property">@each</span> -&gt;
+            $el = $(@)
+            instance = $el.data namespace.toString(<span class="hljs-string">'data'</span>)
+            <span class="hljs-keyword">if</span> _.isFunction(instance.handleCommand)
+              <span class="hljs-keyword">if</span> _.isFunction(command.userInfo) <span class="hljs-keyword">then</span> command.userInfo $el
+              sender = <span class="hljs-literal">null</span>
+              instance.handleCommand command, sender</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Follow plugin return conventions.</p></div></div><div class="code"><div class="wrapper">          <span class="hljs-keyword">return</span> @
+        <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>asSharedInstance</code> will decide what the plugin instance&#39;s main element
 will be. The notion is that several elements all share the same
-plugin instance.</p></div></div><div class="code"><div class="wrapper">          <span class="nv">$el = </span><span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">asSharedInstance</span> <span class="o">is</span> <span class="kc">yes</span> <span class="k">then</span> <span class="nx">$context</span> <span class="k">else</span> <span class="nx">@first</span><span class="p">()</span>
-          <span class="nv">instance = </span><span class="nx">$el</span><span class="p">.</span><span class="nx">data</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
-          <span class="k">return</span> <span class="nx">instance</span> <span class="k">if</span> <span class="nx">instance</span><span class="o">?</span> <span class="o">and</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">$el</span><span class="o">?</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Otherwise, continue creating the instance by preparing the options and
+plugin instance.</p></div></div><div class="code"><div class="wrapper">          $el = <span class="hljs-keyword">if</span> createOptions.asSharedInstance <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span> <span class="hljs-keyword">then</span> $context <span class="hljs-keyword">else</span> <span class="hljs-property">@first</span>()
+          instance = $el.data namespace.toString(<span class="hljs-string">'data'</span>)
+          <span class="hljs-keyword">return</span> instance <span class="hljs-keyword">if</span> instance? <span class="hljs-keyword">and</span> instance.$el? <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> arguments.length</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Otherwise, continue creating the instance by preparing the options and
 deciding the main element before passing things onto
-<code>_createPluginInstance</code>.</p></div></div><div class="code"><div class="wrapper">        <span class="nv">options = </span><span class="nx">$</span><span class="p">.</span><span class="nx">extend</span> <span class="p">(</span><span class="nv">deep = </span><span class="kc">on</span><span class="p">),</span> <span class="p">{},</span> <span class="nx">namespace</span><span class="p">.</span><span class="nx">defaults</span><span class="p">,</span> <span class="nx">options</span>
-        <span class="nv">$el = </span><span class="nx">@</span>
-        <span class="p">(</span> <span class="nf">-&gt;</span>
-          <span class="nv">args = </span><span class="nx">arguments</span>
-          <span class="k">if</span> <span class="nx">createOptions</span><span class="p">.</span><span class="nx">asSharedInstance</span> <span class="o">is</span> <span class="kc">yes</span> <span class="k">then</span> <span class="nx">_createPluginInstance</span> <span class="nx">$el</span><span class="p">,</span> <span class="nx">args</span><span class="p">...</span>
-          <span class="k">else</span> <span class="nx">$el</span><span class="p">.</span><span class="nx">each</span> <span class="nf">-&gt;</span> <span class="nx">_createPluginInstance</span> <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">),</span> <span class="nx">args</span><span class="p">...</span>
-        <span class="p">)(</span><span class="nx">options</span><span class="p">,</span> <span class="nx">$context</span><span class="p">,</span> <span class="nx">namespace</span><span class="p">,</span> <span class="nx">apiClass</span><span class="p">,</span> <span class="nx">apiMixins</span><span class="p">,</span> <span class="nx">mixinFilter</span><span class="p">,</span> <span class="nx">createOptions</span><span class="p">)</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Follow plugin return conventions.</p></div></div><div class="code"><div class="wrapper">        <span class="k">return</span> <span class="nx">@</span>
+<code>_createPluginInstance</code>.</p></div></div><div class="code"><div class="wrapper">        options = $.extend (deep = <span class="hljs-literal">on</span>), {}, namespace.defaults, options
+        $el = @
+        ( <span class="hljs-function">-&gt;</span>
+          args = arguments
+          <span class="hljs-keyword">if</span> createOptions.asSharedInstance <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span> <span class="hljs-keyword">then</span> _createPluginInstance $el, args...
+          <span class="hljs-keyword">else</span> $el.each -&gt; _createPluginInstance $(@), args...
+        )(options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Follow plugin return conventions.</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-keyword">return</span> @
 
-  <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="nx">hlf</span><span class="p">,</span> <span class="s">&#39;createPlugin&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="mixin-support">Mixin Support</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Mixins are another approach to encapsulating object-oriented behavior. This
+  _.bindAll hlf, <span class="hljs-string">'createPlugin'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="mixin-support">Mixin Support</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Mixins are another approach to encapsulating object-oriented behavior. This
 set of helper functions are to fill the gap of a generic mixin system left
-by jQuery's highly-specified plugin system. General mixins are also provided
-to add helper methods for even more flexible extensions between mixins.</p></div></div><div class="code"><div class="wrapper">  <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">hlf</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>applyMixin</code>, when given a <code>context</code> to decorate with a valid <code>mixin</code>, runs
+by jQuery&#39;s highly-specified plugin system. General mixins are also provided
+to add helper methods for even more flexible extensions between mixins.</p></div></div><div class="code"><div class="wrapper">  _.extend hlf,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>applyMixin</code>, when given a <code>context</code> to decorate with a valid <code>mixin</code>, runs
 any run-once hooks after applying a mixin copy without the hooks.
-<code>context</code> is conventionally a class instance.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">applyMixin: </span><span class="nf">(context, dependencies, mixin) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If <code>mixin</code> is a string, check the general <code>$.mixins</code> for the mixin.</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">mixin</span><span class="p">)</span> <span class="k">then</span> <span class="nv">mixin = </span><span class="nx">@mixins</span><span class="p">[</span><span class="nx">mixin</span><span class="p">]</span> 
-      <span class="k">return</span> <span class="k">unless</span> <span class="nx">mixin</span><span class="o">?</span>
-      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">mixin</span><span class="p">)</span> <span class="k">then</span> <span class="nv">mixin = </span><span class="nx">mixin</span> <span class="nx">dependencies</span>
-      <span class="nv">onceMethods = </span><span class="p">[]</span>
-      <span class="nv">handlerNames = </span><span class="p">[]</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Get run-once methods and filter a clean mixin copy. Run-once methods are
-what's specified in <code>$.mixinOnceNames</code> and implemented by the mixin.
-Also get methods that are conventionally named like event handlers.</p></div></div><div class="code"><div class="wrapper">      <span class="k">for</span> <span class="k">own</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">prop</span> <span class="k">of</span> <span class="nx">mixin</span> <span class="k">when</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">prop</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nx">name</span> <span class="k">in</span> <span class="nx">@mixinOnceNames</span> <span class="k">then</span> <span class="nx">onceMethods</span><span class="p">.</span><span class="nx">push</span> <span class="nx">prop</span>
-        <span class="k">if</span> <span class="nx">name</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&#39;handle&#39;</span><span class="p">)</span> <span class="o">is</span> <span class="mi">0</span> <span class="o">and</span> <span class="nx">name</span> <span class="o">isnt</span> <span class="s">&#39;handleCommand&#39;</span>
-          <span class="nx">handlerNames</span><span class="p">.</span><span class="nx">push</span> <span class="nx">name</span>
-      <span class="nv">mixinToApply = </span><span class="nx">_</span><span class="p">.</span><span class="nx">omit</span> <span class="nx">mixin</span><span class="p">,</span> <span class="nx">@mixinOnceNames</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Apply mixin and call onces with explicit context.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">mixinToApply</span>
-      <span class="nx">method</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="k">for</span> <span class="nx">method</span> <span class="k">in</span> <span class="nx">onceMethods</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Auto-bind conventionally-named event handlers.</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="nx">handlerNames</span><span class="p">.</span><span class="nx">length</span> <span class="k">then</span> <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">handlerNames</span><span class="p">...</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>applyMixins</code>, when given a <code>context</code> (class) to decorate with <code>mixins</code>,
+<code>context</code> is conventionally a class instance.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">applyMixin</span>: <span class="hljs-function"><span class="hljs-params">(context, dependencies, mixin)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If <code>mixin</code> is a string, check the general <code>$.mixins</code> for the mixin.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> _.isString(mixin) <span class="hljs-keyword">then</span> mixin = <span class="hljs-property">@mixins</span>[mixin] 
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> mixin?
+      <span class="hljs-keyword">if</span> _.isFunction(mixin) <span class="hljs-keyword">then</span> mixin = mixin dependencies
+      onceMethods = []
+      handlerNames = []</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Get run-once methods and filter a clean mixin copy. Run-once methods are
+what&#39;s specified in <code>$.mixinOnceNames</code> and implemented by the mixin.
+Also get methods that are conventionally named like event handlers.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-keyword">for</span> own name, prop <span class="hljs-keyword">of</span> mixin <span class="hljs-keyword">when</span> _.isFunction(prop)
+        <span class="hljs-keyword">if</span> name <span class="hljs-keyword">in</span> <span class="hljs-property">@mixinOnceNames</span> <span class="hljs-keyword">then</span> onceMethods.push prop
+        <span class="hljs-keyword">if</span> name.indexOf(<span class="hljs-string">'handle'</span>) <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> name <span class="hljs-keyword">isnt</span> <span class="hljs-string">'handleCommand'</span>
+          handlerNames.push name
+      mixinToApply = _.omit mixin, <span class="hljs-property">@mixinOnceNames</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Apply mixin and call onces with explicit context.</p></div></div><div class="code"><div class="wrapper">      _.extend context, mixinToApply
+      method.call(context) <span class="hljs-keyword">for</span> method <span class="hljs-keyword">in</span> onceMethods</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Auto-bind conventionally-named event handlers.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> handlerNames.length <span class="hljs-keyword">then</span> _.bindAll context, handlerNames...</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>applyMixins</code>, when given a <code>context</code> (class) to decorate with <code>mixins</code>,
 which should be passed in order of application, calls <code>$.applyMixin</code> for
 each mixin. Conventionally, this should be used instead of
-<code>$.applyMixin</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">applyMixins: </span><span class="nf">(context, dependencies, mixins...) -&gt;</span>
-      <span class="nx">@applyMixin</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">dependencies</span><span class="p">,</span> <span class="nx">mixin</span> <span class="k">for</span> <span class="nx">mixin</span> <span class="k">in</span> <span class="nx">mixins</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>createMixin</code>, when given a collection of <code>mixins</code>, adds a new mixin with
+<code>$.applyMixin</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">applyMixins</span>: <span class="hljs-function"><span class="hljs-params">(context, dependencies, mixins...)</span> -&gt;</span>
+      <span class="hljs-property">@applyMixin</span> context, dependencies, mixin <span class="hljs-keyword">for</span> mixin <span class="hljs-keyword">in</span> mixins</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>createMixin</code>, when given a collection of <code>mixins</code>, adds a new mixin with
 given <code>name</code> and <code>mixin</code> method collection. Conventionally, each logical
 package of software should be written as a collection of mixins, with one
-named 'base'.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">createMixin: </span><span class="nf">(mixins, name, mixin) -&gt;</span>
-      <span class="nx">mixins</span> <span class="o">?=</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">mixins</span>
-      <span class="k">return</span> <span class="kc">no</span> <span class="k">if</span> <span class="nx">name</span> <span class="k">of</span> <span class="nx">mixins</span>
-      <span class="nx">mixins</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">mixin</span>
-      <span class="k">if</span> <span class="nx">$</span><span class="p">.</span><span class="nx">isPlainObject</span><span class="p">(</span><span class="nx">mixin</span><span class="p">)</span>
-        <span class="p">(</span><span class="nv">prop.mixin = </span><span class="nx">name</span><span class="p">)</span> <span class="k">for</span> <span class="k">own</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">prop</span> <span class="k">of</span> <span class="nx">mixin</span> <span class="k">when</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">prop</span><span class="p">)</span>
-      <span class="nx">mixin</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Supported decorators:</p></div></div><div class="code"><div class="wrapper">    <span class="nv">mixinOnceNames: </span><span class="p">[</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>decorate</code> allows more complex extending of the instance. For example,
+named &#39;base&#39;.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">createMixin</span>: <span class="hljs-function"><span class="hljs-params">(mixins, name, mixin)</span> -&gt;</span>
+      mixins ?= hlf.mixins
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">if</span> name <span class="hljs-keyword">of</span> mixins
+      mixins[name] = mixin
+      <span class="hljs-keyword">if</span> $.isPlainObject(mixin)
+        (prop.mixin = name) <span class="hljs-keyword">for</span> own k, prop <span class="hljs-keyword">of</span> mixin <span class="hljs-keyword">when</span> _.isFunction(prop)
+      mixin</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Supported decorators:</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">mixinOnceNames</span>: [</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>decorate</code> allows more complex extending of the instance. For example,
 methods and properties can be removed, handlers can be added to
-triggered events for more complex extending of existing methods.</p></div></div><div class="code"><div class="wrapper">      <span class="s">&#39;decorate&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>decorateOptions</code> allows extending the context's options, which are
-conventionally a property named <code>options</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="s">&#39;decorateOptions&#39;</span>
-    <span class="p">]</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>$.mixins</code> is the general mixin collection that's provided for writing
+triggered events for more complex extending of existing methods.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-string">'decorate'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>decorateOptions</code> allows extending the context&#39;s options, which are
+conventionally a property named <code>options</code>.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-string">'decorateOptions'</span>
+    ]</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>$.mixins</code> is the general mixin collection that&#39;s provided for writing
 foundation-level jQuery mixins. Conventionally, other mixins not shared
-between different logical packages do not belong here.</p></div></div><div class="code"><div class="wrapper">    <span class="nv">mixins:</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>data</code>, when given a context with a data-attribute-name translator that
+between different logical packages do not belong here.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">mixins</span>:</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>data</code>, when given a context with a data-attribute-name translator that
 makes a property-name follow jQuery conventions, as well as with a
 property <code>$el</code>, generate a mixin that applies convenience wrappers
 around the jQuery data API to simplify data API calls as much as
-possible.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">data: </span><span class="nf">-&gt;</span>
-        <span class="nv">data: </span><span class="nf">-&gt;</span>
-          <span class="k">if</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span>
-            <span class="nv">first = </span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">first</span><span class="p">)</span>
-              <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">@attr</span> <span class="nx">first</span>
-            <span class="k">else</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">first</span><span class="p">)</span>
-              <span class="nv">pairs = </span><span class="p">{}</span>
-              <span class="p">(</span><span class="nx">pairs</span><span class="p">[</span><span class="nx">attr</span><span class="p">(</span><span class="nx">k</span><span class="p">)]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">)</span> <span class="k">for</span> <span class="k">own</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">first</span>
-              <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pairs</span>
-          <span class="nx">@$el</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@$el</span><span class="p">,</span> <span class="nx">arguments</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>event</code>, when given a context with an event-name translator that makes an
+possible.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">data</span>: <span class="hljs-function">-&gt;</span>
+        <span class="hljs-attribute">data</span>: <span class="hljs-function">-&gt;</span>
+          <span class="hljs-keyword">if</span> arguments.length
+            first = arguments[<span class="hljs-number">0</span>]
+            <span class="hljs-keyword">if</span> _.isString(first)
+              arguments[<span class="hljs-number">0</span>] = <span class="hljs-property">@attr</span> first
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> _.isObject(first)
+              pairs = {}
+              (pairs[attr(k)] = v) <span class="hljs-keyword">for</span> own k, v <span class="hljs-keyword">of</span> first
+              arguments[<span class="hljs-number">0</span>] = pairs
+          <span class="hljs-property">@$el</span>.data.apply <span class="hljs-property">@$el</span>, arguments</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>event</code>, when given a context with an event-name translator that makes an
 event-name follow jQuery conventions, as well as with a property <code>$el</code>,
 generates a mixin that applies convenience wrappers around the jQuery
-custom event API to simplify event API calls as much as possible.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">event: </span><span class="nf">-&gt;</span>
-        <span class="kc">on</span><span class="o">:</span> <span class="nf">(name) -&gt;</span>
-          <span class="nv">name = </span><span class="nx">@evt</span> <span class="nx">name</span> <span class="k">if</span> <span class="nx">name</span><span class="o">?</span>
-          <span class="nx">@$el</span><span class="p">.</span><span class="nx">on</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@$el</span><span class="p">,</span> <span class="nx">arguments</span>
-        <span class="kc">off</span><span class="o">:</span> <span class="nf">(name) -&gt;</span>
-          <span class="nv">name = </span><span class="nx">@evt</span> <span class="nx">name</span> <span class="k">if</span> <span class="nx">name</span><span class="o">?</span>
-          <span class="nx">@$el</span><span class="p">.</span><span class="nx">off</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@$el</span><span class="p">,</span> <span class="nx">arguments</span>
-        <span class="nv">trigger: </span><span class="nf">(name, userInfo) -&gt;</span>
-          <span class="nv">type = </span><span class="nx">@evt</span> <span class="nx">name</span>
-          <span class="nx">@$el</span><span class="p">.</span><span class="nx">trigger</span> <span class="p">{</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">userInfo</span> <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>selection</code>, when given the context has a property <code>$el</code> and a property
+custom event API to simplify event API calls as much as possible.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">event</span>: <span class="hljs-function">-&gt;</span>
+        <span class="hljs-attribute">on</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span>
+          name = <span class="hljs-property">@evt</span> name <span class="hljs-keyword">if</span> name?
+          <span class="hljs-property">@$el</span>.<span class="hljs-literal">on</span>.apply <span class="hljs-property">@$el</span>, arguments
+        <span class="hljs-attribute">off</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span>
+          name = <span class="hljs-property">@evt</span> name <span class="hljs-keyword">if</span> name?
+          <span class="hljs-property">@$el</span>.<span class="hljs-literal">off</span>.apply <span class="hljs-property">@$el</span>, arguments
+        <span class="hljs-attribute">trigger</span>: <span class="hljs-function"><span class="hljs-params">(name, userInfo)</span> -&gt;</span>
+          type = <span class="hljs-property">@evt</span> name
+          <span class="hljs-property">@$el</span>.trigger { type, userInfo }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>selection</code>, when given the context has a property <code>$el</code> and a property
 <code>selectors</code>, define cached selector results for each name-selector pair.
-Also provide selection helpers for common tasks.</p></div></div><div class="code"><div class="wrapper">      <span class="nv">selection: </span><span class="nf">-&gt;</span>
-        <span class="nv">select: </span><span class="nf">-&gt;</span>
-          <span class="k">for</span> <span class="k">own</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">selector</span> <span class="k">of</span> <span class="nx">@selectors</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nv">result = </span><span class="nx">@$el</span><span class="p">.</span><span class="nx">find</span> <span class="nx">selector</span><span class="p">)</span><span class="o">?</span>
-              <span class="nx">@</span><span class="p">[</span><span class="s">&quot;$</span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">result</span>
-        <span class="nv">selectByClass: </span><span class="nf">(className) -&gt;</span>
-          <span class="nv">classNames = </span><span class="nx">@options</span><span class="o">?</span><span class="p">.</span><span class="nx">classNames</span>
-          <span class="nx">classNames</span> <span class="o">?=</span> <span class="nx">@classNames</span>
-          <span class="nx">@$el</span><span class="p">.</span><span class="nx">find</span> <span class="s">&quot;.</span><span class="si">#{</span><span class="nx">@classNames</span><span class="p">[</span><span class="nx">className</span><span class="p">]</span><span class="si">}</span><span class="s">&quot;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  <span class="nv">safeSet = </span><span class="nf">(key, toContext=$, fromContext=hlf) -&gt;</span>
-    <span class="nv">_oldValue = </span><span class="nx">toContext</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
-    <span class="nx">toContext</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fromContext</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
-    <span class="nx">_noConflicts</span><span class="p">.</span><span class="nx">push</span> <span class="nf">-&gt;</span> <span class="nx">toContext</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_oldValue</span>
+Also provide selection helpers for common tasks.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">selection</span>: <span class="hljs-function">-&gt;</span>
+        <span class="hljs-attribute">select</span>: <span class="hljs-function">-&gt;</span>
+          <span class="hljs-keyword">for</span> own name, selector <span class="hljs-keyword">of</span> <span class="hljs-property">@selectors</span>
+            <span class="hljs-keyword">if</span> (result = <span class="hljs-property">@$el</span>.find selector)?
+              @[<span class="hljs-string">"$<span class="hljs-subst">#{name}</span>"</span>] = result
+        <span class="hljs-attribute">selectByClass</span>: <span class="hljs-function"><span class="hljs-params">(className)</span> -&gt;</span>
+          classNames = <span class="hljs-property">@options</span>?.classNames
+          classNames ?= <span class="hljs-property">@classNames</span>
+          <span class="hljs-property">@$el</span>.find <span class="hljs-string">".<span class="hljs-subst">#{<span class="hljs-property">@classNames</span>[className]}</span>"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-function">
+  <span class="hljs-title">safeSet</span> = <span class="hljs-params">(key, toContext=$, fromContext=hlf)</span> -&gt;</span>
+    _oldValue = toContext[key]
+    toContext[key] = fromContext[key]
+    _noConflicts.push -&gt; toContext[key] = _oldValue
 
-  <span class="nx">safeSet</span> <span class="s">&#39;applyMixin&#39;</span>
-  <span class="nx">safeSet</span> <span class="s">&#39;applyMixins&#39;</span>
-  <span class="nx">safeSet</span> <span class="s">&#39;createMixin&#39;</span>
-  <span class="nx">safeSet</span> <span class="s">&#39;createPlugin&#39;</span>
-  <span class="nx">safeSet</span> <span class="s">&#39;mixinOnceNames&#39;</span>
-  <span class="nx">safeSet</span> <span class="s">&#39;mixins&#39;</span>
+  safeSet <span class="hljs-string">'applyMixin'</span>
+  safeSet <span class="hljs-string">'applyMixins'</span>
+  safeSet <span class="hljs-string">'createMixin'</span>
+  safeSet <span class="hljs-string">'createPlugin'</span>
+  safeSet <span class="hljs-string">'mixinOnceNames'</span>
+  safeSet <span class="hljs-string">'mixins'</span>
 
-  <span class="nv">$.hlf = </span><span class="nx">hlf</span>
+  $.hlf = hlf
 
-  <span class="k">return</span> <span class="nx">$</span><span class="p">.</span><span class="nx">hlf</span>
-<span class="p">)</span></div></div></div></div></body></html>
+  <span class="hljs-keyword">return</span> $.hlf
+)</div></div></div></div></body></html>

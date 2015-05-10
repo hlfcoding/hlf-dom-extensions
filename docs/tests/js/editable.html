@@ -1,17 +1,43 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/editable"><meta name="groc-project-path" content="tests/js/editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/editable.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nx">require</span><span class="p">.</span><span class="nx">config</span>
-  <span class="nv">baseUrl: </span><span class="s">&#39;../lib&#39;</span>
-  <span class="nv">paths:</span>
-    <span class="nv">hlf: </span><span class="s">&#39;../dist&#39;</span>
-    <span class="nv">test: </span><span class="s">&#39;../tests/js&#39;</span>
+<!DOCTYPE html><html lang="en"><head><title>tests/js/editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/editable"><meta name="groc-project-path" content="tests/js/editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/editable.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
+  <span class="hljs-attribute">baseUrl</span>: <span class="hljs-string">'../lib'</span>
+  <span class="hljs-attribute">paths</span>:
+    <span class="hljs-attribute">hlf</span>: <span class="hljs-string">'../dist'</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-string">'../tests/js'</span>
 
-<span class="nx">require</span> <span class="p">[</span>
-  <span class="s">&#39;jquery&#39;</span>
-  <span class="s">&#39;underscore&#39;</span>
-  <span class="s">&#39;hlf/jquery.hlf.editable&#39;</span>
-<span class="p">],</span> <span class="nf">($, _) -&gt;</span>
-  <span class="nv">shouldRunVisualTests = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#qunit&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
+<span class="hljs-built_in">require</span> [
+  <span class="hljs-string">'jquery'</span>
+  <span class="hljs-string">'underscore'</span>
+  <span class="hljs-string">'test/base-visual'</span>
+  <span class="hljs-string">'hlf/jquery.hlf.editable'</span>
+], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
 
-  <span class="k">if</span> <span class="nx">shouldRunVisualTests</span> <span class="k">then</span> <span class="nx">$</span> <span class="nf">-&gt;</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s">&#39;[data-hlf-editable]&#39;</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">editable</span><span class="p">()</span>
-      <span class="p">.</span><span class="nx">on</span> <span class="s">&#39;commit.hlf.editable&#39;</span><span class="p">,</span> <span class="nf">(e) -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Update data source here.</p></div></div><div class="code"><div class="wrapper">        <span class="nx">$</span><span class="p">(</span><span class="nx">@</span><span class="p">).</span><span class="nx">editable</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nv">text: </span><span class="nx">e</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">text</span> <span class="p">}</span></div></div></div></div></body></html>
+  shouldRunVisualTests = $(<span class="hljs-string">'#qunit'</span>).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span> <span class="hljs-keyword">unless</span> shouldRunVisualTests
+  tests = []</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="default">Default</h2>
+<p>Basic test with the default settings.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
+
+    <span class="hljs-attribute">label</span>: <span class="hljs-string">'inline type'</span>,
+    <span class="hljs-attribute">template</span>:
+      <span class="hljs-string">"""
+      &lt;div class="box"&gt;
+        &lt;fieldset data-hlf-editable='{
+            "types": "inline"
+          }'&gt;
+          &lt;legend&gt;Humanized Field Name&lt;/legend&gt;
+          &lt;div class="js-text"&gt;Default value&lt;/div&gt;
+          &lt;!-- If must be inline-block, set data-hlf-editable-display likewise. --&gt;
+          &lt;div class="js-input" style="display: none"&gt;
+            &lt;input name="fieldName" type="text" /&gt;
+          &lt;/div&gt;
+        &lt;/fieldset&gt;
+      &lt;/div&gt;
+      """</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
+      $context.find <span class="hljs-string">'[data-hlf-editable]'</span>
+        .editable()
+        .<span class="hljs-literal">on</span> <span class="hljs-string">'commit.hlf.editable'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Update data source here.</p></div></div><div class="code"><div class="wrapper">          $(@).editable <span class="hljs-string">'update'</span>, { <span class="hljs-attribute">text</span>: e.userInfo.text }
+
+    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'default'</span>
+    <span class="hljs-attribute">className</span>: <span class="hljs-string">'default-call'</span>
+
+  $ -&gt; test() <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests</div></div></div></div></body></html>

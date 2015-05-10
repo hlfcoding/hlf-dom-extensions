@@ -27,5 +27,4 @@
 .js-editable-inline .js-input input {
   margin: -1px; }
 .js-editable-inline .js-text {
-  -webkit-transition: background-color 0.2s ease-in-out;
-          transition: background-color 0.2s ease-in-out; }
+  transition: background-color 0.2s ease-in-out; }

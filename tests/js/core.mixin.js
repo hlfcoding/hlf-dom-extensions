@@ -1,5 +1,5 @@
 (function() {
-  var __slice = [].slice;
+  var slice = [].slice;
 
   define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], function($, _, hlf) {
     var assertDynamicMixinInstance, assertMixinInstance;
@@ -66,7 +66,7 @@
     QUnit.test('applyMixins', function(assert) {
       hlf.createMixin(this.mixins, this.mixinName, this.mixin);
       hlf.createMixin(this.mixins, this.dynamicMixinName, this.dynamicMixin);
-      hlf.applyMixins.apply(hlf, [this.instance, this.dependencies].concat(__slice.call(_.values(this.mixins))));
+      hlf.applyMixins.apply(hlf, [this.instance, this.dependencies].concat(slice.call(_.values(this.mixins))));
       assertMixinInstance.call(this, assert);
       return assertDynamicMixinInstance.call(this, assert);
     });

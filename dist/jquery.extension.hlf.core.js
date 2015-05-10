@@ -7,9 +7,9 @@ Written with jQuery 1.7.2
  */
 
 (function() {
-  var __slice = [].slice,
-    __hasProp = {}.hasOwnProperty,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var slice = [].slice,
+    hasProp = {}.hasOwnProperty,
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   (function(extension) {
     if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
@@ -18,7 +18,7 @@ Written with jQuery 1.7.2
       return extension(jQuery, _);
     }
   })(function($, _) {
-    var hlf, safeSet, _createPluginAPIAdditions, _createPluginInstance, _noConflicts;
+    var _createPluginAPIAdditions, _createPluginInstance, _noConflicts, hlf, safeSet;
     hlf = {
       debug: true,
       toString: _.memoize(function(context) {
@@ -30,13 +30,13 @@ Written with jQuery 1.7.2
       noConflict: function() {
         var fn;
         return ((function() {
-          var _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = _noConflicts.length; _i < _len; _i++) {
-            fn = _noConflicts[_i];
-            _results.push(fn());
+          var i, len, results;
+          results = [];
+          for (i = 0, len = _noConflicts.length; i < len; i++) {
+            fn = _noConflicts[i];
+            results.push(fn());
           }
-          return _results;
+          return results;
         })()).length;
       },
       debugLog: hlf.debug === false ? $.noop : (console.log.bind ? console.log.bind(console) : console.log)
@@ -56,10 +56,10 @@ Written with jQuery 1.7.2
       if (apiClass != null) {
         instance = new apiClass($el, finalOptions, $context);
         if (createOptions.baseMixins != null) {
-          hlf.applyMixins.apply(hlf, [instance, namespace].concat(__slice.call(createOptions.baseMixins)));
+          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.baseMixins)));
         }
         if (createOptions.apiMixins != null) {
-          hlf.applyMixins.apply(hlf, [instance, namespace].concat(__slice.call(createOptions.apiMixins)));
+          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.apiMixins)));
         }
       } else if (apiMixins != null) {
         instance = {
@@ -67,11 +67,11 @@ Written with jQuery 1.7.2
           options: finalOptions
         };
         if (createOptions.baseMixins != null) {
-          hlf.applyMixins.apply(hlf, [instance, namespace].concat(__slice.call(createOptions.baseMixins)));
+          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.baseMixins)));
         }
         hlf.applyMixin(instance, namespace, apiMixins.base);
         otherMixins = _.chain(apiMixins).filter(mixinFilter, instance).values().without(apiMixins.base).value();
-        hlf.applyMixins.apply(hlf, [instance, namespace].concat(__slice.call(otherMixins)));
+        hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(otherMixins)));
       }
       if (createOptions.compactOptions === true) {
         $.extend((deep = true), instance, finalOptions);
@@ -111,13 +111,13 @@ Written with jQuery 1.7.2
           return namespace.toString('class') + name;
         }),
         debugLog: namespace.debug === false ? $.noop : function() {
-          return hlf.debugLog.apply(hlf, [namespace.toString('log')].concat(__slice.call(arguments)));
+          return hlf.debugLog.apply(hlf, [namespace.toString('log')].concat(slice.call(arguments)));
         }
       };
     };
     _.extend(hlf, {
       createPlugin: function(createOptions) {
-        var apiAdditions, apiClass, apiMixins, deep, mixinFilter, name, namespace, plugin, safeName, _noConflict, _plugin;
+        var _noConflict, _plugin, apiAdditions, apiClass, apiMixins, deep, mixinFilter, name, namespace, plugin, safeName;
         name = createOptions.name;
         safeName = "" + (this.toString()) + (name[0].toUpperCase()) + name.slice(1);
         namespace = createOptions.namespace;
@@ -189,10 +189,10 @@ Written with jQuery 1.7.2
             var args;
             args = arguments;
             if (createOptions.asSharedInstance === true) {
-              return _createPluginInstance.apply(null, [$el].concat(__slice.call(args)));
+              return _createPluginInstance.apply(null, [$el].concat(slice.call(args)));
             } else {
               return $el.each(function() {
-                return _createPluginInstance.apply(null, [$(this)].concat(__slice.call(args)));
+                return _createPluginInstance.apply(null, [$(this)].concat(slice.call(args)));
               });
             }
           })(options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions);
@@ -203,7 +203,7 @@ Written with jQuery 1.7.2
     _.bindAll(hlf, 'createPlugin');
     _.extend(hlf, {
       applyMixin: function(context, dependencies, mixin) {
-        var handlerNames, method, mixinToApply, name, onceMethods, prop, _i, _len;
+        var handlerNames, i, len, method, mixinToApply, name, onceMethods, prop;
         if (_.isString(mixin)) {
           mixin = this.mixins[mixin];
         }
@@ -216,12 +216,12 @@ Written with jQuery 1.7.2
         onceMethods = [];
         handlerNames = [];
         for (name in mixin) {
-          if (!__hasProp.call(mixin, name)) continue;
+          if (!hasProp.call(mixin, name)) continue;
           prop = mixin[name];
           if (!(_.isFunction(prop))) {
             continue;
           }
-          if (__indexOf.call(this.mixinOnceNames, name) >= 0) {
+          if (indexOf.call(this.mixinOnceNames, name) >= 0) {
             onceMethods.push(prop);
           }
           if (name.indexOf('handle') === 0 && name !== 'handleCommand') {
@@ -230,23 +230,23 @@ Written with jQuery 1.7.2
         }
         mixinToApply = _.omit(mixin, this.mixinOnceNames);
         _.extend(context, mixinToApply);
-        for (_i = 0, _len = onceMethods.length; _i < _len; _i++) {
-          method = onceMethods[_i];
+        for (i = 0, len = onceMethods.length; i < len; i++) {
+          method = onceMethods[i];
           method.call(context);
         }
         if (handlerNames.length) {
-          return _.bindAll.apply(_, [context].concat(__slice.call(handlerNames)));
+          return _.bindAll.apply(_, [context].concat(slice.call(handlerNames)));
         }
       },
       applyMixins: function() {
-        var context, dependencies, mixin, mixins, _i, _len, _results;
-        context = arguments[0], dependencies = arguments[1], mixins = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
-        _results = [];
-        for (_i = 0, _len = mixins.length; _i < _len; _i++) {
-          mixin = mixins[_i];
-          _results.push(this.applyMixin(context, dependencies, mixin));
+        var context, dependencies, i, len, mixin, mixins, results;
+        context = arguments[0], dependencies = arguments[1], mixins = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+        results = [];
+        for (i = 0, len = mixins.length; i < len; i++) {
+          mixin = mixins[i];
+          results.push(this.applyMixin(context, dependencies, mixin));
         }
-        return _results;
+        return results;
       },
       createMixin: function(mixins, name, mixin) {
         var k, prop;
@@ -259,7 +259,7 @@ Written with jQuery 1.7.2
         mixins[name] = mixin;
         if ($.isPlainObject(mixin)) {
           for (k in mixin) {
-            if (!__hasProp.call(mixin, k)) continue;
+            if (!hasProp.call(mixin, k)) continue;
             prop = mixin[k];
             if (_.isFunction(prop)) {
               prop.mixin = name;
@@ -281,7 +281,7 @@ Written with jQuery 1.7.2
                 } else if (_.isObject(first)) {
                   pairs = {};
                   for (k in first) {
-                    if (!__hasProp.call(first, k)) continue;
+                    if (!hasProp.call(first, k)) continue;
                     v = first[k];
                     pairs[attr(k)] = v;
                   }
@@ -319,23 +319,23 @@ Written with jQuery 1.7.2
         selection: function() {
           return {
             select: function() {
-              var name, result, selector, _ref, _results;
-              _ref = this.selectors;
-              _results = [];
-              for (name in _ref) {
-                if (!__hasProp.call(_ref, name)) continue;
-                selector = _ref[name];
+              var name, ref, result, results, selector;
+              ref = this.selectors;
+              results = [];
+              for (name in ref) {
+                if (!hasProp.call(ref, name)) continue;
+                selector = ref[name];
                 if ((result = this.$el.find(selector)) != null) {
-                  _results.push(this["$" + name] = result);
+                  results.push(this["$" + name] = result);
                 } else {
-                  _results.push(void 0);
+                  results.push(void 0);
                 }
               }
-              return _results;
+              return results;
             },
             selectByClass: function(className) {
-              var classNames, _ref;
-              classNames = (_ref = this.options) != null ? _ref.classNames : void 0;
+              var classNames, ref;
+              classNames = (ref = this.options) != null ? ref.classNames : void 0;
               if (classNames == null) {
                 classNames = this.classNames;
               }

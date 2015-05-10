@@ -1,33 +1,137 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/tip"><meta name="groc-project-path" content="tests/js/tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/tip.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nx">require</span><span class="p">.</span><span class="nx">config</span>
-  <span class="nv">baseUrl: </span><span class="s">&#39;../lib&#39;</span>
-  <span class="nv">paths:</span>
-    <span class="nv">hlf: </span><span class="s">&#39;../dist&#39;</span>
-    <span class="nv">test: </span><span class="s">&#39;../tests/js&#39;</span>
+<!DOCTYPE html><html lang="en"><head><title>tests/js/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/tip"><meta name="groc-project-path" content="tests/js/tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/tip.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
+  <span class="hljs-attribute">baseUrl</span>: <span class="hljs-string">'../lib'</span>
+  <span class="hljs-attribute">paths</span>:
+    <span class="hljs-attribute">hlf</span>: <span class="hljs-string">'../dist'</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-string">'../tests/js'</span>
 
-<span class="nx">require</span> <span class="p">[</span>
-  <span class="s">&#39;jquery&#39;</span>
-  <span class="s">&#39;underscore&#39;</span>
-  <span class="s">&#39;hlf/jquery.hlf.tip&#39;</span>
-<span class="p">],</span> <span class="nf">($, _) -&gt;</span>
-  <span class="nv">shouldRunVisualTests = </span><span class="nx">$</span><span class="p">(</span><span class="s">&#39;#qunit&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
+<span class="hljs-built_in">require</span> [
+  <span class="hljs-string">'jquery'</span>
+  <span class="hljs-string">'underscore'</span>
+  <span class="hljs-string">'test/base-visual'</span>
+  <span class="hljs-string">'hlf/jquery.hlf.tip'</span>
+], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
 
-  <span class="k">if</span> <span class="nx">shouldRunVisualTests</span> <span class="k">then</span> <span class="nx">$</span> <span class="nf">-&gt;</span>
+  shouldRunVisualTests = $(<span class="hljs-string">'#qunit'</span>).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span> <span class="hljs-keyword">unless</span> shouldRunVisualTests
+  tests = []</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>See <a href="../../docs/tests/js/tip.html">tests</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="default">Default</h2>
+<p>Basic test with the default settings. Basic tooltips are created and
+accessed via <code>$.fn.tip</code>. Tip should entirely follow mouse. Tip size should
+change when switching between links.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
 
-    <span class="nx">do</span> <span class="nf">($context = $ &#39;.default-call&#39;) -&gt;</span>
-      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">tip</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">$context</span>
+    <span class="hljs-attribute">label</span>: <span class="hljs-string">"by default"</span>
+    <span class="hljs-attribute">template</span>:
+      <span class="hljs-string">"""
+      &lt;p&gt;
+        &lt;a class="trigger" title="link details" href="javascript:"&gt;tooltip trigger&lt;/a&gt; &amp;middot;
+        &lt;a class="trigger" title="&lt;%= loremIpsum.short %&gt;" href="javascript:"&gt;tooltip trigger&lt;/a&gt; &amp;middot;
+        &lt;a class="trigger" title="&lt;%= loremIpsum.long %&gt;" href="javascript:"&gt;tooltip trigger&lt;/a&gt;
+      &lt;/p&gt;
+      """</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>NOTE: Currently, the tip only parses content from the <code>title</code> and <code>alt</code>
+attributes. This is limiting, but also conventional and easier to
+maintain than a custom attribute.</p></div></div><div class="code"><div class="wrapper">      $context.find(<span class="hljs-string">'[title]'</span>).tip <span class="hljs-literal">null</span>, $context</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>NOTE: <code>$context</code> also needs to be passed in. This is the core plugin
+generator&#39;s convention where if the plugin instance is to be attached to
+something besides the element(s) calling the method, it must be passed
+in after the first argument (options or command).</p></div></div><div class="code"><div class="wrapper">      api = $context.tip <span class="hljs-literal">null</span>, $context
 
-    <span class="nx">do</span> <span class="nf">($context = $ &#39;.list-call&#39;) -&gt;</span>
-      <span class="nv">$list = </span><span class="nx">$context</span><span class="p">.</span><span class="nx">find</span> <span class="s">&#39;ul&#39;</span>
-      <span class="nv">$item = </span><span class="nx">$list</span><span class="p">.</span><span class="nx">children</span><span class="p">(</span><span class="s">&#39;:last-child&#39;</span><span class="p">).</span><span class="nx">clone</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Run plugin after capturing original DOM.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span> <span class="p">{</span> <span class="nv">snap: </span><span class="p">{</span> <span class="nv">toYAxis: </span><span class="kc">true</span> <span class="p">}</span> <span class="p">},</span> <span class="nx">$context</span>
-      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;.list-append&#39;</span><span class="p">).</span><span class="nx">click</span> <span class="nf">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Use original DOM to append new items.</p></div></div><div class="code"><div class="wrapper">        <span class="nv">$new = </span><span class="nx">$item</span><span class="p">.</span><span class="nx">clone</span><span class="p">()</span>
-        <span class="nx">$list</span><span class="p">.</span><span class="nx">append</span> <span class="nx">$new</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Make titles dynamic.</p></div></div><div class="code"><div class="wrapper">        <span class="nv">$trigger = </span><span class="nx">$new</span><span class="p">.</span><span class="nx">find</span> <span class="s">&#39;[title]&#39;</span>
-        <span class="nv">title = </span><span class="nx">$trigger</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">).</span><span class="nx">replace</span> <span class="sr">/\d/</span><span class="p">,</span> <span class="nx">$new</span><span class="p">.</span><span class="nx">index</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="nx">$trigger</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="nx">title</span>
+    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'default'</span>
+    <span class="hljs-attribute">className</span>: <span class="hljs-string">'default-call'</span>
+    <span class="hljs-attribute">vars</span>: _.pick $, <span class="hljs-string">'loremIpsum'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="snapping-vertically">Snapping Vertically</h2>
+<p>Snapping tooltips are created and accessed via <code>$.fn.snapTip</code>. Options
+related to snapping are in the <code>snap</code> option group. This one should snap to
+an appropriate x position, along the trigger&#39;s most fitting edge (left or
+right). In this case it should snap to the right and only be able to track
+the mouse along the y-axis.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
 
-    <span class="nx">do</span> <span class="nf">($context = $ &#39;.bar-call&#39;) -&gt;</span>
-      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span> <span class="p">{</span> <span class="nv">snap: </span><span class="p">{</span> <span class="nv">toXAxis: </span><span class="kc">true</span> <span class="p">}</span> <span class="p">},</span> <span class="nx">$context</span>
+    <span class="hljs-attribute">label</span>: <span class="hljs-string">'snapping with a list'</span>
+    <span class="hljs-attribute">template</span>:
+      <span class="hljs-string">"""
+      &lt;ul class="list"&gt;
+      &lt;% _.range(1, count +1).forEach(function(i) { %&gt;
+        &lt;li&gt;
+          &lt;a class="trigger" title="This is list item &lt;%= i %&gt; in detail." href="javascript:"&gt;
+            tooltip trigger
+          &lt;/a&gt;
+        &lt;/li&gt;
+      &lt;% }); %&gt;
+      &lt;/ul&gt;
+      """</span>
+    <span class="hljs-attribute">footerHtml</span>:
+      <span class="hljs-string">"""
+      &lt;button name="list-append"&gt;load more&lt;/button&gt;
+      """</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
+      $context.find(<span class="hljs-string">'[title]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toYAxis</span>: <span class="hljs-literal">true</span> } }, $context
 
-    <span class="nx">do</span> <span class="nf">($context = $ &#39;.grid-call&#39;) -&gt;</span>
-      <span class="nx">$context</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s">&#39;[alt]&#39;</span><span class="p">).</span><span class="nx">snapTip</span> <span class="p">{</span> <span class="nv">snap: </span><span class="p">{</span> <span class="nv">toXAxis: </span><span class="kc">true</span> <span class="p">}</span> <span class="p">},</span> <span class="nx">$context</span>
+    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'snapping-vertically'</span>
+    <span class="hljs-attribute">className</span>: <span class="hljs-string">'list-call'</span>
+    <span class="hljs-attribute">vars</span>: { <span class="hljs-attribute">count</span>: <span class="hljs-number">3</span> }
+    <span class="hljs-attribute">beforeTest</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
+      $.visualTest.setupAppendButton $context, <span class="hljs-string">'.list'</span>, <span class="hljs-function"><span class="hljs-params">($newItem)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Minor logic to make titles dynamic.</p></div></div><div class="code"><div class="wrapper">        $trigger = $newItem.find <span class="hljs-string">'[title]'</span>
+        title = $trigger.attr(<span class="hljs-string">'title'</span>).replace <span class="hljs-regexp">/\d/</span>, $newItem.index() + <span class="hljs-number">1</span>
+        $trigger.attr <span class="hljs-string">'title'</span>, title</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="snapping-horizontally">Snapping Horizontally</h2>
+<p>Change the flag from <code>toYAxis</code> to <code>toXAxis</code>, and this one should snap to
+an appropriate y position, along the trigger&#39;s most fitting edge (top or bottom).</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
 
-    <span class="nx">$</span><span class="p">(</span><span class="s">&#39;.edge-call &gt; .visual-test-fragment[title]&#39;</span><span class="p">).</span><span class="nx">snapTip</span><span class="p">()</span></div></div></div></div></body></html>
+    <span class="hljs-attribute">label</span>: <span class="hljs-string">'snapping with a bar'</span>
+    <span class="hljs-attribute">template</span>:
+      <span class="hljs-string">"""
+      &lt;nav class="bar"&gt;
+      &lt;% _.range(1, count +1).forEach(function(i) { %&gt;
+        &lt;a class="trigger" href="#" title="This is bar item &lt;%= i %&gt; in detail."&gt;
+          tooltip trigger
+        &lt;/a&gt;
+      &lt;% }); %&gt;
+      &lt;/nav&gt;
+      """</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
+      $context.find(<span class="hljs-string">'[title]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toXAxis</span>: <span class="hljs-literal">true</span> } }, $context
+
+    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'snapping-horizontally'</span>
+    <span class="hljs-attribute">className</span>: <span class="hljs-string">'bar-call'</span>
+    <span class="hljs-attribute">vars</span>: { <span class="hljs-attribute">count</span>: <span class="hljs-number">3</span> }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="a-model-use-case">A Model Use Case</h2>
+<p>The above examples could suffice with Bootstrap tooltip or others. Snapping
+and shifting without redundantly toggling appearance really makes a
+difference when hovering over a grid of small individual content pieces, ie.
+avatar images.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
+
+    <span class="hljs-attribute">label</span>: <span class="hljs-string">'snapping with a grid'</span>
+    <span class="hljs-attribute">template</span>:
+      <span class="hljs-string">"""
+      &lt;ul class="grid"&gt;
+      &lt;% _.range(1, count +1).forEach(function(i) { %&gt;
+        &lt;li&gt;
+          &lt;img src="resources/avatar.png" alt="This is avatar &lt;%= i %&gt; in detail."&gt;
+        &lt;/li&gt;
+      &lt;% }); %&gt;
+      &lt;/ul&gt;
+      """</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
+      $context.find(<span class="hljs-string">'[alt]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toXAxis</span>: <span class="hljs-literal">true</span> } }, $context
+
+    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'a-model-use-case'</span>
+    <span class="hljs-attribute">className</span>: <span class="hljs-string">'grid-call'</span>
+    <span class="hljs-attribute">vars</span>: { <span class="hljs-attribute">count</span>: <span class="hljs-number">24</span> }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="corner-cases">Corner Cases</h2>
+<p>Base tips also anchor themselves to the trigger based on available space.
+Here we also use snap-tip without the axis flags from before to lock the tip
+into place and prevent mouse tracking.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
+
+    <span class="hljs-attribute">template</span>:
+      <span class="hljs-string">"""
+      &lt;a class="trigger top right" title="&lt;%= loremIpsum.short %&gt;" href="javascript:"&gt;
+        top right corner
+      &lt;/a&gt;
+      &lt;a class="affixed trigger bottom left" title="&lt;%= loremIpsum.short %&gt;" href="javascript:"&gt;
+        bottom left corner
+      &lt;/a&gt;
+      &lt;a class="affixed trigger bottom right" title="&lt;%= loremIpsum.short %&gt;" href="javascript:"&gt;
+        bottom right corner
+      &lt;/a&gt;
+      """</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($fragments)</span> -&gt;</span> $fragments.snapTip()
+
+    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'corner-cases'</span>
+    <span class="hljs-attribute">asFragments</span>: <span class="hljs-literal">yes</span>
+    <span class="hljs-attribute">vars</span>: _.pick $, <span class="hljs-string">'loremIpsum'</span>
+
+  $ -&gt; test() <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests</div></div></div></div></body></html>

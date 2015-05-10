@@ -1,171 +1,249 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/css/base</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/css/base"><meta name="groc-project-path" content="tests/css/base.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/css/base.scss</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="nv">$line-color</span><span class="o">:</span> <span class="mh">#ccc</span><span class="p">;</span>
-<span class="nv">$fill-color</span><span class="o">:</span> <span class="mh">#fff</span><span class="p">;</span>
-<span class="nv">$radius-size</span><span class="o">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
-<span class="nv">$text-size</span><span class="o">:</span> <span class="mi">14</span><span class="kt">px</span><span class="p">;</span>
-<span class="nv">$line-size</span><span class="o">:</span> <span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
-<span class="err">%</span><span class="nt">panel-skin</span> <span class="p">{</span>
-  <span class="na">background-color</span><span class="o">:</span> <span class="nv">$fill-color</span><span class="p">;</span>
-  <span class="na">border</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span> <span class="no">solid</span> <span class="nv">$line-color</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="nc">.clearfix</span> <span class="p">{</span>
-  <span class="na">&amp;</span><span class="o">::</span><span class="n">before</span><span class="o">,</span>
-  <span class="o">&amp;::</span><span class="n">after</span> <span class="p">{</span>
-    <span class="na">content</span><span class="o">:</span> <span class="s2">&quot; &quot;</span><span class="p">;</span>
-    <span class="na">display</span><span class="o">:</span> <span class="n">table</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="na">&amp;</span><span class="o">::</span><span class="n">after</span> <span class="p">{</span>
-    <span class="na">clear</span><span class="o">:</span> <span class="no">both</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">&amp;</span> <span class="p">{</span>
-    <span class="na">*zoom</span><span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<!DOCTYPE html><html lang="en"><head><title>tests/css/base</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/css/base"><meta name="groc-project-path" content="tests/css/base.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/css/base.scss</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><p>This is only styling for visual test pages. </p></div></div><div class="code"><div class="wrapper"><span class="hljs-variable">$bg-color</span><span class="hljs-value">: <span class="hljs-hexcolor">#dadad6</span>;</span>
+<span class="hljs-variable">$fill-color</span><span class="hljs-value">: <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#fff</span>, <span class="hljs-number">0.95</span>);</span>
+<span class="hljs-variable">$line-color</span><span class="hljs-value">: <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.1</span>);</span>
+<span class="hljs-variable">$accent-color</span><span class="hljs-value">: <span class="hljs-hexcolor">#06d</span>;</span>
 
-<span class="nt">body</span> <span class="p">{</span>
-  <span class="na">background-color</span><span class="o">:</span> <span class="mh">#eaeae6</span><span class="p">;</span>
-  <span class="na">font</span><span class="o">:</span> <span class="p">{</span>
-    <span class="na">family</span><span class="o">:</span> <span class="n">Helvetica</span><span class="o">,</span> <span class="no">sans-serif</span><span class="p">;</span>
-    <span class="na">size</span><span class="o">:</span> <span class="nv">$text-size</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="na">padding</span><span class="o">:</span> <span class="nv">$text-size</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="nt">h1</span> <span class="p">{</span>
-  <span class="na">font-size</span><span class="o">:</span> <span class="mi">1</span><span class="mf">.5</span> <span class="o">*</span> <span class="nv">$text-size</span><span class="p">;</span>
-  <span class="na">letter-spacing</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="nt">p</span> <span class="p">{</span>
-  <span class="na">padding</span><span class="o">:</span> <span class="nv">$text-size</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="hljs-variable">$line-size</span><span class="hljs-value">: <span class="hljs-number">3px</span>;</span>
+<span class="hljs-variable">$radius-size</span><span class="hljs-value">: <span class="hljs-number">10px</span>;</span>
+<span class="hljs-variable">$rem</span><span class="hljs-value">: <span class="hljs-number">14px</span>;</span> <span class="hljs-comment">// Until we drop IE 8, rem can't replace this.</span>
 
-<span class="nn">#main</span> <span class="p">{</span>
-  <span class="na">padding</span><span class="o">:</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nv">$text-size</span><span class="p">)</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+%clearfix {
+  &amp;<span class="hljs-pseudo">::before</span>, &amp;<span class="hljs-pseudo">::after</span> {
+    <span class="hljs-attribute">content</span><span class="hljs-value">: <span class="hljs-string">" "</span>;</span>
+    <span class="hljs-attribute">display</span><span class="hljs-value">: table;</span>
+  }
+  &amp;<span class="hljs-pseudo">::after</span> { <span class="hljs-attribute">clear</span><span class="hljs-value">: both;</span> }
+}
 
-<span class="nt">section</span><span class="nc">.visual-test</span> <span class="p">{</span>
-  <span class="nt">header</span> <span class="p">{</span>
-    <span class="na">font-weight</span><span class="o">:</span> <span class="no">bold</span><span class="p">;</span>
-    <span class="na">&amp;</span><span class="o">::</span><span class="n">after</span> <span class="p">{</span>
-      <span class="na">content</span><span class="o">:</span> <span class="s1">&#39;</span><span class="s2">:&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="nt">footer</span> <span class="p">{</span>
-    <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+%dimmed {
+  <span class="hljs-attribute">opacity</span><span class="hljs-value">: <span class="hljs-number">0.5</span>;</span>
+  &amp;<span class="hljs-pseudo">:hover</span>, &amp;<span class="hljs-pseudo">:focus</span> { <span class="hljs-attribute">opacity</span><span class="hljs-value">: <span class="hljs-number">1.0</span>;</span> }
+}
 
-<span class="nc">.box</span> <span class="p">{</span>
-  <span class="k">@extend</span> <span class="err">%</span><span class="nt">panel-skin</span><span class="o">;</span>
-  <span class="nt">border-radius</span><span class="nd">:</span> <span class="err">$</span><span class="nt">radius-size</span><span class="o">;</span>
-  <span class="nt">margin</span><span class="nd">:</span> <span class="err">$</span><span class="nt">text-size</span> <span class="nt">0</span><span class="o">;</span>
-  <span class="nt">padding</span><span class="nd">:</span> <span class="err">$</span><span class="nt">text-size</span><span class="o">;</span>
-<span class="p">}</span>
+%panel-skin {
+  <span class="hljs-attribute">background</span><span class="hljs-value">: {
+    color: <span class="hljs-variable">$fill-color</span>;</span>
+    <span class="hljs-attribute">clip</span><span class="hljs-value">: padding-box;</span>
+  }
+  <span class="hljs-attribute">border</span><span class="hljs-value">: <span class="hljs-variable">$line-size</span> solid <span class="hljs-variable">$line-color</span>;</span>
+  box<span class="hljs-value">: {
+    shadow: inset <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#fff</span>, <span class="hljs-number">0.7</span>), /* highlight */
+            inset <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-variable">$rem</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.05</span>);</span> <span class="hljs-comment">/* shadow */</span>
+    sizing<span class="hljs-value">: border-box;</span>
+  }
+  &amp;<span class="hljs-pseudo">:hover</span> {
+    <span class="hljs-attribute">background-color</span><span class="hljs-value">: <span class="hljs-function">opacify</span>(<span class="hljs-variable">$fill-color</span>, <span class="hljs-number">0.1</span>);</span>
+  }
+}
 
-<span class="nc">.list-item</span> <span class="p">{</span>
-  <span class="k">@extend</span> <span class="err">%</span><span class="nt">panel-skin</span><span class="o">;</span>
-  <span class="nt">border-bottom-width</span><span class="nd">:</span> <span class="nt">0</span><span class="o">;</span>
-  <span class="nt">box-sizing</span><span class="nd">:</span> <span class="nt">border-box</span><span class="o">;</span>
-  <span class="nt">display</span><span class="nd">:</span> <span class="nt">block</span><span class="o">;</span>
-  <span class="nt">padding</span><span class="nd">:</span> <span class="err">$</span><span class="nt">text-size</span><span class="o">;</span>
-<span class="p">}</span>
-<span class="nc">.list-item-first</span> <span class="p">{</span>
-  <span class="na">border-top</span><span class="o">:</span> <span class="p">{</span>
-    <span class="na">left-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-    <span class="na">right-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.list-item-last</span> <span class="p">{</span>
-  <span class="na">border-bottom</span><span class="o">:</span> <span class="p">{</span>
-    <span class="na">left-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-    <span class="na">right-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-    <span class="na">width</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.list</span> <span class="p">{</span>
-  <span class="na">margin</span><span class="o">:</span> <span class="nv">$text-size</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="nc">.item</span> <span class="p">{</span>
-    <span class="na">width</span><span class="o">:</span> <span class="mi">300</span><span class="kt">px</span><span class="p">;</span>
-    <span class="k">@extend</span> <span class="nc">.list-item</span><span class="o">;</span>
-  <span class="p">}</span>
-  <span class="o">&gt;</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">li</span><span class="nc">.no-a</span> <span class="p">{</span>
-    <span class="k">@extend</span> <span class="nc">.item</span><span class="o">;</span>
-    <span class="k">&amp;</span><span class="nd">:first-child</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.list-item-first</span><span class="o">;</span> <span class="p">}</span>
-    <span class="k">&amp;</span><span class="nd">:last-child</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.list-item-last</span><span class="o">;</span> <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="nt">li</span><span class="nd">:not</span><span class="o">(</span><span class="nc">.no-a</span><span class="o">)</span> <span class="p">{</span>
-    <span class="o">&gt;</span> <span class="nt">a</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.item</span><span class="o">;</span> <span class="p">}</span>
-    <span class="k">&amp;</span><span class="nd">:first-child</span> <span class="o">&gt;</span> <span class="nt">a</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.list-item-first</span><span class="o">;</span> <span class="p">}</span>
-    <span class="k">&amp;</span><span class="nd">:last-child</span> <span class="o">&gt;</span> <span class="nt">a</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.list-item-last</span><span class="o">;</span> <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+%pull-<span class="hljs-attribute">left</span>-<span class="hljs-attribute">right</span> {
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: { left: <span class="hljs-variable">$rem</span>;</span> <span class="hljs-attribute">right</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span> }
+  <span class="hljs-attribute">margin</span><span class="hljs-value">: { left: -<span class="hljs-variable">$rem</span>;</span> <span class="hljs-attribute">right</span><span class="hljs-value">: -<span class="hljs-variable">$rem</span>;</span> }
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Start output:</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>base styling </p></div></div><div class="code"><div class="wrapper"><span class="hljs-tag">html</span> {
+  <span class="hljs-attribute">font-size</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+}
+<span class="hljs-tag">body</span> {
+  <span class="hljs-attribute">background-color</span><span class="hljs-value">: <span class="hljs-variable">$bg-color</span>;</span>
+  <span class="hljs-attribute">font-family</span><span class="hljs-value">: Helvetica, sans-serif;</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+  <span class="hljs-attribute">padding-top</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+}
+<span class="hljs-tag">a</span> {
+  <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-variable">$accent-color</span>;</span>
+  <span class="hljs-attribute">text-decoration</span><span class="hljs-value">: none;</span>
+  &amp;<span class="hljs-pseudo">:hover</span> {
+    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-function">saturate</span>(<span class="hljs-function">lighten</span>(<span class="hljs-variable">$accent-color</span>, <span class="hljs-number">10%</span>), <span class="hljs-number">10%</span>);</span>
+    <span class="hljs-attribute">text-decoration</span><span class="hljs-value">: underline;</span>
+  }
+}
+<span class="hljs-tag">button</span> {
+  <span class="hljs-attribute">background</span><span class="hljs-value">: {
+    color: <span class="hljs-function">lighten</span>(<span class="hljs-variable">$bg-color</span>, <span class="hljs-number">10%</span>);</span>
+    <span class="hljs-attribute">clip</span><span class="hljs-value">: padding-box;</span>
+  }
+  <span class="hljs-attribute">border</span><span class="hljs-value">: <span class="hljs-number">1px</span> solid <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.5</span>);</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-number">0.3em</span> <span class="hljs-number">0.6em</span>;</span>
+  &amp;<span class="hljs-pseudo">:focus</span> {
+    <span class="hljs-attribute">outline</span><span class="hljs-value">: none;</span>
+    <span class="hljs-attribute">box-shadow</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0.3em</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.1</span>);</span>
+  }
+}
 
-<span class="nc">.bar-item</span> <span class="p">{</span>
-  <span class="k">@extend</span> <span class="err">%</span><span class="nt">panel-skin</span><span class="o">;</span>
-  <span class="nt">border-right-width</span><span class="nd">:</span> <span class="nt">0</span><span class="o">;</span>
-  <span class="nt">box-sizing</span><span class="nd">:</span> <span class="nt">border-box</span><span class="o">;</span>
-  <span class="nt">display</span><span class="nd">:</span> <span class="nt">block</span><span class="o">;</span>
-  <span class="nt">float</span><span class="nd">:</span> <span class="nt">left</span><span class="o">;</span>
-  <span class="nt">padding</span><span class="nd">:</span> <span class="err">$</span><span class="nt">text-size</span><span class="o">;</span>
-<span class="p">}</span>
-<span class="nc">.bar-item-first</span> <span class="p">{</span>
-  <span class="na">border</span><span class="o">:</span> <span class="p">{</span>
-    <span class="na">top-left-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-    <span class="na">bottom-left-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.bar-item-last</span> <span class="p">{</span>
-  <span class="na">border</span><span class="o">:</span> <span class="p">{</span>
-    <span class="na">top-right-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-    <span class="na">bottom-right-radius</span><span class="o">:</span> <span class="nv">$radius-size</span><span class="p">;</span>
-    <span class="na">width</span><span class="o">:</span> <span class="mi">1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.bar</span> <span class="p">{</span>
-  <span class="k">@extend</span> <span class="nc">.clearfix</span><span class="o">;</span>
-  <span class="nt">margin</span><span class="nd">:</span> <span class="err">$</span><span class="nt">text-size</span> <span class="nt">0</span><span class="o">;</span>
-  <span class="nc">.item</span> <span class="p">{</span>
-    <span class="nv">$height</span><span class="o">:</span> <span class="mi">60</span><span class="kt">px</span><span class="p">;</span>
-    <span class="k">@extend</span> <span class="nc">.bar-item</span><span class="o">;</span>
-    <span class="nt">height</span><span class="nd">:</span> <span class="err">$</span><span class="nt">height</span><span class="o">;</span>
-    <span class="nt">line-height</span><span class="nd">:</span> <span class="err">$</span><span class="nt">height</span> <span class="nt">-</span> <span class="nt">2</span> <span class="o">*</span> <span class="err">$</span><span class="nt">text-size</span><span class="o">;</span>
-  <span class="p">}</span>
-  <span class="o">&gt;</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">li</span><span class="nc">.no-a</span> <span class="p">{</span>
-    <span class="k">@extend</span> <span class="nc">.item</span><span class="o">;</span>
-    <span class="k">&amp;</span><span class="nd">:first-child</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.bar-item-first</span><span class="o">;</span> <span class="p">}</span>
-    <span class="k">&amp;</span><span class="nd">:last-child</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.bar-item-last</span><span class="o">;</span> <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="nt">li</span><span class="nd">:not</span><span class="o">(</span><span class="nc">.no-a</span><span class="o">)</span> <span class="p">{</span>
-    <span class="o">&gt;</span> <span class="nt">a</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.item</span><span class="o">;</span> <span class="p">}</span>
-    <span class="k">&amp;</span><span class="nd">:first-child</span> <span class="o">&gt;</span> <span class="nt">a</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.bar-item-first</span><span class="o">;</span> <span class="p">}</span>
-    <span class="k">&amp;</span><span class="nd">:last-child</span> <span class="o">&gt;</span> <span class="nt">a</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.bar-item-last</span><span class="o">;</span> <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> { <span class="hljs-comment">/* test page header */</span>
+  <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %pull-left-right;</span>
+  <span class="hljs-attribute">background</span><span class="hljs-value">: <span class="hljs-function">darken</span>(<span class="hljs-variable">$bg-color</span>, <span class="hljs-number">70%</span>);</span>
+  <span class="hljs-attribute">box-shadow</span><span class="hljs-value">: inset <span class="hljs-number">0</span> <span class="hljs-number">30px</span> <span class="hljs-number">40px</span> -<span class="hljs-number">20px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.4</span>);</span>
+  <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-variable">$bg-color</span>;</span>
+  &gt; * { <span class="hljs-attribute">display</span><span class="hljs-value">: inline-block;</span> }
+  &gt; <span class="hljs-tag">h1</span> {
+    <span class="hljs-attribute">font-weight</span><span class="hljs-value">: normal;</span> <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span> <span class="hljs-comment">// reset</span>
+    <span class="hljs-attribute">text-shadow</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.7</span>);</span>
+  }
+  &gt; <span class="hljs-tag">span</span> {
+    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %dimmed;</span>
+    <span class="hljs-attribute">margin-left</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+  }
+}
 
-<span class="nc">.edge</span> <span class="p">{</span>
-  <span class="na">position</span><span class="o">:</span> <span class="no">absolute</span><span class="p">;</span>
-  <span class="k">&amp;</span><span class="nc">.top</span> <span class="p">{</span> <span class="na">top</span><span class="o">:</span> <span class="nv">$text-size</span><span class="p">;</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.right</span> <span class="p">{</span> <span class="na">right</span><span class="o">:</span> <span class="nv">$text-size</span><span class="p">;</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.bottom</span> <span class="p">{</span> <span class="na">bottom</span><span class="o">:</span> <span class="nv">$text-size</span><span class="p">;</span> <span class="p">}</span>
-  <span class="k">&amp;</span><span class="nc">.left</span> <span class="p">{</span> <span class="na">left</span><span class="o">:</span> <span class="nv">$text-size</span><span class="p">;</span> <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.edge-call</span> <span class="p">{</span>
-  <span class="k">&amp;</span><span class="nd">:not</span><span class="o">(</span><span class="nt">body</span><span class="o">)</span> <span class="p">{</span>
-    <span class="na">position</span><span class="o">:</span> <span class="no">relative</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="o">&gt;</span> <span class="nc">.visual-test-fragment</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.edge</span><span class="o">;</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="hljs-tag">h1</span> { <span class="hljs-comment">/* test page title */</span>
+  <span class="hljs-attribute">font-size</span><span class="hljs-value">: <span class="hljs-number">1.5</span> * <span class="hljs-variable">$rem</span>;</span>
+  <span class="hljs-attribute">letter-spacing</span><span class="hljs-value">: -<span class="hljs-number">1px</span>;</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: { top: <span class="hljs-number">4</span> * <span class="hljs-variable">$rem</span>;</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span> }
+}
 
-<span class="nc">.grid-item</span> <span class="p">{</span>
-  <span class="na">float</span><span class="o">:</span> <span class="no">left</span><span class="p">;</span>
-  <span class="na">line-height</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="na">margin</span><span class="o">:</span> <span class="p">{</span>
-    <span class="na">bottom</span><span class="o">:</span> <span class="nv">$text-size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-    <span class="na">right</span><span class="o">:</span> <span class="nv">$text-size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-<span class="nc">.grid</span> <span class="p">{</span>
-  <span class="k">@extend</span> <span class="nc">.clearfix</span><span class="o">;</span>
-  <span class="nt">list-style</span><span class="nd">:</span> <span class="nt">none</span><span class="o">;</span>
-  <span class="nt">padding-left</span><span class="nd">:</span> <span class="nt">0</span><span class="o">;</span>
-  <span class="nt">width</span><span class="nd">:</span> <span class="nt">350px</span><span class="o">;</span>
-  <span class="nt">li</span> <span class="p">{</span> <span class="k">@extend</span> <span class="nc">.grid-item</span><span class="o">;</span> <span class="p">}</span>
-<span class="p">}</span></div></div></div></div></body></html>
+<span class="hljs-id">#main</span> { <span class="hljs-comment">/* non-edge tests container */</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> <span class="hljs-number">0</span> (<span class="hljs-number">2</span> * <span class="hljs-variable">$rem</span>);</span>
+}
+
+<span class="hljs-tag">p</span> { <span class="hljs-comment">/* common test content container */</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> <span class="hljs-number">0</span>;</span>
+}
+
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> { <span class="hljs-comment">/* main test styles */</span>
+  <span class="hljs-variable">$box-shadow</span><span class="hljs-value">: inset <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-number">4px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.3</span>), /* shadow */
+               <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-number">0</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#fff</span>, <span class="hljs-number">0.3</span>);</span> <span class="hljs-comment">/* highlight */</span>
+  <span class="hljs-attribute">padding-bottom</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+  <span class="hljs-tag">header</span> {
+    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %clearfix, %pull-left-right;</span>
+    <span class="hljs-attribute">background</span><span class="hljs-value">: <span class="hljs-function">darken</span>(<span class="hljs-variable">$bg-color</span>, <span class="hljs-number">10%</span>);</span>
+    <span class="hljs-attribute">box-shadow</span><span class="hljs-value">: <span class="hljs-variable">$box-shadow</span>;</span>
+    <span class="hljs-attribute">font-weight</span><span class="hljs-value">: bold;</span>
+    <span class="hljs-attribute">padding</span><span class="hljs-value">: { top: <span class="hljs-variable">$rem</span>;</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> / <span class="hljs-number">2</span>;</span> }
+    <span class="hljs-attribute">text-shadow</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#fff</span>, <span class="hljs-number">0.3</span>);</span>
+    &gt; <span class="hljs-class">.label</span><span class="hljs-pseudo">::after</span> { <span class="hljs-attribute">content</span><span class="hljs-value">: <span class="hljs-string">':'</span>;</span> }
+    &gt; <span class="hljs-attr_selector">[data-rel=docs]</span> {
+      <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %dimmed;</span>
+      <span class="hljs-attribute">float</span><span class="hljs-value">: right;</span>
+      <span class="hljs-attribute">font-weight</span><span class="hljs-value">: normal;</span>
+    }
+  }
+  <span class="hljs-tag">footer</span><span class="hljs-pseudo">:not</span>(<span class="hljs-pseudo">:empty</span>) {
+    <span class="hljs-attribute">background</span><span class="hljs-value">: <span class="hljs-function">darken</span>(<span class="hljs-variable">$bg-color</span>, <span class="hljs-number">5%</span>);</span>
+    <span class="hljs-attribute">border-radius</span><span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">box-shadow</span><span class="hljs-value">: <span class="hljs-variable">$box-shadow</span>;</span>
+    <span class="hljs-attribute">margin-bottom</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+    <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> / <span class="hljs-number">2</span>;</span>
+    &gt; * { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %dimmed;</span> }
+    &gt; <span class="hljs-tag">button</span> {
+      <span class="hljs-attribute">border-radius</span><span class="hljs-value">: <span class="hljs-number">4px</span>;</span>
+      <span class="hljs-attribute">font-size</span><span class="hljs-value">: <span class="hljs-number">0.9em</span>;</span>
+    }
+  }
+}
+
+<span class="hljs-class">.box</span> {
+  <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %panel-skin;</span>
+  <span class="hljs-attribute">border-radius</span><span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+  <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> <span class="hljs-number">0</span>;</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+}
+
+<span class="hljs-class">.list-item</span> {
+  <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %panel-skin;</span>
+  <span class="hljs-attribute">border-bottom-width</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  <span class="hljs-attribute">display</span><span class="hljs-value">: block;</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+}
+<span class="hljs-class">.list-item-first</span> {
+  <span class="hljs-attribute">border-top</span><span class="hljs-value">: {
+    left-radius: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">right</span>-radius<span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+  }
+}
+<span class="hljs-class">.list-item-last</span> {
+  <span class="hljs-attribute">border-bottom</span><span class="hljs-value">: {
+    left-radius: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">right</span>-radius<span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$line-size</span>;</span>
+  }
+}
+<span class="hljs-class">.list</span> {
+  <span class="hljs-attribute">list-style</span><span class="hljs-value">: none;</span>
+  <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> <span class="hljs-number">0</span>;</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  <span class="hljs-class">.item</span> {
+    <span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-number">300px</span>;</span>
+    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .list-item</span>;</span>
+  }
+  &gt; <span class="hljs-tag">a</span>, <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span> {
+    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .item</span>;</span>
+    &amp;<span class="hljs-pseudo">:first-child</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .list-item-first</span>;</span> }
+    &amp;<span class="hljs-pseudo">:last-child</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .list-item-last</span>;</span> }
+  }
+  <span class="hljs-tag">li</span><span class="hljs-pseudo">:not</span>(<span class="hljs-class">.no-a</span>) {
+    &gt; <span class="hljs-tag">a</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .item</span>;</span> }
+    &amp;<span class="hljs-pseudo">:first-child</span> &gt; <span class="hljs-tag">a</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .list-item-first</span>;</span> }
+    &amp;<span class="hljs-pseudo">:last-child</span> &gt; <span class="hljs-tag">a</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .list-item-last</span>;</span> }
+  }
+}
+
+<span class="hljs-class">.bar-item</span> {
+  <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %panel-skin;</span>
+  <span class="hljs-attribute">border-right-width</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  <span class="hljs-attribute">display</span><span class="hljs-value">: block;</span>
+  <span class="hljs-attribute">float</span><span class="hljs-value">: left;</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+}
+<span class="hljs-class">.bar-item-first</span> {
+  <span class="hljs-attribute">border</span><span class="hljs-value">: {
+    top-left-radius: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">bottom</span>-<span class="hljs-attribute">left</span>-radius<span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+  }
+}
+<span class="hljs-class">.bar-item-last</span> {
+  <span class="hljs-attribute">border</span><span class="hljs-value">: {
+    top-right-radius: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">bottom</span>-<span class="hljs-attribute">right</span>-radius<span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$line-size</span>;</span>
+  }
+}
+<span class="hljs-class">.bar</span> {
+  <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %clearfix;</span>
+  <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> <span class="hljs-number">0</span>;</span>
+  <span class="hljs-class">.item</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .bar-item</span>;</span> }
+  &gt; <span class="hljs-tag">a</span>, <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span> {
+    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .item</span>;</span>
+    &amp;<span class="hljs-pseudo">:first-child</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .bar-item-first</span>;</span> }
+    &amp;<span class="hljs-pseudo">:last-child</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .bar-item-last</span>;</span> }
+  }
+  <span class="hljs-tag">li</span><span class="hljs-pseudo">:not</span>(<span class="hljs-class">.no-a</span>) {
+    &gt; <span class="hljs-tag">a</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .item</span>;</span> }
+    &amp;<span class="hljs-pseudo">:first-child</span> &gt; <span class="hljs-tag">a</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .bar-item-first</span>;</span> }
+    &amp;<span class="hljs-pseudo">:last-child</span> &gt; <span class="hljs-tag">a</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .bar-item-last</span>;</span> }
+  }
+}
+
+<span class="hljs-class">.edge</span> {
+  <span class="hljs-attribute">position</span><span class="hljs-value">: absolute;</span>
+  &amp;<span class="hljs-class">.affixed</span> { <span class="hljs-attribute">position</span><span class="hljs-value">: fixed;</span> }
+  &amp;<span class="hljs-class">.top</span> { <span class="hljs-attribute">top</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span> }
+  &amp;<span class="hljs-class">.right</span> { <span class="hljs-attribute">right</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span> }
+  &amp;<span class="hljs-class">.bottom</span> { <span class="hljs-attribute">bottom</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span> }
+  &amp;<span class="hljs-class">.left</span> { <span class="hljs-attribute">left</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span> }
+}
+<span class="hljs-class">.edge-call</span> {
+  &amp;<span class="hljs-pseudo">:not</span>(<span class="hljs-tag">body</span>) {
+    <span class="hljs-attribute">position</span><span class="hljs-value">: relative;</span>
+  }
+  &gt; <span class="hljs-class">.visual-test-fragment</span> {
+    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .edge</span>, %panel-skin;</span>
+    <span class="hljs-attribute">border-radius</span><span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+    <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+  }
+}
+
+<span class="hljs-class">.grid-item</span> {
+  <span class="hljs-attribute">float</span><span class="hljs-value">: left;</span>
+  <span class="hljs-attribute">line-height</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  <span class="hljs-attribute">margin</span><span class="hljs-value">: {
+    bottom: <span class="hljs-variable">$rem</span> / <span class="hljs-number">2</span>;</span>
+    <span class="hljs-attribute">right</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> / <span class="hljs-number">2</span>;</span>
+  }
+}
+<span class="hljs-class">.grid</span> {
+  <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %clearfix;</span>
+  <span class="hljs-attribute">list-style</span><span class="hljs-value">: none;</span>
+  <span class="hljs-attribute">padding-left</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  <span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-number">350px</span>;</span>
+  <span class="hljs-tag">li</span> { <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span><span class="hljs-preprocessor"> .grid-item</span>;</span> }
+}</div></div></div></div></body></html>

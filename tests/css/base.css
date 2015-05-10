@@ -1,37 +1,111 @@
-.box, .list-item, .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a, .bar-item, .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
-  background-color: white;
-  border: 1px solid #cccccc; }
-
-.clearfix::before, .bar::before, .grid::before, .clearfix::after, .bar::after, .grid::after {
+/* This is only styling for visual test pages. */
+section.visual-test header::before, .bar::before, .grid::before, section.visual-test header::after, .bar::after, .grid::after {
   content: " ";
   display: table; }
-.clearfix::after, .bar::after, .grid::after {
+section.visual-test header::after, .bar::after, .grid::after {
   clear: both; }
-.clearfix, .bar, .grid {
-  *zoom: 1; }
+
+body > header > span, section.visual-test header > [data-rel=docs], section.visual-test footer:not(:empty) > * {
+  opacity: 0.5; }
+  body > header > span:hover, section.visual-test header > [data-rel=docs]:hover, section.visual-test footer:not(:empty) > :hover, body > header > span:focus, section.visual-test header > [data-rel=docs]:focus, section.visual-test footer:not(:empty) > :focus {
+    opacity: 1.0; }
+
+.box, .list-item, .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a, .bar-item, .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a, .edge-call > .visual-test-fragment {
+  background-color: rgba(255, 255, 255, 0.95);
+  background-clip: padding-box;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 0 14px rgba(0, 0, 0, 0.05);
+  /* shadow */
+  box-sizing: border-box; }
+  .box:hover, .list-item:hover, .list .item:hover, .list > a:hover, .list li.no-a:hover, .list li:not(.no-a) > a:hover, .bar-item:hover, .bar .item:hover, .bar > a:hover, .bar li.no-a:hover, .bar li:not(.no-a) > a:hover, .edge-call > .visual-test-fragment:hover {
+    background-color: white; }
+
+body > header, section.visual-test header {
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-left: -14px;
+  margin-right: -14px; }
+
+/* base styling */
+html {
+  font-size: 14px; }
 
 body {
-  background-color: #eaeae6;
+  background-color: #dadad6;
   font-family: Helvetica, sans-serif;
-  font-size: 14px;
-  padding: 14px; }
+  padding: 14px;
+  padding-top: 0; }
+
+a {
+  color: #0066dd;
+  text-decoration: none; }
+  a:hover {
+    color: #117fff;
+    text-decoration: underline; }
+
+button {
+  background-color: #f2f2f1;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 0.3em 0.6em; }
+  button:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.3em rgba(0, 0, 0, 0.1); }
+
+body > header {
+  /* test page header */
+  background: #272724;
+  box-shadow: inset 0 30px 40px -20px rgba(0, 0, 0, 0.4);
+  color: #dadad6; }
+  body > header > * {
+    display: inline-block; }
+  body > header > h1 {
+    font-weight: normal;
+    margin: 0;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.7); }
+  body > header > span {
+    margin-left: 14px; }
 
 h1 {
+  /* test page title */
   font-size: 21px;
-  letter-spacing: -1px; }
-
-p {
-  padding: 14px 0; }
+  letter-spacing: -1px;
+  padding-top: 56px;
+  padding-bottom: 14px; }
 
 #main {
-  padding: 28px 0; }
+  /* non-edge tests container */
+  padding: 14px 0 28px; }
 
-section.visual-test header {
-  font-weight: bold; }
-  section.visual-test header::after {
-    content: ':'; }
-section.visual-test footer {
-  margin-bottom: 1em; }
+p {
+  /* common test content container */
+  padding: 14px 0; }
+
+section.visual-test {
+  /* main test styles */
+  /* highlight */
+  padding-bottom: 14px; }
+  section.visual-test header {
+    background: #c2c2bb;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+    padding-top: 14px;
+    padding-bottom: 7px;
+    text-shadow: 0 1px rgba(255, 255, 255, 0.3); }
+    section.visual-test header > .label::after {
+      content: ':'; }
+    section.visual-test header > [data-rel=docs] {
+      float: right;
+      font-weight: normal; }
+  section.visual-test footer:not(:empty) {
+    background: #cecec9;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3);
+    margin-bottom: 14px;
+    padding: 7px; }
+    section.visual-test footer:not(:empty) > button {
+      border-radius: 4px;
+      font-size: 0.9em; }
 
 .box {
   border-radius: 10px;
@@ -40,8 +114,6 @@ section.visual-test footer {
 
 .list-item, .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a {
   border-bottom-width: 0;
-  -moz-box-sizing: border-box;
-       box-sizing: border-box;
   display: block;
   padding: 14px; }
 
@@ -52,17 +124,17 @@ section.visual-test footer {
 .list-item-last, .list > a:last-child, .list li.no-a:last-child, .list li:not(.no-a):last-child > a {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-bottom-width: 1px; }
+  border-bottom-width: 3px; }
 
 .list {
-  margin: 14px 0; }
+  list-style: none;
+  margin: 14px 0;
+  padding: 0; }
   .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a {
     width: 300px; }
 
 .bar-item, .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
   border-right-width: 0;
-  -moz-box-sizing: border-box;
-       box-sizing: border-box;
   display: block;
   float: left;
   padding: 14px; }
@@ -74,16 +146,15 @@ section.visual-test footer {
 .bar-item-last, .bar > a:last-child, .bar li.no-a:last-child, .bar li:not(.no-a):last-child > a {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-width: 1px; }
+  border-width: 3px; }
 
 .bar {
   margin: 14px 0; }
-  .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
-    height: 60px;
-    line-height: 32px; }
 
 .edge, .edge-call > .visual-test-fragment {
   position: absolute; }
+  .edge.affixed, .edge-call > .affixed.visual-test-fragment {
+    position: fixed; }
   .edge.top, .edge-call > .top.visual-test-fragment {
     top: 14px; }
   .edge.right, .edge-call > .right.visual-test-fragment {
@@ -95,6 +166,9 @@ section.visual-test footer {
 
 .edge-call:not(body) {
   position: relative; }
+.edge-call > .visual-test-fragment {
+  border-radius: 10px;
+  padding: 14px; }
 
 .grid-item, .grid li {
   float: left;

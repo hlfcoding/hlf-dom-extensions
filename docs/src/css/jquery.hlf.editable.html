@@ -1,56 +1,56 @@
-<!DOCTYPE html><html lang="en"><head><title>src/css/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/css/jquery.hlf.editable"><meta name="groc-project-path" content="src/css/jquery.hlf.editable.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/css/jquery.hlf.editable.scss</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="err">%</span><span class="nt">skin-clear</span> <span class="p">{</span>
-  <span class="na">border-color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span>
-  <span class="na">background-color</span><span class="o">:</span> <span class="no">transparent</span><span class="p">;</span>
-  <span class="k">&amp;</span><span class="nd">:focus</span> <span class="p">{</span>
-    <span class="na">outline-style</span><span class="o">:</span> <span class="no">none</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-<span class="err">%</span><span class="nt">spacing-none</span> <span class="p">{</span>
-  <span class="na">margin</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="na">padding</span><span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+<!DOCTYPE html><html lang="en"><head><title>src/css/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/css/jquery.hlf.editable"><meta name="groc-project-path" content="src/css/jquery.hlf.editable.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/css/jquery.hlf.editable.scss</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">%skin-<span class="hljs-attribute">clear</span> {
+  <span class="hljs-attribute">border-color</span><span class="hljs-value">: transparent;</span>
+  <span class="hljs-attribute">background-color</span><span class="hljs-value">: transparent;</span>
+  &amp;<span class="hljs-pseudo">:focus</span> {
+    <span class="hljs-attribute">outline-style</span><span class="hljs-value">: none;</span>
+  }
+}
+%spacing-<span class="hljs-attribute">none</span> {
+  <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+}
 
-<span class="nv">$editable-inline-selectors</span><span class="o">:</span> <span class="p">(</span>
-  <span class="n">container</span><span class="o">:</span><span class="s1">&#39;</span><span class="s2">.js-editable-inline&#39;</span><span class="o">,</span>
-  <span class="no">text</span><span class="o">:</span><span class="s1">&#39;</span><span class="s2">.js-text&#39;</span><span class="o">,</span> 
-  <span class="n">input</span><span class="o">:</span><span class="s1">&#39;</span><span class="s2">.js-input input&#39;</span>
-<span class="p">);</span>
-<span class="k">@mixin</span><span class="nf"> editable-inline-skin</span> <span class="p">(</span><span class="nv">$style</span><span class="o">:</span><span class="no">clear</span><span class="o">,</span>
-                             <span class="nv">$rule-color</span><span class="o">:</span><span class="nb">black</span><span class="o">,</span>
-                             <span class="nv">$hover-background-color</span><span class="o">:</span><span class="nf">rgba</span><span class="p">(</span><span class="nb">black</span><span class="o">,</span> <span class="mi">0</span><span class="mf">.1</span><span class="p">)</span><span class="o">,</span>
-                             <span class="nv">$selectors</span><span class="o">:</span><span class="nv">$editable-inline-selectors</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">@if</span> <span class="nv">$style</span> <span class="o">==</span> <span class="no">clear</span> <span class="p">{</span>
-    <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">text</span><span class="o">)</span><span class="p">}</span><span class="o">,</span>
-    <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">input</span><span class="o">)</span><span class="p">}</span> <span class="p">{</span>
-      <span class="k">@extend</span> <span class="err">%</span><span class="nt">skin-clear</span><span class="o">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">text</span><span class="o">)</span><span class="p">}</span> <span class="p">{</span>
-    <span class="na">cursor</span><span class="o">:</span> <span class="no">text</span><span class="p">;</span>
-    <span class="k">&amp;</span><span class="nd">:hover</span> <span class="p">{</span>
-      <span class="na">background-color</span><span class="o">:</span> <span class="nv">$hover-background-color</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">input</span><span class="o">)</span><span class="p">}</span> <span class="p">{</span>
-    <span class="na">border-bottom-color</span><span class="o">:</span> <span class="nv">$rule-color</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="hljs-variable">$editable-inline-selectors</span><span class="hljs-value">: (
+  container:<span class="hljs-string">'.js-editable-inline'</span>,
+  text:<span class="hljs-string">'.js-text'</span>, 
+  input:<span class="hljs-string">'.js-input input'</span>
+);</span>
+<span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> editable-inline-skin</span> (<span class="hljs-variable">$style</span>:clear,
+                             <span class="hljs-variable">$rule-color</span>:black,
+                             <span class="hljs-variable">$hover-background-color</span>:<span class="hljs-function">rgba</span>(black,<span class="hljs-preprocessor"> 0.1</span>),
+                             <span class="hljs-variable">$selectors</span>:<span class="hljs-variable">$editable-inline-selectors</span>)
+{</span>
+  <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$style</span> ==<span class="hljs-preprocessor"> clear</span> {</span>
+    #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-value">text</span>)},
+    #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-tag">input</span>)} {
+      <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %skin-clear;</span>
+    }
+  }
+  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-value">text</span>)} {
+    <span class="hljs-attribute">cursor</span><span class="hljs-value">: text;</span>
+    &amp;<span class="hljs-pseudo">:hover</span> {
+      <span class="hljs-attribute">background-color</span><span class="hljs-value">: <span class="hljs-variable">$hover-background-color</span>;</span>
+    }
+  }
+  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-tag">input</span>)} {
+    <span class="hljs-attribute">border-bottom-color</span><span class="hljs-value">: <span class="hljs-variable">$rule-color</span>;</span>
+  }
+}
 
-<span class="k">@mixin</span><span class="nf"> editable-inline-layout</span> <span class="p">(</span><span class="nv">$width</span><span class="o">:</span><span class="mi">160</span><span class="kt">px</span><span class="o">,</span>
-                               <span class="nv">$selectors</span><span class="o">:</span><span class="nv">$editable-inline-selectors</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">text</span><span class="o">)</span><span class="p">}</span><span class="o">,</span>
-  <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">input</span><span class="o">)</span><span class="p">}</span> <span class="p">{</span>
-    <span class="k">@extend</span> <span class="err">%</span><span class="nt">spacing-none</span><span class="o">;</span>
-    <span class="nt">border-width</span><span class="nd">:</span> <span class="nt">1px</span><span class="o">;</span>
-    <span class="nt">width</span><span class="nd">:</span> <span class="err">$</span><span class="nt">width</span><span class="o">;</span>
-  <span class="p">}</span>
-  <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">text</span><span class="o">)</span><span class="p">}</span> <span class="p">{</span>
-    <span class="na">overflow-x</span><span class="o">:</span> <span class="no">hidden</span><span class="p">;</span>
-    <span class="na">white-space</span><span class="o">:</span> <span class="no">nowrap</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nn">#</span><span class="p">{</span><span class="nt">map-get</span><span class="o">(</span><span class="err">$</span><span class="nt">selectors</span><span class="o">,</span> <span class="nt">input</span><span class="o">)</span><span class="p">}</span> <span class="p">{</span>
-    <span class="na">margin</span><span class="o">:</span> <span class="mi">-1</span><span class="kt">px</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span></div></div></div></div></body></html>
+<span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> editable-inline-layout</span> (<span class="hljs-variable">$width</span>:<span class="hljs-number">160px</span>,
+                               <span class="hljs-variable">$selectors</span>:<span class="hljs-variable">$editable-inline-selectors</span>)
+{</span>
+  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-value">text</span>)},
+  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-tag">input</span>)} {
+    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %spacing-none;</span>
+    <span class="hljs-attribute">border-width</span><span class="hljs-value">: <span class="hljs-number">1px</span>;</span>
+    <span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$width</span>;</span>
+  }
+  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-value">text</span>)} {
+    <span class="hljs-attribute">overflow-x</span><span class="hljs-value">: hidden;</span>
+    <span class="hljs-attribute">white-space</span><span class="hljs-value">: nowrap;</span>
+  }
+  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$selectors</span>, <span class="hljs-tag">input</span>)} {
+    <span class="hljs-attribute">margin</span><span class="hljs-value">: -<span class="hljs-number">1px</span>;</span>
+  }
+}</div></div></div></div></body></html>

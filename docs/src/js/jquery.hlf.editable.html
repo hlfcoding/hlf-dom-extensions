@@ -1,211 +1,209 @@
 <!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.editable"><meta name="groc-project-path" content="src/js/jquery.hlf.editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.editable.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-editable-jquery-plugin">HLF Editable jQuery Plugin</h1>
+<p>Released under the MIT License<br>Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(plugin)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> define? <span class="hljs-keyword">and</span> define.amd?
+    define [
+      <span class="hljs-string">'jquery'</span>
+      <span class="hljs-string">'underscore'</span>
+      <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
+    ], plugin
+  <span class="hljs-keyword">else</span>
+    plugin jQuery, _, jQuery.hlf
+)(<span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
 
-<p>Released under the MIT License <br />
-Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper"><span class="p">(</span><span class="nf">(plugin) -&gt;</span>
-  <span class="k">if</span> <span class="nx">define</span><span class="o">?</span> <span class="o">and</span> <span class="nx">define</span><span class="p">.</span><span class="nx">amd</span><span class="o">?</span>
-    <span class="nx">define</span> <span class="p">[</span>
-      <span class="s">&#39;jquery&#39;</span>
-      <span class="s">&#39;underscore&#39;</span>
-      <span class="s">&#39;hlf/jquery.extension.hlf.core&#39;</span>
-    <span class="p">],</span> <span class="nx">plugin</span>
-  <span class="k">else</span>
-    <span class="nx">plugin</span> <span class="nx">jQuery</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">hlf</span>
-<span class="p">)(</span><span class="nf">($, _, hlf) -&gt;</span>
+  hlf.editable =
+    <span class="hljs-attribute">debug</span>: <span class="hljs-literal">on</span>
+    <span class="hljs-attribute">toString</span>: _.memoize (context) -&gt;
+      <span class="hljs-keyword">switch</span> context
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'event'</span>  <span class="hljs-keyword">then</span> <span class="hljs-string">'.hlf.editable'</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'data'</span>   <span class="hljs-keyword">then</span> <span class="hljs-string">'hlf-editable'</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'class'</span>  <span class="hljs-keyword">then</span> <span class="hljs-string">'js-editable'</span>
+        <span class="hljs-keyword">else</span> <span class="hljs-string">'hlf.editable'</span>
 
-  <span class="nv">hlf.editable =</span>
-    <span class="nv">debug: </span><span class="kc">on</span>
-    <span class="nv">toString: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">(context) -&gt;</span>
-      <span class="k">switch</span> <span class="nx">context</span>
-        <span class="k">when</span> <span class="s">&#39;event&#39;</span>  <span class="k">then</span> <span class="s">&#39;.hlf.editable&#39;</span>
-        <span class="k">when</span> <span class="s">&#39;data&#39;</span>   <span class="k">then</span> <span class="s">&#39;hlf-editable&#39;</span>
-        <span class="k">when</span> <span class="s">&#39;class&#39;</span>  <span class="k">then</span> <span class="s">&#39;js-editable&#39;</span>
-        <span class="k">else</span> <span class="s">&#39;hlf.editable&#39;</span>
+    <span class="hljs-attribute">defaults</span>:
+      <span class="hljs-attribute">selectors</span>:
+        <span class="hljs-attribute">text</span>:       <span class="hljs-string">'.js-text'</span>
+        <span class="hljs-attribute">input</span>:      <span class="hljs-string">'.js-input input'</span>
+        <span class="hljs-attribute">inputWrap</span>:  <span class="hljs-string">'.js-input'</span>
+      <span class="hljs-attribute">classNames</span>:
+        <span class="hljs-attribute">container</span>:  <span class="hljs-string">''</span>
 
-    <span class="nv">defaults:</span>
-      <span class="nv">selectors:</span>
-        <span class="nv">text: </span>      <span class="s">&#39;.js-text&#39;</span>
-        <span class="nv">input: </span>     <span class="s">&#39;.js-input input&#39;</span>
-        <span class="nv">inputWrap: </span> <span class="s">&#39;.js-input&#39;</span>
-      <span class="nv">classNames:</span>
-        <span class="nv">container: </span> <span class="s">&#39;&#39;</span>
+    <span class="hljs-attribute">types</span>: _.memoize -&gt;
+      _.chain mixins
+        .keys()
+        .without <span class="hljs-string">'base'</span>
+        .value()
 
-    <span class="nv">types: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="nf">-&gt;</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">chain</span> <span class="nx">mixins</span>
-        <span class="p">.</span><span class="nx">keys</span><span class="p">()</span>
-        <span class="p">.</span><span class="nx">without</span> <span class="s">&#39;base&#39;</span>
-        <span class="p">.</span><span class="nx">value</span><span class="p">()</span>
+  mixins = {}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base-mixin">Base Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  $.createMixin mixins, <span class="hljs-string">'base'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">isEditing</span>: <span class="hljs-literal">null</span>
 
-  <span class="nv">mixins = </span><span class="p">{}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base-mixin">Base Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;base&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">isEditing: </span><span class="kc">null</span>
+    <span class="hljs-attribute">init</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'will-init'</span>
+      <span class="hljs-property">@$el</span>.addClass <span class="hljs-property">@classNames</span>.container
+      <span class="hljs-property">@bind</span>()
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@toggleEditing</span>? <span class="hljs-keyword">then</span> <span class="hljs-property">@toggleEditing</span> <span class="hljs-literal">off</span>
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'did-init'</span>
 
-    <span class="nv">init: </span><span class="nf">-&gt;</span>
-      <span class="nx">@trigger</span> <span class="s">&#39;will-init&#39;</span>
-      <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@classNames</span><span class="p">.</span><span class="nx">container</span>
-      <span class="nx">@bind</span><span class="p">()</span>
-      <span class="k">if</span> <span class="nx">@toggleEditing</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@toggleEditing</span> <span class="kc">off</span>
-      <span class="nx">@trigger</span> <span class="s">&#39;did-init&#39;</span>
+    <span class="hljs-attribute">bind</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@toggleEditing</span>?
+        <span class="hljs-property">@on</span> <span class="hljs-string">'click'</span>, <span class="hljs-property">@selectors</span>.text, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span> <span class="hljs-property">@toggleEditing</span> <span class="hljs-literal">on</span>
+        <span class="hljs-property">@on</span> <span class="hljs-string">'blur'</span>, <span class="hljs-property">@selectors</span>.input, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span> <span class="hljs-property">@toggleEditing</span> <span class="hljs-literal">off</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'change'</span>, <span class="hljs-property">@selectors</span>.input, <span class="hljs-property">@handleValueChange</span>
 
-    <span class="nv">bind: </span><span class="nf">-&gt;</span>
-      <span class="k">if</span> <span class="nx">@toggleEditing</span><span class="o">?</span>
-        <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="nx">@selectors</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@toggleEditing</span> <span class="kc">on</span>
-        <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;blur&#39;</span><span class="p">,</span> <span class="nx">@selectors</span><span class="p">.</span><span class="nx">input</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@toggleEditing</span> <span class="kc">off</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;change&#39;</span><span class="p">,</span> <span class="nx">@selectors</span><span class="p">.</span><span class="nx">input</span><span class="p">,</span> <span class="nx">@handleValueChange</span>
+    <span class="hljs-attribute">handleCommand</span>: <span class="hljs-function"><span class="hljs-params">(command, sender)</span> -&gt;</span>
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'before-command'</span>, { command }
+      <span class="hljs-keyword">switch</span> command.type
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'update'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@renderText</span> command.userInfo.text
+        <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'after-command'</span>, { command }
 
-    <span class="nv">handleCommand: </span><span class="nf">(command, sender) -&gt;</span>
-      <span class="nx">@trigger</span> <span class="s">&#39;before-command&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">command</span> <span class="p">}</span>
-      <span class="k">switch</span> <span class="nx">command</span><span class="p">.</span><span class="nx">type</span>
-        <span class="k">when</span> <span class="s">&#39;update&#39;</span> <span class="k">then</span> <span class="nx">@renderText</span> <span class="nx">command</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">text</span>
-        <span class="k">else</span>
-      <span class="nx">@trigger</span> <span class="s">&#39;after-command&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">command</span> <span class="p">}</span>
+    <span class="hljs-attribute">handleValueChange</span>: <span class="hljs-function"><span class="hljs-params">(sender)</span> -&gt;</span>
+      text = <span class="hljs-property">@inputValue</span>()
+      text = <span class="hljs-property">@textOnValueChange</span> text
+      userInfo = { text }
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'will-commit'</span>, userInfo</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event commit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="hljs-property">@trigger</span> <span class="hljs-string">'commit'</span>, userInfo</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">toggleEditing</span>: <span class="hljs-function"><span class="hljs-params">(state)</span> -&gt;</span>
+      <span class="hljs-property">@isEditing</span> = state
+<span class="hljs-function">      <span class="hljs-title">toggleOriginalDisplay</span> = <span class="hljs-params">($el, state)</span> =&gt;</span>
+        display = $el.data <span class="hljs-property">@attr</span>(<span class="hljs-string">'display'</span>)
+        <span class="hljs-keyword">if</span> state <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
+          display ?= <span class="hljs-string">'block'</span>
+          $el.css { display }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> state <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span>
+          <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> display?
+            display = $el.css <span class="hljs-string">'display'</span>
+            <span class="hljs-keyword">if</span> display <span class="hljs-keyword">isnt</span> <span class="hljs-string">'none'</span> <span class="hljs-keyword">then</span> $el.data <span class="hljs-property">@attr</span>(<span class="hljs-string">'display'</span>), display
+          $el.hide()
+      <span class="hljs-keyword">if</span> state <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
+        toggleOriginalDisplay <span class="hljs-property">@$text</span>, <span class="hljs-literal">off</span>
+        toggleOriginalDisplay <span class="hljs-property">@$inputWrap</span>, <span class="hljs-literal">on</span>
+        <span class="hljs-property">@$input</span>.focus()
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> state <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span>
+        toggleOriginalDisplay <span class="hljs-property">@$text</span>, <span class="hljs-literal">on</span>
+        toggleOriginalDisplay <span class="hljs-property">@$inputWrap</span>, <span class="hljs-literal">off</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event toggle-edit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="hljs-property">@trigger</span> <span class="hljs-string">'toggle-edit'</span>, { state }
 
-    <span class="nv">handleValueChange: </span><span class="nf">(sender) -&gt;</span>
-      <span class="nv">text = </span><span class="nx">@inputValue</span><span class="p">()</span>
-      <span class="nv">text = </span><span class="nx">@textOnValueChange</span> <span class="nx">text</span>
-      <span class="nv">userInfo = </span><span class="p">{</span> <span class="nx">text</span> <span class="p">}</span>
-      <span class="nx">@trigger</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nx">userInfo</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event commit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="nx">@trigger</span> <span class="s">&#39;commit&#39;</span><span class="p">,</span> <span class="nx">userInfo</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">toggleEditing: </span><span class="nf">(state) -&gt;</span>
-      <span class="vi">@isEditing = </span><span class="nx">state</span>
-      <span class="nv">toggleOriginalDisplay = </span><span class="nf">($el, state) =&gt;</span>
-        <span class="nv">display = </span><span class="nx">$el</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;display&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">on</span>
-          <span class="nx">display</span> <span class="o">?=</span> <span class="s">&#39;block&#39;</span>
-          <span class="nx">$el</span><span class="p">.</span><span class="nx">css</span> <span class="p">{</span> <span class="nx">display</span> <span class="p">}</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">off</span>
-          <span class="k">if</span> <span class="o">not</span> <span class="nx">display</span><span class="o">?</span>
-            <span class="nv">display = </span><span class="nx">$el</span><span class="p">.</span><span class="nx">css</span> <span class="s">&#39;display&#39;</span>
-            <span class="k">if</span> <span class="nx">display</span> <span class="o">isnt</span> <span class="s">&#39;none&#39;</span> <span class="k">then</span> <span class="nx">$el</span><span class="p">.</span><span class="nx">data</span> <span class="nx">@attr</span><span class="p">(</span><span class="s">&#39;display&#39;</span><span class="p">),</span> <span class="nx">display</span>
-          <span class="nx">$el</span><span class="p">.</span><span class="nx">hide</span><span class="p">()</span>
-      <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">on</span>
-        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$text</span><span class="p">,</span> <span class="kc">off</span>
-        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$inputWrap</span><span class="p">,</span> <span class="kc">on</span>
-        <span class="nx">@$input</span><span class="p">.</span><span class="nx">focus</span><span class="p">()</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="nx">state</span> <span class="o">is</span> <span class="kc">off</span>
-        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$text</span><span class="p">,</span> <span class="kc">on</span>
-        <span class="nx">toggleOriginalDisplay</span> <span class="nx">@$inputWrap</span><span class="p">,</span> <span class="kc">off</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event toggle-edit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="nx">@trigger</span> <span class="s">&#39;toggle-edit&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">state</span> <span class="p">}</span>
+    <span class="hljs-attribute">renderText</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span> <span class="hljs-property">@$text</span>.text text
 
-    <span class="nv">renderText: </span><span class="nf">(text) -&gt;</span> <span class="nx">@$text</span><span class="p">.</span><span class="nx">text</span> <span class="nx">text</span>
+    <span class="hljs-attribute">inputValue</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@$input</span>.val()
 
-    <span class="nv">inputValue: </span><span class="nf">-&gt;</span> <span class="nx">@$input</span><span class="p">.</span><span class="nx">val</span><span class="p">()</span>
+    <span class="hljs-attribute">textOnValueChange</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span>
 
-    <span class="nv">textOnValueChange: </span><span class="nf">(text) -&gt;</span>
+  $.createMixin mixins, <span class="hljs-string">'inline'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">textOnValueChange</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> text.length <span class="hljs-keyword">then</span> <span class="hljs-property">@$input</span>.attr <span class="hljs-string">'placeholder'</span> <span class="hljs-keyword">else</span> text</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@options</span>.classNames.container += <span class="hljs-string">" <span class="hljs-subst">#{<span class="hljs-property">@cls</span>(<span class="hljs-string">'inline'</span>)}</span>"</span>
+    <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initInline</span>()
+      <span class="hljs-property">@on</span> <span class="hljs-string">'will-commit'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span> <span class="hljs-property">@renderText</span> e.userInfo.text
+      <span class="hljs-property">@on</span> <span class="hljs-string">'after-command'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+        command = e.userInfo.command
+        <span class="hljs-keyword">switch</span> command.type
+          <span class="hljs-keyword">when</span> <span class="hljs-string">'update'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@updatePlaceholder</span>()
+          <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">initInline</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@updatePlaceholder</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">updatePlaceholder</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@$input</span>.attr <span class="hljs-string">'placeholder'</span>, <span class="hljs-property">@$text</span>.text()
 
-  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;inline&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">textOnValueChange: </span><span class="nf">(text) -&gt;</span>
-      <span class="k">if</span> <span class="o">not</span> <span class="nx">text</span><span class="p">.</span><span class="nx">length</span> <span class="k">then</span> <span class="nx">@$input</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;placeholder&#39;</span> <span class="k">else</span> <span class="nx">text</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
-      <span class="nx">@options</span><span class="p">.</span><span class="nx">classNames</span><span class="p">.</span><span class="nx">container</span> <span class="o">+=</span> <span class="s">&quot; </span><span class="si">#{</span><span class="nx">@cls</span><span class="p">(</span><span class="s">&#39;inline&#39;</span><span class="p">)</span><span class="si">}</span><span class="s">&quot;</span>
-    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initInline</span><span class="p">()</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@renderText</span> <span class="nx">e</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">text</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;after-command&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span>
-        <span class="nv">command = </span><span class="nx">e</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">command</span>
-        <span class="k">switch</span> <span class="nx">command</span><span class="p">.</span><span class="nx">type</span>
-          <span class="k">when</span> <span class="s">&#39;update&#39;</span> <span class="k">then</span> <span class="nx">@updatePlaceholder</span><span class="p">()</span>
-          <span class="k">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">initInline: </span><span class="nf">-&gt;</span>
-      <span class="nx">@updatePlaceholder</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">updatePlaceholder: </span><span class="nf">-&gt;</span>
-      <span class="nx">@$input</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;placeholder&#39;</span><span class="p">,</span> <span class="nx">@$text</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span>
+  $.createMixin mixins, <span class="hljs-string">'editor'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">inputValue</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'CodeMirror'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@editor</span>.getValue()
+        <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
 
-  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;editor&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">inputValue: </span><span class="nf">-&gt;</span>
-      <span class="k">switch</span> <span class="nx">@editorName</span>
-        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span> <span class="k">then</span> <span class="nx">@editor</span><span class="p">.</span><span class="nx">getValue</span><span class="p">()</span>
-        <span class="k">else</span> <span class="s">&#39;&#39;</span>
+    <span class="hljs-attribute">renderText</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'CodeMirror'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@editor</span>.setValue text
+        <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@opts</span>.selectors.markup = <span class="hljs-string">'.editor-markup'</span>
+    <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-keyword">delete</span> <span class="hljs-property">@toggleEditing</span> <span class="hljs-comment"># Unneeded action.</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'will-init'</span>, <span class="hljs-function">=&gt;</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initEditor</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">initEditor</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@editorName</span> = <span class="hljs-property">@data</span> <span class="hljs-string">'editor'</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'CodeMirror'</span>
+          opts = <span class="hljs-property">@data</span> <span class="hljs-string">'editor-options'</span>
+          opts.value = <span class="hljs-property">@$markup</span>.text()
+<span class="hljs-function">          <span class="hljs-title">location</span> = <span class="hljs-params">(el)</span> =&gt;</span>
+            <span class="hljs-property">@$editor</span> = el
+            <span class="hljs-property">@$markup</span>.replaceWith <span class="hljs-property">@$editor</span>
+          <span class="hljs-property">@editor</span> = CodeMirror location, opts
+        <span class="hljs-keyword">else</span> didInit = <span class="hljs-literal">no</span>
+      <span class="hljs-property">@bindEditor</span>()
+      didInit <span class="hljs-keyword">isnt</span> <span class="hljs-literal">no</span>
 
-    <span class="nv">renderText: </span><span class="nf">(text) -&gt;</span>
-      <span class="k">switch</span> <span class="nx">@editorName</span>
-        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span> <span class="k">then</span> <span class="nx">@editor</span><span class="p">.</span><span class="nx">setValue</span> <span class="nx">text</span>
-        <span class="k">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
-      <span class="vi">@opts.selectors.markup = </span><span class="s">&#39;.editor-markup&#39;</span>
-    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
-      <span class="k">delete</span> <span class="nx">@toggleEditing</span> <span class="c1"># Unneeded action.</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initEditor</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">initEditor: </span><span class="nf">-&gt;</span>
-      <span class="vi">@editorName = </span><span class="nx">@data</span> <span class="s">&#39;editor&#39;</span>
-      <span class="k">switch</span> <span class="nx">@editorName</span>
-        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span>
-          <span class="nv">opts = </span><span class="nx">@data</span> <span class="s">&#39;editor-options&#39;</span>
-          <span class="nv">opts.value = </span><span class="nx">@$markup</span><span class="p">.</span><span class="nx">text</span><span class="p">()</span>
-          <span class="nv">location = </span><span class="nf">(el) =&gt;</span>
-            <span class="vi">@$editor = </span><span class="nx">el</span>
-            <span class="nx">@$markup</span><span class="p">.</span><span class="nx">replaceWith</span> <span class="nx">@$editor</span>
-          <span class="vi">@editor = </span><span class="nx">CodeMirror</span> <span class="nx">location</span><span class="p">,</span> <span class="nx">opts</span>
-        <span class="k">else</span> <span class="nv">didInit = </span><span class="kc">no</span>
-      <span class="nx">@bindEditor</span><span class="p">()</span>
-      <span class="nx">didInit</span> <span class="o">isnt</span> <span class="kc">no</span>
+    <span class="hljs-attribute">bindEditor</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'CodeMirror'</span>
+          <span class="hljs-property">@editor</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'blur'</span>, <span class="hljs-property">@handleValueChange</span>
+        <span class="hljs-keyword">else</span>
 
-    <span class="nv">bindEditor: </span><span class="nf">-&gt;</span>
-      <span class="k">switch</span> <span class="nx">@editorName</span>
-        <span class="k">when</span> <span class="s">&#39;CodeMirror&#39;</span>
-          <span class="nx">@editor</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;blur&#39;</span><span class="p">,</span> <span class="nx">@handleValueChange</span>
-        <span class="k">else</span>
+  $.createMixin mixins, <span class="hljs-string">'color-picker'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@opts</span>.selectors.well = <span class="hljs-string">'.color-well'</span>
+    <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'will-commit'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span> <span class="hljs-property">@renderColor</span> e.userInfo.text
+      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initColorPicker</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">initColorPicker</span>: <span class="hljs-function">-&gt;</span>
+      _.bindAll @, <span class="hljs-string">'handleColorPickerChange'</span>
+      <span class="hljs-property">@pickerName</span> = <span class="hljs-property">@data</span> <span class="hljs-string">'color-picker'</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@pickerName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'Spectrum'</span>
+          opts = <span class="hljs-property">@data</span> <span class="hljs-string">'color-picker-options'</span>
+          opts.color = <span class="hljs-string">"#<span class="hljs-subst">#{<span class="hljs-property">@$input</span>.val()}</span>"</span>
+          opts.change = <span class="hljs-property">@handleColorPickerChange</span>
+          <span class="hljs-property">@$well</span>.spectrum opts
+        <span class="hljs-keyword">else</span> didInit = <span class="hljs-literal">no</span>
+      <span class="hljs-property">@bindColorPicker</span>()
+      didInit <span class="hljs-keyword">isnt</span> <span class="hljs-literal">no</span>
 
-  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;color-picker&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
-      <span class="vi">@opts.selectors.well = </span><span class="s">&#39;.color-well&#39;</span>
-    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span> <span class="nx">@renderColor</span> <span class="nx">e</span><span class="p">.</span><span class="nx">userInfo</span><span class="p">.</span><span class="nx">text</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initColorPicker</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">initColorPicker: </span><span class="nf">-&gt;</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="nx">@</span><span class="p">,</span> <span class="s">&#39;handleColorPickerChange&#39;</span>
-      <span class="vi">@pickerName = </span><span class="nx">@data</span> <span class="s">&#39;color-picker&#39;</span>
-      <span class="k">switch</span> <span class="nx">@pickerName</span>
-        <span class="k">when</span> <span class="s">&#39;Spectrum&#39;</span>
-          <span class="nv">opts = </span><span class="nx">@data</span> <span class="s">&#39;color-picker-options&#39;</span>
-          <span class="nv">opts.color = </span><span class="s">&quot;</span><span class="err">#</span><span class="si">#{</span><span class="nx">@$input</span><span class="p">.</span><span class="nx">val</span><span class="p">()</span><span class="si">}</span><span class="s">&quot;</span>
-          <span class="nv">opts.change = </span><span class="nx">@handleColorPickerChange</span>
-          <span class="nx">@$well</span><span class="p">.</span><span class="nx">spectrum</span> <span class="nx">opts</span>
-        <span class="k">else</span> <span class="nv">didInit = </span><span class="kc">no</span>
-      <span class="nx">@bindColorPicker</span><span class="p">()</span>
-      <span class="nx">didInit</span> <span class="o">isnt</span> <span class="kc">no</span>
+    <span class="hljs-attribute">bindColorPicker</span>: <span class="hljs-function">-&gt;</span>
 
-    <span class="nv">bindColorPicker: </span><span class="nf">-&gt;</span>
+    <span class="hljs-attribute">handleColorPickerChange</span>: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@pickerName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'Spectrum'</span> <span class="hljs-keyword">then</span> color = color.toHexString().substring(<span class="hljs-number">1</span>)
+      <span class="hljs-property">@$input</span>
+        .val color
+        .trigger <span class="hljs-string">'change'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">renderColor</span>: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@pickerName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'Spectrum'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@$well</span>.spectrum <span class="hljs-string">'set'</span>, color
 
-    <span class="nv">handleColorPickerChange: </span><span class="nf">(color) -&gt;</span>
-      <span class="k">switch</span> <span class="nx">@pickerName</span>
-        <span class="k">when</span> <span class="s">&#39;Spectrum&#39;</span> <span class="k">then</span> <span class="nv">color = </span><span class="nx">color</span><span class="p">.</span><span class="nx">toHexString</span><span class="p">().</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-      <span class="nx">@$input</span>
-        <span class="p">.</span><span class="nx">val</span> <span class="nx">color</span>
-        <span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;change&#39;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">renderColor: </span><span class="nf">(color) -&gt;</span>
-      <span class="k">switch</span> <span class="nx">@pickerName</span>
-        <span class="k">when</span> <span class="s">&#39;Spectrum&#39;</span> <span class="k">then</span> <span class="nx">@$well</span><span class="p">.</span><span class="nx">spectrum</span> <span class="s">&#39;set&#39;</span><span class="p">,</span> <span class="nx">color</span>
+  $.createMixin mixins, <span class="hljs-string">'file-uploader'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@opts</span>.selectors.text = <span class="hljs-string">'.preview &gt; figcaption'</span>
+      <span class="hljs-property">@opts</span>.selectors.thumb = <span class="hljs-string">'.preview &gt; .thumb'</span>
+    <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-keyword">delete</span> <span class="hljs-property">@toggleEditing</span> <span class="hljs-comment"># Unneeded action.</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'will-commit'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initFileUploader</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+    <span class="hljs-attribute">initFileUploader</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@uploaderName</span> = <span class="hljs-property">@data</span> <span class="hljs-string">'file-uploader'</span>
+      <span class="hljs-keyword">switch</span> <span class="hljs-property">@uploaderName</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'jQueryFileUpload'</span>
+          opts = <span class="hljs-property">@data</span> <span class="hljs-string">'file-uploader-options'</span>
+          <span class="hljs-property">@$input</span>.fileupload opts
+        <span class="hljs-keyword">else</span> didInit = <span class="hljs-literal">no</span>
+      <span class="hljs-property">@bindFileUploader</span>()
+      didInit <span class="hljs-keyword">isnt</span> <span class="hljs-literal">no</span>
 
-  <span class="nx">$</span><span class="p">.</span><span class="nx">createMixin</span> <span class="nx">mixins</span><span class="p">,</span> <span class="s">&#39;file-uploader&#39;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">decorateOptions: </span><span class="nf">-&gt;</span>
-      <span class="vi">@opts.selectors.text = </span><span class="s">&#39;.preview &gt; figcaption&#39;</span>
-      <span class="vi">@opts.selectors.thumb = </span><span class="s">&#39;.preview &gt; .thumb&#39;</span>
-    <span class="nv">decorate: </span><span class="nf">-&gt;</span>
-      <span class="k">delete</span> <span class="nx">@toggleEditing</span> <span class="c1"># Unneeded action.</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;will-commit&#39;</span><span class="p">,</span> <span class="nf">(e) =&gt;</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;did-init&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@initFileUploader</span><span class="p">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
-    <span class="nv">initFileUploader: </span><span class="nf">-&gt;</span>
-      <span class="vi">@uploaderName = </span><span class="nx">@data</span> <span class="s">&#39;file-uploader&#39;</span>
-      <span class="k">switch</span> <span class="nx">@uploaderName</span>
-        <span class="k">when</span> <span class="s">&#39;jQueryFileUpload&#39;</span>
-          <span class="nv">opts = </span><span class="nx">@data</span> <span class="s">&#39;file-uploader-options&#39;</span>
-          <span class="nx">@$input</span><span class="p">.</span><span class="nx">fileupload</span> <span class="nx">opts</span>
-        <span class="k">else</span> <span class="nv">didInit = </span><span class="kc">no</span>
-      <span class="nx">@bindFileUploader</span><span class="p">()</span>
-      <span class="nx">didInit</span> <span class="o">isnt</span> <span class="kc">no</span>
-
-    <span class="nv">bindFileUploader: </span><span class="nf">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  
-  <span class="nx">hlf</span><span class="p">.</span><span class="nx">createPlugin</span>
-    <span class="nv">name: </span><span class="s">&#39;editable&#39;</span>
-    <span class="nv">namespace: </span><span class="nx">hlf</span><span class="p">.</span><span class="nx">editable</span>
-    <span class="nv">apiMixins: </span><span class="nx">mixins</span>
-    <span class="nv">mixinFilter: </span><span class="nf">(mixin, name) -&gt;</span>
-      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">types</span><span class="p">)</span>
-        <span class="vi">@options.types = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">types</span><span class="p">.</span><span class="nx">split</span> <span class="s">&#39; &#39;</span>
-      <span class="nx">name</span> <span class="k">in</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">types</span> <span class="o">and</span> <span class="nx">name</span> <span class="k">in</span> <span class="nx">hlf</span><span class="p">.</span><span class="nx">editable</span><span class="p">.</span><span class="nx">types</span><span class="p">()</span>
-    <span class="nv">baseMixins: </span><span class="p">[</span>
-      <span class="s">&#39;data&#39;</span>
-      <span class="s">&#39;event&#39;</span>
-      <span class="s">&#39;selection&#39;</span>
-    <span class="p">]</span>
-    <span class="nv">autoSelect: </span><span class="kc">yes</span>
-    <span class="nv">compactOptions: </span><span class="kc">yes</span>
-<span class="p">)</span></div></div></div></div></body></html>
+    <span class="hljs-attribute">bindFileUploader</span>: <span class="hljs-function">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  
+  hlf.createPlugin
+    <span class="hljs-attribute">name</span>: <span class="hljs-string">'editable'</span>
+    <span class="hljs-attribute">namespace</span>: hlf.editable
+    <span class="hljs-attribute">apiMixins</span>: mixins
+    <span class="hljs-attribute">mixinFilter</span>: <span class="hljs-function"><span class="hljs-params">(mixin, name)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> _.isString(<span class="hljs-property">@options</span>.types)
+        <span class="hljs-property">@options</span>.types = <span class="hljs-property">@options</span>.types.split <span class="hljs-string">' '</span>
+      name <span class="hljs-keyword">in</span> <span class="hljs-property">@options</span>.types <span class="hljs-keyword">and</span> name <span class="hljs-keyword">in</span> hlf.editable.types()
+    <span class="hljs-attribute">baseMixins</span>: [
+      <span class="hljs-string">'data'</span>
+      <span class="hljs-string">'event'</span>
+      <span class="hljs-string">'selection'</span>
+    ]
+    <span class="hljs-attribute">autoSelect</span>: <span class="hljs-literal">yes</span>
+    <span class="hljs-attribute">compactOptions</span>: <span class="hljs-literal">yes</span>
+)</div></div></div></div></body></html>
