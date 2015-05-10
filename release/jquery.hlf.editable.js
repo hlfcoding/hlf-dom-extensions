@@ -7,7 +7,7 @@ Written with jQuery 1.7.2
  */
 
 (function() {
-  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   (function(plugin) {
     if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
@@ -325,7 +325,7 @@ Written with jQuery 1.7.2
         if (_.isString(this.options.types)) {
           this.options.types = this.options.types.split(' ');
         }
-        return __indexOf.call(this.options.types, name) >= 0 && __indexOf.call(hlf.editable.types(), name) >= 0;
+        return indexOf.call(this.options.types, name) >= 0 && indexOf.call(hlf.editable.types(), name) >= 0;
       },
       baseMixins: ['data', 'event', 'selection'],
       autoSelect: true,

@@ -7,8 +7,8 @@ Written with jQuery 1.7.2
  */
 
 (function() {
-  var __slice = [].slice,
-    __hasProp = {}.hasOwnProperty;
+  var slice = [].slice,
+    hasProp = {}.hasOwnProperty;
 
   (function(extension) {
     if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
@@ -48,10 +48,10 @@ Written with jQuery 1.7.2
         if (name == null) {
           name = '';
         }
-        return "" + (hoverIntent.toString('attr')) + "-" + name;
+        return (hoverIntent.toString('attr')) + "-" + name;
       };
       debugLog = hoverIntent.debug === false ? $.noop : function() {
-        return hlf.debugLog.apply(hlf, [hoverIntent.toString('log')].concat(__slice.call(arguments)));
+        return hlf.debugLog.apply(hlf, [hoverIntent.toString('log')].concat(slice.call(arguments)));
       };
       defaultState = {
         intentional: true,
@@ -66,7 +66,7 @@ Written with jQuery 1.7.2
         var key, state, value;
         state = {};
         for (key in defaultState) {
-          if (!__hasProp.call(defaultState, key)) continue;
+          if (!hasProp.call(defaultState, key)) continue;
           value = defaultState[key];
           if ($.isPlainObject(value)) {
             value = _.clone(value);

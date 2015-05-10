@@ -7,8 +7,8 @@ Written with jQuery 1.7.2
  */
 
 (function() {
-  var __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  var hasProp = {}.hasOwnProperty,
+    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function(plugin) {
     if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
@@ -66,11 +66,11 @@ Written with jQuery 1.7.2
             return "<div class=\"" + containerClass + "\">\n  <div class=\"" + this.classNames.inner + "\">\n    " + stemHtml + "\n    <div class='" + this.classNames.content + "'></div>\n  </div>\n</div>";
           },
           classNames: (function() {
-            var classNames, key, keys, _i, _len;
+            var classNames, j, key, keys, len;
             classNames = {};
             keys = ['inner', 'content', 'stem', 'top', 'right', 'bottom', 'left', 'follow', 'trigger'];
-            for (_i = 0, _len = keys.length; _i < _len; _i++) {
-              key = keys[_i];
+            for (j = 0, len = keys.length; j < len; j++) {
+              key = keys[j];
               classNames[key] = "" + pre + key;
             }
             classNames.tip = 'js-tip';
@@ -112,7 +112,7 @@ Written with jQuery 1.7.2
               toTrigger: 'trigger'
             };
             for (key in dictionary) {
-              if (!__hasProp.call(dictionary, key)) continue;
+              if (!hasProp.call(dictionary, key)) continue;
               value = dictionary[key];
               classNames.snap[key] = "" + pre + value;
             }
@@ -123,8 +123,8 @@ Written with jQuery 1.7.2
       })('js-snap-tip-')
     };
     Tip = (function() {
-      function Tip($triggers, options, $context) {
-        this.$triggers = $triggers;
+      function Tip($triggers1, options, $context) {
+        this.$triggers = $triggers1;
         this.$context = $context;
       }
 
@@ -168,10 +168,10 @@ Written with jQuery 1.7.2
           selector = this.$triggers.selector;
           onMutations = (function(_this) {
             return function(mutations) {
-              var $target, $triggers, mutation, _i, _len, _results;
-              _results = [];
-              for (_i = 0, _len = mutations.length; _i < _len; _i++) {
-                mutation = mutations[_i];
+              var $target, $triggers, j, len, mutation, results;
+              results = [];
+              for (j = 0, len = mutations.length; j < len; j++) {
+                mutation = mutations[j];
                 $target = $(mutation.target);
                 if ($target.hasClass(_this.classNames.content)) {
                   continue;
@@ -181,12 +181,12 @@ Written with jQuery 1.7.2
                   $triggers.each(function(i, el) {
                     return processTrigger($(el));
                   });
-                  _results.push(_this.$triggers = _this.$triggers.add($triggers));
+                  results.push(_this.$triggers = _this.$triggers.add($triggers));
                 } else {
-                  _results.push(void 0);
+                  results.push(void 0);
                 }
               }
-              return _results;
+              return results;
             };
           })(this);
           this._mutationObserver = new MutationObserver(onMutations);
@@ -204,7 +204,7 @@ Written with jQuery 1.7.2
         var containerClass, directionClass, html;
         directionClass = $.trim(_.reduce(this.defaultDirection, (function(_this) {
           return function(classListMemo, directionComponent) {
-            return "" + classListMemo + " " + _this.classNames[directionComponent];
+            return classListMemo + " " + _this.classNames[directionComponent];
           };
         })(this), ''));
         containerClass = $.trim([this.classNames.tip, this.classNames.follow, directionClass].join(' '));
@@ -350,7 +350,7 @@ Written with jQuery 1.7.2
         }
         return this.$tip.removeClass([this.classNames.top, this.classNames.bottom, this.classNames.right, this.classNames.left].join(' ')).addClass($.trim(_.reduce(compoundDirection, (function(_this) {
           return function(classListMemo, directionComponent) {
-            return "" + classListMemo + " " + _this.classNames[directionComponent];
+            return classListMemo + " " + _this.classNames[directionComponent];
           };
         })(this), '')));
       };
@@ -406,10 +406,10 @@ Written with jQuery 1.7.2
         $content = this.selectByClass('content');
         wrapped = this._wrapStealthRender((function(_this) {
           return function() {
-            var direction, offset, _i, _len, _ref;
-            _ref = $content.position();
-            for (offset = _i = 0, _len = _ref.length; _i < _len; offset = ++_i) {
-              direction = _ref[offset];
+            var direction, j, len, offset, ref;
+            ref = $content.position();
+            for (offset = j = 0, len = ref.length; j < len; offset = ++j) {
+              direction = ref[offset];
               if (offset > 0) {
                 size = Math.abs(offset);
                 _this.$tip.data(key, size);
@@ -422,7 +422,7 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype._updateDirectionByTrigger = function($trigger) {
-        var component, edge, newDirection, ok, tipSize, triggerHeight, triggerPosition, triggerWidth, _i, _len, _ref, _results;
+        var component, edge, j, len, newDirection, ok, ref, results, tipSize, triggerHeight, triggerPosition, triggerWidth;
         if (this.autoDirection === false) {
           return false;
         }
@@ -437,10 +437,10 @@ Written with jQuery 1.7.2
           triggerHeight: triggerHeight,
           tipSize: tipSize
         });
-        _ref = this.defaultDirection;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          component = _ref[_i];
+        ref = this.defaultDirection;
+        results = [];
+        for (j = 0, len = ref.length; j < len; j++) {
+          component = ref[j];
           if (this._bounds == null) {
             this._setBounds();
           }
@@ -476,12 +476,12 @@ Written with jQuery 1.7.2
               case 'left':
                 newDirection[1] = 'right';
             }
-            _results.push($trigger.data(this.attr('direction'), newDirection.join(' ')));
+            results.push($trigger.data(this.attr('direction'), newDirection.join(' ')));
           } else {
-            _results.push(void 0);
+            results.push(void 0);
           }
         }
-        return _results;
+        return results;
       };
 
       Tip.prototype._setBounds = function() {
@@ -504,7 +504,7 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype.sizeForTrigger = function($trigger, contentOnly) {
-        var $content, bottom, left, padding, right, side, size, top, wrapped, _ref;
+        var $content, bottom, left, padding, ref, right, side, size, top, wrapped;
         if (contentOnly == null) {
           contentOnly = false;
         }
@@ -523,15 +523,15 @@ Written with jQuery 1.7.2
         }
         if (contentOnly === true) {
           padding = $content.css('padding').split(' ');
-          _ref = (function() {
-            var _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = padding.length; _i < _len; _i++) {
-              side = padding[_i];
-              _results.push(parseInt(side, 10));
+          ref = (function() {
+            var j, len, results;
+            results = [];
+            for (j = 0, len = padding.length; j < len; j++) {
+              side = padding[j];
+              results.push(parseInt(side, 10));
             }
-            return _results;
-          })(), top = _ref[0], right = _ref[1], bottom = _ref[2], left = _ref[3];
+            return results;
+          })(), top = ref[0], right = ref[1], bottom = ref[2], left = ref[3];
           if (bottom == null) {
             bottom = top;
           }
@@ -570,7 +570,7 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype.wakeByTrigger = function($trigger, event, onWake) {
-        var delay, duration, triggerChanged, wake, _ref;
+        var delay, duration, ref, triggerChanged, wake;
         triggerChanged = !$trigger.is(this._$currentTrigger);
         if (triggerChanged) {
           this._inflateByTrigger($trigger);
@@ -588,7 +588,7 @@ Written with jQuery 1.7.2
         if (event != null) {
           this.debugLog(event.type);
         }
-        if ((_ref = this._state) === 'awake' || _ref === 'waking') {
+        if ((ref = this._state) === 'awake' || ref === 'waking') {
           return false;
         }
         delay = this.ms.delay["in"];
@@ -625,8 +625,8 @@ Written with jQuery 1.7.2
       };
 
       Tip.prototype.sleepByTrigger = function($trigger) {
-        var _ref;
-        if ((_ref = this._state) === 'asleep' || _ref === 'sleeping') {
+        var ref;
+        if ((ref = this._state) === 'asleep' || ref === 'sleeping') {
           return false;
         }
         this._setState('sleeping');
@@ -664,30 +664,30 @@ Written with jQuery 1.7.2
       return Tip;
 
     })();
-    SnapTip = (function(_super) {
-      __extends(SnapTip, _super);
+    SnapTip = (function(superClass) {
+      extend(SnapTip, superClass);
 
       function SnapTip() {
         return SnapTip.__super__.constructor.apply(this, arguments);
       }
 
       SnapTip.prototype.init = function() {
-        var active, key, _ref, _results;
+        var active, key, ref, results;
         SnapTip.__super__.init.call(this);
         if (this.snap.toTrigger === false) {
           this.snap.toTrigger = this.snap.toXAxis === true || this.snap.toYAxis === true;
         }
         this._offsetStart = null;
-        _ref = this.snap;
-        _results = [];
-        for (key in _ref) {
-          if (!__hasProp.call(_ref, key)) continue;
-          active = _ref[key];
+        ref = this.snap;
+        results = [];
+        for (key in ref) {
+          if (!hasProp.call(ref, key)) continue;
+          active = ref[key];
           if (active) {
-            _results.push(this.$tip.addClass(this.classNames.snap[key]));
+            results.push(this.$tip.addClass(this.classNames.snap[key]));
           }
         }
-        return _results;
+        return results;
       };
 
       SnapTip.prototype._moveToTrigger = function($trigger, baseOffset) {
