@@ -9,23 +9,11 @@
     <script data-main="js/editable" src="../lib/require.js"></script>
   </head>
   <body id="override">
-    <h1>HLF Editable Test</h1>
+    <header>
+      <h1>HLF Editable Test</h1>
+      <span>(see <a data-rel="docs" href="../docs/tests/js/editable.html" target="_blank">docs</a> for code)</span>
+    </header>
     <div id="main">
-      <section class="default-call">
-        <header>Inline Type Editable</header>
-        <div class="box">
-          <fieldset data-hlf-editable='{
-              "types": "inline"
-            }'>
-            <legend>Humanized Field Name</legend>
-            <div class="js-text">Default value</div>
-            <!-- If must be inline-block, set data-hlf-editable-display likewise. -->
-            <div class="js-input" style="display: none">
-              <input name="fieldName" type="text" />
-            </div>
-          </fieldset>
-        </div>
-      </section>
     </div>
   </body>
 </html>
