@@ -15,7 +15,7 @@ require [
   return false unless shouldRunVisualTests
   tests = []
 
-  # See [tests](../../docs/tests/js/tip.html)
+  # See [tests](../../../tests/tip.visual.html)
 
   # Default
   # -------
