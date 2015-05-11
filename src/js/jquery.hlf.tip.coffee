@@ -71,25 +71,6 @@ Written with jQuery 1.7.2
       # - `triggerContent` can be the name of the trigger element's attribute or a
       #   function that provides custom content when given the trigger element.
       triggerContent: null
-      # - `ms.duration` are the durations of sleep and wake animations.
-      # - `ms.delay` are the delays before sleeping and waking.
-      ms:
-        duration:
-          in: 200
-          out: 200
-          resize: 300
-        delay:
-          in: 300
-          out: 300
-      # - `easing` stores the custom easing for baked-in animation support. The
-      #   keys are the same as those of `shouldAnimate` and work if they are
-      #   specified, with `base` being the default easing
-      easing:
-        base: 'ease-in-out'
-      # - `shouldAnimate` provides baked-in animation support. The `resize`
-      #   animation is like `$.fn.show` but with CSS transitions.
-      shouldAnimate:
-        resize: on
       # - `cursorHeight` is the browser's cursor height. We need to know this to
       #   properly offset the tip to avoid cases of cursor-tip-stem overlap.
       cursorHeight: 12
@@ -121,6 +102,20 @@ Written with jQuery 1.7.2
         (classNames[key] = "#{pre}#{key}") for key in keys
         classNames.tip = 'js-tip'
         classNames
+      # - `animations` are very configurable. Individual animations can be
+      #   customized and will default to the base animation settings as needed.
+      animations:
+        base:
+          delay: 0
+          duration: 200
+          easing: 'ease-in-out'
+          enabled: yes
+        show:
+          delay: 200
+        hide:
+          delay: 200
+        resize:
+          delay: 300
 
   hlf.tip.snap =
     debug: off
@@ -167,6 +162,8 @@ Written with jQuery 1.7.2
     # binding event listeners to triggers, which can improve performance and
     # allow dynamic binding.
     constructor: (@$triggers, options, @$context) ->
+      for name, animation of options.animations when name isnt 'base'
+        _.defaults animation, options.animations.base
 
     init: ->
       # Bind handler methods here after class setup completes.
@@ -316,10 +313,9 @@ Written with jQuery 1.7.2
       $tip = $(html).addClass @classNames.follow
       # Animation setup.
       transitionStyle = []
-      if @shouldAnimate.resize
-        duration = @ms.duration.resize / 1000.0 + 's'
-        easing = @easing.resize
-        easing ?= @easing.base
+      if @animations.resize.enabled
+        duration = @animations.resize.duration / 1000.0 + 's'
+        easing = @animations.resize.easing
         transitionStyle.push "width #{duration} #{easing}", "height #{duration} #{easing}"
       transitionStyle = transitionStyle.join(',')
       # /Animation setup.
@@ -337,7 +333,7 @@ Written with jQuery 1.7.2
       @debugLog 'update direction class', compoundDirection
       $content = @selectByClass 'content'
       $content.text $trigger.data @attr('content')
-      if @shouldAnimate.resize
+      if @animations.resize.enabled
         contentSize = @sizeForTrigger $trigger, (contentOnly = yes)
         $content
           .width contentSize.width
@@ -527,8 +523,9 @@ Written with jQuery 1.7.2
       if event? then @debugLog event.type
       # Don't toggle if awake or waking, or if event isn't `truemouseenter`.
       return no if @_state in ['awake', 'waking']
-      delay = @ms.delay.in
-      duration = @ms.duration.in
+      # Get delay and initial duration.
+      delay = @animations.show.delay
+      duration = @animations.show.duration
       # Our `wake` subroutine runs the timed-out logic, which includes the fade
       # transition. The latter is also affected by `safeToggle`. The `onShow`
       # and `afterShow` hook methods are also run.
@@ -566,10 +563,10 @@ Written with jQuery 1.7.2
       clearTimeout @_wakeCountdown
       @_sleepCountdown = setTimeout =>
         @onHide()
-        @$tip.stop().fadeOut @ms.duration.out, =>
+        @$tip.stop().fadeOut @animations.hide.duration, =>
           @_setState 'asleep'
           @afterHide()
-      , @ms.delay.out
+      , @animations.hide.delay
       yes
 
     # These methods are hooks for custom functionality from subclasses. Some are
