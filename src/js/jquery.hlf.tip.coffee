@@ -27,17 +27,29 @@ Written with jQuery 1.7.2
 # `$('body').tip()` or `$('body').snapTip()`, although using the `toString` and
 # jQuery data methods is the same.
 
-# Export. Prefer AMD.
-((plugin) ->
-  if define? and define.amd?
+# Export. Support AMD, CommonJS (Browserify), and browser globals.
+((root, factory) ->
+  if typeof define is 'function' and define.amd?
+    # - AMD. Register as an anonymous module.
     define [
       'jquery'
       'underscore'
       'hlf/jquery.extension.hlf.core'
       'hlf/jquery.extension.hlf.event'
-    ], plugin
-  else plugin jQuery, _, jQuery.hlf
-)(($, _, hlf) ->
+    ], factory
+  else if typeof exports is 'object'
+    # - Node. Does not work with strict CommonJS, but only CommonJS-like
+    #   environments that support module.exports, like Node.
+    module.exports = factory(
+      require 'jquery',
+      require 'underscore',
+      require 'hlf/jquery.extension.hlf.core',
+      require 'hlf/jquery.extension.hlf.event'
+    )
+  else
+    # - Browser globals (root is window). No globals needed.
+    factory jQuery, _, jQuery.hlf
+)(@, ($, _, hlf) ->
   
   hlf.tip =
     debug: off
@@ -679,5 +691,7 @@ Written with jQuery 1.7.2
     asSharedInstance: yes
     baseMixins: ['selection']
     compactOptions: yes
+
+  yes
 
 )

@@ -1,12 +1,13 @@
 # HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery) ![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg)
 
-jQuery extensions and plugins for quality UI. All modules have scoped debug
-flags, jQuery namespaces, and no-conflict support with jQuery. All modules have
-AMD-compatible versions, so you can pick and choose what to use. The only other
-hard dependency is UnderscoreJS. RequireJS is suggested. Other dependencies
-(see Bower file) are for tests and demos.
+jQuery extensions and plugins for quality UI and implemented following best
+practices. The [annotated source code][] is also available and include
+documented examples.
 
-The [annotated source code][] is also available.
+All modules have scoped debug flags, jQuery namespaces, and no-conflict support
+with jQuery. They are exported using [UMD]() and work with AMD, Browserify, or
+plain. Only other dependency is UnderscoreJS. Other Bower dependencies are for
+tests and demos.
 
 ## Extensions
 
@@ -90,6 +91,7 @@ Start off with `npm install`.
       [
         "dist/*",
         "docs/*",
+        "release/*",
         "tests/*.css",
         "tests/*.js"
       ]
@@ -122,6 +124,7 @@ The MIT License (MIT)
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
 
+[UMD]: https://github.com/umdjs/umd
 [annotated source code]: http://hlfcoding.github.io/hlf-jquery/docs/index.html
 [visual test for Tip]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
 [(WIP) visual test for Editable]: http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html
