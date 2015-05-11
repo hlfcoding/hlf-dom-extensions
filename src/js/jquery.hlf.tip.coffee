@@ -188,32 +188,21 @@ Written with jQuery 1.7.2
       # Tip instances start off rendered and bound.
       @_render()
       @_bind()
-      # Process `$triggers` and setup content, event, and positioning aspects.
-      processTrigger = ($trigger) =>
-        return no if not $trigger.length
+      # Also setup any context bindings.
+      @_bindContext()
+      # Do this for initially provided triggers.
+      @_processTriggers()
       @_bindTriggers()
+
+    # Process `$triggers` and setup content, event, and positioning aspects.
+    _processTriggers: ($triggers) ->
+      $triggers ?= @$triggers
+      $triggers.each (i, el) =>
+        $trigger = $ el
+        return no unless $trigger.length
         $trigger.addClass @classNames.trigger
         @_saveTriggerContent $trigger
         @_updateDirectionByTrigger $trigger
-      # Do this for initially provided triggers.
-      @$triggers.each (i, el) => processTrigger $(el)
-      # If `doLiveUpdate` is inferred to be true, process triggers added in the
-      # future. Make sure to ignore mutations related to the tip.
-      @doLiveUpdate = window.MutationObserver?
-      if @doLiveUpdate
-        selector = @$triggers.selector
-        onMutations = (mutations) =>
-          for mutation in mutations
-            $target = $ mutation.target
-            continue if $target.hasClass(@classNames.content) # TODO: Limited.
-            if mutation.addedNodes.length
-              $triggers = $(mutation.addedNodes).find('[title],[alt]') # TODO: Limited.
-              $triggers.each (i, el) => processTrigger $(el)
-              @$triggers = @$triggers.add $triggers
-        @_mutationObserver = new MutationObserver onMutations
-        @_mutationObserver.observe @$context[0],
-          childList: yes
-          subtree: yes
 
     # `_defaultHtml` provides a basic html structure for tip content. It can be
     # customized via the `tipTemplate` external option, or by subclasses using
@@ -249,6 +238,24 @@ Written with jQuery 1.7.2
         if canRemoveAttr then $trigger.removeAttr attr
       if content?
         $trigger.data @attr('content'), content
+
+    # `_bindContext` uses MutationObserver. If `doLiveUpdate` is inferred to be
+    # true, process triggers added in the future. Make sure to ignore mutations
+    # related to the tip.
+    _bindContext: ->
+      return false unless window.MutationObserver?
+      selector = @$triggers.selector
+      @_mutationObserver = new MutationObserver (mutations) =>
+        for mutation in mutations
+          $target = $ mutation.target
+          continue if $target.hasClass(@classNames.content) # TODO: Limited.
+          if mutation.addedNodes.length
+            $triggers = $(mutation.addedNodes).find('[title],[alt]') # TODO: Limited.
+            @_processTriggers $triggers
+            @$triggers = @$triggers.add $triggers
+      @_mutationObserver.observe @$context[0],
+        childList: yes
+        subtree: yes
 
     # `_bindTriggers` links each trigger to the tip for: 1) possible appearance
     # changes during mouseenter, mouseleave (uses special events) and 2)
