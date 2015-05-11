@@ -71,9 +71,6 @@ Written with jQuery 1.7.2
       # - `triggerContent` can be the name of the trigger element's attribute or a
       #   function that provides custom content when given the trigger element.
       triggerContent: null
-      # - `shouldDelegate` is by default and encouraged to be on for improving
-      #   event handling performance.
-      shouldDelegate: on
       # - `ms.duration` are the durations of sleep and wake animations.
       # - `ms.delay` are the delays before sleeping and waking.
       ms:
@@ -197,10 +194,10 @@ Written with jQuery 1.7.2
       # Process `$triggers` and setup content, event, and positioning aspects.
       processTrigger = ($trigger) =>
         return no if not $trigger.length
+      @_bindTriggers()
         $trigger.addClass @classNames.trigger
         @_saveTriggerContent $trigger
         @_updateDirectionByTrigger $trigger
-        if @shouldDelegate is no then @_bindTrigger $trigger
       # Do this for initially provided triggers.
       @$triggers.each (i, el) => processTrigger $(el)
       # If `doLiveUpdate` is inferred to be true, process triggers added in the
@@ -220,7 +217,6 @@ Written with jQuery 1.7.2
         @_mutationObserver.observe @$context[0],
           childList: yes
           subtree: yes
-      if @shouldDelegate then @_bindTrigger()
 
     # `_defaultHtml` provides a basic html structure for tip content. It can be
     # customized via the `tipTemplate` external option, or by subclasses using
@@ -257,25 +253,15 @@ Written with jQuery 1.7.2
       if content?
         $trigger.data @attr('content'), content
 
-    # `_bindTrigger` links each trigger to the tip for: 1) possible appearance
+    # `_bindTriggers` links each trigger to the tip for: 1) possible appearance
     # changes during mouseenter, mouseleave (uses special events) and 2)
     # following on mousemove only if `doFollow` is on. Also note for our
     # `onMouseMove` handler, it's throttled by `requestAnimationFrame` when
-    # available, otherwise manually at hopefully 60fps. It does direct binding
-    # by default, can also do delegation (preferred) if `$trigger` isn't given
-    # but `$triggerContext` is.
-    _bindTrigger: ($trigger) ->
-      $bindTarget = $trigger
-      if not $bindTarget?
-        if @$context
-          $bindTarget = @$context
-          selector = ".#{@classNames.trigger}"
-        else
-          @debugLog 'invalid argument(s)'
-          return no
-      selector ?= null
+    # available, otherwise manually at hopefully 60fps.
+    _bindTriggers: ->
+      selector = ".#{@classNames.trigger}"
       # Base bindings.
-      $bindTarget.on [
+      @$context.on [
           @evt('truemouseenter')
           @evt('truemouseleave')
         ].join(' '),
@@ -296,7 +282,7 @@ Written with jQuery 1.7.2
               @_onTriggerMouseMove event
         else 
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
-        $bindTarget.on 'mousemove', selector, onMouseMove
+        @$context.on 'mousemove', selector, onMouseMove
 
     # `_bind` adds event handlers to `$tip`, mostly so state can be updated such
     # that the handlers on `_$currentTrigger` make an exception. The desired
@@ -634,19 +620,14 @@ Written with jQuery 1.7.2
           offset.top += $trigger.outerHeight()
       offset
 
-    # Extend `_bindTrigger` to get initial position for snapping. This is only
+    # Extend `_bindTriggers` to get initial position for snapping. This is only
     # for snapping without snapping to the trigger, which is only what's
     # currently supported. See `afterShow` hook.
-    _bindTrigger: ($trigger) ->
-      didBind = super $trigger
-      return no if didBind is no
-      $bindTarget = $trigger
-      if not $bindTarget? and @$context
-        $bindTarget = @$context
-        selector = ".#{@classNames.trigger}"
-      selector ?= null
+    _bindTriggers: ->
+      super()
+      selector = ".#{@classNames.trigger}"
       # Modify base binding.
-      $bindTarget.on @evt('truemouseleave'), selector, { selector }, 
+      @$context.on @evt('truemouseleave'), selector, { selector },
         (event) => @_offsetStart = null
 
     # Extend `_positionToTrigger` to set `cursorHeight` to 0, since it won't
