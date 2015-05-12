@@ -168,7 +168,7 @@ Written with jQuery 1.7.2
     # ❦ `constructor` keeps `$triggers` and `$context` as properties. `options`
     # is further normalized.
     constructor: (@$triggers, options, @$context) ->
-      for name, animation of options.animations when name isnt 'base'
+      for own name, animation of options.animations when name isnt 'base'
         _.defaults animation, options.animations.base
 
     # ❦ `init` offloads non-trivial setup to other subroutines
