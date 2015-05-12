@@ -5,27 +5,24 @@ Released under the MIT License
 Written with jQuery 1.7.2  
 ###
 
-# The base `tip` plugin features basic trigger element parsing, direction-based
-# attachment, cursor following, appearance state management and presentation by
-# fading, custom tip content, and use of the `hlf.hoverIntent` event extension.
-# The tip object is shared amongst the provided triggers.
+# ❧
 
-# The extended `snapTip` plugin extends the base tip and adds snapping-to-
-# trigger-element behavior. By default locks into place. If one of the snap-to-
-# axis options is turned off, the tip will slide along the remaining locked
-# axis.
+# The base `tip` plugin does several things. It does basic parsing of trigger
+# element attributes for the tip content. It can anchor itself to a trigger by
+# selecting the best direction. It can follow the cursor. It toggles its
+# appearance by fading in and out and resizing, all via configurable animations.
+# It can display custom tip content. It uses of the `hlf.hoverIntent` event
+# extension to prevent appearance 'thrashing.' Last, the tip object attaches to
+# the context element. It acts as tip for the the current jQuery selection via
+# event delegation.
 
-# Note the majority of presentation state logic is in the plugin stylesheet. We
-# update the presentation state by using `classNames`.
+# The extended `snapTip` plugin extends the base tip. It allows the tip to snap
+# to the trigger element. And by default the tip locks into place. But turn on
+# only one axis of snapping, and the tip will track the mouse only on the other
+# axis. For example, snapping to the x-axis will only allow the tip to shift
+# along the y-axis. The x will remain constant.
 
-# Lastly, like any other module in this library, we're using proper namespacing
-# whenever there is an added endpoint to the jQuery interface. This is done with
-# the custom `toString` methods. Also, plugin namespaces (under the root
-# `$.hlf`) each have a `debug` flag allowing more granular logging. Each
-# plugin's API is also entirely public, although some methods are intended as
-# protected given their name. Access the plugin singleton is as simple as via
-# `$('body').tip()` or `$('body').snapTip()`, although using the `toString` and
-# jQuery data methods is the same.
+# ❧
 
 # Export. Support AMD, CommonJS (Browserify), and browser globals.
 ((root, factory) ->
@@ -52,6 +49,10 @@ Written with jQuery 1.7.2
 )(@, ($, _, hlf) ->
   
   hlf.tip =
+    # It takes some boilerplate to write the plugins. To namespace when
+    # extending any jQuery API, we use custom `toString` helpers. Plugin
+    # namespaces (under the root`$.hlf`) each have a `debug` flag for granular
+    # logging.
     debug: off
     toString: _.memoize (context) ->
       switch context
@@ -60,13 +61,16 @@ Written with jQuery 1.7.2
         when 'class'  then 'js-tips'
         else 'hlf.tip'
 
+    # ❧
+
     # Tip Options
     # -----------
-    # Note the plugin instance gets extended with the options.
+    # NOTE: The plugin instance gets extended with the options.
     defaults: do (pre = 'js-tip-') ->
-      # - `$viewport` is the element in which the tip must fit into. It is not the
-      #   context, which stores the tip instance and by convention contains the
-      #   triggers.
+
+      # - `$viewport` is the element in which the tip must fit into. It is _not_
+      #   the context, which stores the tip instance and by convention contains
+      #   the triggers.
       $viewport: $ 'body'
       # - `triggerContent` can be the name of the trigger element's attribute or a
       #   function that provides custom content when given the trigger element.
@@ -74,7 +78,8 @@ Written with jQuery 1.7.2
       # - `cursorHeight` is the browser's cursor height. We need to know this to
       #   properly offset the tip to avoid cases of cursor-tip-stem overlap.
       cursorHeight: 12
-      # - Note that the direction data structure must be an array of
+      # - `defaultDirection` is used as a tie-breaker when selecting the best
+      #   direction. Note that the direction data structure must be an array of
       #   `components`, and conventionally with top/bottom first.
       defaultDirection: ['bottom', 'right']
       # - `safeToggle` prevents orphan tips, since timers are sometimes unreliable.
@@ -94,6 +99,8 @@ Written with jQuery 1.7.2
           </div>
         </div>
         """
+      # NOTE: The majority of presentation state logic is in the plugin
+      # stylesheet. We update the presentation state by using `classNames`.
       # - `classNames.stem` - Empty string to remove the stem.
       # - `classNames.follow` - Empty string to disable cursor following.
       classNames: do ->
@@ -134,7 +141,7 @@ Written with jQuery 1.7.2
         # - `snap.toXAxis` is the switch for snapping along x-axis. Off by default.
         # - `snap.toYAxis` is the switch for snapping along y-axis. Off by default.
         # - `snap.toTrigger` is the switch snapping to trigger that builds on top of
-        #   axis-snapping. On by default.
+        #   axis-snapping. On by default. 
         snap:
           toTrigger: on
           toXAxis: off
@@ -151,48 +158,48 @@ Written with jQuery 1.7.2
           classNames.tip = 'js-tip js-snap-tip'
           classNames
 
-  # Tip API
-  # -------
-  # Note that most of the interface is intended as protected.
+  # ❧
+
+  # Tip Implementation
+  # ------------------
+  # Read on to learn about implementation details.
   class Tip
 
-    # The base constructor and `init` mostly do setup work that uses other
-    # subroutines when needed. Note that we're also keeping `$triggers` and
-    # `$context` as properties. `$context` is partly used to avoid directly
-    # binding event listeners to triggers, which can improve performance and
-    # allow dynamic binding.
+    # ❦ `constructor` keeps `$triggers` and `$context` as properties. `options`
+    # is further normalized.
     constructor: (@$triggers, options, @$context) ->
       for name, animation of options.animations when name isnt 'base'
         _.defaults animation, options.animations.base
 
+    # ❦ `init` offloads non-trivial setup to other subroutines
     init: ->
-      # Bind handler methods here after class setup completes.
       _.bindAll @, '_onTriggerMouseMove', '_setBounds'
-      # The element represented by this API is `$tip`. We build it. Alias it to
-      # `$el` for any mixins to consume.
-      @_setTip = ($tip) => @$tip = @$el = $tip
+      # Initialize tip element.
       @_setTip $ '<div>'
       # Infer `doStem` and `doFollow` flags from respective `classNames` entries.
       @doStem = @classNames.stem isnt ''
       @doFollow = @classNames.follow isnt ''
-      # Updated with `_setState`, `_state` toggles between: `awake`, `asleep`,
-      # `waking`, `sleeping`. The use case behind these states is the tip will
-      # remain visible and `awake` as long as there is a high enough frequency
-      # of relevant mouse activity. This is achieved with a simple base
-      # implementation around timers `_sleepCountdown` and `_wakeCountdown`.
+      # Initialize state, which is either: `awake`, `asleep`, `waking`,
+      # `sleeping`; respectively show, hide.
       @_setState 'asleep'
+      # The tip should remain visible and `awake` as long as there is a high
+      # enough frequency of relevant mouse activity. In addition to using
+      # `hoverIntent`, this is achieved with a simple base implementation around
+      # timers `_sleepCountdown` and `_wakeCountdown` and an extra reference to
+      # `_$currentTrigger`.
       @_wakeCountdown = null
       @_sleepCountdown = null
-      # `_$currentTrigger` helps manage trigger-related state.
       @_$currentTrigger = null
-      # Tip instances start off rendered and bound.
+      # Initialize tip. Note the initial render.
       @_render()
       @_bind()
-      # Also setup any context bindings.
+      # Initialize context.
       @_bindContext()
-      # Do this for initially provided triggers.
+      # Initialize triggers. Note the initial processing.
       @_processTriggers()
       @_bindTriggers()
+
+    _setTip: ($tip) => @$tip = @$el = $tip
 
     # Process `$triggers` and setup content, event, and positioning aspects.
     _processTriggers: ($triggers) ->
