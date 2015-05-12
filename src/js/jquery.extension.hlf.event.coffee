@@ -14,17 +14,28 @@ Written with jQuery 1.7.2
 # 2. Private functions to implement certain behaviors.
 # 3. Adapting the behaviors to custom events.
 
-# Export. Prefer AMD. Note that we don't actually provide any exports because
-# ours are attached to jQuery.
-((extension) ->
-  if define? and define.amd?
+# Export. Support AMD, CommonJS (Browserify), and browser globals.
+((root, factory) ->
+  if typeof define is 'function' and define.amd?
+    # - AMD. Register as an anonymous module.
     define [
       'jquery'
       'underscore'
       'hlf/jquery.extension.hlf.core'
-    ], extension
-  else extension jQuery, _, jQuery.hlf
-)(($, _, hlf) ->
+    ], factory
+  else if typeof exports is 'object'
+    # - Node. Does not work with strict CommonJS, but only CommonJS-like
+    #   environments that support module.exports, like Node.
+    module.exports = factory(
+      require 'jquery',
+      require 'underscore',
+      require 'hlf/jquery.extension.hlf.core'
+    )
+  else
+    # - Browser globals (root is window). No globals needed.
+    factory jQuery, _, jQuery.hlf
+)(@, ($, _, hlf) ->
+
 
   # I. Hover-Intent
   # ---------------
