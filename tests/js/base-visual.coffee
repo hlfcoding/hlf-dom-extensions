@@ -9,7 +9,7 @@ define [
   # read further.
 
   # $.visualTest
-  # ============
+  # ------------
 
   # The test function generator. Invoke tests on document ready.
   # Configuration:
@@ -73,7 +73,7 @@ define [
               """
 
   # $.loremIpsum
-  # ============
+  # ------------
 
   loremIpsum =
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor

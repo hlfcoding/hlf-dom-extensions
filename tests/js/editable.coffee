@@ -1,3 +1,6 @@
+
+# See [tests](../../../tests/editable.visual.html)
+
 require.config
   baseUrl: '../lib'
   paths:

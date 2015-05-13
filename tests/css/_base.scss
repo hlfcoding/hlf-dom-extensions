@@ -1,5 +1,8 @@
 /* This is only styling for visual test pages. */
 
+// Variables
+// ---------
+
 $bg-color: #dadad6;
 $fill-color: rgba(#fff, 0.95);
 $line-color: rgba(#000, 0.1);
@@ -8,6 +11,9 @@ $accent-color: #06d;
 $line-size: 3px;
 $radius-size: 10px;
 $rem: 14px; // Until we drop IE 8, rem can't replace this.
+
+// Placeholders
+// ------------
 
 %clearfix {
   &::before, &::after {
@@ -43,9 +49,9 @@ $rem: 14px; // Until we drop IE 8, rem can't replace this.
   margin: { left: -$rem; right: -$rem; }
 }
 
-// Start output:
+// Base CSS Output
+// ---------------
 
-/* base styling */
 html {
   font-size: $rem;
 }
@@ -138,6 +144,28 @@ section.visual-test { /* main test styles */
   }
 }
 
+.edge { /* alternative test container styles */
+  position: absolute;
+  &.affixed { position: fixed; }
+  &.top { top: $rem; }
+  &.right { right: $rem; }
+  &.bottom { bottom: $rem; }
+  &.left { left: $rem; }
+}
+.edge-call {
+  &:not(body) {
+    position: relative;
+  }
+  > .visual-test-fragment {
+    @extend .edge, %panel-skin;
+    border-radius: $radius-size;
+    padding: $rem;
+  }
+}
+
+// Other CSS Output
+// ----------------
+
 .box {
   @extend %panel-skin;
   border-radius: $radius-size;
@@ -217,25 +245,6 @@ section.visual-test { /* main test styles */
     > a { @extend .item; }
     &:first-child > a { @extend .bar-item-first; }
     &:last-child > a { @extend .bar-item-last; }
-  }
-}
-
-.edge {
-  position: absolute;
-  &.affixed { position: fixed; }
-  &.top { top: $rem; }
-  &.right { right: $rem; }
-  &.bottom { bottom: $rem; }
-  &.left { left: $rem; }
-}
-.edge-call {
-  &:not(body) {
-    position: relative;
-  }
-  > .visual-test-fragment {
-    @extend .edge, %panel-skin;
-    border-radius: $radius-size;
-    padding: $rem;
   }
 }
 

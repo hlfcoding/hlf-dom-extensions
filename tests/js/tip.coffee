@@ -1,3 +1,6 @@
+
+# See [tests](../../../tests/tip.visual.html)
+
 require.config
   baseUrl: '../lib'
   paths:
@@ -14,8 +17,6 @@ require [
   shouldRunVisualTests = $('#qunit').length is 0
   return false unless shouldRunVisualTests
   tests = []
-
-  # See [tests](../../../tests/tip.visual.html)
 
   # Default
   # -------
