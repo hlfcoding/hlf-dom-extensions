@@ -9,11 +9,36 @@ with jQuery. They are exported using [UMD]() and work with AMD, Browserify, or
 plain. Only other dependency is UnderscoreJS. Other Bower dependencies are for
 tests and demos.
 
+## Plugins
+
+All plugins should have test pages with documented source. Please use them as
+usage examples. Plugins should also have sample styles, and some have required
+styles. When possible, styles are made customizeable as SCSS mixins.
+
+### [HLF Tip][]
+
+Main features summary:
+
+- Based on hover 'intent' and prevents redundant toggling or DOM thrashing.
+- Re-use the same tip for a group of triggers to keep DOM light.
+- Aware of available space surrounding to triggering element.
+- Has an extended, 'snapping' version that only follows the mouse on one axis.
+  The tip will snaps to the trigger's edge on the other.
+
+Short examples:
+
+```javascript
+$('.article-1').find('a[title]').tip(); // Tips will follow cursor.
+$('.article-2').find('a[title]').snapTip({ snap: { toXAxis: true } }); // Tips will only follow along x axis.
+```
+
+See [Tip's visual tests][] for more examples.
+
 ## Extensions
 
-All extensions should have test pages.
+All extensions should be covered by QUnit tests.
 
-### Core
+### [HLF Core][]
 
 Main features:
 
@@ -21,46 +46,18 @@ Main features:
 - Helpers to create mixins that can be used for plugin API.
 - Provide no-conflict support.
 
-### Event
+See [Core's unit tests][] for examples.
+
+### HLF Event
 
 Main features:
 
 - Hover-intent provides rate-limited versions of mouseenter and mouseleave 
   events through a customizable delay.
 
-## Plugins
-
-All plugins should have test pages and sample styles. Some plugins may have
-required styles. When possible, styles are made customizeable as SCSS mixins.
-
-### HLF Tip
-
-A [visual test for Tip][] is available.
-
-Main features:
-
-- Uses custom hover intent events that allow for custom delays.
-- Re-use the same tip for a group of triggers.
-- Has a snapping extension that allows snapping to the trigger or tracking in
-  either direction.
-
-Additional features:
-
-- Sample styling that draws tip stems with CSS borders.
-- Detailed API.
-
-Example:
-
-```javascript
-$('.article-1').find('a[title]').tip(); // Tips will follow cursor.
-$('.article-2').find('a[title]').snapTip(); // Tips will remain affixed.
-```
-
-See visual tests for more examples.
+## Plugins Coming Soon
 
 ### HLF Editable
-
-A [(WIP) visual test for Editable][] is available.
 
 Main features:
 
@@ -126,5 +123,9 @@ The MIT License (MIT)
 
 [UMD]: https://github.com/umdjs/umd
 [annotated source code]: http://hlfcoding.github.io/hlf-jquery/docs/index.html
-[visual test for Tip]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
-[(WIP) visual test for Editable]: http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html
+[HLF Tip]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.tip.html
+[Tip's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
+[HLF Core]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.core.html
+[Core's unit tests]: http://localhost/hlf-jquery/tests/core.unit.html
+[HLF Editable]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.editable.html
+[Editable's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html
