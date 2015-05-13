@@ -1,3 +1,8 @@
+###
+HLF Core Plugin Unit Tests
+==========================
+###
+
 define [
   'jquery'
   'underscore'

@@ -1,3 +1,7 @@
+###
+HLF Tip Visual Tests
+====================
+###
 
 # See [tests](../../../tests/tip.visual.html)
 

@@ -1,3 +1,7 @@
+###
+HLF Editable Visual Tests
+=========================
+###
 
 # See [tests](../../../tests/editable.visual.html)
 
