@@ -529,7 +529,7 @@ Written with jQuery 1.7.2
         else @defaultDirection
       @debugLog 'update direction class', compoundDirection
       @$tip
-        .removeClass _.chain(@classNames).pick('top', 'bottom', 'right', 'left').values().join(' ')
+        .removeClass _.chain(@classNames).pick('top', 'bottom', 'right', 'left').values().join(' ').value()
         .addClass $.trim(
           _.reduce compoundDirection, (classListMemo, directionComponent) =>
             "#{classListMemo} #{@classNames[directionComponent]}"
