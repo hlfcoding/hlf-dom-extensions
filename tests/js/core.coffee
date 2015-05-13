@@ -4,6 +4,8 @@ HLF Core Unit Tests
 Offloads testing larger corer components to other test modules.
 ###
 
+# See [tests](../../../tests/core.unit.html)
+
 require.config
   baseUrl: '../lib'
   paths:
