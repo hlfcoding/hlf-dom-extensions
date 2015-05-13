@@ -3,6 +3,6 @@
 
 .js-tip {
   @include tip-base;
-  @include tip-layout;
-  @include tip-skin(#666, #fff);
+  @include tip-layout($em-size: $rem);
+  @include tip-skin($fill-color: #666, $text-color: #fff);
 }
