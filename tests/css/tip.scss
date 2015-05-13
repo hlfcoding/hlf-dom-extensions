@@ -1,6 +1,7 @@
 @import "../../dist/jquery.hlf.tip.scss";
 
 .js-tip {
-  @include tip-skin(#666, #fff);
+  @include tip-base;
   @include tip-layout;
+  @include tip-skin(#666, #fff);
 }
