@@ -75,7 +75,7 @@ require [
       <button name="list-append">load more</button>
       """
     test: ($context) ->
-      $context.find('[title]').snapTip { snap: { toYAxis: true } }, $context
+      $context.find('[title]').snapTip { snap: { toYAxis: on } }, $context
 
     anchorName: 'snapping-vertically'
     className: 'list-call'
@@ -105,7 +105,7 @@ require [
       </nav>
       """
     test: ($context) ->
-      $context.find('[title]').snapTip { snap: { toXAxis: true } }, $context
+      $context.find('[title]').snapTip { snap: { toXAxis: on } }, $context
 
     anchorName: 'snapping-horizontally'
     className: 'bar-call'
@@ -131,7 +131,7 @@ require [
       </ul>
       """
     test: ($context) ->
-      $context.find('[alt]').snapTip { snap: { toXAxis: true } }, $context
+      $context.find('[alt]').snapTip { snap: { toXAxis: on } }, $context
 
     anchorName: 'a-model-use-case'
     className: 'grid-call'
