@@ -1,6 +1,16 @@
-@import "../../dist/jquery.hlf.tip.scss";
+/*
+  HLF Tip Visual Tests
+  ====================
+*/
 
+// See [tests](../../../tests/tip.visual.html)
+
+@import '../../dist/jquery.hlf.tip';
+@import 'base';
+
+// A basic example of how to use the tip plugin's style-building mixins.
 .js-tip {
-  @include tip-skin(#666, #fff);
-  @include tip-layout;
+  @include tip-base;
+  @include tip-layout($em-size: $rem);
+  @include tip-skin($fill-color: #666, $text-color: #fff);
 }

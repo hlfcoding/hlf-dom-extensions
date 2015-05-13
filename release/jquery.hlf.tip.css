@@ -1,33 +1,5 @@
-.js-tip {
-  display: none;
-  position: absolute;
-  z-index: 9999; }
-  .js-tip > .js-tip-inner {
-    position: relative; }
-
-.js-tip-inner > .js-tip-stem {
-  border-width: 0;
-  border-style: solid;
-  border-color: transparent;
-  background: none;
-  position: absolute;
-  width: 0;
-  height: 0; }
-.js-tip-inner > .js-tip-content {
-  overflow: hidden;
-  position: relative; }
-
-.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip-right .js-tip-stem {
-  left: 0; }
-.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip-left .js-tip-stem {
-  right: 0; }
-.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip-bottom .js-tip-stem {
-  top: 0; }
-.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip-top .js-tip-stem {
-  bottom: 0; }
-.js-snap-tip-x-side .js-tip-stem {
-  left: 50%;
-  border-color: transparent; }
-.js-snap-tip-y-side .js-tip-stem {
-  top: 50%;
-  border-color: transparent; }
+/*
+  HLF Tip jQuery Plugin
+  =====================
+  There should be no css output from this file.
+*/

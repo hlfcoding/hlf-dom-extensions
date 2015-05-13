@@ -1,3 +1,8 @@
+/*
+  HLF Editable jQuery Plugin
+  ==========================
+  There should be no css output from this file.
+*/
 
 %skin-clear {
   border-color: transparent;
@@ -6,6 +11,7 @@
     outline-style: none;
   }
 }
+
 %spacing-none {
   margin: 0;
   padding: 0;
@@ -16,10 +22,11 @@ $editable-inline-selectors: (
   text:'.js-text', 
   input:'.js-input input'
 );
-@mixin editable-inline-skin ($style:clear,
-                             $rule-color:black,
-                             $hover-background-color:rgba(black, 0.1),
-                             $selectors:$editable-inline-selectors)
+
+@mixin editable-inline-skin ($style: clear,
+                             $rule-color: black,
+                             $hover-background-color: rgba(black, 0.1),
+                             $selectors: $editable-inline-selectors)
 {
   @if $style == clear {
     #{map-get($selectors, text)},
@@ -38,8 +45,8 @@ $editable-inline-selectors: (
   }
 }
 
-@mixin editable-inline-layout ($width:160px,
-                               $selectors:$editable-inline-selectors)
+@mixin editable-inline-layout ($width: 160px,
+                               $selectors: $editable-inline-selectors)
 {
   #{map-get($selectors, text)},
   #{map-get($selectors, input)} {

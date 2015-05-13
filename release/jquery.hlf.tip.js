@@ -2,21 +2,22 @@
 /*
 HLF Tip jQuery Plugin
 =====================
-Released under the MIT License  
-Written with jQuery 1.7.2
  */
 
 (function() {
   var hasProp = {}.hasOwnProperty,
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  (function(plugin) {
-    if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
-      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core', 'hlf/jquery.extension.hlf.event'], plugin);
+  (function(root, factory) {
+    if (typeof define === 'function' && (define.amd != null)) {
+      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core', 'hlf/jquery.extension.hlf.event'], factory);
+    } else if (typeof exports === 'object') {
+      return module.exports = factory(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core', require('hlf/jquery.extension.hlf.event')))));
     } else {
-      return plugin(jQuery, _, jQuery.hlf);
+      return factory(jQuery, _, jQuery.hlf);
     }
-  })(function($, _, hlf) {
+  })(this, function($, _, hlf) {
     var SnapTip, Tip;
     hlf.tip = {
       debug: false,
@@ -35,29 +36,10 @@ Written with jQuery 1.7.2
       defaults: (function(pre) {
         return {
           $viewport: $('body'),
-          triggerContent: null,
-          shouldDelegate: true,
-          ms: {
-            duration: {
-              "in": 200,
-              out: 200,
-              resize: 300
-            },
-            delay: {
-              "in": 300,
-              out: 300
-            }
-          },
-          easing: {
-            base: 'ease-in-out'
-          },
-          shouldAnimate: {
-            resize: true
-          },
+          autoDirection: true,
           cursorHeight: 12,
           defaultDirection: ['bottom', 'right'],
           safeToggle: true,
-          autoDirection: true,
           tipTemplate: function(containerClass) {
             var stemHtml;
             if (this.doStem === true) {
@@ -65,6 +47,7 @@ Written with jQuery 1.7.2
             }
             return "<div class=\"" + containerClass + "\">\n  <div class=\"" + this.classNames.inner + "\">\n    " + stemHtml + "\n    <div class='" + this.classNames.content + "'></div>\n  </div>\n</div>";
           },
+          triggerContent: null,
           classNames: (function() {
             var classNames, j, key, keys, len;
             classNames = {};
@@ -75,7 +58,24 @@ Written with jQuery 1.7.2
             }
             classNames.tip = 'js-tip';
             return classNames;
-          })()
+          })(),
+          animations: {
+            base: {
+              delay: 0,
+              duration: 200,
+              easing: 'ease-in-out',
+              enabled: true
+            },
+            show: {
+              delay: 200
+            },
+            hide: {
+              delay: 200
+            },
+            resize: {
+              delay: 300
+            }
+          }
         };
       })('js-tip-')
     };
@@ -124,18 +124,22 @@ Written with jQuery 1.7.2
     };
     Tip = (function() {
       function Tip($triggers1, options, $context) {
+        var animation, name, ref;
         this.$triggers = $triggers1;
         this.$context = $context;
+        this._setTip = bind(this._setTip, this);
+        ref = options.animations;
+        for (name in ref) {
+          if (!hasProp.call(ref, name)) continue;
+          animation = ref[name];
+          if (name !== 'base') {
+            _.defaults(animation, options.animations.base);
+          }
+        }
       }
 
       Tip.prototype.init = function() {
-        var onMutations, processTrigger, selector;
         _.bindAll(this, '_onTriggerMouseMove', '_setBounds');
-        this._setTip = (function(_this) {
-          return function($tip) {
-            return _this.$tip = _this.$el = $tip;
-          };
-        })(this);
         this._setTip($('<div>'));
         this.doStem = this.classNames.stem !== '';
         this.doFollow = this.classNames.follow !== '';
@@ -145,59 +149,9 @@ Written with jQuery 1.7.2
         this._$currentTrigger = null;
         this._render();
         this._bind();
-        processTrigger = (function(_this) {
-          return function($trigger) {
-            if (!$trigger.length) {
-              return false;
-            }
-            $trigger.addClass(_this.classNames.trigger);
-            _this._saveTriggerContent($trigger);
-            _this._updateDirectionByTrigger($trigger);
-            if (_this.shouldDelegate === false) {
-              return _this._bindTrigger($trigger);
-            }
-          };
-        })(this);
-        this.$triggers.each((function(_this) {
-          return function(i, el) {
-            return processTrigger($(el));
-          };
-        })(this));
-        this.doLiveUpdate = window.MutationObserver != null;
-        if (this.doLiveUpdate) {
-          selector = this.$triggers.selector;
-          onMutations = (function(_this) {
-            return function(mutations) {
-              var $target, $triggers, j, len, mutation, results;
-              results = [];
-              for (j = 0, len = mutations.length; j < len; j++) {
-                mutation = mutations[j];
-                $target = $(mutation.target);
-                if ($target.hasClass(_this.classNames.content)) {
-                  continue;
-                }
-                if (mutation.addedNodes.length) {
-                  $triggers = $(mutation.addedNodes).find('[title],[alt]');
-                  $triggers.each(function(i, el) {
-                    return processTrigger($(el));
-                  });
-                  results.push(_this.$triggers = _this.$triggers.add($triggers));
-                } else {
-                  results.push(void 0);
-                }
-              }
-              return results;
-            };
-          })(this);
-          this._mutationObserver = new MutationObserver(onMutations);
-          this._mutationObserver.observe(this.$context[0], {
-            childList: true,
-            subtree: true
-          });
-        }
-        if (this.shouldDelegate) {
-          return this._bindTrigger();
-        }
+        this._bindContext();
+        this._processTriggers();
+        return this._bindTriggers();
       };
 
       Tip.prototype._defaultHtml = function() {
@@ -209,6 +163,162 @@ Written with jQuery 1.7.2
         })(this), ''));
         containerClass = $.trim([this.classNames.tip, this.classNames.follow, directionClass].join(' '));
         return html = this.tipTemplate(containerClass);
+      };
+
+      Tip.prototype._isDirection = function(directionComponent, $trigger) {
+        return this.$tip.hasClass(this.classNames[directionComponent]) || ((($trigger == null) || !$trigger.data(this.attr('direction'))) && _.include(this.defaultDirection, directionComponent));
+      };
+
+      Tip.prototype._setState = function(state) {
+        if (state === this._state) {
+          return false;
+        }
+        this._state = state;
+        return this.debugLog(this._state);
+      };
+
+      Tip.prototype._setTip = function($tip) {
+        return this.$tip = this.$el = $tip;
+      };
+
+      Tip.prototype._sizeForTrigger = function($trigger, contentOnly) {
+        var $content, bottom, left, padding, ref, right, side, size, top, wrapped;
+        if (contentOnly == null) {
+          contentOnly = false;
+        }
+        size = {
+          width: $trigger.data('width'),
+          height: $trigger.data('height')
+        };
+        $content = this.selectByClass('content');
+        if (!((size.width != null) && (size.height != null))) {
+          $content.text($trigger.data(this.attr('content')));
+          wrapped = this._wrapStealthRender(function() {
+            $trigger.data('width', (size.width = this.$tip.outerWidth()));
+            return $trigger.data('height', (size.height = this.$tip.outerHeight()));
+          });
+          wrapped();
+        }
+        if (contentOnly === true) {
+          padding = $content.css('padding').split(' ');
+          ref = (function() {
+            var j, len, results;
+            results = [];
+            for (j = 0, len = padding.length; j < len; j++) {
+              side = padding[j];
+              results.push(parseInt(side, 10));
+            }
+            return results;
+          })(), top = ref[0], right = ref[1], bottom = ref[2], left = ref[3];
+          if (bottom == null) {
+            bottom = top;
+          }
+          if (left == null) {
+            left = right;
+          }
+          size.width -= left + right;
+          size.height -= top + bottom + this.selectByClass('stem').height();
+        }
+        return size;
+      };
+
+      Tip.prototype._stemSize = function() {
+        var $content, key, size, wrapped;
+        key = this.attr('stem-size');
+        size = this.$tip.data(key);
+        if (size != null) {
+          return size;
+        }
+        $content = this.selectByClass('content');
+        wrapped = this._wrapStealthRender((function(_this) {
+          return function() {
+            var direction, j, len, offset, ref;
+            ref = $content.position();
+            for (offset = j = 0, len = ref.length; j < len; offset = ++j) {
+              direction = ref[offset];
+              if (offset > 0) {
+                size = Math.abs(offset);
+                _this.$tip.data(key, size);
+              }
+            }
+            return 0;
+          };
+        })(this));
+        return wrapped();
+      };
+
+      Tip.prototype.wakeByTrigger = function($trigger, event, onWake) {
+        var delay, duration, ref, triggerChanged, wake;
+        triggerChanged = !$trigger.is(this._$currentTrigger);
+        if (triggerChanged) {
+          this._inflateByTrigger($trigger);
+          this._$currentTrigger = $trigger;
+        }
+        if (this._state === 'awake') {
+          this._positionToTrigger($trigger, event);
+          this.onShow(triggerChanged, event);
+          if (onWake != null) {
+            onWake();
+          }
+          this.debugLog('quick update');
+          return true;
+        }
+        if (event != null) {
+          this.debugLog(event.type);
+        }
+        if ((ref = this._state) === 'awake' || ref === 'waking') {
+          return false;
+        }
+        delay = this.animations.show.delay;
+        duration = this.animations.show.duration;
+        wake = (function(_this) {
+          return function() {
+            _this._positionToTrigger($trigger, event);
+            _this.onShow(triggerChanged, event);
+            return _this.$tip.stop().fadeIn(duration, function() {
+              if (triggerChanged) {
+                if (onWake != null) {
+                  onWake();
+                }
+              }
+              if (_this.safeToggle === true) {
+                _this.$tip.siblings(_this.classNames.tip).fadeOut();
+              }
+              _this.afterShow(triggerChanged, event);
+              return _this._setState('awake');
+            });
+          };
+        })(this);
+        if (this._state === 'sleeping') {
+          this.debugLog('clear sleep');
+          clearTimeout(this._sleepCountdown);
+          duration = 0;
+          wake();
+        } else if ((event != null) && event.type === 'truemouseenter') {
+          triggerChanged = true;
+          this._setState('waking');
+          this._wakeCountdown = setTimeout(wake, delay);
+        }
+        return true;
+      };
+
+      Tip.prototype.sleepByTrigger = function($trigger) {
+        var ref;
+        if ((ref = this._state) === 'asleep' || ref === 'sleeping') {
+          return false;
+        }
+        this._setState('sleeping');
+        clearTimeout(this._wakeCountdown);
+        this._sleepCountdown = setTimeout((function(_this) {
+          return function() {
+            _this.onHide();
+            return _this.$tip.stop().fadeOut(_this.animations.hide.duration, function() {
+              _this._setState('asleep');
+              return _this.afterHide();
+            });
+          };
+        })(this), this.animations.hide.delay);
+        return true;
       };
 
       Tip.prototype._saveTriggerContent = function($trigger) {
@@ -241,22 +351,69 @@ Written with jQuery 1.7.2
         }
       };
 
-      Tip.prototype._bindTrigger = function($trigger) {
-        var $bindTarget, onMouseMove, selector;
-        $bindTarget = $trigger;
-        if ($bindTarget == null) {
-          if (this.$context) {
-            $bindTarget = this.$context;
-            selector = "." + this.classNames.trigger;
-          } else {
-            this.debugLog('invalid argument(s)');
-            return false;
-          }
+      Tip.prototype._bind = function() {
+        this.$tip.on({
+          mouseenter: (function(_this) {
+            return function(event) {
+              _this.debugLog('enter tip');
+              if (_this._$currentTrigger != null) {
+                _this._$currentTrigger.data(_this.attr('is-active'), true);
+                return _this.wakeByTrigger(_this._$currentTrigger);
+              }
+            };
+          })(this),
+          mouseleave: (function(_this) {
+            return function(event) {
+              _this.debugLog('leave tip');
+              if (_this._$currentTrigger != null) {
+                _this._$currentTrigger.data(_this.attr('is-active'), false);
+                return _this.sleepByTrigger(_this._$currentTrigger);
+              }
+            };
+          })(this)
+        });
+        if (this.autoDirection === true) {
+          return $(window).resize(_.debounce(this._setBounds, 300));
         }
-        if (selector == null) {
-          selector = null;
+      };
+
+      Tip.prototype._bindContext = function() {
+        var selector;
+        if (window.MutationObserver == null) {
+          return false;
         }
-        $bindTarget.on([this.evt('truemouseenter'), this.evt('truemouseleave')].join(' '), selector, {
+        selector = this.$triggers.selector;
+        this._mutationObserver = new MutationObserver((function(_this) {
+          return function(mutations) {
+            var $target, $triggers, j, len, mutation, results;
+            results = [];
+            for (j = 0, len = mutations.length; j < len; j++) {
+              mutation = mutations[j];
+              $target = $(mutation.target);
+              if ($target.hasClass(_this.classNames.content)) {
+                continue;
+              }
+              if (mutation.addedNodes.length) {
+                $triggers = $(mutation.addedNodes).find('[title],[alt]');
+                _this._processTriggers($triggers);
+                results.push(_this.$triggers = _this.$triggers.add($triggers));
+              } else {
+                results.push(void 0);
+              }
+            }
+            return results;
+          };
+        })(this));
+        return this._mutationObserver.observe(this.$context[0], {
+          childList: true,
+          subtree: true
+        });
+      };
+
+      Tip.prototype._bindTriggers = function() {
+        var onMouseMove, selector;
+        selector = "." + this.classNames.trigger;
+        this.$context.on([this.evt('truemouseenter'), this.evt('truemouseleave')].join(' '), selector, {
           selector: selector
         }, (function(_this) {
           return function(event) {
@@ -286,73 +443,8 @@ Written with jQuery 1.7.2
           } else {
             onMouseMove = _.throttle(this._onTriggerMouseMove, 16);
           }
-          return $bindTarget.on('mousemove', selector, onMouseMove);
+          return this.$context.on('mousemove', selector, onMouseMove);
         }
-      };
-
-      Tip.prototype._bind = function() {
-        this.$tip.on('mouseenter', (function(_this) {
-          return function(event) {
-            _this.debugLog('enter tip');
-            if (_this._$currentTrigger != null) {
-              _this._$currentTrigger.data(_this.attr('is-active'), true);
-              return _this.wakeByTrigger(_this._$currentTrigger);
-            }
-          };
-        })(this)).on('mouseleave', (function(_this) {
-          return function(event) {
-            _this.debugLog('leave tip');
-            if (_this._$currentTrigger != null) {
-              _this._$currentTrigger.data(_this.attr('is-active'), false);
-              return _this.sleepByTrigger(_this._$currentTrigger);
-            }
-          };
-        })(this));
-        if (this.autoDirection === true) {
-          return $(window).resize(_.debounce(this._setBounds, 300));
-        }
-      };
-
-      Tip.prototype._render = function() {
-        var $tip, duration, easing, html, transitionStyle;
-        if (this.$tip.html().length) {
-          return false;
-        }
-        html = this.htmlOnRender();
-        if (!((html != null) && html.length)) {
-          html = this._defaultHtml();
-        }
-        $tip = $(html).addClass(this.classNames.follow);
-        transitionStyle = [];
-        if (this.shouldAnimate.resize) {
-          duration = this.ms.duration.resize / 1000.0 + 's';
-          easing = this.easing.resize;
-          if (easing == null) {
-            easing = this.easing.base;
-          }
-          transitionStyle.push("width " + duration + " " + easing, "height " + duration + " " + easing);
-        }
-        transitionStyle = transitionStyle.join(',');
-        this._setTip($tip);
-        this.selectByClass('content').css('transition', transitionStyle);
-        return this.$tip.prependTo(this.$viewport);
-      };
-
-      Tip.prototype._inflateByTrigger = function($trigger) {
-        var $content, compoundDirection, contentOnly, contentSize;
-        compoundDirection = $trigger.data(this.attr('direction')) ? $trigger.data(this.attr('direction')).split(' ') : this.defaultDirection;
-        this.debugLog('update direction class', compoundDirection);
-        $content = this.selectByClass('content');
-        $content.text($trigger.data(this.attr('content')));
-        if (this.shouldAnimate.resize) {
-          contentSize = this.sizeForTrigger($trigger, (contentOnly = true));
-          $content.width(contentSize.width).height(contentSize.height);
-        }
-        return this.$tip.removeClass([this.classNames.top, this.classNames.bottom, this.classNames.right, this.classNames.left].join(' ')).addClass($.trim(_.reduce(compoundDirection, (function(_this) {
-          return function(classListMemo, directionComponent) {
-            return classListMemo + " " + _this.classNames[directionComponent];
-          };
-        })(this), '')));
       };
 
       Tip.prototype._onTriggerMouseMove = function(event) {
@@ -380,12 +472,12 @@ Written with jQuery 1.7.2
           left: mouseEvent.pageX
         };
         offset = this.offsetOnTriggerMouseMove(mouseEvent, offset, $trigger) || offset;
-        if (this.isDirection('top', $trigger)) {
-          offset.top -= this.$tip.outerHeight() + this.stemSize();
-        } else if (this.isDirection('bottom', $trigger)) {
-          offset.top += this.stemSize() + cursorHeight;
+        if (this._isDirection('top', $trigger)) {
+          offset.top -= this.$tip.outerHeight() + this._stemSize();
+        } else if (this._isDirection('bottom', $trigger)) {
+          offset.top += this._stemSize() + cursorHeight;
         }
-        if (this.isDirection('left', $trigger)) {
+        if (this._isDirection('left', $trigger)) {
           tipWidth = this.$tip.outerWidth();
           triggerWidth = $trigger.outerWidth();
           offset.left -= tipWidth;
@@ -396,29 +488,72 @@ Written with jQuery 1.7.2
         return this.$tip.css(offset);
       };
 
-      Tip.prototype.stemSize = function() {
-        var $content, key, size, wrapped;
-        key = this.attr('stem-size');
-        size = this.$tip.data(key);
-        if (size != null) {
-          return size;
-        }
+      Tip.prototype._setBounds = function() {
+        var $viewport;
+        $viewport = this.$viewport.is('body') ? $(window) : this.$viewport;
+        return this._bounds = {
+          top: $.css(this.$viewport[0], 'padding-top', true),
+          left: $.css(this.$viewport[0], 'padding-left', true),
+          bottom: $viewport.innerHeight(),
+          right: $viewport.innerWidth()
+        };
+      };
+
+      Tip.prototype._inflateByTrigger = function($trigger) {
+        var $content, compoundDirection, contentOnly, contentSize;
         $content = this.selectByClass('content');
-        wrapped = this._wrapStealthRender((function(_this) {
-          return function() {
-            var direction, j, len, offset, ref;
-            ref = $content.position();
-            for (offset = j = 0, len = ref.length; j < len; offset = ++j) {
-              direction = ref[offset];
-              if (offset > 0) {
-                size = Math.abs(offset);
-                _this.$tip.data(key, size);
-              }
+        $content.text($trigger.data(this.attr('content')));
+        if (this.animations.resize.enabled) {
+          contentSize = this._sizeForTrigger($trigger, (contentOnly = true));
+          $content.width(contentSize.width).height(contentSize.height);
+        }
+        compoundDirection = $trigger.data(this.attr('direction')) ? $trigger.data(this.attr('direction')).split(' ') : this.defaultDirection;
+        this.debugLog('update direction class', compoundDirection);
+        return this.$tip.removeClass(_.chain(this.classNames).pick('top', 'bottom', 'right', 'left').values().join(' ').value()).addClass($.trim(_.reduce(compoundDirection, (function(_this) {
+          return function(classListMemo, directionComponent) {
+            return classListMemo + " " + _this.classNames[directionComponent];
+          };
+        })(this), '')));
+      };
+
+      Tip.prototype._render = function() {
+        var $tip, duration, easing, html, transitionStyle;
+        if (this.$tip.html().length) {
+          return false;
+        }
+        html = this.htmlOnRender();
+        if (!((html != null) && html.length)) {
+          html = this._defaultHtml();
+        }
+        $tip = $(html).addClass(this.classNames.follow);
+        transitionStyle = [];
+        if (this.animations.resize.enabled) {
+          duration = this.animations.resize.duration / 1000.0 + 's';
+          easing = this.animations.resize.easing;
+          transitionStyle.push("width " + duration + " " + easing, "height " + duration + " " + easing);
+        }
+        transitionStyle = transitionStyle.join(',');
+        this._setTip($tip);
+        this.selectByClass('content').css('transition', transitionStyle);
+        return this.$tip.prependTo(this.$viewport);
+      };
+
+      Tip.prototype._processTriggers = function($triggers) {
+        if ($triggers == null) {
+          $triggers = this.$triggers;
+        }
+        return $triggers.each((function(_this) {
+          return function(i, el) {
+            var $trigger;
+            $trigger = $(el);
+            if (!$trigger.length) {
+              return false;
             }
-            return 0;
+            $trigger.addClass(_this.classNames.trigger);
+            _this._saveTriggerContent($trigger);
+            return _this._updateDirectionByTrigger($trigger);
           };
         })(this));
-        return wrapped();
       };
 
       Tip.prototype._updateDirectionByTrigger = function($trigger) {
@@ -429,7 +564,7 @@ Written with jQuery 1.7.2
         triggerPosition = $trigger.position();
         triggerWidth = $trigger.outerWidth();
         triggerHeight = $trigger.outerHeight();
-        tipSize = this.sizeForTrigger($trigger);
+        tipSize = this._sizeForTrigger($trigger);
         newDirection = _.clone(this.defaultDirection);
         this.debugLog({
           triggerPosition: triggerPosition,
@@ -484,66 +619,6 @@ Written with jQuery 1.7.2
         return results;
       };
 
-      Tip.prototype._setBounds = function() {
-        var $viewport;
-        $viewport = this.$viewport.is('body') ? $(window) : this.$viewport;
-        return this._bounds = {
-          top: $.css(this.$viewport[0], 'padding-top', true),
-          left: $.css(this.$viewport[0], 'padding-left', true),
-          bottom: $viewport.innerHeight(),
-          right: $viewport.innerWidth()
-        };
-      };
-
-      Tip.prototype._setState = function(state) {
-        if (state === this._state) {
-          return false;
-        }
-        this._state = state;
-        return this.debugLog(this._state);
-      };
-
-      Tip.prototype.sizeForTrigger = function($trigger, contentOnly) {
-        var $content, bottom, left, padding, ref, right, side, size, top, wrapped;
-        if (contentOnly == null) {
-          contentOnly = false;
-        }
-        size = {
-          width: $trigger.data('width'),
-          height: $trigger.data('height')
-        };
-        $content = this.selectByClass('content');
-        if (!((size.width != null) && (size.height != null))) {
-          $content.text($trigger.data(this.attr('content')));
-          wrapped = this._wrapStealthRender(function() {
-            $trigger.data('width', (size.width = this.$tip.outerWidth()));
-            return $trigger.data('height', (size.height = this.$tip.outerHeight()));
-          });
-          wrapped();
-        }
-        if (contentOnly === true) {
-          padding = $content.css('padding').split(' ');
-          ref = (function() {
-            var j, len, results;
-            results = [];
-            for (j = 0, len = padding.length; j < len; j++) {
-              side = padding[j];
-              results.push(parseInt(side, 10));
-            }
-            return results;
-          })(), top = ref[0], right = ref[1], bottom = ref[2], left = ref[3];
-          if (bottom == null) {
-            bottom = top;
-          }
-          if (left == null) {
-            left = right;
-          }
-          size.width -= left + right;
-          size.height -= top + bottom + this.selectByClass('stem').height();
-        }
-        return size;
-      };
-
       Tip.prototype._wrapStealthRender = function(func) {
         return (function(_this) {
           return function() {
@@ -563,84 +638,6 @@ Written with jQuery 1.7.2
             return result;
           };
         })(this);
-      };
-
-      Tip.prototype.isDirection = function(directionComponent, $trigger) {
-        return this.$tip.hasClass(this.classNames[directionComponent]) || ((($trigger == null) || !$trigger.data(this.attr('direction'))) && _.include(this.defaultDirection, directionComponent));
-      };
-
-      Tip.prototype.wakeByTrigger = function($trigger, event, onWake) {
-        var delay, duration, ref, triggerChanged, wake;
-        triggerChanged = !$trigger.is(this._$currentTrigger);
-        if (triggerChanged) {
-          this._inflateByTrigger($trigger);
-          this._$currentTrigger = $trigger;
-        }
-        if (this._state === 'awake') {
-          this._positionToTrigger($trigger, event);
-          this.onShow(triggerChanged, event);
-          if (onWake != null) {
-            onWake();
-          }
-          this.debugLog('quick update');
-          return true;
-        }
-        if (event != null) {
-          this.debugLog(event.type);
-        }
-        if ((ref = this._state) === 'awake' || ref === 'waking') {
-          return false;
-        }
-        delay = this.ms.delay["in"];
-        duration = this.ms.duration["in"];
-        wake = (function(_this) {
-          return function() {
-            _this._positionToTrigger($trigger, event);
-            _this.onShow(triggerChanged, event);
-            return _this.$tip.stop().fadeIn(duration, function() {
-              if (triggerChanged) {
-                if (onWake != null) {
-                  onWake();
-                }
-              }
-              if (_this.safeToggle === true) {
-                _this.$tip.siblings(_this.classNames.tip).fadeOut();
-              }
-              _this.afterShow(triggerChanged, event);
-              return _this._setState('awake');
-            });
-          };
-        })(this);
-        if (this._state === 'sleeping') {
-          this.debugLog('clear sleep');
-          clearTimeout(this._sleepCountdown);
-          duration = 0;
-          wake();
-        } else if ((event != null) && event.type === 'truemouseenter') {
-          triggerChanged = true;
-          this._setState('waking');
-          this._wakeCountdown = setTimeout(wake, delay);
-        }
-        return true;
-      };
-
-      Tip.prototype.sleepByTrigger = function($trigger) {
-        var ref;
-        if ((ref = this._state) === 'asleep' || ref === 'sleeping') {
-          return false;
-        }
-        this._setState('sleeping');
-        clearTimeout(this._wakeCountdown);
-        this._sleepCountdown = setTimeout((function(_this) {
-          return function() {
-            _this.onHide();
-            return _this.$tip.stop().fadeOut(_this.ms.duration.out, function() {
-              _this._setState('asleep');
-              return _this.afterHide();
-            });
-          };
-        })(this), this.ms.delay.out);
-        return true;
       };
 
       Tip.prototype.onShow = function(triggerChanged, event) {
@@ -690,12 +687,25 @@ Written with jQuery 1.7.2
         return results;
       };
 
+      SnapTip.prototype._bindTriggers = function() {
+        var selector;
+        SnapTip.__super__._bindTriggers.call(this);
+        selector = "." + this.classNames.trigger;
+        return this.$context.on(this.evt('truemouseleave'), selector, {
+          selector: selector
+        }, (function(_this) {
+          return function(event) {
+            return _this._offsetStart = null;
+          };
+        })(this));
+      };
+
       SnapTip.prototype._moveToTrigger = function($trigger, baseOffset) {
         var offset, toTriggerOnly;
         offset = $trigger.position();
         toTriggerOnly = this.snap.toTrigger === true && this.snap.toXAxis === false && this.snap.toYAxis === false;
         if (this.snap.toXAxis === true) {
-          if (this.isDirection('bottom', $trigger)) {
+          if (this._isDirection('bottom', $trigger)) {
             offset.top += $trigger.outerHeight();
           }
           if (this.snap.toYAxis === false) {
@@ -703,7 +713,7 @@ Written with jQuery 1.7.2
           }
         }
         if (this.snap.toYAxis === true) {
-          if (this.isDirection('right', $trigger)) {
+          if (this._isDirection('right', $trigger)) {
             offset.left += $trigger.outerWidth();
           }
           if (this.snap.toXAxis === false) {
@@ -711,34 +721,11 @@ Written with jQuery 1.7.2
           }
         }
         if (toTriggerOnly === true) {
-          if (this.isDirection('bottom', $trigger)) {
+          if (this._isDirection('bottom', $trigger)) {
             offset.top += $trigger.outerHeight();
           }
         }
         return offset;
-      };
-
-      SnapTip.prototype._bindTrigger = function($trigger) {
-        var $bindTarget, didBind, selector;
-        didBind = SnapTip.__super__._bindTrigger.call(this, $trigger);
-        if (didBind === false) {
-          return false;
-        }
-        $bindTarget = $trigger;
-        if (($bindTarget == null) && this.$context) {
-          $bindTarget = this.$context;
-          selector = "." + this.classNames.trigger;
-        }
-        if (selector == null) {
-          selector = null;
-        }
-        return $bindTarget.on(this.evt('truemouseleave'), selector, {
-          selector: selector
-        }, (function(_this) {
-          return function(event) {
-            return _this._offsetStart = null;
-          };
-        })(this));
       };
 
       SnapTip.prototype._positionToTrigger = function($trigger, mouseEvent, cursorHeight) {
@@ -766,9 +753,7 @@ Written with jQuery 1.7.2
 
       SnapTip.prototype.offsetOnTriggerMouseMove = function(event, offset, $trigger) {
         var newOffset;
-        newOffset = _.clone(offset);
-        newOffset = this._moveToTrigger($trigger, newOffset);
-        return newOffset;
+        return newOffset = this._moveToTrigger($trigger, _.clone(offset));
       };
 
       return SnapTip;
@@ -782,7 +767,7 @@ Written with jQuery 1.7.2
       baseMixins: ['selection'],
       compactOptions: true
     });
-    return hlf.createPlugin({
+    hlf.createPlugin({
       name: 'snapTip',
       namespace: hlf.tip.snap,
       apiClass: SnapTip,
@@ -790,6 +775,7 @@ Written with jQuery 1.7.2
       baseMixins: ['selection'],
       compactOptions: true
     });
+    return true;
   });
 
 }).call(this);

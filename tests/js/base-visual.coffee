@@ -1,15 +1,17 @@
+###
+Visual Test Helpers
+===================
+This is a developer-level API for writing UI tests. Plugin users need not read
+further.
+###
+
 define [
   'jquery'
   'underscore'
 ], ($, _) ->
 
-  # Visual Test Helpers
-  # -------------------
-  # This is a developer-level API for writing UI tests. Plugin users need not
-  # read further.
-
   # $.visualTest
-  # ============
+  # ------------
 
   # The test function generator. Invoke tests on document ready.
   # Configuration:
@@ -31,6 +33,7 @@ define [
       opts = { template: '<%= html %>' } if config.asFragments
       $test = $container.renderVisualTest vars, opts
       if config.asFragments
+        $container.addClass config.className if config.className?
         $test = $test.addClass 'visual-test-fragment'
                      .filter '.visual-test-fragment'
       # - Run tests.
@@ -72,7 +75,7 @@ define [
               """
 
   # $.loremIpsum
-  # ============
+  # ------------
 
   loremIpsum =
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor

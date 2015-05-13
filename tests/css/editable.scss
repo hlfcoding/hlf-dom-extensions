@@ -1,4 +1,12 @@
-@import "../../dist/jquery.hlf.editable.scss";
+/*
+  HLF Editable Visual Tests
+  =========================
+*/
+
+// See [tests](../../../tests/tip.editable.html)
+
+@import '../../dist/jquery.hlf.editable';
+@import 'base';
 
 #{map-get($editable-inline-selectors, container)} {
   @include editable-inline-skin;

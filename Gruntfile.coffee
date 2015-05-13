@@ -56,6 +56,9 @@ module.exports = (grunt) ->
       css:
         files: '{src,tests}/**/*.scss'
         tasks: ['copy:dist', 'sass', 'autoprefixer']
+      docs:
+        files: aspects.docs.groc.all.src
+        tasks: ['docs']
       js:
         files: '{src,tests}/**/*.coffee'
         tasks: ['coffee']

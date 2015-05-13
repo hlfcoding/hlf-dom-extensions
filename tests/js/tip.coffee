@@ -1,3 +1,10 @@
+###
+HLF Tip Visual Tests
+====================
+###
+
+# See [tests](../../../tests/tip.visual.html)
+
 require.config
   baseUrl: '../lib'
   paths:
@@ -14,8 +21,6 @@ require [
   shouldRunVisualTests = $('#qunit').length is 0
   return false unless shouldRunVisualTests
   tests = []
-
-  # See [tests](../../docs/tests/js/tip.html)
 
   # Default
   # -------
@@ -75,7 +80,7 @@ require [
       <button name="list-append">load more</button>
       """
     test: ($context) ->
-      $context.find('[title]').snapTip { snap: { toYAxis: true } }, $context
+      $context.find('[title]').snapTip { snap: { toYAxis: on } }, $context
 
     anchorName: 'snapping-vertically'
     className: 'list-call'
@@ -105,7 +110,7 @@ require [
       </nav>
       """
     test: ($context) ->
-      $context.find('[title]').snapTip { snap: { toXAxis: true } }, $context
+      $context.find('[title]').snapTip { snap: { toXAxis: on } }, $context
 
     anchorName: 'snapping-horizontally'
     className: 'bar-call'
@@ -131,7 +136,7 @@ require [
       </ul>
       """
     test: ($context) ->
-      $context.find('[alt]').snapTip { snap: { toXAxis: true } }, $context
+      $context.find('[alt]').snapTip { snap: { toXAxis: on } }, $context
 
     anchorName: 'a-model-use-case'
     className: 'grid-call'
@@ -160,6 +165,7 @@ require [
 
     anchorName: 'corner-cases'
     asFragments: yes
+    className: 'edge-call'
     vars: _.pick $, 'loremIpsum'
 
   $ -> test() for test in tests

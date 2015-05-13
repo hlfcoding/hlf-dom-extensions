@@ -1,5 +1,7 @@
 grunt = require 'grunt'
 
+# For working docs generation, disable automatic trailing whitespace trimming.
+
 module.exports =
 
   clean: [
