@@ -31,6 +31,7 @@ define [
       opts = { template: '<%= html %>' } if config.asFragments
       $test = $container.renderVisualTest vars, opts
       if config.asFragments
+        $container.addClass config.className if config.className?
         $test = $test.addClass 'visual-test-fragment'
                      .filter '.visual-test-fragment'
       # - Run tests.

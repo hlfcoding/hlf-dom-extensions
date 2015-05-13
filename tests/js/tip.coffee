@@ -160,6 +160,7 @@ require [
 
     anchorName: 'corner-cases'
     asFragments: yes
+    className: 'edge-call'
     vars: _.pick $, 'loremIpsum'
 
   $ -> test() for test in tests

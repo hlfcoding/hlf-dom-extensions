@@ -1,4 +1,5 @@
-@import "../../dist/jquery.hlf.tip.scss";
+@import '../../dist/jquery.hlf.tip';
+@import 'base';
 
 .js-tip {
   @include tip-base;
