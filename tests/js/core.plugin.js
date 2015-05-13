@@ -1,3 +1,9 @@
+
+/*
+HLF Core Plugin Unit Tests
+==========================
+ */
+
 (function() {
   define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core', 'test/base'], function($, _, hlf) {
     var SomePlugin, assertGeneralPlugin;

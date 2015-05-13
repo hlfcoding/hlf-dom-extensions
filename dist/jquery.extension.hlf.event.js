@@ -2,21 +2,21 @@
 /*
 HLF Event jQuery Extension
 ==========================
-Released under the MIT License  
-Written with jQuery 1.7.2
  */
 
 (function() {
   var slice = [].slice,
     hasProp = {}.hasOwnProperty;
 
-  (function(extension) {
-    if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
-      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], extension);
+  (function(root, factory) {
+    if (typeof define === 'function' && (define.amd != null)) {
+      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], factory);
+    } else if (typeof exports === 'object') {
+      return module.exports = factory(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
     } else {
-      return extension(jQuery, _, jQuery.hlf);
+      return factory(jQuery, _, jQuery.hlf);
     }
-  })(function($, _, hlf) {
+  })(this, function($, _, hlf) {
     $.extend(true, hlf, {
       hoverIntent: {
         debug: false,

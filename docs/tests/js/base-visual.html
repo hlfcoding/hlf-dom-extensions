@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/base-visual</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/base-visual"><meta name="groc-project-path" content="tests/js/base-visual.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/base-visual.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">define [
+<!DOCTYPE html><html lang="en"><head><title>tests/js/base-visual</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/base-visual"><meta name="groc-project-path" content="tests/js/base-visual.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/base-visual.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="visual-test-helpers">Visual Test Helpers</h1>
+<p>This is a developer-level API for writing UI tests. Plugin users need not read
+further.</p></div></div><div class="code"><div class="wrapper">define [
   <span class="hljs-string">'jquery'</span>
   <span class="hljs-string">'underscore'</span>
-], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="visual-test-helpers">Visual Test Helpers</h2>
-<p>This is a developer-level API for writing UI tests. Plugin users need not
-read further.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="visualtest">$.visualTest</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The test function generator. Invoke tests on document ready.
+], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="visualtest">$.visualTest</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The test function generator. Invoke tests on document ready.
 Configuration:</p>
 <ul>
 <li><code>label</code> - header text describing the test topic.</li>
@@ -23,6 +23,7 @@ Configuration:</p>
       opts = { <span class="hljs-attribute">template</span>: <span class="hljs-string">'&lt;%= html %&gt;'</span> } <span class="hljs-keyword">if</span> config.asFragments
       $test = $container.renderVisualTest vars, opts
       <span class="hljs-keyword">if</span> config.asFragments
+        $container.addClass config.className <span class="hljs-keyword">if</span> config.className?
         $test = $test.addClass <span class="hljs-string">'visual-test-fragment'</span>
                      .filter <span class="hljs-string">'.visual-test-fragment'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Run tests.</li>
@@ -53,7 +54,7 @@ custom template if absolutely needed.</p></div></div><div class="code"><div clas
                 &lt;%= html %&gt;
                 &lt;footer&gt;&lt;%= footerHtml %&gt;&lt;/footer&gt;
               &lt;/section&gt;
-              """</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="loremipsum">$.loremIpsum</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper">  loremIpsum =
+              """</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="loremipsum">$.loremIpsum</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  loremIpsum =
     <span class="hljs-string">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
      nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.

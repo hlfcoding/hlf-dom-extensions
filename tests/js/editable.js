@@ -1,3 +1,9 @@
+
+/*
+HLF Editable Visual Tests
+=========================
+ */
+
 (function() {
   require.config({
     baseUrl: '../lib',

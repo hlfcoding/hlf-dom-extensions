@@ -1,14 +1,23 @@
-<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.editable"><meta name="groc-project-path" content="src/js/jquery.hlf.editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.editable.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-editable-jquery-plugin">HLF Editable jQuery Plugin</h1>
-<p>Released under the MIT License<br>Written with jQuery 1.7.2  </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Prefer AMD.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(plugin)</span> -&gt;</span>
-  <span class="hljs-keyword">if</span> define? <span class="hljs-keyword">and</span> define.amd?
-    define [
+<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.editable"><meta name="groc-project-path" content="src/js/jquery.hlf.editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.editable.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-editable-jquery-plugin">HLF Editable jQuery Plugin</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Support AMD, CommonJS (Browserify), and browser globals.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(root, factory)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">and</span> define.amd?</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>AMD. Register as an anonymous module.</li>
+</ul></div></div><div class="code"><div class="wrapper">    define [
       <span class="hljs-string">'jquery'</span>
       <span class="hljs-string">'underscore'</span>
       <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
-    ], plugin
-  <span class="hljs-keyword">else</span>
-    plugin jQuery, _, jQuery.hlf
-)(<span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
+    ], factory
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> exports <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Node. Does not work with strict CommonJS, but only CommonJS-like
+environments that support module.exports, like Node.</li>
+</ul></div></div><div class="code"><div class="wrapper">    <span class="hljs-built_in">module</span>.exports = factory(
+      <span class="hljs-built_in">require</span> <span class="hljs-string">'jquery'</span>,
+      <span class="hljs-built_in">require</span> <span class="hljs-string">'underscore'</span>,
+      <span class="hljs-built_in">require</span> <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
+    )
+  <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Browser globals (root is window). No globals needed.</li>
+</ul></div></div><div class="code"><div class="wrapper">    factory jQuery, _, jQuery.hlf
+)(@, <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
 
   hlf.editable =
     <span class="hljs-attribute">debug</span>: <span class="hljs-literal">on</span>
@@ -190,7 +199,7 @@
       <span class="hljs-property">@bindFileUploader</span>()
       didInit <span class="hljs-keyword">isnt</span> <span class="hljs-literal">no</span>
 
-    <span class="hljs-attribute">bindFileUploader</span>: <span class="hljs-function">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  
+    <span class="hljs-attribute">bindFileUploader</span>: <span class="hljs-function">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>❧</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  
   hlf.createPlugin
     <span class="hljs-attribute">name</span>: <span class="hljs-string">'editable'</span>
     <span class="hljs-attribute">namespace</span>: hlf.editable

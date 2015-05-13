@@ -1,3 +1,10 @@
+
+/*
+HLF Core Unit Tests
+===================
+Offloads testing larger corer components to other test modules.
+ */
+
 (function() {
   require.config({
     baseUrl: '../lib',

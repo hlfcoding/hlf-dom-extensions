@@ -1,3 +1,11 @@
+
+/*
+Visual Test Helpers
+===================
+This is a developer-level API for writing UI tests. Plugin users need not read
+further.
+ */
+
 (function() {
   define(['jquery', 'underscore'], function($, _) {
     var loremIpsum;
@@ -23,6 +31,9 @@
         }
         $test = $container.renderVisualTest(vars, opts);
         if (config.asFragments) {
+          if (config.className != null) {
+            $container.addClass(config.className);
+          }
           $test = $test.addClass('visual-test-fragment').filter('.visual-test-fragment');
         }
         if (config.beforeTest != null) {

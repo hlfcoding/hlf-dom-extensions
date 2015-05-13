@@ -1,3 +1,11 @@
+
+/*
+Unit Test Helpers
+=================
+This is a developer-level extension for writing unit tests. Plugin users need
+not read further.
+ */
+
 (function() {
   define(['jquery', 'underscore'], function($, _) {
     QUnit.extend(QUnit.assert, {

@@ -25,6 +25,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 2,
+            "title": "Plugins",
+            "slug": "plugins"
+          },
+          "depth": 2
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
             "title": "Extensions",
             "slug": "extensions"
           },
@@ -34,16 +42,8 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "heading",
               "data": {
                 "level": 3,
-                "title": "Core",
-                "slug": "core"
-              },
-              "depth": 3
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "Event",
-                "slug": "event"
+                "title": "HLF Event",
+                "slug": "hlf-event"
               },
               "depth": 3
             }
@@ -52,20 +52,12 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 2,
-            "title": "Plugins",
-            "slug": "plugins"
+            "title": "Plugins Coming Soon",
+            "slug": "plugins-coming-soon"
           },
           "depth": 2,
           "children": [
             {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "HLF Tip",
-                "slug": "hlf-tip"
-              },
-              "depth": 3
-            }, {
               "type": "heading",
               "data": {
                 "level": 3,
@@ -144,7 +136,17 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "src/css/jquery.hlf.editable.scss",
                 "targetPath": "src/css/jquery.hlf.editable",
                 "pageTitle": "src/css/jquery.hlf.editable",
-                "title": "jquery.hlf.editable"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "  HLF Editable jQuery Plugin",
+                    "slug": "-hlf-editable-jquery-plugin",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "  HLF Editable jQuery Plugin"
               },
               "depth": 3,
               "outline": []
@@ -164,7 +166,36 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "src/css/jquery.hlf.tip.scss",
                 "targetPath": "src/css/jquery.hlf.tip",
                 "pageTitle": "src/css/jquery.hlf.tip",
-                "title": "jquery.hlf.tip"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "  HLF Tip jQuery Plugin",
+                    "slug": "-hlf-tip-jquery-plugin",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Internal",
+                        "slug": "internal"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Mixins",
+                        "slug": "mixins"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "  HLF Tip jQuery Plugin"
               },
               "depth": 3,
               "outline": [
@@ -172,8 +203,16 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Base",
-                    "slug": "base"
+                    "title": "Internal",
+                    "slug": "internal"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Mixins",
+                    "slug": "mixins"
                   },
                   "depth": 2
                 }
@@ -220,6 +259,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
+                        "title": "Namespace",
+                        "slug": "namespace"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
                         "title": "Plugin Support",
                         "slug": "plugin-support"
                       },
@@ -248,6 +295,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "depth": 3,
               "outline": [
                 {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Namespace",
+                    "slug": "namespace"
+                  },
+                  "depth": 2
+                }, {
                   "type": "heading",
                   "data": {
                     "level": 2,
@@ -305,8 +360,8 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "I. Hover-Intent",
-                        "slug": "i-hover-intent"
+                        "title": "Hover-Intent",
+                        "slug": "hover-intent"
                       },
                       "depth": 2
                     }
@@ -320,8 +375,8 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "I. Hover-Intent",
-                    "slug": "i-hover-intent"
+                    "title": "Hover-Intent",
+                    "slug": "hover-intent"
                   },
                   "depth": 2
                 }
@@ -443,18 +498,112 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "Tip API",
-                        "slug": "tip-api"
+                        "title": "Tip Implementation",
+                        "slug": "tip-implementation"
                       },
-                      "depth": 2
+                      "depth": 2,
+                      "children": [
+                        {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Accessors",
+                            "slug": "accessors"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Appearance",
+                            "slug": "appearance"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Content",
+                            "slug": "content"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Events",
+                            "slug": "events"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Positioning",
+                            "slug": "positioning"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Rendering",
+                            "slug": "rendering"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Subroutines",
+                            "slug": "subroutines"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Delegation to Subclass",
+                            "slug": "delegation-to-subclass"
+                          },
+                          "depth": 3
+                        }
+                      ]
                     }, {
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "SnapTip API",
-                        "slug": "snaptip-api"
+                        "title": "SnapTip Implementation",
+                        "slug": "snaptip-implementation"
                       },
-                      "depth": 2
+                      "depth": 2,
+                      "children": [
+                        {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Events",
+                            "slug": "events"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Positioning",
+                            "slug": "positioning"
+                          },
+                          "depth": 3
+                        }, {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Tip Delegation",
+                            "slug": "tip-delegation"
+                          },
+                          "depth": 3
+                        }
+                      ]
                     }, {
                       "type": "heading",
                       "data": {
@@ -490,18 +639,112 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Tip API",
-                    "slug": "tip-api"
+                    "title": "Tip Implementation",
+                    "slug": "tip-implementation"
                   },
-                  "depth": 2
+                  "depth": 2,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Accessors",
+                        "slug": "accessors"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Appearance",
+                        "slug": "appearance"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Content",
+                        "slug": "content"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Events",
+                        "slug": "events"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Positioning",
+                        "slug": "positioning"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Rendering",
+                        "slug": "rendering"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Subroutines",
+                        "slug": "subroutines"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Delegation to Subclass",
+                        "slug": "delegation-to-subclass"
+                      },
+                      "depth": 3
+                    }
+                  ]
                 }, {
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "SnapTip API",
-                    "slug": "snaptip-api"
+                    "title": "SnapTip Implementation",
+                    "slug": "snaptip-implementation"
                   },
-                  "depth": 2
+                  "depth": 2,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Events",
+                        "slug": "events"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Positioning",
+                        "slug": "positioning"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Tip Delegation",
+                        "slug": "tip-delegation"
+                      },
+                      "depth": 3
+                    }
+                  ]
                 }, {
                   "type": "heading",
                   "data": {
@@ -544,14 +787,93 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "foldPrefix": "^",
                   "name": "SCSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/base.scss",
-                "projectPath": "tests/css/base.scss",
-                "targetPath": "tests/css/base",
-                "pageTitle": "tests/css/base",
-                "title": "base"
+                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/_base.scss",
+                "projectPath": "tests/css/_base.scss",
+                "targetPath": "tests/css/_base",
+                "pageTitle": "tests/css/_base",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "  Base Visual Test",
+                    "slug": "-base-visual-test",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Variables",
+                        "slug": "variables"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Placeholders",
+                        "slug": "placeholders"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Base CSS Output",
+                        "slug": "base-css-output"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Other CSS Output",
+                        "slug": "other-css-output"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "  Base Visual Test"
               },
               "depth": 3,
-              "outline": []
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Variables",
+                    "slug": "variables"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Placeholders",
+                    "slug": "placeholders"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Base CSS Output",
+                    "slug": "base-css-output"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Other CSS Output",
+                    "slug": "other-css-output"
+                  },
+                  "depth": 2
+                }
+              ]
             }, {
               "type": "file",
               "data": {
@@ -568,7 +890,17 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/css/editable.scss",
                 "targetPath": "tests/css/editable",
                 "pageTitle": "tests/css/editable",
-                "title": "editable"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "  HLF Editable Visual Tests",
+                    "slug": "-hlf-editable-visual-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "  HLF Editable Visual Tests"
               },
               "depth": 3,
               "outline": []
@@ -588,7 +920,17 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/css/tip.scss",
                 "targetPath": "tests/css/tip",
                 "pageTitle": "tests/css/tip",
-                "title": "tip"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "  HLF Tip Visual Tests",
+                    "slug": "-hlf-tip-visual-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "  HLF Tip Visual Tests"
               },
               "depth": 3,
               "outline": []
@@ -620,20 +962,20 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/js/base.coffee",
                 "targetPath": "tests/js/base",
                 "pageTitle": "tests/js/base",
-                "title": "base"
-              },
-              "depth": 3,
-              "outline": [
-                {
+                "firstHeader": {
                   "type": "heading",
                   "data": {
-                    "level": 2,
+                    "level": 1,
                     "title": "Unit Test Helpers",
-                    "slug": "unit-test-helpers"
+                    "slug": "unit-test-helpers",
+                    "isFileHeader": true
                   },
-                  "depth": 2
-                }
-              ]
+                  "depth": 1
+                },
+                "title": "Unit Test Helpers"
+              },
+              "depth": 3,
+              "outline": []
             }, {
               "type": "file",
               "data": {
@@ -652,7 +994,36 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/js/base-visual.coffee",
                 "targetPath": "tests/js/base-visual",
                 "pageTitle": "tests/js/base-visual",
-                "title": "base-visual"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Visual Test Helpers",
+                    "slug": "visual-test-helpers",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "$.visualTest",
+                        "slug": "visualtest"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "$.loremIpsum",
+                        "slug": "loremipsum"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "Visual Test Helpers"
               },
               "depth": 3,
               "outline": [
@@ -660,26 +1031,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Visual Test Helpers",
-                    "slug": "visual-test-helpers"
+                    "title": "$.visualTest",
+                    "slug": "visualtest"
                   },
                   "depth": 2
                 }, {
                   "type": "heading",
                   "data": {
-                    "level": 1,
-                    "title": "$.visualTest",
-                    "slug": "visualtest"
-                  },
-                  "depth": 1
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 1,
+                    "level": 2,
                     "title": "$.loremIpsum",
                     "slug": "loremipsum"
                   },
-                  "depth": 1
+                  "depth": 2
                 }
               ]
             }, {
@@ -700,7 +1063,17 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/js/core.coffee",
                 "targetPath": "tests/js/core",
                 "pageTitle": "tests/js/core",
-                "title": "core"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Core Unit Tests",
+                    "slug": "hlf-core-unit-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "HLF Core Unit Tests"
               },
               "depth": 3,
               "outline": []
@@ -722,7 +1095,17 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/js/core.mixin.coffee",
                 "targetPath": "tests/js/core.mixin",
                 "pageTitle": "tests/js/core.mixin",
-                "title": "core.mixin"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Core Mixin Unit Tests",
+                    "slug": "hlf-core-mixin-unit-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "HLF Core Mixin Unit Tests"
               },
               "depth": 3,
               "outline": []
@@ -744,7 +1127,17 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/js/core.plugin.coffee",
                 "targetPath": "tests/js/core.plugin",
                 "pageTitle": "tests/js/core.plugin",
-                "title": "core.plugin"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Core Plugin Unit Tests",
+                    "slug": "hlf-core-plugin-unit-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "HLF Core Plugin Unit Tests"
               },
               "depth": 3,
               "outline": []
@@ -766,7 +1159,28 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/js/editable.coffee",
                 "targetPath": "tests/js/editable",
                 "pageTitle": "tests/js/editable",
-                "title": "editable"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Editable Visual Tests",
+                    "slug": "hlf-editable-visual-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Default",
+                        "slug": "default"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "HLF Editable Visual Tests"
               },
               "depth": 3,
               "outline": [
@@ -798,7 +1212,60 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                 "projectPath": "tests/js/tip.coffee",
                 "targetPath": "tests/js/tip",
                 "pageTitle": "tests/js/tip",
-                "title": "tip"
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Tip Visual Tests",
+                    "slug": "hlf-tip-visual-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Default",
+                        "slug": "default"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Snapping Vertically",
+                        "slug": "snapping-vertically"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Snapping Horizontally",
+                        "slug": "snapping-horizontally"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "A Model Use Case",
+                        "slug": "a-model-use-case"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Corner Cases",
+                        "slug": "corner-cases"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "HLF Tip Visual Tests"
               },
               "depth": 3,
               "outline": [

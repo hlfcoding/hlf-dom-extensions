@@ -2,8 +2,6 @@
 /*
 HLF Core jQuery Extension
 =========================
-Released under the MIT License  
-Written with jQuery 1.7.2
  */
 
 (function() {
@@ -11,22 +9,21 @@ Written with jQuery 1.7.2
     hasProp = {}.hasOwnProperty,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  (function(extension) {
-    if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
-      return define(['jquery', 'underscore'], extension);
+  (function(root, factory) {
+    if (typeof define === 'function' && (define.amd != null)) {
+      return define(['jquery', 'underscore'], factory);
+    } else if (typeof exports === 'object') {
+      return module.exports = factory(require('jquery', require('underscore')));
     } else {
-      return extension(jQuery, _);
+      return factory(jQuery, _, jQuery.hlf);
     }
-  })(function($, _) {
-    var _createPluginAPIAdditions, _createPluginInstance, _noConflicts, hlf, safeSet;
+  })(this, function($, _) {
+    var _createPluginAPIAdditions, _createPluginInstance, _noConflicts, _safeSet, hlf;
     hlf = {
       debug: true,
       toString: _.memoize(function(context) {
         return 'hlf';
-      })
-    };
-    _noConflicts = [];
-    _.extend(hlf, {
+      }),
       noConflict: function() {
         var fn;
         return ((function() {
@@ -38,83 +35,10 @@ Written with jQuery 1.7.2
           }
           return results;
         })()).length;
-      },
-      debugLog: hlf.debug === false ? $.noop : (console.log.bind ? console.log.bind(console) : console.log)
-    });
-    _createPluginInstance = function($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions) {
-      var $root, data, deep, finalOptions, instance, otherMixins;
-      data = $el.data(namespace.toString('data'));
-      finalOptions = options;
-      if ($.isPlainObject(data)) {
-        finalOptions = $.extend((deep = true), {}, options, data);
-        $root = $el;
-      } else if (createOptions.asSharedInstance) {
-        $root = $context;
-      } else {
-        $root = $el;
       }
-      if (apiClass != null) {
-        instance = new apiClass($el, finalOptions, $context);
-        if (createOptions.baseMixins != null) {
-          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.baseMixins)));
-        }
-        if (createOptions.apiMixins != null) {
-          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.apiMixins)));
-        }
-      } else if (apiMixins != null) {
-        instance = {
-          $el: $el,
-          options: finalOptions
-        };
-        if (createOptions.baseMixins != null) {
-          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.baseMixins)));
-        }
-        hlf.applyMixin(instance, namespace, apiMixins.base);
-        otherMixins = _.chain(apiMixins).filter(mixinFilter, instance).values().without(apiMixins.base).value();
-        hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(otherMixins)));
-      }
-      if (createOptions.compactOptions === true) {
-        $.extend((deep = true), instance, finalOptions);
-        delete instance.options;
-      } else {
-        if (finalOptions.selectors != null) {
-          instance.selectors = finalOptions.selectors;
-        }
-        if (finalOptions.classNames != null) {
-          instance.classNames = finalOptions.classNames;
-        }
-      }
-      if (createOptions.autoSelect === true && _.isFunction(instance.select)) {
-        instance.select();
-      }
-      if (instance.cls !== $.noop) {
-        $root.addClass(instance.cls());
-      }
-      if (_.isFunction(instance.init)) {
-        instance.init();
-      } else if (apiClass == null) {
-        hlf.debugLog('ERROR: No `init` method on instance.', instance);
-      }
-      return $root.data(instance.attr(), instance);
     };
-    _createPluginAPIAdditions = function(name, namespace) {
-      return {
-        evt: _.memoize(function(name) {
-          return "" + name + (namespace.toString('event'));
-        }),
-        attr: _.memoize(function(name) {
-          name = name != null ? "-" + name : '';
-          return namespace.toString('data') + name;
-        }),
-        cls: namespace.toString('class') === namespace.toString() ? $.noop : _.memoize(function(name) {
-          name = name != null ? "-" + name : '';
-          return namespace.toString('class') + name;
-        }),
-        debugLog: namespace.debug === false ? $.noop : function() {
-          return hlf.debugLog.apply(hlf, [namespace.toString('log')].concat(slice.call(arguments)));
-        }
-      };
-    };
+    hlf.debugLog = hlf.debug === false ? $.noop : (console.log.bind ? console.log.bind(console) : console.log);
+    _noConflicts = [];
     _.extend(hlf, {
       createPlugin: function(createOptions) {
         var _noConflict, _plugin, apiAdditions, apiClass, apiMixins, deep, mixinFilter, name, namespace, plugin, safeName;
@@ -201,6 +125,80 @@ Written with jQuery 1.7.2
       }
     });
     _.bindAll(hlf, 'createPlugin');
+    _createPluginInstance = function($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions) {
+      var $root, data, deep, finalOptions, instance, otherMixins;
+      data = $el.data(namespace.toString('data'));
+      finalOptions = options;
+      if ($.isPlainObject(data)) {
+        finalOptions = $.extend((deep = true), {}, options, data);
+        $root = $el;
+      } else if (createOptions.asSharedInstance) {
+        $root = $context;
+      } else {
+        $root = $el;
+      }
+      if (apiClass != null) {
+        instance = new apiClass($el, finalOptions, $context);
+        if (createOptions.baseMixins != null) {
+          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.baseMixins)));
+        }
+        if (createOptions.apiMixins != null) {
+          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.apiMixins)));
+        }
+      } else if (apiMixins != null) {
+        instance = {
+          $el: $el,
+          options: finalOptions
+        };
+        if (createOptions.baseMixins != null) {
+          hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(createOptions.baseMixins)));
+        }
+        hlf.applyMixin(instance, namespace, apiMixins.base);
+        otherMixins = _.chain(apiMixins).filter(mixinFilter, instance).values().without(apiMixins.base).value();
+        hlf.applyMixins.apply(hlf, [instance, namespace].concat(slice.call(otherMixins)));
+      }
+      if (createOptions.compactOptions === true) {
+        $.extend((deep = true), instance, finalOptions);
+        delete instance.options;
+      } else {
+        if (finalOptions.selectors != null) {
+          instance.selectors = finalOptions.selectors;
+        }
+        if (finalOptions.classNames != null) {
+          instance.classNames = finalOptions.classNames;
+        }
+      }
+      if (createOptions.autoSelect === true && _.isFunction(instance.select)) {
+        instance.select();
+      }
+      if (instance.cls !== $.noop) {
+        $root.addClass(instance.cls());
+      }
+      if (_.isFunction(instance.init)) {
+        instance.init();
+      } else if (apiClass == null) {
+        hlf.debugLog('ERROR: No `init` method on instance.', instance);
+      }
+      return $root.data(instance.attr(), instance);
+    };
+    _createPluginAPIAdditions = function(name, namespace) {
+      return {
+        evt: _.memoize(function(name) {
+          return "" + name + (namespace.toString('event'));
+        }),
+        attr: _.memoize(function(name) {
+          name = name != null ? "-" + name : '';
+          return namespace.toString('data') + name;
+        }),
+        cls: namespace.toString('class') === namespace.toString() ? $.noop : _.memoize(function(name) {
+          name = name != null ? "-" + name : '';
+          return namespace.toString('class') + name;
+        }),
+        debugLog: namespace.debug === false ? $.noop : function() {
+          return hlf.debugLog.apply(hlf, [namespace.toString('log')].concat(slice.call(arguments)));
+        }
+      };
+    };
     _.extend(hlf, {
       applyMixin: function(context, dependencies, mixin) {
         var handlerNames, i, len, method, mixinToApply, name, onceMethods, prop;
@@ -345,7 +343,7 @@ Written with jQuery 1.7.2
         }
       }
     });
-    safeSet = function(key, toContext, fromContext) {
+    _safeSet = function(key, toContext, fromContext) {
       var _oldValue;
       if (toContext == null) {
         toContext = $;
@@ -359,12 +357,12 @@ Written with jQuery 1.7.2
         return toContext[key] = _oldValue;
       });
     };
-    safeSet('applyMixin');
-    safeSet('applyMixins');
-    safeSet('createMixin');
-    safeSet('createPlugin');
-    safeSet('mixinOnceNames');
-    safeSet('mixins');
+    _safeSet('applyMixin');
+    _safeSet('applyMixins');
+    _safeSet('createMixin');
+    _safeSet('createPlugin');
+    _safeSet('mixinOnceNames');
+    _safeSet('mixins');
     $.hlf = hlf;
     return $.hlf;
   });

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/tip"><meta name="groc-project-path" content="tests/js/tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/tip.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
+<!DOCTYPE html><html lang="en"><head><title>tests/js/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/tip"><meta name="groc-project-path" content="tests/js/tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/tip.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-visual-tests">HLF Tip Visual Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>See <a href="../../../tests/tip.visual.html">tests</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
   <span class="hljs-attribute">baseUrl</span>: <span class="hljs-string">'../lib'</span>
   <span class="hljs-attribute">paths</span>:
     <span class="hljs-attribute">hlf</span>: <span class="hljs-string">'../dist'</span>
@@ -13,7 +13,7 @@
 
   shouldRunVisualTests = $(<span class="hljs-string">'#qunit'</span>).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
   <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span> <span class="hljs-keyword">unless</span> shouldRunVisualTests
-  tests = []</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>See <a href="../../docs/tests/js/tip.html">tests</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="default">Default</h2>
+  tests = []</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="default">Default</h2>
 <p>Basic test with the default settings. Basic tooltips are created and
 accessed via <code>$.fn.tip</code>. Tip should entirely follow mouse. Tip size should
 change when switching between links.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
@@ -61,7 +61,7 @@ the mouse along the y-axis.</p></div></div><div class="code"><div class="wrapper
       &lt;button name="list-append"&gt;load more&lt;/button&gt;
       """</span>
     <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
-      $context.find(<span class="hljs-string">'[title]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toYAxis</span>: <span class="hljs-literal">true</span> } }, $context
+      $context.find(<span class="hljs-string">'[title]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toYAxis</span>: <span class="hljs-literal">on</span> } }, $context
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'snapping-vertically'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'list-call'</span>
@@ -85,7 +85,7 @@ an appropriate y position, along the trigger&#39;s most fitting edge (top or bot
       &lt;/nav&gt;
       """</span>
     <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
-      $context.find(<span class="hljs-string">'[title]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toXAxis</span>: <span class="hljs-literal">true</span> } }, $context
+      $context.find(<span class="hljs-string">'[title]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toXAxis</span>: <span class="hljs-literal">on</span> } }, $context
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'snapping-horizontally'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'bar-call'</span>
@@ -107,7 +107,7 @@ avatar images.</p></div></div><div class="code"><div class="wrapper">  tests.pus
       &lt;/ul&gt;
       """</span>
     <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
-      $context.find(<span class="hljs-string">'[alt]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toXAxis</span>: <span class="hljs-literal">true</span> } }, $context
+      $context.find(<span class="hljs-string">'[alt]'</span>).snapTip { <span class="hljs-attribute">snap</span>: { <span class="hljs-attribute">toXAxis</span>: <span class="hljs-literal">on</span> } }, $context
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'a-model-use-case'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'grid-call'</span>
@@ -132,6 +132,7 @@ into place and prevent mouse tracking.</p></div></div><div class="code"><div cla
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'corner-cases'</span>
     <span class="hljs-attribute">asFragments</span>: <span class="hljs-literal">yes</span>
+    <span class="hljs-attribute">className</span>: <span class="hljs-string">'edge-call'</span>
     <span class="hljs-attribute">vars</span>: _.pick $, <span class="hljs-string">'loremIpsum'</span>
 
   $ -&gt; test() <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests</div></div></div></div></body></html>

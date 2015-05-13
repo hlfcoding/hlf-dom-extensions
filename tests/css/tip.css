@@ -1,83 +1,269 @@
+/*
+  HLF Tip Visual Tests
+  ====================
+*/
+/*
+  HLF Tip jQuery Plugin
+  =====================
+  There should be no css output from this file.
+*/
+/*
+  Base Visual Test
+  ================
+  Provides the styling foundation for visual test pages. Import into a test
+  stylesheet.
+*/
+section.visual-test header::before, .bar::before, .grid::before, section.visual-test header::after, .bar::after, .grid::after {
+  content: " ";
+  display: table; }
+section.visual-test header::after, .bar::after, .grid::after {
+  clear: both; }
+
+body > header > span, section.visual-test header > [data-rel=docs], section.visual-test footer:not(:empty) > * {
+  opacity: 0.5; }
+  body > header > span:hover, section.visual-test header > [data-rel=docs]:hover, section.visual-test footer:not(:empty) > :hover, body > header > span:focus, section.visual-test header > [data-rel=docs]:focus, section.visual-test footer:not(:empty) > :focus {
+    opacity: 1.0; }
+
+.edge-call > .visual-test-fragment, .box, .list-item, .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a, .bar-item, .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
+  background-color: rgba(255, 255, 255, 0.95);
+  background-clip: padding-box;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 0 14px rgba(0, 0, 0, 0.05);
+  /* shadow */
+  box-sizing: border-box; }
+  .edge-call > .visual-test-fragment:hover, .box:hover, .list-item:hover, .list .item:hover, .list > a:hover, .list li.no-a:hover, .list li:not(.no-a) > a:hover, .bar-item:hover, .bar .item:hover, .bar > a:hover, .bar li.no-a:hover, .bar li:not(.no-a) > a:hover {
+    background-color: white; }
+
+body > header, section.visual-test header {
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-left: -14px;
+  margin-right: -14px; }
+
+html {
+  font-size: 14px; }
+
+body {
+  background-color: #dadad6;
+  font-family: Helvetica, sans-serif;
+  padding: 14px;
+  padding-top: 0; }
+
+a {
+  color: #0066dd;
+  text-decoration: none; }
+  a:hover {
+    color: #117fff;
+    text-decoration: underline; }
+
+button {
+  background-color: #f2f2f1;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 0.3em 0.6em; }
+  button:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.3em rgba(0, 0, 0, 0.1); }
+
+body > header {
+  /* test page header */
+  background: #272724;
+  box-shadow: inset 0 30px 40px -20px rgba(0, 0, 0, 0.4);
+  color: #dadad6; }
+  body > header > * {
+    display: inline-block; }
+  body > header > h1 {
+    font-weight: normal;
+    margin: 0;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.7); }
+  body > header > span {
+    margin-left: 14px; }
+
+h1 {
+  /* test page title */
+  font-size: 21px;
+  letter-spacing: -1px;
+  padding-top: 56px;
+  padding-bottom: 14px; }
+
+#main {
+  /* non-edge tests container */
+  padding: 14px 0 28px; }
+
+p {
+  /* common test content container */
+  padding: 14px 0; }
+
+section.visual-test {
+  /* main test styles */
+  /* highlight */
+  padding-bottom: 14px; }
+  section.visual-test header {
+    background: #c2c2bb;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+    padding-top: 14px;
+    padding-bottom: 7px;
+    text-shadow: 0 1px rgba(255, 255, 255, 0.3); }
+    section.visual-test header > .label::after {
+      content: ':'; }
+    section.visual-test header > [data-rel=docs] {
+      float: right;
+      font-weight: normal; }
+  section.visual-test footer:not(:empty) {
+    background: #cecec9;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3);
+    margin-bottom: 14px;
+    padding: 7px; }
+    section.visual-test footer:not(:empty) > button {
+      border-radius: 4px;
+      font-size: 0.9em; }
+
+.edge, .edge-call > .visual-test-fragment {
+  /* alternative test container styles */
+  position: absolute; }
+  .edge.affixed, .edge-call > .affixed.visual-test-fragment {
+    position: fixed; }
+  .edge.top, .edge-call > .top.visual-test-fragment {
+    top: 14px; }
+  .edge.right, .edge-call > .right.visual-test-fragment {
+    right: 14px; }
+  .edge.bottom, .edge-call > .bottom.visual-test-fragment {
+    bottom: 14px; }
+  .edge.left, .edge-call > .left.visual-test-fragment {
+    left: 14px; }
+
+.edge-call:not(body) {
+  position: relative; }
+.edge-call > .visual-test-fragment {
+  border-radius: 10px;
+  padding: 14px; }
+
+.box {
+  border-radius: 10px;
+  margin: 14px 0;
+  padding: 14px; }
+
+.list-item, .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a {
+  border-bottom-width: 0;
+  display: block;
+  padding: 14px; }
+
+.list-item-first, .list > a:first-child, .list li.no-a:first-child, .list li:not(.no-a):first-child > a {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px; }
+
+.list-item-last, .list > a:last-child, .list li.no-a:last-child, .list li:not(.no-a):last-child > a {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom-width: 3px; }
+
+.list {
+  list-style: none;
+  margin: 14px 0;
+  padding: 0; }
+  .list .item, .list > a, .list li.no-a, .list li:not(.no-a) > a, .list .bar > a {
+    width: 300px; }
+
+.bar-item, .bar .item, .bar .list > a, .bar > a, .bar li.no-a, .bar li:not(.no-a) > a {
+  border-right-width: 0;
+  display: block;
+  float: left;
+  padding: 14px; }
+
+.bar-item-first, .bar > a:first-child, .bar li.no-a:first-child, .bar li:not(.no-a):first-child > a {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px; }
+
+.bar-item-last, .bar > a:last-child, .bar li.no-a:last-child, .bar li:not(.no-a):last-child > a {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-width: 3px; }
+
+.bar {
+  margin: 14px 0; }
+
+.grid-item, .grid li {
+  float: left;
+  line-height: 0;
+  margin-bottom: 7px;
+  margin-right: 7px; }
+
+.grid {
+  list-style: none;
+  padding-left: 0;
+  width: 350px; }
+
 .js-tip {
   display: none;
   position: absolute;
   z-index: 9999; }
   .js-tip > .js-tip-inner {
     position: relative; }
-
-.js-tip-inner > .js-tip-stem {
-  border-width: 0;
-  border-style: solid;
-  border-color: transparent;
-  background: none;
-  position: absolute;
-  width: 0;
-  height: 0; }
-.js-tip-inner > .js-tip-content {
-  overflow: hidden;
-  position: relative; }
-
-.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip-right .js-tip-stem {
-  left: 0; }
-.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip-left .js-tip-stem {
-  right: 0; }
-.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip-bottom .js-tip-stem {
-  top: 0; }
-.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip-top .js-tip-stem {
-  bottom: 0; }
-.js-snap-tip-x-side .js-tip-stem {
-  left: 50%;
-  border-color: transparent; }
-.js-snap-tip-y-side .js-tip-stem {
-  top: 50%;
-  border-color: transparent; }
-
-.js-tip .js-tip-content {
-  background-color: #666666;
-  color: white; }
-.js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-right .js-tip-stem {
-  border-color: transparent;
-  border-right-color: #666666; }
-.js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-left .js-tip-stem {
-  border-color: transparent;
-  border-left-color: #666666; }
-.js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-bottom .js-tip-stem {
-  border-color: transparent;
-  border-bottom-color: #666666; }
-.js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-top .js-tip-stem {
-  border-color: transparent;
-  border-top-color: #666666; }
-.js-tip .js-tip-inner {
-  max-width: 216px; }
-.js-tip .js-tip-content {
-  padding: 8px 12px 10px 12px; }
-.js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-right .js-tip-stem {
-  border-right-width: 12px; }
-  .js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-right .js-tip-stem + .js-tip-content {
-    top: auto;
-    bottom: auto;
-    left: 12px; }
-.js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-left .js-tip-stem {
-  border-left-width: 12px; }
-  .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-left .js-tip-stem + .js-tip-content {
-    top: auto;
-    bottom: auto;
-    right: 12px; }
-.js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-bottom .js-tip-stem {
-  border-bottom-width: 12px; }
-  .js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-bottom .js-tip-stem + .js-tip-content {
-    left: auto;
-    right: auto;
-    top: 12px; }
-.js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-top .js-tip-stem {
-  border-top-width: 12px; }
-  .js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-top .js-tip-stem + .js-tip-content {
-    left: auto;
-    right: auto;
-    bottom: 12px; }
-.js-tip.js-snap-tip-x-side .js-tip-stem {
-  margin-left: -9px;
-  border-width: 0 9px; }
-.js-tip.js-snap-tip-y-side .js-tip-stem {
-  margin-top: -9px;
-  border-width: 9px 0; }
+  .js-tip .js-tip-stem {
+    border: 0 solid transparent;
+    width: 0;
+    height: 0;
+    background: none;
+    position: absolute; }
+  .js-tip .js-tip-content {
+    overflow: hidden;
+    position: relative; }
+  .js-tip .js-tip-inner {
+    max-width: 252px; }
+  .js-tip .js-tip-content {
+    padding: 9.33333px 14px 11.66667px 14px; }
+  .js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-right .js-tip-stem {
+    border-right-width: 14px;
+    left: 0; }
+    .js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-right .js-tip-stem + .js-tip-content {
+      top: auto;
+      bottom: auto;
+      left: 14px; }
+  .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-left .js-tip-stem {
+    border-left-width: 14px;
+    right: 0; }
+    .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-left .js-tip-stem + .js-tip-content {
+      top: auto;
+      bottom: auto;
+      right: 14px; }
+  .js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-bottom .js-tip-stem {
+    border-bottom-width: 14px;
+    top: 0; }
+    .js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-bottom .js-tip-stem + .js-tip-content {
+      left: auto;
+      right: auto;
+      top: 14px; }
+  .js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-top .js-tip-stem {
+    border-top-width: 14px;
+    bottom: 0; }
+    .js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-top .js-tip-stem + .js-tip-content {
+      left: auto;
+      right: auto;
+      bottom: 14px; }
+  .js-tip.js-snap-tip-x-side .js-tip-stem {
+    border-color: transparent;
+    border-width: 0 10.5px;
+    left: 50%;
+    margin-left: -10.5px; }
+  .js-tip.js-snap-tip-y-side .js-tip-stem {
+    border-color: transparent;
+    border-width: 10.5px 0;
+    margin-top: -10.5px;
+    top: 50%; }
+  .js-tip .js-tip-content {
+    background-color: #666666;
+    color: white; }
+  .js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-right .js-tip-stem {
+    border-color: transparent;
+    border-right-color: #666666; }
+  .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-left .js-tip-stem {
+    border-color: transparent;
+    border-left-color: #666666; }
+  .js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-bottom .js-tip-stem {
+    border-color: transparent;
+    border-bottom-color: #666666; }
+  .js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-top .js-tip-stem {
+    border-color: transparent;
+    border-top-color: #666666; }

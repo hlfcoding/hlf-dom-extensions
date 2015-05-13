@@ -2,20 +2,20 @@
 /*
 HLF Editable jQuery Plugin
 ==========================
-Released under the MIT License  
-Written with jQuery 1.7.2
  */
 
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  (function(plugin) {
-    if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
-      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], plugin);
+  (function(root, factory) {
+    if (typeof define === 'function' && (define.amd != null)) {
+      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], factory);
+    } else if (typeof exports === 'object') {
+      return module.exports = factory(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
     } else {
-      return plugin(jQuery, _, jQuery.hlf);
+      return factory(jQuery, _, jQuery.hlf);
     }
-  })(function($, _, hlf) {
+  })(this, function($, _, hlf) {
     var mixins;
     hlf.editable = {
       debug: true,

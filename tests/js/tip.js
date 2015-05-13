@@ -1,3 +1,9 @@
+
+/*
+HLF Tip Visual Tests
+====================
+ */
+
 (function() {
   require.config({
     baseUrl: '../lib',
@@ -90,6 +96,7 @@
       },
       anchorName: 'corner-cases',
       asFragments: true,
+      className: 'edge-call',
       vars: _.pick($, 'loremIpsum')
     }));
     return $(function() {

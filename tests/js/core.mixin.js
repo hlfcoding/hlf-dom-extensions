@@ -1,3 +1,9 @@
+
+/*
+HLF Core Mixin Unit Tests
+=========================
+ */
+
 (function() {
   var slice = [].slice;
 
