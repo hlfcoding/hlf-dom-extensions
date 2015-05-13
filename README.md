@@ -21,15 +21,18 @@ Main features summary:
 
 - Based on hover 'intent' and prevents redundant toggling or DOM thrashing.
 - Re-use the same tip for a group of triggers to keep DOM light.
-- Aware of available space surrounding to triggering element.
+- Aware of available space surrounding the triggering element.
 - Has an extended, 'snapping' version that only follows the mouse on one axis.
-  The tip will snaps to the trigger's edge on the other.
+  The tip snaps to the trigger's edge on the other axis.
 
 Short examples:
 
-```javascript
-$('.article-1').find('a[title]').tip(); // Tips will follow cursor.
-$('.article-2').find('a[title]').snapTip({ snap: { toXAxis: true } }); // Tips will only follow along x axis.
+```js
+$('.avatars').find('img[alt]').tip(); // Tips will follow cursor.
+$('nav.bar').find('a[title]').snapTip({
+  snap: { toXAxis: true } // Tips will only follow along x axis.
+});
+$('article').find('a[title]').snapTip() // Tip will not follow.
 ```
 
 See [Tip's visual tests][] for more examples.
