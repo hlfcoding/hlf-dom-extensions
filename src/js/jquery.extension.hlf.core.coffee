@@ -1,8 +1,6 @@
 ###
 HLF Core jQuery Extension
 =========================
-Released under the MIT License  
-Written with jQuery 1.7.2  
 ###
 
 # The core extension is comprised of several aspects.

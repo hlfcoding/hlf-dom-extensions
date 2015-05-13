@@ -1,8 +1,6 @@
 ###
 HLF Editable jQuery Plugin
 ==========================
-Released under the MIT License  
-Written with jQuery 1.7.2  
 ###
 
 # Export. Support AMD, CommonJS (Browserify), and browser globals.

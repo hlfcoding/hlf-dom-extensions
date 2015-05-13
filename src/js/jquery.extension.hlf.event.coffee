@@ -1,8 +1,6 @@
 ###
 HLF Event jQuery Extension
 ==========================
-Released under the MIT License  
-Written with jQuery 1.7.2  
 ###
 
 #!For working docs generation, disable automatic trailing whitespace trimming.

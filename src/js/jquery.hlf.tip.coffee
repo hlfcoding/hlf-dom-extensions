@@ -1,11 +1,7 @@
 ###
 HLF Tip jQuery Plugin
 =====================
-Released under the MIT License  
-Written with jQuery 1.7.2  
 ###
-
-# ❧
 
 # The base `tip` plugin does several things. It does basic parsing of trigger
 # element attributes for the tip content. It can anchor itself to a trigger by
