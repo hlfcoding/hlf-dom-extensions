@@ -179,18 +179,18 @@ Written with jQuery 1.7.2
       for own name, animation of options.animations when name isnt 'base'
         _.defaults animation, options.animations.base
 
-    # 𝒇 `init` offloads non-trivial setup to other subroutines
+    # 𝒇 `init` offloads non-trivial setup to other subroutines.
     init: ->
       _.bindAll @, '_onTriggerMouseMove', '_setBounds'
-      # Initialize tip element.
+      # - Initialize tip element.
       @_setTip $ '<div>'
-      # Infer `doStem` and `doFollow` flags from respective `classNames` entries.
+      # - Infer `doStem` and `doFollow` flags from respective `classNames` entries.
       @doStem = @classNames.stem isnt ''
       @doFollow = @classNames.follow isnt ''
-      # Initialize state, which is either: `awake`, `asleep`, `waking`,
+      # - Initialize state, which is either: `awake`, `asleep`, `waking`,
       # `sleeping`; respectively show, hide.
       @_setState 'asleep'
-      # The tip should remain visible and `awake` as long as there is a high
+      # - The tip should remain visible and `awake` as long as there is a high
       # enough frequency of relevant mouse activity. In addition to using
       # `hoverIntent`, this is achieved with a simple base implementation around
       # timers `_sleepCountdown` and `_wakeCountdown` and an extra reference to
@@ -198,12 +198,12 @@ Written with jQuery 1.7.2
       @_wakeCountdown = null
       @_sleepCountdown = null
       @_$currentTrigger = null
-      # Initialize tip. Note the initial render.
+      # - Initialize tip. Note the initial render.
       @_render()
       @_bind()
-      # Initialize context.
+      # - Initialize context.
       @_bindContext()
-      # Initialize triggers. Note the initial processing.
+      # - Initialize triggers. Note the initial processing.
       @_processTriggers()
       @_bindTriggers()
 
