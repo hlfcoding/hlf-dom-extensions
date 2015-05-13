@@ -36,18 +36,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
             "title": "Extensions",
             "slug": "extensions"
           },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "HLF Event",
-                "slug": "hlf-event"
-              },
-              "depth": 3
-            }
-          ]
+          "depth": 2
         }, {
           "type": "heading",
           "data": {

@@ -51,7 +51,7 @@ Main features:
 
 See [Core's unit tests][] for examples.
 
-### HLF Event
+### [HLF Event][]
 
 Main features:
 
@@ -130,5 +130,6 @@ The MIT License (MIT)
 [Tip's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
 [HLF Core]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.core.html
 [Core's unit tests]: http://localhost/hlf-jquery/tests/core.unit.html
+[HLF Event]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.event.html
 [HLF Editable]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.editable.html
 [Editable's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html
