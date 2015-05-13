@@ -257,6 +257,8 @@ HLF Editable jQuery Plugin
 
     bindFileUploader: ->
 
+  # ❧
+
   # Export
   # ------
   

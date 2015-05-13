@@ -47,7 +47,7 @@ HLF Tip jQuery Plugin
   # It takes some more boilerplate to write the plugins. Any of this additional
   # support API is put into a plugin specific namespace under `$.hlf`.
   hlf.tip =
-    # To toggle debug logging for all instances of a plguin, use the `debug` flag.
+    # To toggle debug logging for all instances of a plugin, use the `debug` flag.
     debug: off
     # To namespace when extending any jQuery API, we use custom `toString` helpers.
     toString: _.memoize (context) ->
@@ -699,6 +699,8 @@ HLF Tip jQuery Plugin
     # snapping offset, so it gets used in lieu of the base `offset`.
     offsetOnTriggerMouseMove: (event, offset, $trigger) ->
       newOffset = @_moveToTrigger $trigger, _.clone(offset)
+
+  # ❧
 
   # Export
   # ------
