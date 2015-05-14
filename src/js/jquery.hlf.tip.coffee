@@ -79,8 +79,6 @@ HLF Tip jQuery Plugin
       #   direction. Note that the direction data structure must be an array of
       #   `components`, and conventionally with top/bottom first.
       defaultDirection: ['bottom', 'right']
-      # - `safeToggle` prevents orphan tips, since timers are sometimes unreliable.
-      safeToggle: on
       # - `tipTemplate` should return interpolated html when given the
       #   additional container class list. Its context is the plugin instance.
       tipTemplate: (containerClass) ->
@@ -229,11 +227,29 @@ HLF Tip jQuery Plugin
         _.include(@defaultDirection, directionComponent)
       )
 
-    # 𝒇 `_setState` is a simple setter that returns false if state doesn't change.
-    _setState: (state) ->
+    # 𝒇 `_setCurrentTrigger` is a simple setter that updates a trigger and makes
+    # it current, but only if it isn't already.
+    _setCurrentTrigger: ($trigger) ->
+      @_triggerChanged = not $trigger.is @_$currentTrigger
+      return no unless @_triggerChanged
+      @_inflateByTrigger $trigger
+      @_$currentTrigger = $trigger
+
+
+    # 𝒇 `_setState` is a simple setter that returns false if state doesn't
+    # change. It also handles minor tasks when switching to a new state.
+    _setState: (state, data...) ->
       return no if state is @_state
+      #- previous = @_state
       @_state = state
       @debugLog @_state
+      switch state
+        when 'asleep' then @afterHide.apply @, data
+        when 'awake' then @afterShow.apply @, data
+        when 'sleeping' then clearTimeout @_wakeCountdown
+        when 'waking'
+          clearTimeout @_sleepCountdown
+          @_triggerChanged = yes
 
     # 𝒇 `_setTip` aliases the conventional `$el` property to `$tip` for clarity.
     _setTip: ($tip) => @$tip = @$el = $tip
@@ -287,70 +303,75 @@ HLF Tip jQuery Plugin
 
     # ### Appearance
 
-    # 𝒇 `wakeByTrigger` is the main toggler and a `_state` updater. It takes an
-    # `onWake` callback, which is usually to update position. The toggling and
-    # main changes only happen if the delay is passed. It will return a bool for
-    # success.
-    wakeByTrigger: ($trigger, event, onWake) ->
-      # - Store current trigger info.
-      triggerChanged = not $trigger.is @_$currentTrigger
-      if triggerChanged
-        @_inflateByTrigger $trigger
-        @_$currentTrigger = $trigger
+    # 𝒇 `wakeByTrigger` is the main toggler and a `_state` updater. The toggling and
+    # main changes only happen if the delay is passed. It will return a promise that
+    # fails if waking gets skipped; it also may become done synchronously.
+    wakeByTrigger: ($trigger, event) ->
+      deferred = $.Deferred()
+      promise = deferred.promise()
+      @_setCurrentTrigger $trigger
+
       # - Go directly to the position updating if no toggling is needed.
+      updateBeforeWake = =>
+        @_positionToTrigger $trigger, event
+        @onShow event # Hook in custom logic.
       if @_state is 'awake'
-        @_positionToTrigger $trigger, event
-        @onShow triggerChanged, event
-        if onWake? then onWake()
         @debugLog 'quick update'
-        return yes
-      if event? then @debugLog event.type
+        updateBeforeWake()
+        deferred.resolve()
+        return promise
+
+      @debugLog event.type if event? # Log the event if we made it this far.
       # - Don't toggle if awake or waking, or if event isn't `truemouseenter`.
-      return no if @_state in ['awake', 'waking']
-      # - Get delay and initial duration.
-      delay = @animations.show.delay
-      duration = @animations.show.duration
+      if @_state in ['awake', 'waking']
+        deferred.reject()
+        return promise
+
       # - Our `wake` subroutine runs the timed-out logic, which includes the fade
-      #   transition. The latter is also affected by `safeToggle`. The `onShow`
-      #   and `afterShow` hook methods are also run.
-      wake = =>
-        @_positionToTrigger $trigger, event
-        @onShow triggerChanged, event
+      #   transition. Ensure other tips disappear during the transition.
+      wake = (duration) =>
+        duration ?= @animations.show.duration
+        updateBeforeWake()
         @$tip.stop().fadeIn duration, =>
-          if triggerChanged
-            onWake() if onWake?
-          if @safeToggle is on then @$tip.siblings(@classNames.tip).fadeOut()
-          @afterShow triggerChanged, event
-          @_setState 'awake'
+          @_setState 'awake', event # Hook in custom logic.
+          deferred.resolve()
+        @$tip.siblings(@classNames.tip).stop().fadeOut duration
       # - Wake up depending on current state. If we are in the middle of
       #   sleeping, stop sleeping by updating `_sleepCountdown` and wake up
       #   sooner.
       if @_state is 'sleeping'
         @debugLog 'clear sleep'
         clearTimeout @_sleepCountdown
-        duration = 0
-        wake()
+        wake(0)
       # - Start the normal wakeup and update `_wakeCountdown`.
       else if event? and event.type is 'truemouseenter'
-        triggerChanged = yes
         @_setState 'waking'
-        @_wakeCountdown = setTimeout wake, delay
-      yes
+        @_wakeCountdown = setTimeout wake, @animations.show.delay
+
+      promise
 
     # 𝒇 `sleepByTrigger` is a much simpler toggler compared to its counterpart
-    # `wakeByTrigger`. It also updates `_state` and returns a bool for success.
-    # As long as the tip isn't truly visible, or sleeping is redundant, it bails.
+    # `wakeByTrigger`. It also updates `_state` and returns a promise that
+    # fails if waking gets skipped. As long as the tip isn't truly visible, or
+    # sleeping is redundant, it bails.
     sleepByTrigger: ($trigger) ->
-      return no if @_state in ['asleep', 'sleeping']
+      deferred = $.Deferred()
+      promise = deferred.promise()
+
+      # - Don't toggle if asleep or sleeping, or if event isn't `truemouseleave`.
+      if @_state in ['asleep', 'sleeping']
+        deferred.reject()
+        return promise
+
       @_setState 'sleeping'
-      clearTimeout @_wakeCountdown
       @_sleepCountdown = setTimeout =>
-        @onHide()
+        @onHide() # Hook in custom logic.
         @$tip.stop().fadeOut @animations.hide.duration, =>
           @_setState 'asleep'
-          @afterHide()
+          deferred.resolve()
       , @animations.hide.delay
-      yes
+
+      promise
 
     # ### Content
 
@@ -677,15 +698,14 @@ HLF Tip jQuery Plugin
 
     # 𝒇 Implement `onShow` and `afterShow` delegate methods such that they make
     # the tip invisible while it's being positioned and then reveal it.
-    onShow: (triggerChanged, event) ->
-      @$tip.css 'visibility', 'hidden' if triggerChanged is yes
+    onShow: (event) ->
+      return unless @_triggerChanged is yes
+      @$tip.css 'visibility', 'hidden'
         
-    afterShow: (triggerChanged, event) ->
-      if triggerChanged is yes
-        @$tip.css 'visibility', 'visible'
-        @_offsetStart =
-          top: event.pageY
-          left: event.pageX
+    afterShow: (event) ->
+      return unless @_triggerChanged is yes
+      @$tip.css 'visibility', 'visible'
+      @_offsetStart = { top: event.pageY, left: event.pageX }
 
     # 𝒇 Implement `offsetOnTriggerMouseMove` delegate method as the main snapping
     # positioning handler. Instead of returning false, we return our custom,
