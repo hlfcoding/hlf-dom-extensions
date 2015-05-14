@@ -473,9 +473,7 @@ HLF Tip jQuery Plugin
     _positionToTrigger: ($trigger, mouseEvent, cursorHeight=@cursorHeight) ->
       return no if not mouseEvent?
 
-      offset =
-        top: mouseEvent.pageY
-        left: mouseEvent.pageX
+      offset = { top: mouseEvent.pageY, left: mouseEvent.pageX }
       offset = @offsetOnTriggerMouseMove(mouseEvent, offset, $trigger) or offset
 
       if @_isDirection('top', $trigger)
@@ -488,8 +486,7 @@ HLF Tip jQuery Plugin
         triggerWidth = $trigger.outerWidth()
         offset.left -= tipWidth
         #- If direction changed due to tip being wider than trigger.
-        if tipWidth > triggerWidth
-          offset.left += triggerWidth
+        offset.left += triggerWidth if tipWidth > triggerWidth
 
       @$tip.css offset
 
@@ -601,22 +598,18 @@ HLF Tip jQuery Plugin
     _wrapStealthRender: (func) ->
       =>
         return func.apply @, arguments if not @$tip.is(':hidden')
-        @$tip.css
-          display: 'block'
-          visibility: 'hidden'
+        @$tip.css { display: 'block', visibility: 'hidden' }
         result = func.apply @, arguments
-        @$tip.css
-          display: 'none',
-          visibility: 'visible'
+        @$tip.css { display: 'none', visibility: 'visible' }
         return result
 
     # ### Delegation to Subclass
 
     # These methods are hooks for custom functionality from subclasses. (Some are
     # set to no-ops becase they are given no arguments.)
-    onShow: (triggerChanged, event) -> undefined
+    onShow: (event) -> undefined
     onHide: $.noop
-    afterShow: (triggerChanged, event) -> undefined
+    afterShow: (event) -> undefined
     afterHide: $.noop
     htmlOnRender: $.noop
     offsetOnTriggerMouseMove: (event, offset, $trigger) -> no
