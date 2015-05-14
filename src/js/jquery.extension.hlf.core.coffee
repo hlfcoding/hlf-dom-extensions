@@ -159,7 +159,7 @@ HLF Core jQuery Extension
           #   same plugin instance.
           $el = if createOptions.asSharedInstance is yes then $context else @first()
           instance = $el.data namespace.toString('data')
-          return instance if instance? and instance.$el? and not arguments.length
+          return instance if instance? and instance.$el? and not options?
         # - Otherwise, continue creating the instance by preparing the options
         #   and deciding the main element before passing things onto
         #   `_createPluginInstance`.
