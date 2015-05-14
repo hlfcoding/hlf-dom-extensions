@@ -103,7 +103,7 @@ HLF Core jQuery Extension
           } else {
             $el = createOptions.asSharedInstance === true ? $context : this.first();
             instance = $el.data(namespace.toString('data'));
-            if ((instance != null) && (instance.$el != null) && !arguments.length) {
+            if ((instance != null) && (instance.$el != null) && (options == null)) {
               return instance;
             }
           }

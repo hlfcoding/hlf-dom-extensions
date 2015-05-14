@@ -116,7 +116,7 @@ element will be. The notion is that several elements all share the
 same plugin instance.</li>
 </ul></div></div><div class="code"><div class="wrapper">          $el = <span class="hljs-keyword">if</span> createOptions.asSharedInstance <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span> <span class="hljs-keyword">then</span> $context <span class="hljs-keyword">else</span> <span class="hljs-property">@first</span>()
           instance = $el.data namespace.toString(<span class="hljs-string">'data'</span>)
-          <span class="hljs-keyword">return</span> instance <span class="hljs-keyword">if</span> instance? <span class="hljs-keyword">and</span> instance.$el? <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> arguments.length</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+          <span class="hljs-keyword">return</span> instance <span class="hljs-keyword">if</span> instance? <span class="hljs-keyword">and</span> instance.$el? <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> options?</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Otherwise, continue creating the instance by preparing the options
 and deciding the main element before passing things onto
 <code>_createPluginInstance</code>.</li>

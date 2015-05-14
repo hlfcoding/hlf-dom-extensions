@@ -72,7 +72,9 @@ stem, and offset the content to match the stem size.</li>
           <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> right</span> {</span> <span class="hljs-attribute">left</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
         }
       }
-      #{<span class="hljs-function">map-get</span>($_side-inverse-<span class="hljs-tag">map</span>, <span class="hljs-variable">$side</span>)}<span class="hljs-value">: <span class="hljs-number">0</span>;</span>
+      <span class="hljs-variable">$inverse-side</span><span class="hljs-value">: <span class="hljs-function">map-get</span>($_side-inverse-map, <span class="hljs-variable">$side</span>);</span>
+      <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$inverse-side</span> ==<span class="hljs-preprocessor"> right</span> {</span> #{<span class="hljs-variable">$inverse-side</span>}<span class="hljs-value">: -<span class="hljs-number">1px</span>;</span> } <span class="hljs-comment">// To match the JS.</span>
+      <span class="hljs-at_rule">@<span class="hljs-keyword">else</span> {</span> #{<span class="hljs-variable">$inverse-side</span>}<span class="hljs-value">: <span class="hljs-number">0</span>;</span> }
     }}}
   }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Then make any stem layout adjustments for when the tip is snapping to an

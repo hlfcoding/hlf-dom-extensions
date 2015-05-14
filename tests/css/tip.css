@@ -223,7 +223,7 @@ section.visual-test {
       left: 14px; }
   .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-left .js-tip-stem {
     border-left-width: 14px;
-    right: 0; }
+    right: -1px; }
     .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-left .js-tip-stem + .js-tip-content {
       top: auto;
       bottom: auto;

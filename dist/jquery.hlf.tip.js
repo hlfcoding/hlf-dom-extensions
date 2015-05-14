@@ -7,6 +7,7 @@ HLF Tip jQuery Plugin
 (function() {
   var hasProp = {}.hasOwnProperty,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    slice = [].slice,
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   (function(root, factory) {
@@ -39,7 +40,6 @@ HLF Tip jQuery Plugin
           autoDirection: true,
           cursorHeight: 12,
           defaultDirection: ['bottom', 'right'],
-          safeToggle: true,
           tipTemplate: function(containerClass) {
             var stemHtml;
             if (this.doStem === true) {
@@ -169,12 +169,42 @@ HLF Tip jQuery Plugin
         return this.$tip.hasClass(this.classNames[directionComponent]) || ((($trigger == null) || !$trigger.data(this.attr('direction'))) && _.include(this.defaultDirection, directionComponent));
       };
 
-      Tip.prototype._setState = function(state) {
+      Tip.prototype._offsetForTrigger = function($trigger) {
+        if ($trigger.css('position') === 'fixed') {
+          return $trigger.offset();
+        } else {
+          return $trigger.position();
+        }
+      };
+
+      Tip.prototype._setCurrentTrigger = function($trigger) {
+        this._triggerChanged = !$trigger.is(this._$currentTrigger);
+        if (!this._triggerChanged) {
+          return false;
+        }
+        this._inflateByTrigger($trigger);
+        return this._$currentTrigger = $trigger;
+      };
+
+      Tip.prototype._setState = function() {
+        var data, state;
+        state = arguments[0], data = 2 <= arguments.length ? slice.call(arguments, 1) : [];
         if (state === this._state) {
           return false;
         }
         this._state = state;
-        return this.debugLog(this._state);
+        this.debugLog(this._state);
+        switch (state) {
+          case 'asleep':
+            return this.afterHide.apply(this, data);
+          case 'awake':
+            return this.afterShow.apply(this, data);
+          case 'sleeping':
+            return clearTimeout(this._wakeCountdown);
+          case 'waking':
+            clearTimeout(this._sleepCountdown);
+            return this._triggerChanged = true;
+        }
       };
 
       Tip.prototype._setTip = function($tip) {
@@ -247,78 +277,73 @@ HLF Tip jQuery Plugin
         return wrapped();
       };
 
-      Tip.prototype.wakeByTrigger = function($trigger, event, onWake) {
-        var delay, duration, ref, triggerChanged, wake;
-        triggerChanged = !$trigger.is(this._$currentTrigger);
-        if (triggerChanged) {
-          this._inflateByTrigger($trigger);
-          this._$currentTrigger = $trigger;
-        }
+      Tip.prototype.wakeByTrigger = function($trigger, event) {
+        var deferred, promise, ref, updateBeforeWake, wake;
+        deferred = $.Deferred();
+        promise = deferred.promise();
+        this._setCurrentTrigger($trigger);
+        updateBeforeWake = (function(_this) {
+          return function() {
+            _this._positionToTrigger($trigger, event);
+            return _this.onShow(event);
+          };
+        })(this);
         if (this._state === 'awake') {
-          this._positionToTrigger($trigger, event);
-          this.onShow(triggerChanged, event);
-          if (onWake != null) {
-            onWake();
-          }
           this.debugLog('quick update');
-          return true;
+          updateBeforeWake();
+          deferred.resolve();
+          return promise;
         }
         if (event != null) {
           this.debugLog(event.type);
         }
         if ((ref = this._state) === 'awake' || ref === 'waking') {
-          return false;
+          deferred.reject();
+          return promise;
         }
-        delay = this.animations.show.delay;
-        duration = this.animations.show.duration;
         wake = (function(_this) {
-          return function() {
-            _this._positionToTrigger($trigger, event);
-            _this.onShow(triggerChanged, event);
-            return _this.$tip.stop().fadeIn(duration, function() {
-              if (triggerChanged) {
-                if (onWake != null) {
-                  onWake();
-                }
-              }
-              if (_this.safeToggle === true) {
-                _this.$tip.siblings(_this.classNames.tip).fadeOut();
-              }
-              _this.afterShow(triggerChanged, event);
-              return _this._setState('awake');
+          return function(duration) {
+            if (duration == null) {
+              duration = _this.animations.show.duration;
+            }
+            updateBeforeWake();
+            _this.$tip.stop().fadeIn(duration, function() {
+              _this._setState('awake', event);
+              return deferred.resolve();
             });
+            return _this.$tip.siblings(_this.classNames.tip).stop().fadeOut(duration);
           };
         })(this);
         if (this._state === 'sleeping') {
           this.debugLog('clear sleep');
           clearTimeout(this._sleepCountdown);
-          duration = 0;
-          wake();
+          wake(0);
         } else if ((event != null) && event.type === 'truemouseenter') {
-          triggerChanged = true;
           this._setState('waking');
-          this._wakeCountdown = setTimeout(wake, delay);
+          this._wakeCountdown = setTimeout(wake, this.animations.show.delay);
         }
-        return true;
+        return promise;
       };
 
       Tip.prototype.sleepByTrigger = function($trigger) {
-        var ref;
+        var deferred, promise, ref;
+        deferred = $.Deferred();
+        promise = deferred.promise();
         if ((ref = this._state) === 'asleep' || ref === 'sleeping') {
-          return false;
+          deferred.reject();
+          return promise;
         }
         this._setState('sleeping');
-        clearTimeout(this._wakeCountdown);
         this._sleepCountdown = setTimeout((function(_this) {
           return function() {
             _this.onHide();
             return _this.$tip.stop().fadeOut(_this.animations.hide.duration, function() {
               _this._setState('asleep');
-              return _this.afterHide();
+              return deferred.resolve();
             });
           };
         })(this), this.animations.hide.delay);
-        return true;
+        return promise;
       };
 
       Tip.prototype._saveTriggerContent = function($trigger) {
@@ -505,7 +530,7 @@ HLF Tip jQuery Plugin
         $content.text($trigger.data(this.attr('content')));
         if (this.animations.resize.enabled) {
           contentSize = this._sizeForTrigger($trigger, (contentOnly = true));
-          $content.width(contentSize.width).height(contentSize.height);
+          $content.width(contentSize.width + 1).height(contentSize.height);
         }
         compoundDirection = $trigger.data(this.attr('direction')) ? $trigger.data(this.attr('direction')).split(' ') : this.defaultDirection;
         this.debugLog('update direction class', compoundDirection);
@@ -557,17 +582,17 @@ HLF Tip jQuery Plugin
       };
 
       Tip.prototype._updateDirectionByTrigger = function($trigger) {
-        var component, edge, j, len, newDirection, ok, ref, results, tipSize, triggerHeight, triggerPosition, triggerWidth;
+        var component, edge, j, len, newDirection, ok, ref, results, tipSize, triggerHeight, triggerOffset, triggerWidth;
         if (this.autoDirection === false) {
           return false;
         }
-        triggerPosition = $trigger.position();
+        triggerOffset = this._offsetForTrigger($trigger);
         triggerWidth = $trigger.outerWidth();
         triggerHeight = $trigger.outerHeight();
         tipSize = this._sizeForTrigger($trigger);
         newDirection = _.clone(this.defaultDirection);
         this.debugLog({
-          triggerPosition: triggerPosition,
+          triggerOffset: triggerOffset,
           triggerWidth: triggerWidth,
           triggerHeight: triggerHeight,
           tipSize: tipSize
@@ -582,16 +607,16 @@ HLF Tip jQuery Plugin
           ok = true;
           switch (component) {
             case 'bottom':
-              ok = (edge = triggerPosition.top + triggerHeight + tipSize.height) && this._bounds.bottom > edge;
+              ok = (edge = triggerOffset.top + triggerHeight + tipSize.height) && this._bounds.bottom > edge;
               break;
             case 'right':
-              ok = (edge = triggerPosition.left + tipSize.width) && this._bounds.right > edge;
+              ok = (edge = triggerOffset.left + tipSize.width) && this._bounds.right > edge;
               break;
             case 'top':
-              ok = (edge = triggerPosition.top - tipSize.height) && this._bounds.top < edge;
+              ok = (edge = triggerOffset.top - tipSize.height) && this._bounds.top < edge;
               break;
             case 'left':
-              ok = (edge = triggerPosition.left - tipSize.width) && this._bounds.left < edge;
+              ok = (edge = triggerOffset.left - tipSize.width) && this._bounds.left < edge;
           }
           this.debugLog('checkDirectionComponent', {
             component: component,
@@ -640,13 +665,13 @@ HLF Tip jQuery Plugin
         })(this);
       };
 
-      Tip.prototype.onShow = function(triggerChanged, event) {
+      Tip.prototype.onShow = function(event) {
         return void 0;
       };
 
       Tip.prototype.onHide = $.noop;
 
-      Tip.prototype.afterShow = function(triggerChanged, event) {
+      Tip.prototype.afterShow = function(event) {
         return void 0;
       };
 
@@ -702,7 +727,7 @@ HLF Tip jQuery Plugin
 
       SnapTip.prototype._moveToTrigger = function($trigger, baseOffset) {
         var offset, toTriggerOnly;
-        offset = $trigger.position();
+        offset = this._offsetForTrigger($trigger);
         toTriggerOnly = this.snap.toTrigger === true && this.snap.toXAxis === false && this.snap.toYAxis === false;
         if (this.snap.toXAxis === true) {
           if (this._isDirection('bottom', $trigger)) {
@@ -735,20 +760,22 @@ HLF Tip jQuery Plugin
         return SnapTip.__super__._positionToTrigger.call(this, $trigger, mouseEvent, 0);
       };
 
-      SnapTip.prototype.onShow = function(triggerChanged, event) {
-        if (triggerChanged === true) {
-          return this.$tip.css('visibility', 'hidden');
+      SnapTip.prototype.onShow = function(event) {
+        if (this._triggerChanged !== true) {
+          return;
         }
+        return this.$tip.css('visibility', 'hidden');
       };
 
-      SnapTip.prototype.afterShow = function(triggerChanged, event) {
-        if (triggerChanged === true) {
-          this.$tip.css('visibility', 'visible');
-          return this._offsetStart = {
-            top: event.pageY,
-            left: event.pageX
-          };
+      SnapTip.prototype.afterShow = function(event) {
+        if (this._triggerChanged !== true) {
+          return;
         }
+        this.$tip.css('visibility', 'visible');
+        return this._offsetStart = {
+          top: event.pageY,
+          left: event.pageX
+        };
       };
 
       SnapTip.prototype.offsetOnTriggerMouseMove = function(event, offset, $trigger) {
