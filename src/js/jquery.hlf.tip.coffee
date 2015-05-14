@@ -227,6 +227,14 @@ HLF Tip jQuery Plugin
         _.include(@defaultDirection, directionComponent)
       )
 
+    # 𝒇 `_offsetForTrigger` is a helper to return the proper trigger offset for
+    # proper tip attachment. Fixed-position triggers need to fall back to the
+    # fool-proof `$.fn.offset`. This is despite `$.fn.position` being de-facto
+    # for elements sharing a parent positioning context.
+    _offsetForTrigger: ($trigger) ->
+      if $trigger.css('position') is 'fixed' then $trigger.offset()
+      else $trigger.position()
+
     # 𝒇 `_setCurrentTrigger` is a simple setter that updates a trigger and makes
     # it current, but only if it isn't already.
     _setCurrentTrigger: ($trigger) ->
@@ -590,20 +598,20 @@ HLF Tip jQuery Plugin
     # trigger.
     _updateDirectionByTrigger: ($trigger) ->
       return no if @autoDirection is off
-      triggerPosition = $trigger.position()
+      triggerOffset   = @_offsetForTrigger $trigger
       triggerWidth    = $trigger.outerWidth()
       triggerHeight   = $trigger.outerHeight()
       tipSize         = @_sizeForTrigger $trigger
       newDirection    = _.clone @defaultDirection
-      @debugLog { triggerPosition, triggerWidth, triggerHeight, tipSize }
+      @debugLog { triggerOffset, triggerWidth, triggerHeight, tipSize }
       for component in @defaultDirection
         if not @_bounds? then @_setBounds()
         ok = yes
         switch component
-          when 'bottom' then ok = (edge = triggerPosition.top + triggerHeight + tipSize.height) and @_bounds.bottom > edge
-          when 'right'  then ok = (edge = triggerPosition.left + tipSize.width) and @_bounds.right > edge
-          when 'top'    then ok = (edge = triggerPosition.top - tipSize.height) and @_bounds.top < edge
-          when 'left'   then ok = (edge = triggerPosition.left - tipSize.width) and @_bounds.left < edge
+          when 'bottom' then ok = (edge = triggerOffset.top + triggerHeight + tipSize.height) and @_bounds.bottom > edge
+          when 'right'  then ok = (edge = triggerOffset.left + tipSize.width) and @_bounds.right > edge
+          when 'top'    then ok = (edge = triggerOffset.top - tipSize.height) and @_bounds.top < edge
+          when 'left'   then ok = (edge = triggerOffset.left - tipSize.width) and @_bounds.left < edge
         @debugLog 'checkDirectionComponent', { component, edge }
         if not ok
           switch component
@@ -671,7 +679,7 @@ HLF Tip jQuery Plugin
     # expected to be the trigger offset.
     _moveToTrigger: ($trigger, baseOffset) -> # TODO: Still needs to support all the directions.
       #- @debugLog baseOffset
-      offset = $trigger.position()
+      offset = @_offsetForTrigger $trigger
       toTriggerOnly = @snap.toTrigger is on and @snap.toXAxis is off and @snap.toYAxis is off
       if @snap.toXAxis is on
         if @_isDirection 'bottom', $trigger
