@@ -96,7 +96,9 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
           @if $side == right { left: $stem-size; }
         }
       }
-      #{map-get($_side-inverse-map, $side)}: 0;
+      $inverse-side: map-get($_side-inverse-map, $side);
+      @if $inverse-side == right { #{$inverse-side}: -1px; } // To match the JS.
+      @else { #{$inverse-side}: 0; }
     }}}
   }
   // - Then make any stem layout adjustments for when the tip is snapping to an

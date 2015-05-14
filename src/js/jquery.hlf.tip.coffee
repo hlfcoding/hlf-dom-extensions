@@ -543,7 +543,7 @@ HLF Tip jQuery Plugin
       if @animations.resize.enabled
         contentSize = @_sizeForTrigger $trigger, (contentOnly = yes)
         $content
-          .width contentSize.width
+          .width (contentSize.width + 1) # Give some buffer.
           .height contentSize.height
 
       compoundDirection =
