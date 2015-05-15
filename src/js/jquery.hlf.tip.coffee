@@ -106,13 +106,18 @@ HLF Tip jQuery Plugin
         (classNames[key] = "#{pre}#{key}") for key in keys
         classNames.tip = 'js-tip'
         classNames
+      # - `animator` by default uses the stock jQuery animation system. If you
+      #   want a more performant system, like GreenSock or Velocity, replace
+      #   this with a custom implementation.
+      animator:
+        show: ($el, options) -> $el.stop().fadeIn options
+        hide: ($el, options) -> $el.stop().fadeOut options
       # - `animations` are very configurable. Individual animations can be
       #   customized and will default to the base animation settings as needed.
       animations:
         base:
           delay: 0
           duration: 200
-          easing: 'ease-in-out'
           enabled: yes
         show:
           delay: 200
@@ -120,6 +125,7 @@ HLF Tip jQuery Plugin
           delay: 200
         resize:
           delay: 300
+          easing: 'ease-in-out'
 
   hlf.tip.snap =
     debug: off
@@ -338,12 +344,17 @@ HLF Tip jQuery Plugin
       # - Our `wake` subroutine runs the timed-out logic, which includes the fade
       #   transition. Ensure other tips disappear during the transition.
       wake = (duration) =>
-        duration ?= @animations.show.duration
-        updateBeforeWake()
-        @$tip.stop().fadeIn duration, =>
-          @_setState 'awake', event # Hook in custom logic.
+        updateBeforeWake() # Hook in custom logic.
+        options = _.defaults { duration }, @animations.show
+        options.done = =>
+          @_setState 'awake', event
           deferred.resolve()
-        @$tip.siblings(@classNames.tip).stop().fadeOut duration
+        options.fail = -> deferred.reject()
+        @animator.show @$tip, options
+        @$tip.siblings(@classNames.tip).each (idx, el) =>
+          options = _.defaults { duration }, @animation.hide
+          @animator.hide $el, options
+
       # - Wake up depending on current state. If we are in the middle of
       #   sleeping, stop sleeping by updating `_sleepCountdown` and wake up
       #   sooner.
@@ -374,9 +385,12 @@ HLF Tip jQuery Plugin
       @_setState 'sleeping'
       @_sleepCountdown = setTimeout =>
         @onHide() # Hook in custom logic.
-        @$tip.stop().fadeOut @animations.hide.duration, =>
+        options = _.clone @animations.hide
+        options.done = =>
           @_setState 'asleep'
           deferred.resolve()
+        options.fail = -> deferred.reject()
+        @animator.hide @$tip, options
       , @animations.hide.delay
 
       promise
