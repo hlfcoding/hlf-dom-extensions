@@ -68,16 +68,28 @@ Main features:
   composed based on data-attribute configuration. 
 - Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).
 
+## Install
+
+```bash
+your-project> bower install hlf-jquery
+```
+
 ## Development
 
-Start off with `npm install`.
+```bash
+hlf-jquery> npm install
 
-### Grunt Tasks
+# to run some tests first
+hlf-jquery> grunt dist test
 
-- Use `grunt` to start developing.
-- Use `grunt dist` to build.
-- Use `grunt docs` to generate Groc documentation.
-- Use `grunt test` to test.
+# to read some docs
+hlf-jquery> grunt docs
+
+# to start developing
+hlf-jquery> grunt 
+```
+
+Note that Grunt task options and multi-tasks are in build/.
 
 ### Sample ST2 Project File
 
