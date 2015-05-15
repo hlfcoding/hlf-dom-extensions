@@ -14,12 +14,16 @@
     "underscore": "~1.6.0"
   },
   "devDependencies": {
+    "gsap": "~1.16.1",
     "modernizr": "~2.8.2",
     "normalize-css": "~3.0.1",
-    "requirejs": "~2.1.11",
-    "qunit": "~1.14.0"
+    "qunit": "~1.14.0",
+    "requirejs": "~2.1.11"
   },
   "exportsOverride": {
+    "gsap": {
+      ".": "src/uncompressed/{jquery.gsap,TweenLite,plugins/CSSPlugin}.js"
+    },
     "jquery": {
       ".": "dist/jquery.js"
     },

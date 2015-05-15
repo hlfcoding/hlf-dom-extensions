@@ -10,10 +10,16 @@ require.config
   paths:
     hlf: '../dist'
     test: '../tests/js'
+  shim:
+    TweenLite:
+      exports: 'TweenLite'
+    'jquery.gsap':
+      deps: ['jquery', 'CSSPlugin', 'TweenLite']
 
 require [
   'jquery'
   'underscore'
+  'jquery.gsap'
   'test/base-visual'
   'hlf/jquery.hlf.tip'
 ], ($, _) ->
