@@ -64,7 +64,7 @@ require [
   # Snapping tooltips are created and accessed via `$.fn.snapTip`. Options
   # related to snapping are in the `snap` option group. This one should snap to
   # an appropriate x position, along the trigger's most fitting edge (left or
-  # right). In this case it should snap to the right and only be able to track
+  # right). In this case it should snap to the right and only be able to follow
   # the mouse along the y-axis.
   tests.push $.visualTest
 
@@ -152,7 +152,7 @@ require [
   # ------------
   # Base tips also anchor themselves to the trigger based on available space.
   # Here we also use snap-tip without the axis flags from before to lock the tip
-  # into place and prevent mouse tracking.
+  # into place and prevent mouse following.
   tests.push $.visualTest
 
     template:

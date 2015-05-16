@@ -14,7 +14,7 @@ HLF Tip jQuery Plugin
 
 # The extended `snapTip` plugin extends the base tip. It allows the tip to snap
 # to the trigger element. And by default the tip locks into place. But turn on
-# only one axis of snapping, and the tip will track the mouse only on the other
+# only one axis of snapping, and the tip will follow the mouse only on the other
 # axis. For example, snapping to the x-axis will only allow the tip to shift
 # along the y-axis. The x will remain constant.
 
@@ -146,9 +146,9 @@ HLF Tip jQuery Plugin
         # if the option is on.
         # 
         # - `snap.toXAxis` is the switch for snapping along x-axis and only
-        #   tracking along y-axis. Off by default.
+        #   following along y-axis. Off by default.
         # - `snap.toYAxis` is the switch for snapping along y-axis and only
-        #   tracking along x-axis. Off by default.
+        #   following along x-axis. Off by default.
         # - `snap.toTrigger` is the switch for snapping to trigger built on
         #   axis-snapping. On by default.
         snap:
