@@ -126,6 +126,10 @@ HLF Tip jQuery Plugin
         resize:
           delay: 300
           easing: 'ease-in-out'
+      # - `followUsingTransform` will automatically check CSS transforms support
+      #   via Modernizr. So you'll need to use Modernizr or manually enable this
+      #   option to use the more performant transforms.
+      followUsingTransform: window.Modernizr?.csstransforms
 
   hlf.tip.snap =
     debug: off
@@ -531,7 +535,11 @@ HLF Tip jQuery Plugin
         #- If direction changed due to tip being wider than trigger.
         offset.left += triggerWidth if tipWidth > triggerWidth
 
-      @$tip.css offset
+      css = if @followUsingTransform
+        { top: 0, left: 0, transform: "translate(#{offset.left}px, #{offset.top}px)" }
+      else offset
+
+      @$tip.css css
 
     # 𝒇 `_setBounds` updates `_bounds` per `$viewport`'s inner bounds, and those
     # measures get used by `_updateDirectionByTrigger`.
