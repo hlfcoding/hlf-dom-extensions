@@ -136,7 +136,7 @@ HLF Event jQuery Extension
         $trigger
           .removeData attr('timer')
           .removeData attr('intentional')
-      triggerEvent 'truemouseleave', $trigger
+      triggerEvent 'truemouseleave', $trigger, event
       return yes
 
     # 𝒇 `performCheck` is the main hover intent checking subroutine. The state's
@@ -152,7 +152,7 @@ HLF Event jQuery Extension
       mouse.x.previous = event.pageX
       mouse.y.previous = event.pageY
       if state.intentional is yes and event.type is 'mouseover'
-        triggerEvent 'truemouseenter', $trigger
+        triggerEvent 'truemouseenter', $trigger, event
       state.timer.cleared = yes
       $trigger.data attr('intentional'), state.intentional
       $trigger.data attr('timer'), state.timer
@@ -165,16 +165,13 @@ HLF Event jQuery Extension
 
     # 𝒇 `triggerEvent` abstracts away the generation of and support for custom
     # hover intent events.
-    triggerEvent = (name, $trigger) ->
-      switch name
-        when 'truemouseenter' then event =
-          new $.Event name, { pageX: mouse.x.current, pageY: mouse.y.current }
-        when 'truemouseleave' then event = name
-        else event = null
-      if event?
-        debugLog name
-        $trigger.trigger event
-      else return no
+    triggerEvent = (name, $trigger, oldEvent) ->
+      event = new $.Event name, 
+        pageX: mouse.x.current
+        pageY: mouse.y.current
+        relatedTarget: oldEvent.relatedTarget
+      debugLog name
+      $trigger.trigger event
 
     # Lastly, we register our custom jQuery events, essentially wrapping our
     # binding over binding to `mouseover`, `mousemove`, and `mouseleave`. We're
