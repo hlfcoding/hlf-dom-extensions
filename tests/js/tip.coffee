@@ -39,6 +39,11 @@ require [
   return false unless shouldRunVisualTests
   tests = []
 
+  # Some basic input binding for custom animator.
+  $('.animator :radio').prop 'checked', no
+    .filter("[value=#{animatorName}]").prop 'checked', yes
+    .end().click -> location.search = "?animator=#{$(@).val()}"
+
   # To get back promises, Velocity's API actually requires additional work by
   # not directly correlating with jQuery's.
   if animatorName is 'velocity'

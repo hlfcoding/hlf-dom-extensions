@@ -22,6 +22,7 @@ Main features summary:
 - Based on hover 'intent' and prevents redundant toggling or DOM thrashing.
 - Re-use the same tip for a group of triggers to keep DOM light.
 - Aware of available space surrounding the triggering element.
+- Configurable animator, so opting out of non-GPU jQuery animations is easy.
 - Has an extended, 'snapping' version that only follows the mouse on one axis.
   The tip snaps to the trigger's edge on the other axis.
 
