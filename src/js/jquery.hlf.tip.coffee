@@ -264,7 +264,7 @@ HLF Tip jQuery Plugin
 
     # 𝒇 `_setState` is a simple setter that returns false if state doesn't
     # change. It also handles minor tasks when switching to a new state.
-    _setState: (state, data...) ->
+    _setState: (state, data) ->
       return no if state is @_state
       #- previous = @_state
       @_state = state
@@ -272,10 +272,10 @@ HLF Tip jQuery Plugin
       switch state
         when 'asleep'
           @_$currentTrigger?.trigger @evt('hidden') if @fireEvents is on
-          @afterHide.apply @, data
+          @afterHide data?.event
         when 'awake'
           @_$currentTrigger?.trigger @evt('shown') if @fireEvents is on
-          @afterShow.apply @, data
+          @afterShow data?.event
         when 'sleeping'
           @_$currentTrigger?.trigger @evt('hide') if @fireEvents is on
           clearTimeout @_wakeCountdown
@@ -367,7 +367,7 @@ HLF Tip jQuery Plugin
         updateBeforeWake() # Hook in custom logic.
         options = _.defaults { duration }, @animations.show
         options.done = =>
-          @_setState 'awake', event
+          @_setState 'awake', { event }
           deferred.resolve()
         options.fail = -> deferred.reject()
         @animator.show @$tip, options
@@ -384,7 +384,7 @@ HLF Tip jQuery Plugin
         wake(0)
       # - Start the normal wakeup and update `_wakeCountdown`.
       else if event? and event.type is 'truemouseenter'
-        @_setState 'waking'
+        @_setState 'waking', { event }
         @_wakeCountdown = setTimeout wake, @animations.show.delay
 
       promise
@@ -393,7 +393,7 @@ HLF Tip jQuery Plugin
     # `wakeByTrigger`. It also updates `_state` and returns a promise that
     # fails if waking gets skipped. As long as the tip isn't truly visible, or
     # sleeping is redundant, it bails.
-    sleepByTrigger: ($trigger) ->
+    sleepByTrigger: ($trigger, event) ->
       deferred = $.Deferred()
       promise = deferred.promise()
 
@@ -402,12 +402,12 @@ HLF Tip jQuery Plugin
         deferred.reject()
         return promise
 
-      @_setState 'sleeping'
+      @_setState 'sleeping', { event }
       @_sleepCountdown = setTimeout =>
         @onHide() # Hook in custom logic.
         options = _.clone @animations.hide
         options.done = =>
-          @_setState 'asleep'
+          @_setState 'asleep', { event }
           deferred.resolve()
         options.fail = -> deferred.reject()
         @animator.hide @$tip, options
@@ -454,12 +454,12 @@ HLF Tip jQuery Plugin
           @debugLog 'enter tip'
           if @_$currentTrigger?
             @_$currentTrigger.data @attr('is-active'), yes
-            @wakeByTrigger @_$currentTrigger
+            @wakeByTrigger @_$currentTrigger, event
         mouseleave: (event) =>
           @debugLog 'leave tip'
           if @_$currentTrigger?
             @_$currentTrigger.data @attr('is-active'), no
-            @sleepByTrigger @_$currentTrigger
+            @sleepByTrigger @_$currentTrigger, event
       if @autoDirection is on
         $(window).resize _.debounce @_setBounds, 300
 
@@ -501,7 +501,7 @@ HLF Tip jQuery Plugin
           @debugLog event.type
           switch event.type
             when 'truemouseenter' then @_onTriggerMouseMove event
-            when 'truemouseleave' then @sleepByTrigger $(event.target)
+            when 'truemouseleave' then @sleepByTrigger $(event.target), event
             else @debugLog 'unknown event type', event.type
           event.stopPropagation()
 
