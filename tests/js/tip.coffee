@@ -16,17 +16,39 @@ require.config
     'jquery.gsap':
       deps: ['jquery', 'CSSPlugin', 'TweenLite']
 
+# For performant animations, custom animators can be used. The below are
+# examples of requiring GSAP and Velocity. Note Velocity does not provide a
+# Promise shim and is annoyingly naive, so we must do it ourselves. See
+# http://julian.com/research/velocity/#promises
+animatorName = location.search.match(/\banimator=(\w+)\b/)?[1]
+animatorName ?= 'jquery'
+animatorDeps = switch animatorName
+  when 'gsap' then ['jquery.gsap']
+  when 'jquery' then []
+  when 'velocity' then ['promise', 'velocity']
+
 require [
   'jquery'
   'underscore'
-  'jquery.gsap'
+].concat(animatorDeps, [
   'test/base-visual'
   'hlf/jquery.hlf.tip'
-], ($, _) ->
+]), ($, _) ->
 
   shouldRunVisualTests = $('#qunit').length is 0
   return false unless shouldRunVisualTests
   tests = []
+
+  # To get back promises, Velocity's API actually requires additional work by
+  # not directly correlating with jQuery's.
+  if animatorName is 'velocity'
+    animator =
+      show: ($el, options) ->
+        $.Velocity 'fadeIn', options
+          .then options.done, options.fail
+      hide: ($el, options) ->
+        $.Velocity 'fadeOut', options
+          .then options.done, options.fail
 
   # Default
   # -------
