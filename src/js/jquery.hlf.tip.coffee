@@ -83,6 +83,10 @@ HLF Tip jQuery Plugin
       #   direction. Note that the direction data structure must be an array of
       #   `components`, and conventionally with top/bottom first.
       defaultDirection: ['bottom', 'right']
+      # - `fireEvents` can be enabled to allow `show.hlf.tip` and `shown.hlf.tip`,
+      #   `hide.hlf.tip` and `hidden.hlf.tip` events to be triggered from the
+      #   trigger elements. This is off by default to improve performance.
+      fireEvents: on
       # - `tipTemplate` should return interpolated html when given the
       #   additional container class list. Its context is the plugin instance.
       tipTemplate: (containerClass) ->
@@ -266,10 +270,17 @@ HLF Tip jQuery Plugin
       @_state = state
       @debugLog @_state
       switch state
-        when 'asleep' then @afterHide.apply @, data
-        when 'awake' then @afterShow.apply @, data
-        when 'sleeping' then clearTimeout @_wakeCountdown
+        when 'asleep'
+          @_$currentTrigger?.trigger @evt('hidden') if @fireEvents is on
+          @afterHide.apply @, data
+        when 'awake'
+          @_$currentTrigger?.trigger @evt('shown') if @fireEvents is on
+          @afterShow.apply @, data
+        when 'sleeping'
+          @_$currentTrigger?.trigger @evt('hide') if @fireEvents is on
+          clearTimeout @_wakeCountdown
         when 'waking'
+          @_$currentTrigger?.trigger @evt('show') if @fireEvents is on
           clearTimeout @_sleepCountdown
           @_triggerChanged = yes
 
@@ -332,11 +343,12 @@ HLF Tip jQuery Plugin
       deferred = $.Deferred()
       promise = deferred.promise()
       @_setCurrentTrigger $trigger
-
-      # - Go directly to the position updating if no toggling is needed.
+      #- Abstract into subroutine.
       updateBeforeWake = =>
         @_positionToTrigger $trigger, event
         @onShow event # Hook in custom logic.
+
+      # - Go directly to the position updating if no toggling is needed.
       if @_state is 'awake'
         @debugLog 'quick update'
         updateBeforeWake()
