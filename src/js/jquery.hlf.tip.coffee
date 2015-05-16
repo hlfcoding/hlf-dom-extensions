@@ -43,7 +43,11 @@ HLF Tip jQuery Plugin
     # - Browser globals (root is window). No globals needed.
     factory jQuery, _, jQuery.hlf
 )(@, ($, _, hlf) ->
-  
+
+  #- Cache common references internally.
+  _requestAnimationFrame = window.requireAnimationFrame or
+    window.Modernizr?.prefixed 'requestAnimationFrame', window
+
   # It takes some more boilerplate to write the plugins. Any of this additional
   # support API is put into a plugin specific namespace under `$.hlf`.
   hlf.tip =
@@ -490,10 +494,9 @@ HLF Tip jQuery Plugin
           event.stopPropagation()
 
       if @doFollow is on
-        if window.requestAnimationFrame?
+        if _requestAnimationFrame?
           onMouseMove = (event) =>
-            requestAnimationFrame (timestamp) =>
-              @_onTriggerMouseMove event
+            _requestAnimationFrame (timestamp) => @_onTriggerMouseMove event
         else 
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
         @$context.on 'mousemove', selector, onMouseMove

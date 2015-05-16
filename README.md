@@ -6,8 +6,9 @@ documented examples.
 
 All modules have scoped debug flags, jQuery namespaces, and no-conflict support
 with jQuery. They are exported using [UMD]() and work with AMD, Browserify, or
-plain. Only other dependency is UnderscoreJS. Other Bower dependencies are for
-tests and demos.
+plain. Only other required dependency is UnderscoreJS. Modernizr is a suggested
+dependency for true feature detection. Other Bower dependencies are for tests
+and demos.
 
 ## Plugins
 
