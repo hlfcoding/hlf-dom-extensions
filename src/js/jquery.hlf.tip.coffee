@@ -273,12 +273,17 @@ HLF Tip jQuery Plugin
         when 'asleep'
           @_$currentTrigger?.trigger @evt('hidden') if @fireEvents is on
           @afterHide data?.event
+          _.defer => @_togglePositionTransition off
         when 'awake'
           @_$currentTrigger?.trigger @evt('shown') if @fireEvents is on
           @afterShow data?.event
+          _.defer => @_togglePositionTransition off
         when 'sleeping'
           @_$currentTrigger?.trigger @evt('hide') if @fireEvents is on
           clearTimeout @_wakeCountdown
+          if data?.event? and $(data.event.target).hasClass(@classNames.trigger)
+            isLeavingToContext = not $(data.event.relatedTarget).hasClass @classNames.trigger
+            @_togglePositionTransition isLeavingToContext
         when 'waking'
           @_$currentTrigger?.trigger @evt('show') if @fireEvents is on
           clearTimeout @_sleepCountdown
@@ -414,6 +419,17 @@ HLF Tip jQuery Plugin
       , @animations.hide.delay
 
       promise
+
+    # 𝒇 `_togglePositionTransition` adds a position css transition to the tip.
+    # This normally is very expensive considering we update position on mousemove.
+    # But it's used together with a test to see if the cursor is likely currently
+    # in a gap between triggers. See `_setState` for details.
+    _togglePositionTransition: (toggled) ->
+      rest = '0.1s linear'
+      transition = if toggled
+        (if @followUsingTransform then "transform #{rest}" else "top #{rest}, left #{rest}")
+      else ''
+      @$tip.css 'transition', transition
 
     # ### Content
 
@@ -610,10 +626,9 @@ HLF Tip jQuery Plugin
         duration = @animations.resize.duration / 1000.0 + 's'
         easing = @animations.resize.easing
         transitionStyle.push "width #{duration} #{easing}", "height #{duration} #{easing}"
-      transitionStyle = transitionStyle.join(',')
 
       @_setTip $tip
-      @selectByClass('content').css 'transition', transitionStyle
+      @selectByClass('content').css 'transition', transitionStyle.join(',')
       @$tip.prependTo @$viewport
 
     # ### Subroutines

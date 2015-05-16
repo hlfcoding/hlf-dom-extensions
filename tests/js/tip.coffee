@@ -169,7 +169,10 @@ require [
       </ul>
       """
     test: ($context) ->
-      $context.find('[alt]').snapTip { snap: { toXAxis: on } }, $context
+      $context.find('[alt]').snapTip 
+        snap: { toXAxis: on }
+        animations: { hide: { delay: 400 } }
+      , $context
 
     anchorName: 'a-model-use-case'
     className: 'grid-call'
