@@ -54,6 +54,9 @@ module.exports = (grunt) ->
       src: aspects.src.sass
       tests: aspects.tests.sass
 
+    uglify:
+      release: aspects.release.uglify
+
     watch:
       # Caveat: These watch tasks do not clean.
       css: aspects.src.watch.css
