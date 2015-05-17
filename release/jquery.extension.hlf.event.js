@@ -107,7 +107,7 @@ HLF Event jQuery Extension
           clearTimeout(state.timer.timeout);
           $trigger.removeData(attr('timer')).removeData(attr('intentional'));
         }
-        triggerEvent('truemouseleave', $trigger);
+        triggerEvent('truemouseleave', $trigger, event);
         return true;
       };
       performCheck = function(event, $trigger, state) {
@@ -115,7 +115,7 @@ HLF Event jQuery Extension
         mouse.x.previous = event.pageX;
         mouse.y.previous = event.pageY;
         if (state.intentional === true && event.type === 'mouseover') {
-          triggerEvent('truemouseenter', $trigger);
+          triggerEvent('truemouseenter', $trigger, event);
         }
         state.timer.cleared = true;
         $trigger.data(attr('intentional'), state.intentional);
@@ -125,27 +125,15 @@ HLF Event jQuery Extension
         mouse.x.current = event.pageX;
         return mouse.y.current = event.pageY;
       }, 16);
-      triggerEvent = function(name, $trigger) {
+      triggerEvent = function(name, $trigger, oldEvent) {
         var event;
-        switch (name) {
-          case 'truemouseenter':
-            event = new $.Event(name, {
-              pageX: mouse.x.current,
-              pageY: mouse.y.current
-            });
-            break;
-          case 'truemouseleave':
-            event = name;
-            break;
-          default:
-            event = null;
-        }
-        if (event != null) {
-          debugLog(name);
-          return $trigger.trigger(event);
-        } else {
-          return false;
-        }
+        event = new $.Event(name, {
+          pageX: mouse.x.current,
+          pageY: mouse.y.current,
+          relatedTarget: oldEvent.relatedTarget
+        });
+        debugLog(name);
+        return $trigger.trigger(event);
       };
       $.event.special.truemouseenter = {
         setup: function(data, namespaces) {
@@ -177,3 +165,5 @@ HLF Event jQuery Extension
   });
 
 }).call(this);
+
+//# sourceMappingURL=jquery.extension.hlf.event.js.map
