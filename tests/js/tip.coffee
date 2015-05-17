@@ -5,6 +5,9 @@ HLF Tip Visual Tests
 
 # See [tests](../../../tests/tip.visual.html)
 
+# Note that the sample logic in tests is in JavaScript (perhaps easier to
+# understand than CoffeeScript) for your convenience.
+
 require.config
   baseUrl: '../lib'
   paths:
@@ -47,13 +50,14 @@ require [
   # To get back promises, Velocity's API actually requires additional work by
   # not directly correlating with jQuery's.
   if animatorName is 'velocity'
-    animator =
-      show: ($el, options) ->
-        $.Velocity 'fadeIn', options
-          .then options.done, options.fail
-      hide: ($el, options) ->
-        $.Velocity 'fadeOut', options
-          .then options.done, options.fail
+    `animator = {
+      show: function($el, options) {
+        $.Velocity('fadeIn', options).then(options.done, options.fail);
+      },
+      hide: function($el, options) {
+        $.Velocity('fadeOut', options).then(options.done, options.fail);
+      }
+    };`
 
   # Default
   # -------
@@ -75,12 +79,12 @@ require [
       # NOTE: Currently, the tip only parses content from the `title` and `alt`
       # attributes. This is limiting, but also conventional and easier to
       # maintain than a custom attribute.
-      $context.find('[title]').tip null, $context
+      `$context.find('[title]').tip(null, $context);`
       # NOTE: `$context` also needs to be passed in. This is the core plugin
       # generator's convention where if the plugin instance is to be attached to
       # something besides the element(s) calling the method, it must be passed
       # in after the first argument (options or command).
-      api = $context.tip null, $context
+      `api = $context.tip(null, $context);`
 
     anchorName: 'default'
     className: 'default-call'
@@ -113,7 +117,7 @@ require [
       <button name="list-append">load more</button>
       """
     test: ($context) ->
-      $context.find('[title]').snapTip { snap: { toYAxis: on } }, $context
+      `$context.find('[title]').snapTip({ snap: { toYAxis: true } }, $context);`
 
     anchorName: 'snapping-vertically'
     className: 'list-call'
@@ -143,7 +147,7 @@ require [
       </nav>
       """
     test: ($context) ->
-      $context.find('[title]').snapTip { snap: { toXAxis: on } }, $context
+      `$context.find('[title]').snapTip({ snap: { toXAxis: true } }, $context);`
 
     anchorName: 'snapping-horizontally'
     className: 'bar-call'
@@ -169,10 +173,10 @@ require [
       </ul>
       """
     test: ($context) ->
-      $context.find('[alt]').snapTip 
-        snap: { toXAxis: on }
+      `$context.find('[alt]').snapTip({
+        snap: { toXAxis: true },
         animations: { hide: { delay: 400 } }
-      , $context
+      }, $context);`
 
     anchorName: 'a-model-use-case'
     className: 'grid-call'
@@ -197,7 +201,7 @@ require [
         bottom right corner
       </a>
       """
-    test: ($fragments) -> $fragments.snapTip()
+    test: ($fragments) -> `$fragments.snapTip();`
 
     anchorName: 'corner-cases'
     asFragments: yes

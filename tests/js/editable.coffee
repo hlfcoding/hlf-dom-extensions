@@ -44,11 +44,11 @@ require [
       </div>
       """
     test: ($context) ->
-      $context.find '[data-hlf-editable]'
-        .editable()
-        .on 'commit.hlf.editable', (e) ->
-          # Update data source here.
-          $(@).editable 'update', { text: e.userInfo.text }
+      `$context.find('[data-hlf-editable]').editable()
+        .on('commit.hlf.editable', function(e) {
+          // Update data source here.
+          $(this).editable('update', { text: e.userInfo.text });
+        });`
 
     anchorName: 'default'
     className: 'default-call'
