@@ -36,3 +36,5 @@ Offloads testing larger corer components to other test modules.
   });
 
 }).call(this);
+
+//# sourceMappingURL=core.js.map

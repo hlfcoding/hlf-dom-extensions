@@ -80,3 +80,5 @@ HLF Core Mixin Unit Tests
   });
 
 }).call(this);
+
+//# sourceMappingURL=core.mixin.js.map

@@ -1,13 +1,13 @@
 <!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.tip"><meta name="groc-project-path" content="src/js/jquery.hlf.tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.tip.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-jquery-plugin">HLF Tip jQuery Plugin</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base <code>tip</code> plugin does several things. It does basic parsing of trigger
 element attributes for the tip content. It can anchor itself to a trigger by
 selecting the best direction. It can follow the cursor. It toggles its
-appearance by fading in and out and resizing, all via configurable animations.
-It can display custom tip content. It uses of the <code>hlf.hoverIntent</code> event
-extension to prevent appearance &#39;thrashing.&#39; Last, the tip object attaches to
-the context element. It acts as tip for the the current jQuery selection via
-event delegation.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The extended <code>snapTip</code> plugin extends the base tip. It allows the tip to snap
+appearance by fading in and out and resizing, all via configurable animation
+options. It can display custom tip content. It uses the <code>hlf.hoverIntent</code>
+event extension to prevent over-queueing of appearance handlers. Last, the tip
+object attaches to the context element. It acts as tip for the the current
+jQuery selection via event delegation.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The extended <code>snapTip</code> plugin extends the base tip. It allows the tip to snap
 to the trigger element. And by default the tip locks into place. But turn on
-only one axis of snapping, and the tip will track the mouse only on the other
+only one axis of snapping, and the tip will follow the mouse only on the other
 axis. For example, snapping to the x-axis will only allow the tip to shift
 along the y-axis. The x will remain constant.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>❧</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Support AMD, CommonJS (Browserify), and browser globals.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(root, factory)</span> -&gt;</span>
   <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">and</span> define.amd?</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
@@ -31,7 +31,10 @@ environments that support module.exports, like Node.</li>
 <li>Browser globals (root is window). No globals needed.</li>
 </ul></div></div><div class="code"><div class="wrapper">    factory jQuery, _, jQuery.hlf
 )(@, <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
-  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>It takes some more boilerplate to write the plugins. Any of this additional
+
+  <span class="hljs-comment">#- Cache common references internally.</span>
+  _requestAnimationFrame = <span class="hljs-built_in">window</span>.requireAnimationFrame <span class="hljs-keyword">or</span>
+    <span class="hljs-built_in">window</span>.Modernizr?.prefixed <span class="hljs-string">'requestAnimationFrame'</span>, <span class="hljs-built_in">window</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>It takes some more boilerplate to write the plugins. Any of this additional
 support API is put into a plugin specific namespace under <code>$.hlf</code>.</p></div></div><div class="code"><div class="wrapper">  hlf.tip =</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>To toggle debug logging for all instances of a plugin, use the <code>debug</code> flag.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">debug</span>: <span class="hljs-literal">off</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>To namespace when extending any jQuery API, we use custom <code>toString</code> helpers.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">toString</span>: _.memoize (context) -&gt;
       <span class="hljs-keyword">switch</span> context
         <span class="hljs-keyword">when</span> <span class="hljs-string">'event'</span>  <span class="hljs-keyword">then</span> <span class="hljs-string">'.hlf.tip'</span>
@@ -53,6 +56,10 @@ properly offset the tip to avoid cases of cursor-tip-stem overlap.</li>
 direction. Note that the direction data structure must be an array of
 <code>components</code>, and conventionally with top/bottom first.</li>
 </ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">defaultDirection</span>: [<span class="hljs-string">'bottom'</span>, <span class="hljs-string">'right'</span>]</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>fireEvents</code> can be enabled to allow <code>show.hlf.tip</code> and <code>shown.hlf.tip</code>,
+<code>hide.hlf.tip</code> and <code>hidden.hlf.tip</code> events to be triggered from the
+trigger elements. This is off by default to improve performance.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">fireEvents</span>: <span class="hljs-literal">on</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li><code>tipTemplate</code> should return interpolated html when given the
 additional container class list. Its context is the plugin instance.</li>
 </ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">tipTemplate</span>: <span class="hljs-function"><span class="hljs-params">(containerClass)</span> -&gt;</span>
@@ -79,13 +86,18 @@ namespaced <code>classNames</code> generated in a closure.</p>
         (classNames[key] = <span class="hljs-string">"<span class="hljs-subst">#{pre}</span><span class="hljs-subst">#{key}</span>"</span>) <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> keys
         classNames.tip = <span class="hljs-string">'js-tip'</span>
         classNames</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>animator</code> by default uses the stock jQuery animation system. If you
+want a more performant system, like GreenSock or Velocity, replace
+this with a custom implementation.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">animator</span>:
+        <span class="hljs-attribute">show</span>: <span class="hljs-function"><span class="hljs-params">($el, options)</span> -&gt;</span> $el.stop().fadeIn options
+        <span class="hljs-attribute">hide</span>: <span class="hljs-function"><span class="hljs-params">($el, options)</span> -&gt;</span> $el.stop().fadeOut options</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li><code>animations</code> are very configurable. Individual animations can be
 customized and will default to the base animation settings as needed.</li>
 </ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">animations</span>:
         <span class="hljs-attribute">base</span>:
           <span class="hljs-attribute">delay</span>: <span class="hljs-number">0</span>
           <span class="hljs-attribute">duration</span>: <span class="hljs-number">200</span>
-          <span class="hljs-attribute">easing</span>: <span class="hljs-string">'ease-in-out'</span>
           <span class="hljs-attribute">enabled</span>: <span class="hljs-literal">yes</span>
         <span class="hljs-attribute">show</span>:
           <span class="hljs-attribute">delay</span>: <span class="hljs-number">200</span>
@@ -93,6 +105,11 @@ customized and will default to the base animation settings as needed.</li>
           <span class="hljs-attribute">delay</span>: <span class="hljs-number">200</span>
         <span class="hljs-attribute">resize</span>:
           <span class="hljs-attribute">delay</span>: <span class="hljs-number">300</span>
+          <span class="hljs-attribute">easing</span>: <span class="hljs-string">'ease-in-out'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li><code>followUsingTransform</code> will automatically check CSS transforms support
+via Modernizr. So you&#39;ll need to use Modernizr or manually enable this
+option to use the more performant transforms.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-attribute">followUsingTransform</span>: <span class="hljs-built_in">window</span>.Modernizr?.csstransforms
 
   hlf.tip.snap =
     <span class="hljs-attribute">debug</span>: <span class="hljs-literal">off</span>
@@ -106,9 +123,9 @@ customized and will default to the base animation settings as needed.</li>
 if the option is on.</p>
 <ul>
 <li><code>snap.toXAxis</code> is the switch for snapping along x-axis and only
-tracking along y-axis. Off by default.</li>
+following along y-axis. Off by default.</li>
 <li><code>snap.toYAxis</code> is the switch for snapping along y-axis and only
-tracking along x-axis. Off by default.</li>
+following along x-axis. Off by default.</li>
 <li><code>snap.toTrigger</code> is the switch for snapping to trigger built on
 axis-snapping. On by default.</li>
 </ul></div></div><div class="code"><div class="wrapper">        <span class="hljs-attribute">snap</span>:
@@ -182,16 +199,28 @@ it current, but only if it isn&#39;t already.</p></div></div><div class="code"><
       <span class="hljs-keyword">return</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">unless</span> <span class="hljs-property">@_triggerChanged</span>
       <span class="hljs-property">@_inflateByTrigger</span> $trigger
       <span class="hljs-property">@_$currentTrigger</span> = $trigger</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_setState</code> is a simple setter that returns false if state doesn&#39;t
-change. It also handles minor tasks when switching to a new state.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_setState</span>: <span class="hljs-function"><span class="hljs-params">(state, data...)</span> -&gt;</span>
+change. It also handles minor tasks when switching to a new state.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_setState</span>: <span class="hljs-function"><span class="hljs-params">(state, data)</span> -&gt;</span>
       <span class="hljs-keyword">return</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">if</span> state <span class="hljs-keyword">is</span> <span class="hljs-property">@_state</span>
       <span class="hljs-comment">#- previous = @_state</span>
       <span class="hljs-property">@_state</span> = state
       <span class="hljs-property">@debugLog</span> <span class="hljs-property">@_state</span>
       <span class="hljs-keyword">switch</span> state
-        <span class="hljs-keyword">when</span> <span class="hljs-string">'asleep'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@afterHide</span>.apply @, data
-        <span class="hljs-keyword">when</span> <span class="hljs-string">'awake'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@afterShow</span>.apply @, data
-        <span class="hljs-keyword">when</span> <span class="hljs-string">'sleeping'</span> <span class="hljs-keyword">then</span> clearTimeout <span class="hljs-property">@_wakeCountdown</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'asleep'</span>
+          <span class="hljs-property">@_$currentTrigger</span>?.trigger <span class="hljs-property">@evt</span>(<span class="hljs-string">'hidden'</span>) <span class="hljs-keyword">if</span> <span class="hljs-property">@fireEvents</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
+          <span class="hljs-property">@afterHide</span> data?.event
+          _.defer =&gt; <span class="hljs-property">@_togglePositionTransition</span> <span class="hljs-literal">off</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'awake'</span>
+          <span class="hljs-property">@_$currentTrigger</span>?.trigger <span class="hljs-property">@evt</span>(<span class="hljs-string">'shown'</span>) <span class="hljs-keyword">if</span> <span class="hljs-property">@fireEvents</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
+          <span class="hljs-property">@afterShow</span> data?.event
+          _.defer =&gt; <span class="hljs-property">@_togglePositionTransition</span> <span class="hljs-literal">off</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'sleeping'</span>
+          <span class="hljs-property">@_$currentTrigger</span>?.trigger <span class="hljs-property">@evt</span>(<span class="hljs-string">'hide'</span>) <span class="hljs-keyword">if</span> <span class="hljs-property">@fireEvents</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
+          clearTimeout <span class="hljs-property">@_wakeCountdown</span>
+          <span class="hljs-keyword">if</span> data?.event? <span class="hljs-keyword">and</span> $(data.event.target).hasClass(<span class="hljs-property">@classNames</span>.trigger)
+            isLeavingToContext = <span class="hljs-keyword">not</span> $(data.event.relatedTarget).hasClass <span class="hljs-property">@classNames</span>.trigger
+            <span class="hljs-property">@_togglePositionTransition</span> isLeavingToContext
         <span class="hljs-keyword">when</span> <span class="hljs-string">'waking'</span>
+          <span class="hljs-property">@_$currentTrigger</span>?.trigger <span class="hljs-property">@evt</span>(<span class="hljs-string">'show'</span>) <span class="hljs-keyword">if</span> <span class="hljs-property">@fireEvents</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
           clearTimeout <span class="hljs-property">@_sleepCountdown</span>
           <span class="hljs-property">@_triggerChanged</span> = <span class="hljs-literal">yes</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_setTip</code> aliases the conventional <code>$el</code> property to <code>$tip</code> for clarity.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_setTip</span>: <span class="hljs-function"><span class="hljs-params">($tip)</span> =&gt;</span> <span class="hljs-property">@$tip</span> = <span class="hljs-property">@$el</span> = $tip</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_sizeForTrigger</code> does a stealth render via <code>_wrapStealthRender</code> to find tip
 size. It will return saved data if possible before doing a measure. The
@@ -239,12 +268,13 @@ main changes only happen if the delay is passed. It will return a promise that
 fails if waking gets skipped; it also may become done synchronously.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">wakeByTrigger</span>: <span class="hljs-function"><span class="hljs-params">($trigger, event)</span> -&gt;</span>
       deferred = $.Deferred()
       promise = deferred.promise()
-      <span class="hljs-property">@_setCurrentTrigger</span> $trigger</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
-<li>Go directly to the position updating if no toggling is needed.</li>
-</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function">      <span class="hljs-title">updateBeforeWake</span> = =&gt;</span>
+      <span class="hljs-property">@_setCurrentTrigger</span> $trigger
+      <span class="hljs-comment">#- Abstract into subroutine.</span>
+<span class="hljs-function">      <span class="hljs-title">updateBeforeWake</span> = =&gt;</span>
         <span class="hljs-property">@_positionToTrigger</span> $trigger, event
-        <span class="hljs-property">@onShow</span> event <span class="hljs-comment"># Hook in custom logic.</span>
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@_state</span> <span class="hljs-keyword">is</span> <span class="hljs-string">'awake'</span>
+        <span class="hljs-property">@onShow</span> event <span class="hljs-comment"># Hook in custom logic.</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>Go directly to the position updating if no toggling is needed.</li>
+</ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-keyword">if</span> <span class="hljs-property">@_state</span> <span class="hljs-keyword">is</span> <span class="hljs-string">'awake'</span>
         <span class="hljs-property">@debugLog</span> <span class="hljs-string">'quick update'</span>
         updateBeforeWake()
         deferred.resolve()
@@ -258,12 +288,16 @@ fails if waking gets skipped; it also may become done synchronously.</p></div></
 <li>Our <code>wake</code> subroutine runs the timed-out logic, which includes the fade
 transition. Ensure other tips disappear during the transition.</li>
 </ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function">      <span class="hljs-title">wake</span> = <span class="hljs-params">(duration)</span> =&gt;</span>
-        duration ?= <span class="hljs-property">@animations</span>.show.duration
-        updateBeforeWake()
-        <span class="hljs-property">@$tip</span>.stop().fadeIn duration, <span class="hljs-function">=&gt;</span>
-          <span class="hljs-property">@_setState</span> <span class="hljs-string">'awake'</span>, event <span class="hljs-comment"># Hook in custom logic.</span>
+        updateBeforeWake() <span class="hljs-comment"># Hook in custom logic.</span>
+        options = _.defaults { duration }, <span class="hljs-property">@animations</span>.show
+        options.done = <span class="hljs-function">=&gt;</span>
+          <span class="hljs-property">@_setState</span> <span class="hljs-string">'awake'</span>, { event }
           deferred.resolve()
-        <span class="hljs-property">@$tip</span>.siblings(<span class="hljs-property">@classNames</span>.tip).stop().fadeOut duration</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+        options.fail = <span class="hljs-function">-&gt;</span> deferred.reject()
+        <span class="hljs-property">@animator</span>.show <span class="hljs-property">@$tip</span>, options
+        <span class="hljs-property">@$tip</span>.siblings(<span class="hljs-property">@classNames</span>.tip).each (idx, el) =&gt;
+          options = _.defaults { duration }, <span class="hljs-property">@animation</span>.hide
+          <span class="hljs-property">@animator</span>.hide $el, options</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Wake up depending on current state. If we are in the middle of
 sleeping, stop sleeping by updating <code>_sleepCountdown</code> and wake up
 sooner.</li>
@@ -273,13 +307,13 @@ sooner.</li>
         wake(<span class="hljs-number">0</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Start the normal wakeup and update <code>_wakeCountdown</code>.</li>
 </ul></div></div><div class="code"><div class="wrapper">      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> event? <span class="hljs-keyword">and</span> event.type <span class="hljs-keyword">is</span> <span class="hljs-string">'truemouseenter'</span>
-        <span class="hljs-property">@_setState</span> <span class="hljs-string">'waking'</span>
+        <span class="hljs-property">@_setState</span> <span class="hljs-string">'waking'</span>, { event }
         <span class="hljs-property">@_wakeCountdown</span> = setTimeout wake, <span class="hljs-property">@animations</span>.show.delay
 
       promise</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>sleepByTrigger</code> is a much simpler toggler compared to its counterpart
 <code>wakeByTrigger</code>. It also updates <code>_state</code> and returns a promise that
 fails if waking gets skipped. As long as the tip isn&#39;t truly visible, or
-sleeping is redundant, it bails.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">sleepByTrigger</span>: <span class="hljs-function"><span class="hljs-params">($trigger)</span> -&gt;</span>
+sleeping is redundant, it bails.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">sleepByTrigger</span>: <span class="hljs-function"><span class="hljs-params">($trigger, event)</span> -&gt;</span>
       deferred = $.Deferred()
       promise = deferred.promise()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Don&#39;t toggle if asleep or sleeping, or if event isn&#39;t <code>truemouseleave</code>.</li>
@@ -287,15 +321,26 @@ sleeping is redundant, it bails.</p></div></div><div class="code"><div class="wr
         deferred.reject()
         <span class="hljs-keyword">return</span> promise
 
-      <span class="hljs-property">@_setState</span> <span class="hljs-string">'sleeping'</span>
+      <span class="hljs-property">@_setState</span> <span class="hljs-string">'sleeping'</span>, { event }
       <span class="hljs-property">@_sleepCountdown</span> = setTimeout =&gt;
         <span class="hljs-property">@onHide</span>() <span class="hljs-comment"># Hook in custom logic.</span>
-        <span class="hljs-property">@$tip</span>.stop().fadeOut <span class="hljs-property">@animations</span>.hide.duration, <span class="hljs-function">=&gt;</span>
-          <span class="hljs-property">@_setState</span> <span class="hljs-string">'asleep'</span>
+        options = _.clone <span class="hljs-property">@animations</span>.hide
+        options.done = <span class="hljs-function">=&gt;</span>
+          <span class="hljs-property">@_setState</span> <span class="hljs-string">'asleep'</span>, { event }
           deferred.resolve()
+        options.fail = <span class="hljs-function">-&gt;</span> deferred.reject()
+        <span class="hljs-property">@animator</span>.hide <span class="hljs-property">@$tip</span>, options
       , <span class="hljs-property">@animations</span>.hide.delay
 
-      promise</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="content">Content</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_saveTriggerContent</code> comes with a very simple base implementation that
+      promise</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_togglePositionTransition</code> adds a position css transition to the tip.
+This normally is very expensive considering we update position on mousemove.
+But it&#39;s used together with a test to see if the cursor is likely currently
+in a gap between triggers. See <code>_setState</code> for details.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_togglePositionTransition</span>: <span class="hljs-function"><span class="hljs-params">(toggled)</span> -&gt;</span>
+      rest = <span class="hljs-string">'0.1s linear'</span>
+      transition = <span class="hljs-keyword">if</span> toggled
+        (<span class="hljs-keyword">if</span> <span class="hljs-property">@followUsingTransform</span> <span class="hljs-keyword">then</span> <span class="hljs-string">"transform <span class="hljs-subst">#{rest}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">"top <span class="hljs-subst">#{rest}</span>, left <span class="hljs-subst">#{rest}</span>"</span>)
+      <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
+      <span class="hljs-property">@$tip</span>.css <span class="hljs-string">'transition'</span>, transition</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="content">Content</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_saveTriggerContent</code> comes with a very simple base implementation that
 supports the common <code>title</code> and <code>alt</code> meta content for an element. Support
 is also provided for the <code>triggerContent</code> option. We take that content and
 store it into a namespaced <code>content</code> jQuery data value on the trigger.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_saveTriggerContent</span>: <span class="hljs-function"><span class="hljs-params">($trigger)</span> -&gt;</span>
@@ -325,12 +370,12 @@ leaving the trigger for the tip doesn&#39;t cause the tip to dismiss.</p>
           <span class="hljs-property">@debugLog</span> <span class="hljs-string">'enter tip'</span>
           <span class="hljs-keyword">if</span> <span class="hljs-property">@_$currentTrigger</span>?
             <span class="hljs-property">@_$currentTrigger</span>.data <span class="hljs-property">@attr</span>(<span class="hljs-string">'is-active'</span>), <span class="hljs-literal">yes</span>
-            <span class="hljs-property">@wakeByTrigger</span> <span class="hljs-property">@_$currentTrigger</span>
+            <span class="hljs-property">@wakeByTrigger</span> <span class="hljs-property">@_$currentTrigger</span>, event
         <span class="hljs-attribute">mouseleave</span>: <span class="hljs-function"><span class="hljs-params">(event)</span> =&gt;</span>
           <span class="hljs-property">@debugLog</span> <span class="hljs-string">'leave tip'</span>
           <span class="hljs-keyword">if</span> <span class="hljs-property">@_$currentTrigger</span>?
             <span class="hljs-property">@_$currentTrigger</span>.data <span class="hljs-property">@attr</span>(<span class="hljs-string">'is-active'</span>), <span class="hljs-literal">no</span>
-            <span class="hljs-property">@sleepByTrigger</span> <span class="hljs-property">@_$currentTrigger</span>
+            <span class="hljs-property">@sleepByTrigger</span> <span class="hljs-property">@_$currentTrigger</span>, event
       <span class="hljs-keyword">if</span> <span class="hljs-property">@autoDirection</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
         $(<span class="hljs-built_in">window</span>).resize _.debounce <span class="hljs-property">@_setBounds</span>, <span class="hljs-number">300</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_bindContext</code> uses MutationObserver. If <code>doLiveUpdate</code> is inferred to be
 true, process triggers added in the future. Make sure to ignore mutations
@@ -367,15 +412,14 @@ when available, otherwise manually at hopefully 60fps.</p></div></div><div class
           <span class="hljs-property">@debugLog</span> event.type
           <span class="hljs-keyword">switch</span> event.type
             <span class="hljs-keyword">when</span> <span class="hljs-string">'truemouseenter'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@_onTriggerMouseMove</span> event
-            <span class="hljs-keyword">when</span> <span class="hljs-string">'truemouseleave'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@sleepByTrigger</span> $(event.target)
+            <span class="hljs-keyword">when</span> <span class="hljs-string">'truemouseleave'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@sleepByTrigger</span> $(event.target), event
             <span class="hljs-keyword">else</span> <span class="hljs-property">@debugLog</span> <span class="hljs-string">'unknown event type'</span>, event.type
           event.stopPropagation()
 
       <span class="hljs-keyword">if</span> <span class="hljs-property">@doFollow</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
-        <span class="hljs-keyword">if</span> <span class="hljs-built_in">window</span>.requestAnimationFrame?
+        <span class="hljs-keyword">if</span> _requestAnimationFrame?
 <span class="hljs-function">          <span class="hljs-title">onMouseMove</span> = <span class="hljs-params">(event)</span> =&gt;</span>
-            requestAnimationFrame (timestamp) =&gt;
-              <span class="hljs-property">@_onTriggerMouseMove</span> event
+            _requestAnimationFrame (timestamp) =&gt; <span class="hljs-property">@_onTriggerMouseMove</span> event
         <span class="hljs-keyword">else</span> 
           onMouseMove = _.throttle <span class="hljs-property">@_onTriggerMouseMove</span>, <span class="hljs-number">16</span>
         <span class="hljs-property">@$context</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'mousemove'</span>, selector, onMouseMove</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="positioning">Positioning</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_onTriggerMouseMove</code> is actually the main tip toggling handler. To
@@ -409,7 +453,11 @@ gets factored in.</p></div></div><div class="code"><div class="wrapper">    <spa
         <span class="hljs-comment">#- If direction changed due to tip being wider than trigger.</span>
         offset.left += triggerWidth <span class="hljs-keyword">if</span> tipWidth &gt; triggerWidth
 
-      <span class="hljs-property">@$tip</span>.css offset</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_setBounds</code> updates <code>_bounds</code> per <code>$viewport</code>&#39;s inner bounds, and those
+      css = <span class="hljs-keyword">if</span> <span class="hljs-property">@followUsingTransform</span>
+        { <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">transform</span>: <span class="hljs-string">"translate(<span class="hljs-subst">#{offset.left}</span>px, <span class="hljs-subst">#{offset.top}</span>px)"</span> }
+      <span class="hljs-keyword">else</span> offset
+
+      <span class="hljs-property">@$tip</span>.css css</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_setBounds</code> updates <code>_bounds</code> per <code>$viewport</code>&#39;s inner bounds, and those
 measures get used by <code>_updateDirectionByTrigger</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_setBounds</span>: <span class="hljs-function">-&gt;</span>
       $viewport = <span class="hljs-keyword">if</span> <span class="hljs-property">@$viewport</span>.<span class="hljs-keyword">is</span>(<span class="hljs-string">'body'</span>) <span class="hljs-keyword">then</span> $(<span class="hljs-built_in">window</span>) <span class="hljs-keyword">else</span> <span class="hljs-property">@$viewport</span>
       <span class="hljs-property">@_bounds</span> =
@@ -454,10 +502,9 @@ Render also sets up any animations per the <code>shouldAnimate</code> option.</p
         duration = <span class="hljs-property">@animations</span>.resize.duration / <span class="hljs-number">1000.0</span> + <span class="hljs-string">'s'</span>
         easing = <span class="hljs-property">@animations</span>.resize.easing
         transitionStyle.push <span class="hljs-string">"width <span class="hljs-subst">#{duration}</span> <span class="hljs-subst">#{easing}</span>"</span>, <span class="hljs-string">"height <span class="hljs-subst">#{duration}</span> <span class="hljs-subst">#{easing}</span>"</span>
-      transitionStyle = transitionStyle.join(<span class="hljs-string">','</span>)
 
       <span class="hljs-property">@_setTip</span> $tip
-      <span class="hljs-property">@selectByClass</span>(<span class="hljs-string">'content'</span>).css <span class="hljs-string">'transition'</span>, transitionStyle
+      <span class="hljs-property">@selectByClass</span>(<span class="hljs-string">'content'</span>).css <span class="hljs-string">'transition'</span>, transitionStyle.join(<span class="hljs-string">','</span>)
       <span class="hljs-property">@$tip</span>.prependTo <span class="hljs-property">@$viewport</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="subroutines">Subroutines</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_processTriggers</code> does just that and sets up content, event, and
 positioning aspects.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_processTriggers</span>: <span class="hljs-function"><span class="hljs-params">($triggers)</span> -&gt;</span>
       $triggers ?= <span class="hljs-property">@$triggers</span>

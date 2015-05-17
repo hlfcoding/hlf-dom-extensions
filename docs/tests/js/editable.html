@@ -33,9 +33,11 @@
       &lt;/div&gt;
       """</span>
     <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
-      $context.find <span class="hljs-string">'[data-hlf-editable]'</span>
-        .editable()
-        .<span class="hljs-literal">on</span> <span class="hljs-string">'commit.hlf.editable'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Update data source here.</p></div></div><div class="code"><div class="wrapper">          $(@).editable <span class="hljs-string">'update'</span>, { <span class="hljs-attribute">text</span>: e.userInfo.text }
+      `<span class="javascript">$context.find(<span class="hljs-string">'[data-hlf-editable]'</span>).editable()
+        .on(<span class="hljs-string">'commit.hlf.editable'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> </span>{
+          <span class="hljs-comment">// Update data source here.</span>
+          $(<span class="hljs-keyword">this</span>).editable(<span class="hljs-string">'update'</span>, { text: e.userInfo.text });
+        });</span>`
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'default'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'default-call'</span>

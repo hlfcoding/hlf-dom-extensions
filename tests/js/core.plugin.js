@@ -132,3 +132,5 @@ HLF Core Plugin Unit Tests
   });
 
 }).call(this);
+
+//# sourceMappingURL=core.plugin.js.map

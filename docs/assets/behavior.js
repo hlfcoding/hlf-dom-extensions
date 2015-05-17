@@ -41,6 +41,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 2,
+            "title": "Requirements",
+            "slug": "requirements"
+          },
+          "depth": 2
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
             "title": "Plugins Coming Soon",
             "slug": "plugins-coming-soon"
           },
@@ -60,20 +68,20 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 2,
+            "title": "Install",
+            "slug": "install"
+          },
+          "depth": 2
+        }, {
+          "type": "heading",
+          "data": {
+            "level": 2,
             "title": "Development",
             "slug": "development"
           },
           "depth": 2,
           "children": [
             {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "Grunt Tasks",
-                "slug": "grunt-tasks"
-              },
-              "depth": 3
-            }, {
               "type": "heading",
               "data": {
                 "level": 3,

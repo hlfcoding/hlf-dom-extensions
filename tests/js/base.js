@@ -24,3 +24,5 @@ not read further.
   });
 
 }).call(this);
+
+//# sourceMappingURL=base.js.map

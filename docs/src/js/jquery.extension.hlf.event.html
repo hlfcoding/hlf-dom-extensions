@@ -90,7 +90,7 @@ mouse-leave and will always trigger <code>truemouseleave</code>.</p></div></div>
         $trigger
           .removeData attr(<span class="hljs-string">'timer'</span>)
           .removeData attr(<span class="hljs-string">'intentional'</span>)
-      triggerEvent <span class="hljs-string">'truemouseleave'</span>, $trigger
+      triggerEvent <span class="hljs-string">'truemouseleave'</span>, $trigger, event
       <span class="hljs-keyword">return</span> <span class="hljs-literal">yes</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>performCheck</code> is the main hover intent checking subroutine. The state&#39;s
 <code>intentional</code> flag is updated as a crude change-in-distance comparison. If
 there is intent, then <code>truemouseenter</code> is triggered. The timer is reset,
@@ -103,23 +103,20 @@ trigger.</p></div></div><div class="code"><div class="wrapper"><span class="hljs
       mouse.x.previous = event.pageX
       mouse.y.previous = event.pageY
       <span class="hljs-keyword">if</span> state.intentional <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span> <span class="hljs-keyword">and</span> event.type <span class="hljs-keyword">is</span> <span class="hljs-string">'mouseover'</span>
-        triggerEvent <span class="hljs-string">'truemouseenter'</span>, $trigger
+        triggerEvent <span class="hljs-string">'truemouseenter'</span>, $trigger, event
       state.timer.cleared = <span class="hljs-literal">yes</span>
       $trigger.data attr(<span class="hljs-string">'intentional'</span>), state.intentional
       $trigger.data attr(<span class="hljs-string">'timer'</span>), state.timer</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>trackMouse</code> tracks mouse position specifically for checking hover intent.</p></div></div><div class="code"><div class="wrapper">    trackMouse = _.throttle (event) -&gt;
       mouse.x.current = event.pageX
       mouse.y.current = event.pageY
     , <span class="hljs-number">16</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>triggerEvent</code> abstracts away the generation of and support for custom
-hover intent events.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">    <span class="hljs-title">triggerEvent</span> = <span class="hljs-params">(name, $trigger)</span> -&gt;</span>
-      <span class="hljs-keyword">switch</span> name
-        <span class="hljs-keyword">when</span> <span class="hljs-string">'truemouseenter'</span> <span class="hljs-keyword">then</span> event =
-          <span class="hljs-keyword">new</span> $.Event name, { <span class="hljs-attribute">pageX</span>: mouse.x.current, <span class="hljs-attribute">pageY</span>: mouse.y.current }
-        <span class="hljs-keyword">when</span> <span class="hljs-string">'truemouseleave'</span> <span class="hljs-keyword">then</span> event = name
-        <span class="hljs-keyword">else</span> event = <span class="hljs-literal">null</span>
-      <span class="hljs-keyword">if</span> event?
-        debugLog name
-        $trigger.trigger event
-      <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">no</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Lastly, we register our custom jQuery events, essentially wrapping our
+hover intent events.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">    <span class="hljs-title">triggerEvent</span> = <span class="hljs-params">(name, $trigger, oldEvent)</span> -&gt;</span>
+      event = <span class="hljs-keyword">new</span> $.Event name, 
+        <span class="hljs-attribute">pageX</span>: mouse.x.current
+        <span class="hljs-attribute">pageY</span>: mouse.y.current
+        <span class="hljs-attribute">relatedTarget</span>: oldEvent.relatedTarget
+      debugLog name
+      $trigger.trigger event</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Lastly, we register our custom jQuery events, essentially wrapping our
 binding over binding to <code>mouseover</code>, <code>mousemove</code>, and <code>mouseleave</code>. We&#39;re
 not using <code>mouseenter</code>, since its detection mechanism conflicts with hover
 intent&#39;s.</p></div></div><div class="code"><div class="wrapper">    $.event.special.truemouseenter =

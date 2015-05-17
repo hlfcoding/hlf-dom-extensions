@@ -70,18 +70,35 @@
 }
 
 <span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> { <span class="hljs-comment">/* test page header */</span>
+  <span class="hljs-variable">$header-bg-color</span><span class="hljs-value">: <span class="hljs-function">darken</span>(<span class="hljs-variable">$bg-color</span>, <span class="hljs-number">70%</span>);</span>
   <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %pull-left-right;</span>
-  <span class="hljs-attribute">background</span><span class="hljs-value">: <span class="hljs-function">darken</span>(<span class="hljs-variable">$bg-color</span>, <span class="hljs-number">70%</span>);</span>
+  <span class="hljs-attribute">background</span><span class="hljs-value">: <span class="hljs-variable">$header-bg-color</span>;</span>
   <span class="hljs-attribute">box-shadow</span><span class="hljs-value">: inset <span class="hljs-number">0</span> <span class="hljs-number">30px</span> <span class="hljs-number">40px</span> -<span class="hljs-number">20px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.4</span>);</span>
   <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-variable">$bg-color</span>;</span>
-  &gt; * { <span class="hljs-attribute">display</span><span class="hljs-value">: inline-block;</span> }
+  <span class="hljs-attribute">text-shadow</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.7</span>);</span>
+  &gt; * {
+    <span class="hljs-attribute">display</span><span class="hljs-value">: inline-block;</span>
+    &amp;<span class="hljs-pseudo">:not</span>(<span class="hljs-pseudo">:first-child</span>) {
+      <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %dimmed;</span>
+      <span class="hljs-attribute">margin-left</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+    }
+  }
   &gt; <span class="hljs-tag">h1</span> {
     <span class="hljs-attribute">font-weight</span><span class="hljs-value">: normal;</span> <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span> <span class="hljs-comment">// reset</span>
-    <span class="hljs-attribute">text-shadow</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-hexcolor">#000</span>, <span class="hljs-number">0.7</span>);</span>
   }
-  &gt; <span class="hljs-tag">span</span> {
-    <span class="hljs-at_rule">@<span class="hljs-keyword">extend</span> %dimmed;</span>
-    <span class="hljs-attribute">margin-left</span><span class="hljs-value">: <span class="hljs-variable">$rem</span>;</span>
+  &gt; <span class="hljs-tag">fieldset</span> {
+    &gt; <span class="hljs-tag">legend</span> {
+      <span class="hljs-attribute">opacity</span><span class="hljs-value">: <span class="hljs-number">0.5</span>;</span>
+      <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-number">0.2</span> * <span class="hljs-variable">$rem</span>;</span>
+    }
+    &gt; <span class="hljs-tag">label</span> + <span class="hljs-tag">label</span> {
+      <span class="hljs-attribute">margin-left</span><span class="hljs-value">: <span class="hljs-variable">$rem</span> / <span class="hljs-number">2</span>;</span>
+    }
+    <span class="hljs-attribute">border</span><span class="hljs-value">: {
+      color: <span class="hljs-function">lighten</span>(<span class="hljs-variable">$header-bg-color</span>, <span class="hljs-number">20%</span>);</span>
+      radius<span class="hljs-value">: <span class="hljs-variable">$radius-size</span>;</span>
+    }
+    <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">10px</span> <span class="hljs-number">10px</span>;</span>
   }
 }
 

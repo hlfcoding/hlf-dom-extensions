@@ -82,3 +82,5 @@ further.
   });
 
 }).call(this);
+
+//# sourceMappingURL=base-visual.js.map

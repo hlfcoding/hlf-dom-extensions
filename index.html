@@ -47,13 +47,19 @@
 
       <section id="main_content">
         <h1 id="hlf-jquery-library-build-status-https-travis-ci-org-hlfcoding-hlf-jquery-svg-branch-master-https-travis-ci-org-hlfcoding-hlf-jquery-bower-version-https-img-shields-io-bower-v-hlf-jquery-svg-">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master" alt="Build Status"></a> <img src="https://img.shields.io/bower/v/hlf-jquery.svg" alt="Bower Version"></h1>
-<p>jQuery extensions and plugins for quality UI and implemented following best
+<pre><code> __         __       ___
+/\ \       /\ \     / __\
+\ \ \___   \ \ \   /\ \_/_
+ \ \  __`\  \ \ \  \ \  __\
+  \ \ \ \ \  \ \ \  \ \ \_/
+   \ \_\ \_\  \ \_\  \ \_\
+    \/_/ /_/   \/_/   \/_/
+</code></pre><p>jQuery extensions and plugins for quality UI and implemented following best
 practices. The <a href="http://hlfcoding.github.io/hlf-jquery/docs/index.html">annotated source code</a> is also available and include
 documented examples.</p>
 <p>All modules have scoped debug flags, jQuery namespaces, and no-conflict support
 with jQuery. They are exported using <a href="">UMD</a> and work with AMD, Browserify, or
-plain. Only other dependency is UnderscoreJS. Other Bower dependencies are for
-tests and demos.</p>
+plain.</p>
 <h2 id="plugins">Plugins</h2>
 <p>All plugins should have test pages with documented source. Please use them as
 usage examples. Plugins should also have sample styles, and some have required
@@ -64,6 +70,7 @@ styles. When possible, styles are made customizeable as SCSS mixins.</p>
 <li>Based on hover &#39;intent&#39; and prevents redundant toggling or DOM thrashing.</li>
 <li>Re-use the same tip for a group of triggers to keep DOM light.</li>
 <li>Aware of available space surrounding the triggering element.</li>
+<li>Configurable animator, so opting out of non-GPU jQuery animations is easy.</li>
 <li>Has an extended, &#39;snapping&#39; version that only follows the mouse on one axis.
 The tip snaps to the trigger&#39;s edge on the other axis.</li>
 </ul>
@@ -91,6 +98,14 @@ $(&#39;article&#39;).find(&#39;a[title]&#39;).snapTip() // Tip will not follow.
 <li>Hover-intent provides rate-limited versions of mouseenter and mouseleave 
 events through a customizable delay.</li>
 </ul>
+<h2 id="requirements">Requirements</h2>
+<p>Only other required dependency is UnderscoreJS. Modernizr is a suggested
+dependency for true feature detection. Other Bower dependencies are for tests
+and demos.</p>
+<p>Styling is released as mainly Sass modules for you to import into your own SCSS.
+Unfortunately, there are no plans for LESS support. Also for now, vendor-
+prefixing is left to the build layer, so you&#39;re encouraged to select an auto-
+prefixing solution.</p>
 <h2 id="plugins-coming-soon">Plugins Coming Soon</h2>
 <h3 id="hlf-editable">HLF Editable</h3>
 <p>Main features:</p>
@@ -99,15 +114,26 @@ events through a customizable delay.</li>
 composed based on data-attribute configuration. </li>
 <li>Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).</li>
 </ul>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">your-project&gt; bower install hlf-jquery
+</code></pre>
 <h2 id="development">Development</h2>
-<p>Start off with <code>npm install</code>.</p>
-<h3 id="grunt-tasks">Grunt Tasks</h3>
-<ul>
-<li>Use <code>grunt</code> to start developing.</li>
-<li>Use <code>grunt dist</code> to build.</li>
-<li>Use <code>grunt docs</code> to generate Groc documentation.</li>
-<li>Use <code>grunt test</code> to test.</li>
-</ul>
+<pre><code class="lang-bash">hlf-jquery&gt; npm install
+hlf-jquery&gt; gem install -N sass # for grunt-contrib-sass
+
+# to install
+hlf-jquery&gt; grunt install
+
+# to run some tests first
+hlf-jquery&gt; grunt test
+
+# to read some docs
+hlf-jquery&gt; grunt docs
+
+# to start developing
+hlf-jquery&gt; grunt
+</code></pre>
+<p>Note that Grunt task options and multi-tasks are in build/.</p>
 <h3 id="sample-st2-project-file">Sample ST2 Project File</h3>
 <pre><code class="lang-json">{
   &quot;folders&quot;:
