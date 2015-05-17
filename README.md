@@ -1,5 +1,13 @@
 # HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery) ![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg)
 
+     __         __       ___
+    /\ \       /\ \     / __\
+    \ \ \___   \ \ \   /\ \_/_
+     \ \  __`\  \ \ \  \ \  __\
+      \ \ \ \ \  \ \ \  \ \ \_/
+       \ \_\ \_\  \ \_\  \ \_\
+        \/_/ /_/   \/_/   \/_/
+
 jQuery extensions and plugins for quality UI and implemented following best
 practices. The [annotated source code][] is also available and include
 documented examples.
