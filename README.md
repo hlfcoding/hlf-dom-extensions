@@ -6,9 +6,7 @@ documented examples.
 
 All modules have scoped debug flags, jQuery namespaces, and no-conflict support
 with jQuery. They are exported using [UMD]() and work with AMD, Browserify, or
-plain. Only other required dependency is UnderscoreJS. Modernizr is a suggested
-dependency for true feature detection. Other Bower dependencies are for tests
-and demos.
+plain.
 
 ## Plugins
 
@@ -60,6 +58,17 @@ Main features:
 - Hover-intent provides rate-limited versions of mouseenter and mouseleave 
   events through a customizable delay.
 
+## Requirements
+
+Only other required dependency is UnderscoreJS. Modernizr is a suggested
+dependency for true feature detection. Other Bower dependencies are for tests
+and demos.
+
+Styling is released as mainly Sass modules for you to import into your own SCSS.
+Unfortunately, there are no plans for LESS support. Also for now, vendor-
+prefixing is left to the build layer, so you're encouraged to select an auto-
+prefixing solution.
+
 ## Plugins Coming Soon
 
 ### HLF Editable
@@ -80,6 +89,7 @@ your-project> bower install hlf-jquery
 
 ```bash
 hlf-jquery> npm install
+hlf-jquery> gem install -N sass # for grunt-contrib-sass
 
 # to install
 hlf-jquery> grunt install
