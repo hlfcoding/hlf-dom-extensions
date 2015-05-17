@@ -17,7 +17,10 @@ module.exports =
 
   copy:
     expand: yes
-    src: 'dist/*'
+    src: [
+      'dist/*'
+      '!dist/*.css*'
+    ]
     dest: 'release/'
     extDot: 'last'
     flatten: yes
