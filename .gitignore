@@ -1,3 +1,4 @@
 /tests/**/*.css
 /tests/**/*.js
+/tests/**/*.map
 /.grunt

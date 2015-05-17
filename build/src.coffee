@@ -1,12 +1,16 @@
 module.exports =
 
   autoprefixer:
+    options:
+      map: yes
     expand: yes
     src: 'dist/**/*.css'
     ext: '.css'
     extDot: 'last'
 
-  coffee: 
+  coffee:
+    options:
+      sourceMap: yes
     expand: yes
     src: 'src/**/*.coffee'
     dest: 'dist/'
