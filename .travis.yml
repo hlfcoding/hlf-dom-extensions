@@ -4,10 +4,8 @@ node_js:
 
 before_install: |
   npm install -g grunt-cli
-  gem install --no-ri --no-rdoc sass
+  gem install -N sass
 
-before_script: |
-  grunt lib
-  grunt dist
+before_script: grunt install
 
 script: grunt test
