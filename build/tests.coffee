@@ -8,12 +8,16 @@ module.exports =
       src: 'tests/*.unit.html'
 
   autoprefixer:
+    options:
+      map: yes
     expand: yes
     src: 'tests/**/*.css'
     ext: '.css'
     extDot: 'last'
 
   coffee:
+    options:
+      sourceMap: yes
     expand: yes
     src: 'tests/**/*.coffee'
     ext: '.js'

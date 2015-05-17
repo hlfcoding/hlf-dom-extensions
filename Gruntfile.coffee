@@ -18,7 +18,8 @@ module.exports = (grunt) ->
       src: aspects.src.autoprefixer
       tests: aspects.tests.autoprefixer
 
-    bower: aspects.lib.bower
+    bower:
+      lib: aspects.lib.bower
 
     bump: aspects.release.bump
 
@@ -38,9 +39,11 @@ module.exports = (grunt) ->
       'gh-pages': aspects['gh-pages'].copy
       release: aspects.release.copy
 
-    'gh-pages': aspects['gh-pages']['gh-pages']
+    'gh-pages':
+      'gh-pages': aspects['gh-pages']['gh-pages']
       
-    groc: aspects.docs.groc
+    groc:
+      docs: aspects.docs.groc
 
     markdown:
       'gh-pages': aspects['gh-pages'].markdown
@@ -51,20 +54,19 @@ module.exports = (grunt) ->
       src: aspects.src.sass
       tests: aspects.tests.sass
 
+    uglify:
+      release: aspects.release.uglify
+
     watch:
       # Caveat: These watch tasks do not clean.
-      css:
-        files: '{src,tests}/**/*.scss'
-        tasks: ['copy:dist', 'sass', 'autoprefixer']
-      docs:
-        files: aspects.docs.groc.all.src
-        tasks: ['docs']
-      js:
-        files: '{src,tests}/**/*.coffee'
-        tasks: ['coffee']
+      css: aspects.src.watch.css
+      docs: aspects.docs.watch
+      js: aspects.src.watch.js
+      lib: aspects.lib.watch
 
   grunt.loadNpmTasks plugin for plugin in matchdep.filterDev 'grunt-*'
 
-  grunt.registerTask 'default', ['lib', 'dist', 'watch']
+  grunt.registerTask 'default', ['lazy-dist', 'watch']
+  grunt.registerTask 'install', ['lib', 'dist']
 
   aspect.task() for name, aspect of aspects when name isnt 'src'

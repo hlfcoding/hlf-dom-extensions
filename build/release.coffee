@@ -17,9 +17,31 @@ module.exports =
 
   copy:
     expand: yes
-    src: 'dist/*'
+    src: [
+      'dist/*'
+      '!dist/*.css*'
+    ]
     dest: 'release/'
     extDot: 'last'
     flatten: yes
 
-  task: -> grunt.registerTask 'release', ['dist', 'clean:release', 'copy:release']
+  uglify:
+    options:
+      sourceMap: yes
+      sourceMapName: 'release/jquery.hlf.min.js.map'
+    files:
+      'release/jquery.hlf.min.js': [
+        'dist/jquery.extension.hlf.core.js'
+        'dist/jquery.extension.hlf.event.js'
+        'dist/jquery.hlf.tip.js'
+      ]
+
+  task: ->
+    grunt.registerTask 'release', [
+      'dist'
+      # Uncompressed version.
+      'clean:release'
+      'copy:release'
+      # Compressed version.
+      'uglify:release'
+    ]

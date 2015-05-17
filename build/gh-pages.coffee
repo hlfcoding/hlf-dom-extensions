@@ -39,5 +39,5 @@ module.exports =
       'clean:gh-pages'
       'copy:gh-pages'
       'markdown:gh-pages'
-      'gh-pages'
+      'gh-pages:gh-pages'
     ]

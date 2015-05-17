@@ -14,12 +14,21 @@
     "underscore": "~1.6.0"
   },
   "devDependencies": {
+    "es6-promise": "~2.1.0",
+    "gsap": "~1.16.1",
     "modernizr": "~2.8.2",
     "normalize-css": "~3.0.1",
+    "qunit": "~1.14.0",
     "requirejs": "~2.1.11",
-    "qunit": "~1.14.0"
+    "velocity": "~1.2.2"
   },
   "exportsOverride": {
+    "es6-promise": {
+      ".": "promise.js"
+    },
+    "gsap": {
+      ".": "src/uncompressed/{jquery.gsap,TweenLite,plugins/CSSPlugin}.js"
+    },
     "jquery": {
       ".": "dist/jquery.js"
     },
@@ -37,6 +46,9 @@
     },
     "underscore": {
       ".": "underscore.js"
+    },
+    "velocity": {
+      ".": "velocity.js"
     }
   }
 }

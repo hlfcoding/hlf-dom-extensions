@@ -5,13 +5,20 @@
     <title>HLF Tip Test</title>
     <link rel="stylesheet" href="../lib/normalize.css" media="all" />
     <link rel="stylesheet" href="css/tip.css" media="all" />
-    <script data-main="js/tip" src="../lib/require.js"></script>
+    <script src="../lib/modernizr.js"></script>
   </head>
   <body>
     <header>
       <h1>HLF Tip Test</h1>
       <span>(see <a data-rel="docs" href="../docs/tests/js/tip.html" target="_blank">docs</a> for code)</span>
+      <fieldset class="animator">
+        <legend>Animator</legend>
+        <label><input type="radio" name="animator" value="jquery" /> jQuery</label>
+        <label><input type="radio" name="animator" value="gsap" /> GreenSock</label>
+        <label><input type="radio" name="animator" value="velocity" /> Velocity</label>
+      </fieldset>
     </header>
     <div id="main"></div>
+    <script data-main="js/tip" src="../lib/require.js"></script>
   </body>
 </html>

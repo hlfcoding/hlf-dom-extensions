@@ -6,15 +6,15 @@ HLF Tip jQuery Plugin
 # The base `tip` plugin does several things. It does basic parsing of trigger
 # element attributes for the tip content. It can anchor itself to a trigger by
 # selecting the best direction. It can follow the cursor. It toggles its
-# appearance by fading in and out and resizing, all via configurable animations.
-# It can display custom tip content. It uses of the `hlf.hoverIntent` event
-# extension to prevent appearance 'thrashing.' Last, the tip object attaches to
-# the context element. It acts as tip for the the current jQuery selection via
-# event delegation.
+# appearance by fading in and out and resizing, all via configurable animation
+# options. It can display custom tip content. It uses the `hlf.hoverIntent`
+# event extension to prevent over-queueing of appearance handlers. Last, the tip
+# object attaches to the context element. It acts as tip for the the current
+# jQuery selection via event delegation.
 
 # The extended `snapTip` plugin extends the base tip. It allows the tip to snap
 # to the trigger element. And by default the tip locks into place. But turn on
-# only one axis of snapping, and the tip will track the mouse only on the other
+# only one axis of snapping, and the tip will follow the mouse only on the other
 # axis. For example, snapping to the x-axis will only allow the tip to shift
 # along the y-axis. The x will remain constant.
 
@@ -43,7 +43,11 @@ HLF Tip jQuery Plugin
     # - Browser globals (root is window). No globals needed.
     factory jQuery, _, jQuery.hlf
 )(@, ($, _, hlf) ->
-  
+
+  #- Cache common references internally.
+  _requestAnimationFrame = window.requireAnimationFrame or
+    window.Modernizr?.prefixed 'requestAnimationFrame', window
+
   # It takes some more boilerplate to write the plugins. Any of this additional
   # support API is put into a plugin specific namespace under `$.hlf`.
   hlf.tip =
@@ -79,6 +83,10 @@ HLF Tip jQuery Plugin
       #   direction. Note that the direction data structure must be an array of
       #   `components`, and conventionally with top/bottom first.
       defaultDirection: ['bottom', 'right']
+      # - `fireEvents` can be enabled to allow `show.hlf.tip` and `shown.hlf.tip`,
+      #   `hide.hlf.tip` and `hidden.hlf.tip` events to be triggered from the
+      #   trigger elements. This is off by default to improve performance.
+      fireEvents: on
       # - `tipTemplate` should return interpolated html when given the
       #   additional container class list. Its context is the plugin instance.
       tipTemplate: (containerClass) ->
@@ -106,13 +114,18 @@ HLF Tip jQuery Plugin
         (classNames[key] = "#{pre}#{key}") for key in keys
         classNames.tip = 'js-tip'
         classNames
+      # - `animator` by default uses the stock jQuery animation system. If you
+      #   want a more performant system, like GreenSock or Velocity, replace
+      #   this with a custom implementation.
+      animator:
+        show: ($el, options) -> $el.stop().fadeIn options
+        hide: ($el, options) -> $el.stop().fadeOut options
       # - `animations` are very configurable. Individual animations can be
       #   customized and will default to the base animation settings as needed.
       animations:
         base:
           delay: 0
           duration: 200
-          easing: 'ease-in-out'
           enabled: yes
         show:
           delay: 200
@@ -120,6 +133,11 @@ HLF Tip jQuery Plugin
           delay: 200
         resize:
           delay: 300
+          easing: 'ease-in-out'
+      # - `followUsingTransform` will automatically check CSS transforms support
+      #   via Modernizr. So you'll need to use Modernizr or manually enable this
+      #   option to use the more performant transforms.
+      followUsingTransform: window.Modernizr?.csstransforms
 
   hlf.tip.snap =
     debug: off
@@ -140,9 +158,9 @@ HLF Tip jQuery Plugin
         # if the option is on.
         # 
         # - `snap.toXAxis` is the switch for snapping along x-axis and only
-        #   tracking along y-axis. Off by default.
+        #   following along y-axis. Off by default.
         # - `snap.toYAxis` is the switch for snapping along y-axis and only
-        #   tracking along x-axis. Off by default.
+        #   following along x-axis. Off by default.
         # - `snap.toTrigger` is the switch for snapping to trigger built on
         #   axis-snapping. On by default.
         snap:
@@ -246,16 +264,28 @@ HLF Tip jQuery Plugin
 
     # 𝒇 `_setState` is a simple setter that returns false if state doesn't
     # change. It also handles minor tasks when switching to a new state.
-    _setState: (state, data...) ->
+    _setState: (state, data) ->
       return no if state is @_state
       #- previous = @_state
       @_state = state
       @debugLog @_state
       switch state
-        when 'asleep' then @afterHide.apply @, data
-        when 'awake' then @afterShow.apply @, data
-        when 'sleeping' then clearTimeout @_wakeCountdown
+        when 'asleep'
+          @_$currentTrigger?.trigger @evt('hidden') if @fireEvents is on
+          @afterHide data?.event
+          _.defer => @_togglePositionTransition off
+        when 'awake'
+          @_$currentTrigger?.trigger @evt('shown') if @fireEvents is on
+          @afterShow data?.event
+          _.defer => @_togglePositionTransition off
+        when 'sleeping'
+          @_$currentTrigger?.trigger @evt('hide') if @fireEvents is on
+          clearTimeout @_wakeCountdown
+          if data?.event? and $(data.event.target).hasClass(@classNames.trigger)
+            isLeavingToContext = not $(data.event.relatedTarget).hasClass @classNames.trigger
+            @_togglePositionTransition isLeavingToContext
         when 'waking'
+          @_$currentTrigger?.trigger @evt('show') if @fireEvents is on
           clearTimeout @_sleepCountdown
           @_triggerChanged = yes
 
@@ -318,11 +348,12 @@ HLF Tip jQuery Plugin
       deferred = $.Deferred()
       promise = deferred.promise()
       @_setCurrentTrigger $trigger
-
-      # - Go directly to the position updating if no toggling is needed.
+      #- Abstract into subroutine.
       updateBeforeWake = =>
         @_positionToTrigger $trigger, event
         @onShow event # Hook in custom logic.
+
+      # - Go directly to the position updating if no toggling is needed.
       if @_state is 'awake'
         @debugLog 'quick update'
         updateBeforeWake()
@@ -338,12 +369,17 @@ HLF Tip jQuery Plugin
       # - Our `wake` subroutine runs the timed-out logic, which includes the fade
       #   transition. Ensure other tips disappear during the transition.
       wake = (duration) =>
-        duration ?= @animations.show.duration
-        updateBeforeWake()
-        @$tip.stop().fadeIn duration, =>
-          @_setState 'awake', event # Hook in custom logic.
+        updateBeforeWake() # Hook in custom logic.
+        options = _.defaults { duration }, @animations.show
+        options.done = =>
+          @_setState 'awake', { event }
           deferred.resolve()
-        @$tip.siblings(@classNames.tip).stop().fadeOut duration
+        options.fail = -> deferred.reject()
+        @animator.show @$tip, options
+        @$tip.siblings(@classNames.tip).each (idx, el) =>
+          options = _.defaults { duration }, @animation.hide
+          @animator.hide $el, options
+
       # - Wake up depending on current state. If we are in the middle of
       #   sleeping, stop sleeping by updating `_sleepCountdown` and wake up
       #   sooner.
@@ -353,7 +389,7 @@ HLF Tip jQuery Plugin
         wake(0)
       # - Start the normal wakeup and update `_wakeCountdown`.
       else if event? and event.type is 'truemouseenter'
-        @_setState 'waking'
+        @_setState 'waking', { event }
         @_wakeCountdown = setTimeout wake, @animations.show.delay
 
       promise
@@ -362,7 +398,7 @@ HLF Tip jQuery Plugin
     # `wakeByTrigger`. It also updates `_state` and returns a promise that
     # fails if waking gets skipped. As long as the tip isn't truly visible, or
     # sleeping is redundant, it bails.
-    sleepByTrigger: ($trigger) ->
+    sleepByTrigger: ($trigger, event) ->
       deferred = $.Deferred()
       promise = deferred.promise()
 
@@ -371,15 +407,29 @@ HLF Tip jQuery Plugin
         deferred.reject()
         return promise
 
-      @_setState 'sleeping'
+      @_setState 'sleeping', { event }
       @_sleepCountdown = setTimeout =>
         @onHide() # Hook in custom logic.
-        @$tip.stop().fadeOut @animations.hide.duration, =>
-          @_setState 'asleep'
+        options = _.clone @animations.hide
+        options.done = =>
+          @_setState 'asleep', { event }
           deferred.resolve()
+        options.fail = -> deferred.reject()
+        @animator.hide @$tip, options
       , @animations.hide.delay
 
       promise
+
+    # 𝒇 `_togglePositionTransition` adds a position css transition to the tip.
+    # This normally is very expensive considering we update position on mousemove.
+    # But it's used together with a test to see if the cursor is likely currently
+    # in a gap between triggers. See `_setState` for details.
+    _togglePositionTransition: (toggled) ->
+      rest = '0.1s linear'
+      transition = if toggled
+        (if @followUsingTransform then "transform #{rest}" else "top #{rest}, left #{rest}")
+      else ''
+      @$tip.css 'transition', transition
 
     # ### Content
 
@@ -420,12 +470,12 @@ HLF Tip jQuery Plugin
           @debugLog 'enter tip'
           if @_$currentTrigger?
             @_$currentTrigger.data @attr('is-active'), yes
-            @wakeByTrigger @_$currentTrigger
+            @wakeByTrigger @_$currentTrigger, event
         mouseleave: (event) =>
           @debugLog 'leave tip'
           if @_$currentTrigger?
             @_$currentTrigger.data @attr('is-active'), no
-            @sleepByTrigger @_$currentTrigger
+            @sleepByTrigger @_$currentTrigger, event
       if @autoDirection is on
         $(window).resize _.debounce @_setBounds, 300
 
@@ -467,15 +517,14 @@ HLF Tip jQuery Plugin
           @debugLog event.type
           switch event.type
             when 'truemouseenter' then @_onTriggerMouseMove event
-            when 'truemouseleave' then @sleepByTrigger $(event.target)
+            when 'truemouseleave' then @sleepByTrigger $(event.target), event
             else @debugLog 'unknown event type', event.type
           event.stopPropagation()
 
       if @doFollow is on
-        if window.requestAnimationFrame?
+        if _requestAnimationFrame?
           onMouseMove = (event) =>
-            requestAnimationFrame (timestamp) =>
-              @_onTriggerMouseMove event
+            _requestAnimationFrame (timestamp) => @_onTriggerMouseMove event
         else 
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
         @$context.on 'mousemove', selector, onMouseMove
@@ -517,7 +566,11 @@ HLF Tip jQuery Plugin
         #- If direction changed due to tip being wider than trigger.
         offset.left += triggerWidth if tipWidth > triggerWidth
 
-      @$tip.css offset
+      css = if @followUsingTransform
+        { top: 0, left: 0, transform: "translate(#{offset.left}px, #{offset.top}px)" }
+      else offset
+
+      @$tip.css css
 
     # 𝒇 `_setBounds` updates `_bounds` per `$viewport`'s inner bounds, and those
     # measures get used by `_updateDirectionByTrigger`.
@@ -573,10 +626,9 @@ HLF Tip jQuery Plugin
         duration = @animations.resize.duration / 1000.0 + 's'
         easing = @animations.resize.easing
         transitionStyle.push "width #{duration} #{easing}", "height #{duration} #{easing}"
-      transitionStyle = transitionStyle.join(',')
 
       @_setTip $tip
-      @selectByClass('content').css 'transition', transitionStyle
+      @selectByClass('content').css 'transition', transitionStyle.join(',')
       @$tip.prependTo @$viewport
 
     # ### Subroutines

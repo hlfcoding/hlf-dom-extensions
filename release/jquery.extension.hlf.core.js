@@ -368,3 +368,5 @@ HLF Core jQuery Extension
   });
 
 }).call(this);
+
+//# sourceMappingURL=jquery.extension.hlf.core.js.map

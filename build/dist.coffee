@@ -7,6 +7,7 @@ module.exports =
     '!dist/.gitignore'
   ]
 
+  # Copy original scss for importing.
   copy:
     expand: yes
     src: 'src/**/*.scss'
@@ -21,4 +22,11 @@ module.exports =
       'coffee'
       'sass'
       'autoprefixer'
+    ]
+    # This task's optimized for speed, at cost of artifacts.
+    grunt.registerTask 'lazy-dist', [
+      'newer:copy:dist'
+      'newer:coffee'
+      'newer:sass'
+      'newer:autoprefixer'
     ]

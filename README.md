@@ -1,13 +1,20 @@
 # HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery) ![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg)
 
+     __         __       ___
+    /\ \       /\ \     / __\
+    \ \ \___   \ \ \   /\ \_/_
+     \ \  __`\  \ \ \  \ \  __\
+      \ \ \ \ \  \ \ \  \ \ \_/
+       \ \_\ \_\  \ \_\  \ \_\
+        \/_/ /_/   \/_/   \/_/
+
 jQuery extensions and plugins for quality UI and implemented following best
 practices. The [annotated source code][] is also available and include
 documented examples.
 
 All modules have scoped debug flags, jQuery namespaces, and no-conflict support
 with jQuery. They are exported using [UMD]() and work with AMD, Browserify, or
-plain. Only other dependency is UnderscoreJS. Other Bower dependencies are for
-tests and demos.
+plain.
 
 ## Plugins
 
@@ -22,6 +29,7 @@ Main features summary:
 - Based on hover 'intent' and prevents redundant toggling or DOM thrashing.
 - Re-use the same tip for a group of triggers to keep DOM light.
 - Aware of available space surrounding the triggering element.
+- Configurable animator, so opting out of non-GPU jQuery animations is easy.
 - Has an extended, 'snapping' version that only follows the mouse on one axis.
   The tip snaps to the trigger's edge on the other axis.
 
@@ -58,6 +66,17 @@ Main features:
 - Hover-intent provides rate-limited versions of mouseenter and mouseleave 
   events through a customizable delay.
 
+## Requirements
+
+Only other required dependency is UnderscoreJS. Modernizr is a suggested
+dependency for true feature detection. Other Bower dependencies are for tests
+and demos.
+
+Styling is released as mainly Sass modules for you to import into your own SCSS.
+Unfortunately, there are no plans for LESS support. Also for now, vendor-
+prefixing is left to the build layer, so you're encouraged to select an auto-
+prefixing solution.
+
 ## Plugins Coming Soon
 
 ### HLF Editable
@@ -78,15 +97,19 @@ your-project> bower install hlf-jquery
 
 ```bash
 hlf-jquery> npm install
+hlf-jquery> gem install -N sass # for grunt-contrib-sass
+
+# to install
+hlf-jquery> grunt install
 
 # to run some tests first
-hlf-jquery> grunt dist test
+hlf-jquery> grunt test
 
 # to read some docs
 hlf-jquery> grunt docs
 
 # to start developing
-hlf-jquery> grunt 
+hlf-jquery> grunt
 ```
 
 Note that Grunt task options and multi-tasks are in build/.
