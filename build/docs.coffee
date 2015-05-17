@@ -16,7 +16,7 @@ module.exports =
   ]
 
   groc:
-    all: { src: src }
+    src: src
     options: { out: 'docs/' }
 
   watch:
@@ -24,4 +24,4 @@ module.exports =
     # Sadly groc needs to run with all the sources to build its ToC.
     tasks: ['docs']
 
-  task: -> grunt.registerTask 'docs', ['clean:docs', 'groc']
+  task: -> grunt.registerTask 'docs', ['clean:docs', 'groc:docs']

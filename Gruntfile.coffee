@@ -18,7 +18,8 @@ module.exports = (grunt) ->
       src: aspects.src.autoprefixer
       tests: aspects.tests.autoprefixer
 
-    bower: aspects.lib.bower
+    bower:
+      lib: aspects.lib.bower
 
     bump: aspects.release.bump
 
@@ -38,9 +39,11 @@ module.exports = (grunt) ->
       'gh-pages': aspects['gh-pages'].copy
       release: aspects.release.copy
 
-    'gh-pages': aspects['gh-pages']['gh-pages']
+    'gh-pages':
+      'gh-pages': aspects['gh-pages']['gh-pages']
       
-    groc: aspects.docs.groc
+    groc:
+      docs: aspects.docs.groc
 
     markdown:
       'gh-pages': aspects['gh-pages'].markdown
