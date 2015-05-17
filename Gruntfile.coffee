@@ -53,18 +53,14 @@ module.exports = (grunt) ->
 
     watch:
       # Caveat: These watch tasks do not clean.
-      css:
-        files: '{src,tests}/**/*.scss'
-        tasks: ['copy:dist', 'sass', 'autoprefixer']
-      docs:
-        files: aspects.docs.groc.all.src
-        tasks: ['docs']
-      js:
-        files: '{src,tests}/**/*.coffee'
-        tasks: ['coffee']
+      css: aspects.src.watch.css
+      docs: aspects.docs.watch
+      js: aspects.src.watch.js
+      lib: aspects.lib.watch
 
   grunt.loadNpmTasks plugin for plugin in matchdep.filterDev 'grunt-*'
 
-  grunt.registerTask 'default', ['lib', 'dist', 'watch']
+  grunt.registerTask 'default', ['lazy-dist', 'watch']
+  grunt.registerTask 'install', ['lib', 'dist']
 
   aspect.task() for name, aspect of aspects when name isnt 'src'

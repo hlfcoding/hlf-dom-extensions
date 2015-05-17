@@ -15,5 +15,9 @@ module.exports =
 
   clean: ['lib/*', '!lib/.gitignore']
 
+  watch:
+    files: 'bower.json'
+    tasks: ['lib']
+
   task: -> grunt.registerTask 'lib', ['clean:lib', 'bower']
 

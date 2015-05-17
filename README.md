@@ -81,14 +81,17 @@ your-project> bower install hlf-jquery
 ```bash
 hlf-jquery> npm install
 
+# to install
+hlf-jquery> grunt install
+
 # to run some tests first
-hlf-jquery> grunt dist test
+hlf-jquery> grunt test
 
 # to read some docs
 hlf-jquery> grunt docs
 
 # to start developing
-hlf-jquery> grunt 
+hlf-jquery> grunt
 ```
 
 Note that Grunt task options and multi-tasks are in build/.

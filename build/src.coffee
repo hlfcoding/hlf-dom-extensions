@@ -21,3 +21,11 @@ module.exports =
     ext: '.css'
     extDot: 'last'
     flatten: yes
+
+  watch:
+    css:
+      files: '{src,tests}/**/*.scss'
+      tasks: ['newer:copy:dist', 'newer:sass', 'newer:autoprefixer']
+    js:
+      files: '{src,tests}/**/*.coffee'
+      tasks: ['newer:coffee']
