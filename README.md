@@ -129,6 +129,11 @@ Note that Grunt task options and multi-tasks are in build/.
         "release/*",
         "tests/*.css",
         "tests/*.js"
+      ],
+      "folder_exclude_patterns":
+      [
+        "node_modules",
+        "gh-pages"
       ]
     }
   ]
