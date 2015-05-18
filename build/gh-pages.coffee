@@ -28,6 +28,9 @@ module.exports =
 
   markdown:
     options:
+      markdownOptions:
+        gfm: yes
+        highlight: 'auto'
       template: 'gh-pages/template.html'
     src: 'gh-pages/README.md'
     dest: 'gh-pages/index.html'
