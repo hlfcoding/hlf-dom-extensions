@@ -93,7 +93,7 @@ Main features:
 your-project> bower install hlf-jquery
 ```
 
-## Development [![devDependency Status](https://david-dm.org/hlfcoding/hlf-jquery/dev-status.svg)](https://david-dm.org/cdnjs/cdnjs#info=devDependencies)
+## Development [![devDependency Status](https://david-dm.org/hlfcoding/hlf-jquery/dev-status.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
 
 ```bash
 hlf-jquery> npm install

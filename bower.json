@@ -6,7 +6,10 @@
     "Peng Wang <peng@pengxwang.com>"
   ],
   "description": "jQuery plugins and extensions for quality UI.",
-  "main": "release/jquery.hlf.min.js",
+  "main": [
+    "release/*",
+    "!release/*.min.js"
+  ],
   "moduleType": [
     "amd",
     "globals",
