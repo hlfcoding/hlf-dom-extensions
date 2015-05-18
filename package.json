@@ -2,7 +2,7 @@
   "name": "hlf-jquery-development",
   "version": "0.2.1",
   "author": "Peng Wang <peng@pengxwang.com>",
-  "description": "jQuery extensions and plugins for quality UI. Currently private from lack of Node support.",
+  "description": "jQuery plugins and extensions for quality UI. Currently private from lack of Node support.",
   "license": "MIT",
   "private": true,
   "devDependencies": {

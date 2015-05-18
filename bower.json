@@ -1,9 +1,23 @@
 {
   "name": "hlf-jquery",
   "version": "0.2.1",
-  "main": [
-    "release/*"
+  "homepage": "https://github.com/hlfcoding/hlf-jquery",
+  "authors": [
+    "Peng Wang <peng@pengxwang.com>"
   ],
+  "description": "jQuery plugins and extensions for quality UI.",
+  "main": "release/jquery.hlf.min.js",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "jquery",
+    "js",
+    "tooltip"
+  ],
+  "license": "MIT",
   "ignore": [
     "*",
     "!release/",
