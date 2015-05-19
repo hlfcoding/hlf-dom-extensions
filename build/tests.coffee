@@ -3,21 +3,16 @@ grunt = require 'grunt'
 module.exports =
 
   qunit:
-    all:
-      expand: yes
-      src: 'tests/*.unit.html'
+    expand: yes
+    src: 'tests/*.unit.html'
 
   autoprefixer:
-    options:
-      map: yes
     expand: yes
     src: 'tests/**/*.css'
     ext: '.css'
     extDot: 'last'
 
   coffee:
-    options:
-      sourceMap: yes
     expand: yes
     src: 'tests/**/*.coffee'
     ext: '.js'

@@ -1,16 +1,12 @@
 module.exports =
 
   autoprefixer:
-    options:
-      map: yes
     expand: yes
     src: 'dist/**/*.css'
     ext: '.css'
     extDot: 'last'
 
   coffee:
-    options:
-      sourceMap: yes
     expand: yes
     src: 'src/**/*.coffee'
     dest: 'dist/'
@@ -32,4 +28,4 @@ module.exports =
       tasks: ['newer:copy:dist', 'newer:sass', 'newer:autoprefixer']
     js:
       files: '{src,tests}/**/*.coffee'
-      tasks: ['newer:coffee']
+      tasks: ['newer:coffee', 'newer:qunit']

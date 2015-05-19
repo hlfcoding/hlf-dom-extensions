@@ -15,6 +15,7 @@ module.exports = (grunt) ->
       options:
         browsers: ['last 2 versions', 'ie >= 8']
         cascade: yes
+        map: yes
       src: aspects.src.autoprefixer
       tests: aspects.tests.autoprefixer
 
@@ -31,6 +32,8 @@ module.exports = (grunt) ->
       release: aspects.release.clean
 
     coffee:
+      options:
+        sourceMap: yes
       src: aspects.src.coffee
       tests: aspects.tests.coffee
 
@@ -48,7 +51,8 @@ module.exports = (grunt) ->
     markdown:
       'gh-pages': aspects['gh-pages'].markdown
 
-    qunit: aspects.tests.qunit
+    qunit:
+      tests: aspects.tests.qunit
 
     sass:
       src: aspects.src.sass
