@@ -93,7 +93,7 @@ Main features:
 your-project> bower install hlf-jquery
 ```
 
-## Development
+## Development [![devDependency Status](https://david-dm.org/hlfcoding/hlf-jquery/dev-status.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
 
 ```bash
 hlf-jquery> npm install
@@ -129,6 +129,11 @@ Note that Grunt task options and multi-tasks are in build/.
         "release/*",
         "tests/*.css",
         "tests/*.js"
+      ],
+      "folder_exclude_patterns":
+      [
+        "node_modules",
+        "gh-pages"
       ]
     }
   ]
