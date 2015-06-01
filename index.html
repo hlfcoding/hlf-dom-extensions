@@ -3,50 +3,41 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=640" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Gentium+Book+Basic:400italic,700italic|Inconsolata:400,700|Merriweather+Sans:400,700,800" media="all">
+    <link rel="stylesheet" href="stylesheets/main.css" media="all">
 
-    <script type="text/javascript" src="javascripts/modernizr.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('#main_content').headsmart()
-      })
-    </script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
     <title>HLF jQuery by hlfcoding</title>
   </head>
 
   <body>
-    <a id="forkme_banner" href="https://github.com/hlfcoding/hlf-jquery">View on GitHub</a>
+    <a id="forkme_banner" href="https://github.com/hlfcoding/hlf-jquery">Fork Me on GitHub</a>
     <div class="shell">
 
       <header>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
+        <div class="ribbon-outer">
+          <div class="ribbon-inner">
             <h1>HLF jQuery</h1>
             <h2>Custom jQuery Plugins</h2>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
+          </div>
+          <div class="left-tail" role="presentation"><div class="tip"></div></div>
+          <div class="right-tail" role="presentation"><div class="tip"></div></div>
+        </div>
       </header>
 
       <section id="downloads">
-        <span class="inner">
+        <div class="inner">
           <a href="https://github.com/hlfcoding/hlf-jquery/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/hlfcoding/hlf-jquery/tarball/master" class="tgz"><em>download</em> .TGZ</a>
-        </span>
+          <div class="tip" role="presentation"></div>
+        </div>
+        <div class="tip" role="presentation"></div>
       </section>
 
-
-      <span class="banner-fix"></span>
-
-
       <section id="main_content">
-        <h1 id="hlf-jquery-library-build-status-https-travis-ci-org-hlfcoding-hlf-jquery-svg-branch-master-https-travis-ci-org-hlfcoding-hlf-jquery-bower-version-https-img-shields-io-bower-v-hlf-jquery-svg-">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master" alt="Build Status"></a> <img src="https://img.shields.io/bower/v/hlf-jquery.svg" alt="Bower Version"></h1>
+        <h1 id="hlf-jquery-library-build-status-https-img-shields-io-travis-hlfcoding-hlf-jquery-svg-https-travis-ci-org-hlfcoding-hlf-jquery-bower-version-https-img-shields-io-bower-v-hlf-jquery-svg-github-license-https-img-shields-io-github-license-hlfcoding-hlf-jquery-svg-">HLF jQuery Library <a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://img.shields.io/travis/hlfcoding/hlf-jquery.svg" alt="Build Status"></a> <img src="https://img.shields.io/bower/v/hlf-jquery.svg" alt="Bower Version"> <img src="https://img.shields.io/github/license/hlfcoding/hlf-jquery.svg" alt="GitHub License"></h1>
 <pre><code> __         __       ___
 /<span class="hljs-command">\ </span><span class="hljs-command">\ </span>      /<span class="hljs-command">\ </span><span class="hljs-command">\ </span>    / __<span class="hljs-command">\
 </span><span class="hljs-command">\ </span><span class="hljs-command">\ </span><span class="hljs-command">\_</span>__   <span class="hljs-command">\ </span><span class="hljs-command">\ </span><span class="hljs-command">\ </span>  /<span class="hljs-command">\ </span><span class="hljs-command">\_</span>/_
@@ -117,7 +108,7 @@ composed based on data-attribute configuration. </li>
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">your-<span class="hljs-keyword">project</span>&gt; bower <span class="hljs-keyword">install</span> hlf-jquery
 </code></pre>
-<h2 id="development-devdependency-status-https-david-dm-org-hlfcoding-hlf-jquery-dev-status-svg-https-david-dm-org-hlfcoding-hlf-jquery-info-devdependencies-">Development <a href="https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies"><img src="https://david-dm.org/hlfcoding/hlf-jquery/dev-status.svg" alt="devDependency Status"></a></h2>
+<h2 id="development-devdependency-status-https-img-shields-io-david-dev-hlfcoding-hlf-jquery-svg-https-david-dm-org-hlfcoding-hlf-jquery-info-devdependencies-">Development <a href="https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies"><img src="https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg" alt="devDependency Status"></a></h2>
 <pre><code class="lang-bash">hlf-jquery&gt; npm install
 hlf-jquery&gt; gem install -N sass # <span class="hljs-keyword">for</span> grunt-contrib-sass
 
@@ -182,19 +173,34 @@ DEALINGS <span class="hljs-keyword">IN</span> THE SOFTWARE.</span>
       </section>
 
       <footer>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <p>this project by <a href="https://github.com/hlfcoding">hlfcoding</a> can be found on <a href="https://github.com/hlfcoding/hlf-jquery">GitHub</a></p>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
+        <div class="ribbon-outer">
+          <div class="ribbon-inner">
+            <p>
+              this fork by <a href="http://github.com/hlfcoding">hlfcoding</a>
+              can be found on <a href="http://github.com/hlfcoding/hlf-jquery">GitHub</a>
+            </p>
+          </div>
+          <div class="left-tail" role="presentation"><div class="tip"></div></div>
+          <div class="right-tail" role="presentation"><div class="tip"></div></div>
+        </div>
         <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
-        <span class="octocat"></span>
+        <div class="octocat"></div>
       </footer>
 
     </div>
 
-    
+    <script>
+      $(function() {
+        var duration = 500;
+        $('body').on('click touchstart', '.ribbon-outer .tip', function(event) {
+          var $tail = $(event.currentTarget);
+          if ($tail.is('.animating')) { return; }
+          $tail.addClass('animating');
+          setTimeout(function() {
+            $tail.removeClass('animating');
+          }, duration);
+        });
+      });
+    </script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-# HLF jQuery Library [![Build Status](https://travis-ci.org/hlfcoding/hlf-jquery.svg?branch=master)](https://travis-ci.org/hlfcoding/hlf-jquery) ![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg)
+# HLF jQuery Library [![Build Status](https://img.shields.io/travis/hlfcoding/hlf-jquery.svg)](https://travis-ci.org/hlfcoding/hlf-jquery) ![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg) ![GitHub License](https://img.shields.io/github/license/hlfcoding/hlf-jquery.svg)
 
      __         __       ___
     /\ \       /\ \     / __\
@@ -93,7 +93,7 @@ Main features:
 your-project> bower install hlf-jquery
 ```
 
-## Development [![devDependency Status](https://david-dm.org/hlfcoding/hlf-jquery/dev-status.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
+## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
 
 ```bash
 hlf-jquery> npm install
