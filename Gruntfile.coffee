@@ -8,7 +8,7 @@ aspects[name] = require "./build/#{name}" for name in [
 
 module.exports = (grunt) ->
 
-  grunt.initConfig
+  config =
     pkg: grunt.file.readJSON 'package.json'
 
     autoprefixer:
@@ -64,9 +64,12 @@ module.exports = (grunt) ->
     watch:
       # Caveat: These watch tasks do not clean.
       css: aspects.src.watch.css
-      docs: aspects.docs.watch
       js: aspects.src.watch.js
       lib: aspects.lib.watch
+
+  config.watch.docs = aspects.docs.watch unless grunt.option('fast')?
+
+  grunt.initConfig config
 
   grunt.loadNpmTasks plugin for plugin in matchdep.filterDev 'grunt-*'
 
