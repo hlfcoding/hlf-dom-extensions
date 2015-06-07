@@ -3,7 +3,7 @@ HLF Tip Visual Tests
 ====================
 ###
 
-# See [tests](../../../tests/tip.visual.html)
+# __See__: [test page](../../../tests/tip.visual.html), [source](../../src/js/jquery.hlf.tip.html).
 
 # Note that the sample logic in tests is in JavaScript (perhaps easier to
 # understand than CoffeeScript) for your convenience.

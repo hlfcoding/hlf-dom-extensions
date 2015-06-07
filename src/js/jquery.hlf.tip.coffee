@@ -3,6 +3,10 @@ HLF Tip jQuery Plugin
 =====================
 ###
 
+# __See__: [tests](../../tests/js/tip.html).
+
+# ❧
+
 # The base `tip` plugin does several things. It does basic parsing of trigger
 # element attributes for the tip content. It can anchor itself to a trigger by
 # selecting the best direction. It can follow the cursor. It toggles its
