@@ -321,7 +321,7 @@ HLF Tip jQuery Plugin
         bottom ?= top
         left ?= right
         size.width -= left + right
-        size.height -= top + bottom + @selectByClass('stem').height() # TODO: This isn't always true.
+        size.height -= top + bottom
 
       size
 
@@ -334,13 +334,12 @@ HLF Tip jQuery Plugin
       size = @$tip.data key
       return size if size?
 
-      $content = @selectByClass 'content'
+      $stem = @selectByClass 'stem'
       wrapped = @_wrapStealthRender =>
-        for direction, offset in $content.position()
-          if offset > 0
-            size = Math.abs offset
-            @$tip.data key, size
-        0
+        size = Math.abs parseInt($stem.css('margin').replace(/0px/g, ''), 10)
+        debugger if size is 0
+        @$tip.data key, size
+        size
       return wrapped()
 
     # ### Appearance
@@ -727,7 +726,6 @@ HLF Tip jQuery Plugin
       #- Modify base binding.
       @$context.on @evt('truemouseleave'), selector, { selector },
         (event) => @_offsetStart = null
-
     
     # ### Positioning
 
@@ -737,6 +735,7 @@ HLF Tip jQuery Plugin
       #- @debugLog baseOffset
       offset = @_offsetForTrigger $trigger
       toTriggerOnly = @snap.toTrigger is on and @snap.toXAxis is off and @snap.toYAxis is off
+      #- Note vertical directions already account for stem-size.
       if @snap.toXAxis is on
         if @_isDirection 'bottom', $trigger
           offset.top += $trigger.outerHeight()
@@ -745,9 +744,11 @@ HLF Tip jQuery Plugin
           offset.left = baseOffset.left - @$tip.outerWidth() / 2
       if @snap.toYAxis is on
         if @_isDirection 'right', $trigger
-          offset.left += $trigger.outerWidth()
+          offset.left += $trigger.outerWidth() + @_stemSize()
+        else if @_isDirection 'left', $trigger
+          offset.left -= @_stemSize()
         if @snap.toXAxis is off
-          offset.top = baseOffset.top - @$tip.outerHeight() / 2
+          offset.top = baseOffset.top - @$tip.outerHeight() / 2 - @_stemSize()
       if toTriggerOnly is on
         if @_isDirection 'bottom', $trigger
           offset.top += $trigger.outerHeight()
