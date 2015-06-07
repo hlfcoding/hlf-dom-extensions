@@ -25,7 +25,7 @@ module.exports =
   watch:
     css:
       files: '{src,tests}/**/*.scss'
-      tasks: ['newer:copy:dist', 'newer:sass', 'newer:autoprefixer']
+      tasks: ['newer:copy:dist', 'sass', 'newer:autoprefixer']
     js:
       files: '{src,tests}/**/*.coffee'
       tasks: ['newer:coffee', 'newer:qunit']
