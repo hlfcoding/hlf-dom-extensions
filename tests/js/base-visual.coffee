@@ -17,6 +17,8 @@ define [
   # Configuration:
   # 
   # - `label` - header text describing the test topic.
+  # - `anchorName` - for the section on its docs page, used to generate `docsUrl`.
+  # - `asFragments` - will render the test differently, directly inside `<body>`.
   # - `className` - a hook for any custom css.
   # - `footerHtml` - optional html for controls for additional testing.
   $.visualTest = (config) ->
