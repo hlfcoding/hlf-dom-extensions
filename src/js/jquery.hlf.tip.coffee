@@ -337,7 +337,6 @@ HLF Tip jQuery Plugin
       $stem = @selectByClass 'stem'
       wrapped = @_wrapStealthRender =>
         size = Math.abs parseInt($stem.css('margin').replace(/0px/g, ''), 10)
-        debugger if size is 0
         @$tip.data key, size
         size
       return wrapped()
