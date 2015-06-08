@@ -127,13 +127,15 @@ Note that Grunt task options and multi-tasks are in build/.
       "file_exclude_patterns":
       [
         "dist/*",
-        "docs/*",
+        "docs/index.html",
         "release/*",
         "tests/*.css",
         "tests/*.js"
       ],
       "folder_exclude_patterns":
       [
+        ".grunt",
+        "docs/*",
         "node_modules",
         "gh-pages"
       ]
