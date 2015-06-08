@@ -223,43 +223,47 @@ section.visual-test {
     max-width: 252px; }
   .js-tip .js-tip-content {
     padding: 9.33333px 14px 11.66667px 14px; }
-  .js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-right .js-tip-stem {
+  .js-tip.js-tip-right .js-tip-stem, .js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem {
     border-right-width: 14px;
+    margin-top: auto;
+    margin-bottom: auto;
+    right: auto;
+    margin-left: -14px;
     left: 0; }
-    .js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-right .js-tip-stem + .js-tip-content {
-      top: auto;
-      bottom: auto;
-      left: 14px; }
-  .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem, .js-tip.js-tip-left .js-tip-stem {
+  .js-tip.js-tip-left .js-tip-stem, .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem {
     border-left-width: 14px;
+    margin-top: auto;
+    margin-bottom: auto;
+    left: auto;
+    margin-right: -14px;
     right: -1px; }
-    .js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-left .js-tip-stem + .js-tip-content {
-      top: auto;
-      bottom: auto;
-      right: 14px; }
-  .js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-bottom .js-tip-stem {
+  .js-tip.js-tip-bottom .js-tip-stem, .js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem {
     border-bottom-width: 14px;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: auto;
+    margin-top: -14px;
     top: 0; }
-    .js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-bottom .js-tip-stem + .js-tip-content {
-      left: auto;
-      right: auto;
-      top: 14px; }
-  .js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem, .js-tip.js-tip-top .js-tip-stem {
+  .js-tip.js-tip-top .js-tip-stem, .js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem {
     border-top-width: 14px;
+    margin-left: auto;
+    margin-right: auto;
+    top: auto;
+    margin-bottom: -14px;
     bottom: 0; }
-    .js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem + .js-tip-content, .js-tip.js-tip-top .js-tip-stem + .js-tip-content {
-      left: auto;
-      right: auto;
-      bottom: 14px; }
-  .js-tip.js-snap-tip-x-side .js-tip-stem {
+  .js-tip.js-snap-tip-x-side > .js-tip-inner > .js-tip-stem {
     border-color: transparent;
-    border-width: 0 10.5px;
+    border-left-width: 11px;
+    border-right-width: 11px;
     left: 50%;
-    margin-left: -10.5px; }
-  .js-tip.js-snap-tip-y-side .js-tip-stem {
+    margin-left: -11px;
+    margin-right: auto; }
+  .js-tip.js-snap-tip-y-side > .js-tip-inner > .js-tip-stem {
     border-color: transparent;
-    border-width: 10.5px 0;
-    margin-top: -10.5px;
+    border-top-width: 11px;
+    border-bottom-width: 11px;
+    margin-top: -11px;
+    margin-bottom: auto;
     top: 50%; }
   .js-tip .js-tip-content {
     background-color: #666;

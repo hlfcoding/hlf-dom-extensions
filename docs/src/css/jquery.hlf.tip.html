@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><title>src/css/jquery.hlf.tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/css/jquery.hlf.tip"><meta name="groc-project-path" content="src/css/jquery.hlf.tip.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/css/jquery.hlf.tip.scss</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="-hlf-tip-jquery-plugin">  HLF Tip jQuery Plugin</h1>
-<p>  There should be no css output from this file.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The main responsibility for the required plugin styling is to provide
+<p>  There should be no css output from this file.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>See</strong>: <a href="../../tests/css/tip.html">tests</a>.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>❧</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The main responsibility for the required plugin styling is to provide
 required layout styles but allow easy customization of skin styles, ie.
 colors, fonts, borders, shadows.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="internal">Internal</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Note the order in this map used to styling the tip based on its side classes.
 Because it gets more than one side class, the style for the side class that&#39;s
@@ -31,8 +31,8 @@ resulting DOM structure looks like:</p>
 }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>tip-layout</code> should be included unless you want to implement your own tip
 layout, specifically around tip stem position. The sizing logic structures
 around <code>em-size</code>. Most of this mixin is handling the variations of classes on
-the tip element. For example: <code>js-tip js-snap-tip js-tip-follow js-tip-bottom
-js-tip-right js-snap-tip-trigger js-snap-tip-x-side</code>.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> tip-layout</span>(<span class="hljs-variable">$em-size</span>:<span class="hljs-preprocessor"> 12px</span>,
+the tip element. For example:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"js-tip js-snap-tip js-tip-follow js-tip-bottom js-tip-right js-snap-tip-trigger js-snap-tip-x-side"</span>&gt;</span></code></pre></div></div><div class="code"><div class="wrapper"><span class="hljs-at_rule">@<span class="hljs-keyword">mixin</span><span class="hljs-preprocessor"> tip-layout</span>(<span class="hljs-variable">$em-size</span>:<span class="hljs-preprocessor"> 12px</span>,
                   <span class="hljs-variable">$content-padding-em</span>:<span class="hljs-preprocessor"> 2</span>/<span class="hljs-number">3</span><span class="hljs-preprocessor"> 1</span><span class="hljs-preprocessor"> 5</span>/<span class="hljs-number">6</span><span class="hljs-preprocessor"> 1</span>,
                   <span class="hljs-variable">$max-width-em</span>:<span class="hljs-preprocessor"> 18</span>,
                   <span class="hljs-variable">$stem-size-em</span>:<span class="hljs-preprocessor"> 1</span>,
@@ -42,7 +42,7 @@ js-tip-right js-snap-tip-trigger js-snap-tip-x-side</code>.</p></div></div><div 
 <li>First calculate <code>*-em</code> parameters into pixels.</li>
 </ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-variable">$max-width</span><span class="hljs-value">: <span class="hljs-variable">$max-width-em</span> * <span class="hljs-variable">$em-size</span>;</span>
   <span class="hljs-variable">$stem-size</span><span class="hljs-value">: <span class="hljs-function">round</span>(<span class="hljs-variable">$stem-size-em</span> * <span class="hljs-variable">$em-size</span>);</span>
-  <span class="hljs-variable">$stem-wide-base</span><span class="hljs-value">: <span class="hljs-function">round</span>(<span class="hljs-variable">$stem-wide-base-em</span> * <span class="hljs-variable">$stem-size-em</span> * <span class="hljs-variable">$em-size</span>);</span>
+  <span class="hljs-variable">$stem-size-wide-half</span><span class="hljs-value">: <span class="hljs-function">round</span>(<span class="hljs-variable">$stem-wide-base-em</span> * <span class="hljs-variable">$stem-size-em</span> * <span class="hljs-variable">$em-size</span> / <span class="hljs-number">2</span>);</span>
   <span class="hljs-variable">$content-padding</span><span class="hljs-value">: ();</span>
   <span class="hljs-at_rule">@<span class="hljs-keyword">each</span> <span class="hljs-variable">$em</span><span class="hljs-preprocessor"> in</span> <span class="hljs-variable">$content-padding-em</span> {</span>
     <span class="hljs-variable">$content-padding</span><span class="hljs-value">: <span class="hljs-variable">$content-padding</span> (<span class="hljs-variable">$em</span> * <span class="hljs-variable">$em-size</span>);</span>
@@ -58,41 +58,33 @@ js-tip-right js-snap-tip-trigger js-snap-tip-x-side</code>.</p></div></div><div 
 <li>Finally start layout for the stem. Finish drawing and positioning the
 stem, and offset the content to match the stem size.</li>
 </ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-at_rule">@<span class="hljs-keyword">each</span> <span class="hljs-variable">$side</span>, <span class="hljs-variable">$snap-side</span><span class="hljs-preprocessor"> in</span> $_side-snap-side-map {</span>
-    &amp;<span class="hljs-class">.js-tip-</span>#{<span class="hljs-variable">$side</span>} { &amp;<span class="hljs-class">.js-snap-tip-</span>#{<span class="hljs-variable">$snap-side</span>}-side, &amp; { <span class="hljs-class">.js-tip-stem</span> {
-      <span class="hljs-attribute">border</span>-#{<span class="hljs-variable">$side</span>}-<span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span>
-      &amp; + <span class="hljs-class">.js-tip-content</span> {
-        <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$snap-side</span> ==<span class="hljs-preprocessor"> x</span> {</span>
-          <span class="hljs-attribute">left</span><span class="hljs-value">: auto;</span> <span class="hljs-attribute">right</span><span class="hljs-value">: auto;</span> <span class="hljs-comment">// Reset.</span>
-          <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> top</span> {</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
-          <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> bottom</span> {</span> <span class="hljs-attribute">top</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
-        } 
-        <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$snap-side</span> ==<span class="hljs-preprocessor"> y</span> {</span>
-          <span class="hljs-attribute">top</span><span class="hljs-value">: auto;</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: auto;</span> <span class="hljs-comment">// Reset.</span>
-          <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> left</span> {</span> <span class="hljs-attribute">right</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
-          <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$side</span> ==<span class="hljs-preprocessor"> right</span> {</span> <span class="hljs-attribute">left</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span> }
-        }
+    &amp;<span class="hljs-class">.js-tip-</span>#{<span class="hljs-variable">$side</span>}, &amp;<span class="hljs-class">.js-tip-</span>#{<span class="hljs-variable">$side</span>}<span class="hljs-class">.js-snap-tip-</span>#{<span class="hljs-variable">$snap-side</span>}-side {
+      <span class="hljs-class">.js-tip-stem</span> {
+        <span class="hljs-variable">$inverse-side</span><span class="hljs-value">: <span class="hljs-function">map-get</span>($_side-inverse-map, <span class="hljs-variable">$side</span>);</span>
+        <span class="hljs-attribute">border</span>-#{<span class="hljs-variable">$side</span>}-<span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$stem-size</span>;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Reset.</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$snap-side</span> ==<span class="hljs-preprocessor"> y</span> {</span> <span class="hljs-attribute">margin</span><span class="hljs-value">: { top: auto;</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: auto;</span> } }
+        <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$snap-side</span> ==<span class="hljs-preprocessor"> x</span> {</span> <span class="hljs-attribute">margin</span><span class="hljs-value">: { left: auto;</span> <span class="hljs-attribute">right</span><span class="hljs-value">: auto;</span> } }
+        #{<span class="hljs-variable">$side</span>}<span class="hljs-value">: auto;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Positioning.</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-attribute">margin</span>-#{<span class="hljs-variable">$inverse-side</span>}<span class="hljs-value">: -<span class="hljs-variable">$stem-size</span>;</span>
+        <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$inverse-side</span> ==<span class="hljs-preprocessor"> right</span> {</span> #{<span class="hljs-variable">$inverse-side</span>}<span class="hljs-value">: -<span class="hljs-number">1px</span>;</span> } <span class="hljs-comment">// To match the JS.</span>
+        <span class="hljs-at_rule">@<span class="hljs-keyword">else</span> {</span> #{<span class="hljs-variable">$inverse-side</span>}<span class="hljs-value">: <span class="hljs-number">0</span>;</span> }
       }
-      <span class="hljs-variable">$inverse-side</span><span class="hljs-value">: <span class="hljs-function">map-get</span>($_side-inverse-map, <span class="hljs-variable">$side</span>);</span>
-      <span class="hljs-at_rule">@<span class="hljs-keyword">if</span> <span class="hljs-variable">$inverse-side</span> ==<span class="hljs-preprocessor"> right</span> {</span> #{<span class="hljs-variable">$inverse-side</span>}<span class="hljs-value">: -<span class="hljs-number">1px</span>;</span> } <span class="hljs-comment">// To match the JS.</span>
-      <span class="hljs-at_rule">@<span class="hljs-keyword">else</span> {</span> #{<span class="hljs-variable">$inverse-side</span>}<span class="hljs-value">: <span class="hljs-number">0</span>;</span> }
-    }}}
+    }
   }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Then make any stem layout adjustments for when the tip is snapping to an
 axis. The stem gets centered in this implementation.</li>
-</ul></div></div><div class="code"><div class="wrapper">  &amp;<span class="hljs-class">.js-snap-tip-x-side</span> <span class="hljs-class">.js-tip-stem</span> {
+</ul></div></div><div class="code"><div class="wrapper">  &amp;<span class="hljs-class">.js-snap-tip-x-side</span> &gt; <span class="hljs-class">.js-tip-inner</span> &gt; <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-comment">// Add specifity.</span>
     <span class="hljs-attribute">border</span><span class="hljs-value">: {
       color: transparent;</span> <span class="hljs-comment">// Partial reset.</span>
-      <span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-number">0</span> (<span class="hljs-variable">$stem-wide-base</span> / <span class="hljs-number">2</span>);</span>
+      <span class="hljs-attribute">left</span>-<span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$stem-size-wide-half</span>;</span> <span class="hljs-attribute">right</span>-<span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$stem-size-wide-half</span>;</span>
     }
     <span class="hljs-attribute">left</span><span class="hljs-value">: <span class="hljs-number">50%</span>;</span>
-    <span class="hljs-attribute">margin-left</span><span class="hljs-value">: -<span class="hljs-variable">$stem-wide-base</span> / <span class="hljs-number">2</span>;</span>
+    <span class="hljs-attribute">margin</span><span class="hljs-value">: { left: -<span class="hljs-variable">$stem-size-wide-half</span>;</span> <span class="hljs-attribute">right</span><span class="hljs-value">: auto;</span> }
   }
-  &amp;<span class="hljs-class">.js-snap-tip-y-side</span> <span class="hljs-class">.js-tip-stem</span> {
+  &amp;<span class="hljs-class">.js-snap-tip-y-side</span> &gt; <span class="hljs-class">.js-tip-inner</span> &gt; <span class="hljs-class">.js-tip-stem</span> { <span class="hljs-comment">// Add specifity.</span>
     <span class="hljs-attribute">border</span><span class="hljs-value">: {
       color: transparent;</span> <span class="hljs-comment">// Partial reset.</span>
-      <span class="hljs-attribute">width</span><span class="hljs-value">: (<span class="hljs-variable">$stem-wide-base</span> / <span class="hljs-number">2</span>) <span class="hljs-number">0</span>;</span>
+      <span class="hljs-attribute">top</span>-<span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$stem-size-wide-half</span>;</span> <span class="hljs-attribute">bottom</span>-<span class="hljs-attribute">width</span><span class="hljs-value">: <span class="hljs-variable">$stem-size-wide-half</span>;</span>
     }
-    <span class="hljs-attribute">margin-top</span><span class="hljs-value">: -<span class="hljs-variable">$stem-wide-base</span> / <span class="hljs-number">2</span>;</span>
+    <span class="hljs-attribute">margin</span><span class="hljs-value">: { top: -<span class="hljs-variable">$stem-size-wide-half</span>;</span> <span class="hljs-attribute">bottom</span><span class="hljs-value">: auto;</span> }
     <span class="hljs-attribute">top</span><span class="hljs-value">: <span class="hljs-number">50%</span>;</span>
   }
 }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>tip-skin</code> is entirely optional and easy to re-implement. You should use it

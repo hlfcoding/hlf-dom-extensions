@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.tip"><meta name="groc-project-path" content="src/js/jquery.hlf.tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.tip.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-jquery-plugin">HLF Tip jQuery Plugin</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base <code>tip</code> plugin does several things. It does basic parsing of trigger
+<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.tip"><meta name="groc-project-path" content="src/js/jquery.hlf.tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.tip.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-jquery-plugin">HLF Tip jQuery Plugin</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>See</strong>: <a href="../../tests/js/tip.html">tests</a>.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>❧</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The base <code>tip</code> plugin does several things. It does basic parsing of trigger
 element attributes for the tip content. It can anchor itself to a trigger by
 selecting the best direction. It can follow the cursor. It toggles its
 appearance by fading in and out and resizing, all via configurable animation
@@ -246,7 +246,7 @@ current size.</p></div></div><div class="code"><div class="wrapper">    <span cl
         bottom ?= top
         left ?= right
         size.width -= left + right
-        size.height -= top + bottom + <span class="hljs-property">@selectByClass</span>(<span class="hljs-string">'stem'</span>).height() <span class="hljs-comment"># TODO: This isn't always true.</span>
+        size.height -= top + bottom
 
       size</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_stemSize</code> does a stealth render via <code>_wrapStealthRender</code> to find stem
 size. The stem layout styles will add offset to the tip content based on
@@ -256,13 +256,11 @@ positioning.</p></div></div><div class="code"><div class="wrapper">    <span cla
       size = <span class="hljs-property">@$tip</span>.data key
       <span class="hljs-keyword">return</span> size <span class="hljs-keyword">if</span> size?
 
-      $content = <span class="hljs-property">@selectByClass</span> <span class="hljs-string">'content'</span>
+      $stem = <span class="hljs-property">@selectByClass</span> <span class="hljs-string">'stem'</span>
       wrapped = <span class="hljs-property">@_wrapStealthRender</span> =&gt;
-        <span class="hljs-keyword">for</span> direction, offset <span class="hljs-keyword">in</span> $content.position()
-          <span class="hljs-keyword">if</span> offset &gt; <span class="hljs-number">0</span>
-            size = Math.abs offset
-            <span class="hljs-property">@$tip</span>.data key, size
-        <span class="hljs-number">0</span>
+        size = Math.abs parseInt($stem.css(<span class="hljs-string">'margin'</span>).replace(<span class="hljs-regexp">/0px/g</span>, <span class="hljs-string">''</span>), <span class="hljs-number">10</span>)
+        <span class="hljs-property">@$tip</span>.data key, size
+        size
       <span class="hljs-keyword">return</span> wrapped()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="appearance">Appearance</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>wakeByTrigger</code> is the main toggler and a <code>_state</code> updater. The toggling and
 main changes only happen if the delay is passed. It will return a promise that
 fails if waking gets skipped; it also may become done synchronously.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">wakeByTrigger</span>: <span class="hljs-function"><span class="hljs-params">($trigger, event)</span> -&gt;</span>
@@ -571,12 +569,12 @@ what&#39;s currently supported. See <code>afterShow</code> hook.</p></div></div>
       <span class="hljs-comment">#- Modify base binding.</span>
       <span class="hljs-property">@$context</span>.<span class="hljs-literal">on</span> <span class="hljs-property">@evt</span>(<span class="hljs-string">'truemouseleave'</span>), selector, { selector },
         <span class="hljs-function"><span class="hljs-params">(event)</span> =&gt;</span> <span class="hljs-property">@_offsetStart</span> = <span class="hljs-literal">null</span>
-
     </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="positioning">Positioning</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>𝒇 <code>_moveToTrigger</code> is the main positioner. The <code>baseOffset</code> given is
 expected to be the trigger offset.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_moveToTrigger</span>: <span class="hljs-function"><span class="hljs-params">($trigger, baseOffset)</span> -&gt;</span> <span class="hljs-comment"># TODO: Still needs to support all the directions.</span>
       <span class="hljs-comment">#- @debugLog baseOffset</span>
       offset = <span class="hljs-property">@_offsetForTrigger</span> $trigger
       toTriggerOnly = <span class="hljs-property">@snap</span>.toTrigger <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@snap</span>.toXAxis <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span> <span class="hljs-keyword">and</span> <span class="hljs-property">@snap</span>.toYAxis <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span>
+      <span class="hljs-comment">#- Note vertical directions already account for stem-size.</span>
       <span class="hljs-keyword">if</span> <span class="hljs-property">@snap</span>.toXAxis <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
         <span class="hljs-keyword">if</span> <span class="hljs-property">@_isDirection</span> <span class="hljs-string">'bottom'</span>, $trigger
           offset.top += $trigger.outerHeight()
@@ -585,9 +583,11 @@ expected to be the trigger offset.</p></div></div><div class="code"><div class="
           offset.left = baseOffset.left - <span class="hljs-property">@$tip</span>.outerWidth() / <span class="hljs-number">2</span>
       <span class="hljs-keyword">if</span> <span class="hljs-property">@snap</span>.toYAxis <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
         <span class="hljs-keyword">if</span> <span class="hljs-property">@_isDirection</span> <span class="hljs-string">'right'</span>, $trigger
-          offset.left += $trigger.outerWidth()
+          offset.left += $trigger.outerWidth() + <span class="hljs-property">@_stemSize</span>()
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@_isDirection</span> <span class="hljs-string">'left'</span>, $trigger
+          offset.left -= <span class="hljs-property">@_stemSize</span>()
         <span class="hljs-keyword">if</span> <span class="hljs-property">@snap</span>.toXAxis <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span>
-          offset.top = baseOffset.top - <span class="hljs-property">@$tip</span>.outerHeight() / <span class="hljs-number">2</span>
+          offset.top = baseOffset.top - <span class="hljs-property">@$tip</span>.outerHeight() / <span class="hljs-number">2</span> - <span class="hljs-property">@_stemSize</span>()
       <span class="hljs-keyword">if</span> toTriggerOnly <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
         <span class="hljs-keyword">if</span> <span class="hljs-property">@_isDirection</span> <span class="hljs-string">'bottom'</span>, $trigger
           offset.top += $trigger.outerHeight()

@@ -13,11 +13,40 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "commentsOnly": true,
           "name": "Markdown"
         },
-        "sourcePath": "/Users/destrado/Projects/hlf-jquery/README.md",
-        "projectPath": "README.md",
+        "sourcePath": "/Users/destrado/Projects/hlf-jquery/docs/README.md",
+        "projectPath": "docs/README.md",
         "targetPath": "index",
         "pageTitle": "index",
-        "title": "index"
+        "firstHeader": {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "HLF jQuery Documentation",
+            "slug": "hlf-jquery-documentation",
+            "isFileHeader": true
+          },
+          "depth": 1,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Navigation",
+                "slug": "navigation"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Generation",
+                "slug": "generation"
+              },
+              "depth": 2
+            }
+          ]
+        },
+        "title": "HLF jQuery Documentation"
       },
       "depth": 1,
       "outline": [
@@ -25,70 +54,16 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "heading",
           "data": {
             "level": 2,
-            "title": "Plugins",
-            "slug": "plugins"
+            "title": "Navigation",
+            "slug": "navigation"
           },
           "depth": 2
         }, {
           "type": "heading",
           "data": {
             "level": 2,
-            "title": "Extensions",
-            "slug": "extensions"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Requirements",
-            "slug": "requirements"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Plugins Coming Soon",
-            "slug": "plugins-coming-soon"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "HLF Editable",
-                "slug": "hlf-editable"
-              },
-              "depth": 3
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Install",
-            "slug": "install"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "Sample ST2 Project File",
-                "slug": "sample-st2-project-file"
-              },
-              "depth": 3
-            }
-          ]
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "License",
-            "slug": "license"
+            "title": "Generation",
+            "slug": "generation"
           },
           "depth": 2
         }

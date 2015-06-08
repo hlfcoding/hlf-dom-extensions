@@ -292,31 +292,24 @@ HLF Tip jQuery Plugin
             left = right;
           }
           size.width -= left + right;
-          size.height -= top + bottom + this.selectByClass('stem').height();
+          size.height -= top + bottom;
         }
         return size;
       };
 
       Tip.prototype._stemSize = function() {
-        var $content, key, size, wrapped;
+        var $stem, key, size, wrapped;
         key = this.attr('stem-size');
         size = this.$tip.data(key);
         if (size != null) {
           return size;
         }
-        $content = this.selectByClass('content');
+        $stem = this.selectByClass('stem');
         wrapped = this._wrapStealthRender((function(_this) {
           return function() {
-            var direction, j, len, offset, ref1;
-            ref1 = $content.position();
-            for (offset = j = 0, len = ref1.length; j < len; offset = ++j) {
-              direction = ref1[offset];
-              if (offset > 0) {
-                size = Math.abs(offset);
-                _this.$tip.data(key, size);
-              }
-            }
-            return 0;
+            size = Math.abs(parseInt($stem.css('margin').replace(/0px/g, ''), 10));
+            _this.$tip.data(key, size);
+            return size;
           };
         })(this));
         return wrapped();
@@ -819,10 +812,12 @@ HLF Tip jQuery Plugin
         }
         if (this.snap.toYAxis === true) {
           if (this._isDirection('right', $trigger)) {
-            offset.left += $trigger.outerWidth();
+            offset.left += $trigger.outerWidth() + this._stemSize();
+          } else if (this._isDirection('left', $trigger)) {
+            offset.left -= this._stemSize();
           }
           if (this.snap.toXAxis === false) {
-            offset.top = baseOffset.top - this.$tip.outerHeight() / 2;
+            offset.top = baseOffset.top - this.$tip.outerHeight() / 2 - this._stemSize();
           }
         }
         if (toTriggerOnly === true) {
