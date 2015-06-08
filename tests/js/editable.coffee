@@ -3,7 +3,7 @@ HLF Editable Visual Tests
 =========================
 ###
 
-# See [tests](../../../tests/editable.visual.html)
+# __See__: [test page](../../../tests/editable.visual.html), [source](../../src/js/jquery.hlf.editable.html).
 
 require.config
   baseUrl: '../lib'

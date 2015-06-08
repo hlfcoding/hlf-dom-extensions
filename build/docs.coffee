@@ -5,19 +5,22 @@ grunt = require 'grunt'
 src = [
   'src/**/*.{coffee,scss}'
   'tests/**/*.{coffee,scss}'
-  'README.md'
+  'docs/README.md'
 ]
 
 module.exports =
 
   clean: [
-    'docs/*'
+    'docs/*/**'
     '!docs/.gitignore'
+    '!docs/README.md'
   ]
 
   groc:
     src: src
-    options: { out: 'docs/' }
+    options:
+      index: 'docs/README.md'
+      out: 'docs/'
 
   watch:
     files: src

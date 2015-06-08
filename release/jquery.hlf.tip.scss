@@ -4,6 +4,10 @@
   There should be no css output from this file.
 */
 
+// __See__: [tests](../../tests/css/tip.html).
+
+// ❧
+
 // The main responsibility for the required plugin styling is to provide
 // required layout styles but allow easy customization of skin styles, ie.
 // colors, fonts, borders, shadows.
@@ -54,8 +58,10 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
 // 𝒇 `tip-layout` should be included unless you want to implement your own tip
 // layout, specifically around tip stem position. The sizing logic structures
 // around `em-size`. Most of this mixin is handling the variations of classes on
-// the tip element. For example: `js-tip js-snap-tip js-tip-follow js-tip-bottom
-// js-tip-right js-snap-tip-trigger js-snap-tip-x-side`.
+// the tip element. For example:
+// ```html
+// <div class="js-tip js-snap-tip js-tip-follow js-tip-bottom js-tip-right js-snap-tip-trigger js-snap-tip-x-side">
+// ```
 @mixin tip-layout($em-size: 12px,
                   $content-padding-em: 2/3 1 5/6 1,
                   $max-width-em: 18,
@@ -66,7 +72,7 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
   // - First calculate `*-em` parameters into pixels.
   $max-width: $max-width-em * $em-size;
   $stem-size: round($stem-size-em * $em-size);
-  $stem-wide-base: round($stem-wide-base-em * $stem-size-em * $em-size);
+  $stem-size-wide-half: round($stem-wide-base-em * $stem-size-em * $em-size / 2);
   $content-padding: ();
   @each $em in $content-padding-em {
     $content-padding: $content-padding ($em * $em-size);
@@ -82,41 +88,37 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
   // - Finally start layout for the stem. Finish drawing and positioning the
   //   stem, and offset the content to match the stem size.
   @each $side, $snap-side in $_side-snap-side-map {
-    &.js-tip-#{$side} { &.js-snap-tip-#{$snap-side}-side, & { .js-tip-stem {
-      border-#{$side}-width: $stem-size;
-      & + .js-tip-content {
-        @if $snap-side == x {
-          left: auto; right: auto; // Reset.
-          @if $side == top { bottom: $stem-size; }
-          @if $side == bottom { top: $stem-size; }
-        } 
-        @if $snap-side == y {
-          top: auto; bottom: auto; // Reset.
-          @if $side == left { right: $stem-size; }
-          @if $side == right { left: $stem-size; }
-        }
+    &.js-tip-#{$side}, &.js-tip-#{$side}.js-snap-tip-#{$snap-side}-side {
+      .js-tip-stem {
+        $inverse-side: map-get($_side-inverse-map, $side);
+        border-#{$side}-width: $stem-size;
+        // Reset.
+        @if $snap-side == y { margin: { top: auto; bottom: auto; } }
+        @if $snap-side == x { margin: { left: auto; right: auto; } }
+        #{$side}: auto;
+        // Positioning.
+        margin-#{$inverse-side}: -$stem-size;
+        @if $inverse-side == right { #{$inverse-side}: -1px; } // To match the JS.
+        @else { #{$inverse-side}: 0; }
       }
-      $inverse-side: map-get($_side-inverse-map, $side);
-      @if $inverse-side == right { #{$inverse-side}: -1px; } // To match the JS.
-      @else { #{$inverse-side}: 0; }
-    }}}
+    }
   }
   // - Then make any stem layout adjustments for when the tip is snapping to an
   //   axis. The stem gets centered in this implementation.
-  &.js-snap-tip-x-side .js-tip-stem {
+  &.js-snap-tip-x-side > .js-tip-inner > .js-tip-stem { // Add specifity.
     border: {
       color: transparent; // Partial reset.
-      width: 0 ($stem-wide-base / 2);
+      left-width: $stem-size-wide-half; right-width: $stem-size-wide-half;
     }
     left: 50%;
-    margin-left: -$stem-wide-base / 2;
+    margin: { left: -$stem-size-wide-half; right: auto; }
   }
-  &.js-snap-tip-y-side .js-tip-stem {
+  &.js-snap-tip-y-side > .js-tip-inner > .js-tip-stem { // Add specifity.
     border: {
       color: transparent; // Partial reset.
-      width: ($stem-wide-base / 2) 0;
+      top-width: $stem-size-wide-half; bottom-width: $stem-size-wide-half;
     }
-    margin-top: -$stem-wide-base / 2;
+    margin: { top: -$stem-size-wide-half; bottom: auto; }
     top: 50%;
   }
 }

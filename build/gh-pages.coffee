@@ -6,32 +6,51 @@ module.exports =
     options:
       base: 'gh-pages'
       add: yes
-    src: ['**']
+    src: [
+      '**'
+      '!template.jst.html'
+    ]
 
   clean: [
     'gh-pages/*'
     '!gh-pages/.gitignore'
-    '!gh-pages/template.html'
+    '!gh-pages/template.jst.html'
   ]
 
   copy:
-    expand: yes
-    src: [
-      'dist/**/*'
-      'docs/**/*'
-      'lib/**/*'
-      'tests/**/*'
-      '!tests/**/*.{scss,coffee}'
-      'README.md'
+    nonull: yes
+    files: [
+      {
+        expand: yes
+        src: [
+          'dist/**/*'
+          'docs/**/*'
+          'lib/**/*'
+          'tests/**/*'
+          '!tests/**/*.{scss,coffee}'
+          'README.md'
+        ]
+        dest: 'gh-pages/'
+      }
+      {
+        src: 'node_modules/merlot/template.jst.html'
+        dest: 'gh-pages/'
+      }
     ]
-    dest: 'gh-pages/'
 
   markdown:
     options:
       markdownOptions:
         gfm: yes
         highlight: 'auto'
-      template: 'gh-pages/template.html'
+      template: 'gh-pages/template.jst.html'
+      templateContext:
+        githubAuthor: 'hlfcoding'
+        githubPath: 'hlfcoding/hlf-jquery'
+        headline: 'HLF jQuery'
+        pageTitle: 'HLF jQuery by hlfcoding'
+        subHeadline: 'Custom jQuery Plugins'
+
     src: 'gh-pages/README.md'
     dest: 'gh-pages/index.html'
 

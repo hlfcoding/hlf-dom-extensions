@@ -1,5 +1,5 @@
 {
-  "name": "hlf-jquery-development",
+  "name": "hlf-jquery",
   "version": "0.2.1",
   "author": "Peng Wang <peng@pengxwang.com>",
   "description": "jQuery plugins and extensions for quality UI. Currently private from lack of Node support.",
@@ -21,6 +21,7 @@
     "grunt-groc": "^0.6.0",
     "grunt-markdown": "^0.7.0",
     "grunt-newer": "^1.1.0",
-    "matchdep": "^0.3.0"
+    "matchdep": "^0.3.0",
+    "merlot": "^0.1.2"
   }
 }
