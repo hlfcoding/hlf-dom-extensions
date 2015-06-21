@@ -10,7 +10,7 @@ HLF Event jQuery Extension
 # 2. Private functions to implement certain behaviors.
 # 3. Adapting the behaviors to custom events.
 
-# ❧
+# §
 
 # Export. Support AMD, CommonJS (Browserify), and browser globals.
 ((root, factory) ->
@@ -34,7 +34,7 @@ HLF Event jQuery Extension
     factory jQuery, _, jQuery.hlf
 )(@, ($, _, hlf) ->
 
-  # ❧
+  # §
 
   # Hover-Intent
   # ------------
@@ -70,11 +70,11 @@ HLF Event jQuery Extension
   # Alias and don't pollute the extension scope.
   do (hoverIntent = hlf.hoverIntent, mouse = hlf.hoverIntent.mouse) ->
 
-    # 𝒇 `attr` is an internal formatter for attribute names,
+    # ƒ `attr` is an internal formatter for attribute names,
     # mainly those of jQuery data keys.
     attr = (name='') -> "#{hoverIntent.toString 'attr'}-#{name}"
 
-    # 𝒇 `debugLog` is our internal logger. It's optimized to be a noop if
+    # ƒ `debugLog` is our internal logger. It's optimized to be a noop if
     # hover intent debugging is off.
     debugLog = if hoverIntent.debug is off then $.noop else
       -> hlf.debugLog hoverIntent.toString('log'), arguments...
@@ -93,7 +93,7 @@ HLF Event jQuery Extension
       sensitivity: hoverIntent.sensitivity
       interval: hoverIntent.interval
 
-    # 𝒇 `getComputedState` simplifies getting the trigger element's hover intent
+    # ƒ `getComputedState` simplifies getting the trigger element's hover intent
     # state and using any `defaultState` as fallback. Note that we clone the
     # value if it looks like it will be assigned by reference.
     getComputedState = ($trigger) ->
@@ -103,7 +103,7 @@ HLF Event jQuery Extension
         state[key] = $trigger.data(attr(key)) or value
       state
 
-    # 𝒇 `check` is the main routine that uses the state, setup, and teardown
+    # ƒ `check` is the main routine that uses the state, setup, and teardown
     # subroutines. It is an event handler (see below).
     check = (event) ->
       $trigger = $ @
@@ -112,7 +112,7 @@ HLF Event jQuery Extension
       didTeardown = teardownCheckIfNeeded event, $trigger, state
       if didTeardown is no then setupCheckIfNeeded event, $trigger, state
 
-    # 𝒇 `setupCheckIfNeeded` will setup to `performCheck` after setting up (again)
+    # ƒ `setupCheckIfNeeded` will setup to `performCheck` after setting up (again)
     # the timer state, but only if the timer state is properly reset.
     setupCheckIfNeeded = (event, $trigger, state) ->
       return no if state.timer.cleared is no and state.timer.timeout?
@@ -125,7 +125,7 @@ HLF Event jQuery Extension
       $trigger.data attr('timer'), state.timer
       return yes
 
-    # 𝒇 `teardownCheckIfNeeded` will teardown by removing state from trigger data,
+    # ƒ `teardownCheckIfNeeded` will teardown by removing state from trigger data,
     # thereby defaulting them (see `getComputedState`). It will only work on
     # mouse-leave and will always trigger `truemouseleave`.
     teardownCheckIfNeeded = (event, $trigger, state) ->
@@ -139,7 +139,7 @@ HLF Event jQuery Extension
       triggerEvent 'truemouseleave', $trigger, event
       return yes
 
-    # 𝒇 `performCheck` is the main hover intent checking subroutine. The state's
+    # ƒ `performCheck` is the main hover intent checking subroutine. The state's
     # `intentional` flag is updated as a crude change-in-distance comparison. If
     # there is intent, then `truemouseenter` is triggered. The timer is reset,
     # since this completes the checking cycle. State is also always saved to the
@@ -157,13 +157,13 @@ HLF Event jQuery Extension
       $trigger.data attr('intentional'), state.intentional
       $trigger.data attr('timer'), state.timer
 
-    # 𝒇 `trackMouse` tracks mouse position specifically for checking hover intent.
+    # ƒ `trackMouse` tracks mouse position specifically for checking hover intent.
     trackMouse = _.throttle (event) ->
       mouse.x.current = event.pageX
       mouse.y.current = event.pageY
     , 16
 
-    # 𝒇 `triggerEvent` abstracts away the generation of and support for custom
+    # ƒ `triggerEvent` abstracts away the generation of and support for custom
     # hover intent events.
     triggerEvent = (name, $trigger, oldEvent) ->
       event = new $.Event name, 

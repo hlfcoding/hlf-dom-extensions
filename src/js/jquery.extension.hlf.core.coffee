@@ -36,7 +36,7 @@ HLF Core jQuery Extension
     factory jQuery, _, jQuery.hlf
 )(@, ($, _) ->
 
-  # ❧
+  # §
 
   # Namespace
   # ---------
@@ -48,16 +48,16 @@ HLF Core jQuery Extension
     # The `debug` flag here toggles debug logging for everything in the library
     # that doesn't have a custom debug flag in its namespace.
     debug: on # Turn this off when going to production.
-    # 𝒇 `toString` is mainly for namespacing when extending any jQuery API. For
+    # ƒ `toString` is mainly for namespacing when extending any jQuery API. For
     # now, its base form is very simple.
     toString: _.memoize (context) -> 'hlf'
-    # 𝒇 `noConflict` in its base form will remove assignments to the global
+    # ƒ `noConflict` in its base form will remove assignments to the global
     # jQuery namespace. Properties will have to be accessed through the `$.hlf`
     # namespace. See `_safeSet` below. Also see `createPlugin` for its no-
     # conflict integration.
     noConflict: -> (fn() for fn in _noConflicts).length
 
-  # 𝒇 `debugLog` in its base form just wraps around `console.log` and links to
+  # ƒ `debugLog` in its base form just wraps around `console.log` and links to
   # the `debug` flag. However, `debugLog` conventionally becomes a no-op if
   # the `debug` flag is off.
   hlf.debugLog = if hlf.debug is off then $.noop else
@@ -69,7 +69,7 @@ HLF Core jQuery Extension
   # restoring the property to a saved previous value.
   _noConflicts = []
   
-  # ❧
+  # §
 
   # Plugin Support
   # --------------
@@ -83,7 +83,7 @@ HLF Core jQuery Extension
   # instantiation.
 
   _.extend hlf,
-    # 𝒇 `createPlugin`, will return an appropriate jQuery plugin method for the
+    # ƒ `createPlugin`, will return an appropriate jQuery plugin method for the
     # given `createOptions`, comprised of:
     createPlugin: (createOptions) ->
       # - `name`, which is required and is the name of the method. The `safeName`
@@ -122,7 +122,7 @@ HLF Core jQuery Extension
         if _.isFunction(_noConflict) then _noConflict()
         $.fn[name] = _plugin
       )
-      # 𝒇 Generate and publish the plugin method.
+      # ƒ Generate and publish the plugin method.
       # 
       # The method handles two variations of input. A command `type` (name)
       # and `userInfo` can be passed in to trigger the command route. The
@@ -174,7 +174,7 @@ HLF Core jQuery Extension
 
   _.bindAll hlf, 'createPlugin'
 
-  # 𝒇 `_createPluginInstance` is a private subroutine that's part of
+  # ƒ `_createPluginInstance` is a private subroutine that's part of
   # `createPlugin`, which has more details on its required input.
   _createPluginInstance = ($el, options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions) ->
     # - Check if plugin element has options set in its plugin data attribute. If
@@ -241,7 +241,7 @@ HLF Core jQuery Extension
     # - Lastly, store the instance on `$root`.
     $root.data instance.attr(), instance
 
-  # 𝒇 `_createPluginAPIAdditions` is a private subroutine that's part of
+  # ƒ `_createPluginAPIAdditions` is a private subroutine that's part of
   # `createPlugin`, which has more details on its required input.
   _createPluginAPIAdditions = (name, namespace) ->
     # - Add the `evt` method to namespace an event name.
@@ -261,7 +261,7 @@ HLF Core jQuery Extension
     debugLog: if namespace.debug is off then $.noop else
       -> hlf.debugLog namespace.toString('log'), arguments...
 
-  # ❧
+  # §
 
   # Mixin Support
   # -------------
@@ -272,7 +272,7 @@ HLF Core jQuery Extension
   # to add helper methods for even more flexible extensions between mixins.
   _.extend hlf,
 
-    # 𝒇 `applyMixin`, when given a `context` to decorate with a valid `mixin`, runs
+    # ƒ `applyMixin`, when given a `context` to decorate with a valid `mixin`, runs
     # any run-once hooks after applying a mixin copy without the hooks.
     # `context` is conventionally a class instance.
     applyMixin: (context, dependencies, mixin) ->
@@ -296,14 +296,14 @@ HLF Core jQuery Extension
       # - Auto-bind conventionally-named event handlers.
       if handlerNames.length then _.bindAll context, handlerNames...
 
-    # 𝒇 `applyMixins`, when given a `context` (class) to decorate with `mixins`,
+    # ƒ `applyMixins`, when given a `context` (class) to decorate with `mixins`,
     # which should be passed in order of application, calls `$.applyMixin` for
     # each mixin. Conventionally, this should be used instead of
     # `$.applyMixin`.
     applyMixins: (context, dependencies, mixins...) ->
       @applyMixin context, dependencies, mixin for mixin in mixins
 
-    # 𝒇 `createMixin`, when given a collection of `mixins`, adds a new mixin with
+    # ƒ `createMixin`, when given a collection of `mixins`, adds a new mixin with
     # given `name` and `mixin` method collection. Conventionally, each logical
     # package of software should be written as a collection of mixins, with one
     # named 'base'.
@@ -317,19 +317,19 @@ HLF Core jQuery Extension
 
     # Supported decorators:
     mixinOnceNames: [
-      # - 𝒇 `decorate` allows more complex extending of the instance. For example,
+      # - ƒ `decorate` allows more complex extending of the instance. For example,
       #   methods and properties can be removed, handlers can be added to
       #   triggered events for more complex extending of existing methods.
       'decorate'
-      # - 𝒇 `decorateOptions` allows extending the context's options, which are
+      # - ƒ `decorateOptions` allows extending the context's options, which are
       #   conventionally a property named `options`.
       'decorateOptions'
     ]
-    # 𝒇 `$.mixins` is the general mixin collection that's provided for writing
+    # ƒ `$.mixins` is the general mixin collection that's provided for writing
     # foundation-level jQuery mixins. Conventionally, other mixins not shared
     # between different logical packages do not belong here.
     mixins:
-      # - 𝒇 `data`, when given a context with a data-attribute-name translator
+      # - ƒ `data`, when given a context with a data-attribute-name translator
       #   that makes a property-name follow jQuery conventions, as well as with
       #   a property `$el`, generate a mixin that applies convenience wrappers
       #   around the jQuery data API to simplify data API calls as much as
@@ -345,7 +345,7 @@ HLF Core jQuery Extension
               (pairs[attr(k)] = v) for own k, v of first
               arguments[0] = pairs
           @$el.data.apply @$el, arguments
-      # - 𝒇 `event`, when given a context with an event-name translator that makes an
+      # - ƒ `event`, when given a context with an event-name translator that makes an
       #   event-name follow jQuery conventions, as well as with a property `$el`,
       #   generates a mixin that applies convenience wrappers around the jQuery
       #   custom event API to simplify event API calls as much as possible.
@@ -359,7 +359,7 @@ HLF Core jQuery Extension
         trigger: (name, userInfo) ->
           type = @evt name
           @$el.trigger { type, userInfo }
-      # - 𝒇 `selection`, when given the context has a property `$el` and a property
+      # - ƒ `selection`, when given the context has a property `$el` and a property
       #   `selectors`, define cached selector results for each name-selector pair.
       #   Also provide selection helpers for common tasks.
       selection: ->
@@ -372,12 +372,12 @@ HLF Core jQuery Extension
           classNames ?= @classNames
           @$el.find ".#{@classNames[className]}"
 
-  # ❧
+  # §
 
   # Export
   # ------
 
-  # 𝒇 `_safeSet` is an internal wrapper around `_noConflict`.
+  # ƒ `_safeSet` is an internal wrapper around `_noConflict`.
   _safeSet = (key, toContext=$, fromContext=hlf) ->
     _oldValue = toContext[key]
     toContext[key] = fromContext[key]

@@ -5,7 +5,7 @@ HLF Editable jQuery Plugin
 
 # __See__: [tests](../../tests/js/editable.html).
 
-# ❧
+# §
 
 # Export. Support AMD, CommonJS (Browserify), and browser globals.
 ((root, factory) ->
@@ -261,7 +261,7 @@ HLF Editable jQuery Plugin
 
     bindFileUploader: ->
 
-  # ❧
+  # §
 
   # Export
   # ------
