@@ -281,4 +281,7 @@ section.visual-test {
     border-color: transparent;
     border-top-color: #666; }
 
+.trigger + [data-hlf-tip-content] {
+  display: none; }
+
 /*# sourceMappingURL=tip.css.map */

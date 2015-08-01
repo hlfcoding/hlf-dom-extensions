@@ -129,6 +129,18 @@ HLF Tip Visual Tests
       className: 'edge-call',
       vars: _.pick($, 'loremIpsum')
     }));
+    tests.push($.visualTest({
+      label: 'loading rich content',
+      template: "<p>\n  <a class=\"trigger\" href=\"javascript:\">tooltip trigger</a> &middot;\n  <a class=\"trigger\" data-hlf-tip-href=\"local-content\" href=\"javascript:\">tooltip trigger</a>\n  <span data-hlf-tip-content=\"local-content\">This is some <em>local</em> <strong>html</strong>.</span>\n</p>",
+      test: function($context) {
+        return $context.find('.trigger').tip({
+        triggerContent: function() { return $.loremIpsum.short; }
+      }, $context);;
+      },
+      anchorName: 'rich-content',
+      className: 'html-call',
+      vars: _.pick($, 'loremIpsum')
+    }));
     return $(function() {
       var i, len, results, test;
       results = [];

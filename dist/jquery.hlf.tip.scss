@@ -55,6 +55,14 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
   }
 }
 
+// ƒ `tip-trigger-base` should be included if you want more flexible ways to
+// adding content to tips.
+@mixin tip-trigger-base {
+  + [data-hlf-tip-content] {
+    display: none;
+  }
+}
+
 // ƒ `tip-layout` should be included unless you want to implement your own tip
 // layout, specifically around tip stem position. The sizing logic structures
 // around `em-size`. Most of this mixin is handling the variations of classes on
