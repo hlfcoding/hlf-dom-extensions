@@ -116,34 +116,6 @@ hlf-jquery> grunt
 
 Note that Grunt task options and multi-tasks are in build/.
 
-### Sample ST2 Project File
-
-```json
-{
-  "folders":
-  [
-    {
-      "path": "hlf-jquery",
-      "file_exclude_patterns":
-      [
-        "dist/*",
-        "docs/index.html",
-        "release/*",
-        "tests/*.css",
-        "tests/*.js"
-      ],
-      "folder_exclude_patterns":
-      [
-        ".grunt",
-        "docs/*",
-        "node_modules",
-        "gh-pages"
-      ]
-    }
-  ]
-}
-```
-
 ## License
 
 The MIT License (MIT)
