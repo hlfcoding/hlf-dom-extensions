@@ -53,9 +53,9 @@ change when switching between links.</p></div></div><div class="code"><div class
         &lt;a class="trigger" title="&lt;%= loremIpsum.long %&gt;" href="javascript:"&gt;tooltip trigger&lt;/a&gt;
       &lt;/p&gt;
       """</span>
-    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>By default, the tip parses content from the <code>title</code> and <code>alt</code> attributes.
-This is conventional and easier to maintain than providing a custom
-function, or element.</p></div></div><div class="code"><div class="wrapper">      `<span class="javascript">$context.find(<span class="hljs-string">'[title]'</span>).tip(<span class="hljs-literal">null</span>, $context);</span>`</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>NOTE: <code>$context</code> also needs to be passed in. This is the core plugin
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>NOTE: Currently, the tip only parses content from the <code>title</code> and <code>alt</code>
+attributes. This is limiting, but also conventional and easier to
+maintain than a custom attribute.</p></div></div><div class="code"><div class="wrapper">      `<span class="javascript">$context.find(<span class="hljs-string">'[title]'</span>).tip(<span class="hljs-literal">null</span>, $context);</span>`</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>NOTE: <code>$context</code> also needs to be passed in. This is the core plugin
 generator&#39;s convention where if the plugin instance is to be attached to
 something besides the element(s) calling the method, it must be passed
 in after the first argument (options or command).</p></div></div><div class="code"><div class="wrapper">      `<span class="javascript">api = $context.tip(<span class="hljs-literal">null</span>, $context);</span>`
@@ -162,24 +162,6 @@ into place and prevent mouse following.</p></div></div><div class="code"><div cl
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'corner-cases'</span>
     <span class="hljs-attribute">asFragments</span>: <span class="hljs-literal">yes</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'edge-call'</span>
-    <span class="hljs-attribute">vars</span>: _.pick $, <span class="hljs-string">'loremIpsum'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="rich-content">Rich Content</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  tests.push $.visualTest
-
-    <span class="hljs-attribute">label</span>: <span class="hljs-string">'loading rich content'</span>
-    <span class="hljs-attribute">template</span>:
-      <span class="hljs-string">"""
-      &lt;p&gt;
-        &lt;a class="trigger" href="javascript:"&gt;tooltip trigger&lt;/a&gt; &amp;middot;
-        &lt;a class="trigger" data-hlf-tip-href="local-content" href="javascript:"&gt;tooltip trigger&lt;/a&gt;
-        &lt;span data-hlf-tip-content="local-content"&gt;This is some &lt;em&gt;local&lt;/em&gt; &lt;strong&gt;html&lt;/strong&gt;.&lt;/span&gt;
-      &lt;/p&gt;
-      """</span>
-    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
-      `<span class="javascript">$context.find(<span class="hljs-string">'.trigger'</span>).tip({
-        triggerContent: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> $.loremIpsum.short; }
-      }, $context);</span>`
-
-    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'rich-content'</span>
-    <span class="hljs-attribute">className</span>: <span class="hljs-string">'html-call'</span>
     <span class="hljs-attribute">vars</span>: _.pick $, <span class="hljs-string">'loremIpsum'</span>
 
   $ -&gt; test() <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests</div></div></div></div></body></html>

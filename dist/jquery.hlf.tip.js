@@ -416,16 +416,16 @@ HLF Tip jQuery Plugin
       };
 
       Tip.prototype._saveTriggerContent = function($trigger) {
-        var $content, attr, canRemoveAttr, content;
-        $content = null;
+        var attr, canRemoveAttr, content;
         content = null;
         attr = null;
         canRemoveAttr = true;
-        if ($trigger.is("[data-" + (this.attr('href')) + "]")) {
-          $content = $trigger.next("[data-" + (this.attr('content')) + "]");
-          $content.detach();
-        } else if ((this.triggerContent != null) && _.isFunction(this.triggerContent)) {
-          content = this.triggerContent($trigger);
+        if (this.triggerContent != null) {
+          if (_.isFunction(this.triggerContent)) {
+            content = this.triggerContent($trigger);
+          } else {
+            attr = this.triggerContent;
+          }
         } else {
           if ($trigger.is('[title]')) {
             attr = 'title';
@@ -441,10 +441,7 @@ HLF Tip jQuery Plugin
           }
         }
         if (content != null) {
-          $trigger.data(this.attr('content'), content);
-        }
-        if ($content != null) {
-          return $trigger.data(this.attr('$content'), $content);
+          return $trigger.data(this.attr('content'), content);
         }
       };
 
@@ -602,16 +599,9 @@ HLF Tip jQuery Plugin
       };
 
       Tip.prototype._inflateByTrigger = function($trigger) {
-        var $content, $content_, compoundDirection, content, contentOnly, contentSize;
+        var $content, compoundDirection, contentOnly, contentSize;
         $content = this.selectByClass('content');
-        content = $trigger.data(this.attr('content'));
-        if (content != null) {
-          $content.text(content);
-        }
-        $content_ = $trigger.data(this.attr('$content'));
-        if ($content_ != null) {
-          $content.empty().append($content_);
-        }
+        $content.text($trigger.data(this.attr('content')));
         if (this.animations.resize.enabled) {
           contentSize = this._sizeForTrigger($trigger, (contentOnly = true));
           $content.width(contentSize.width + 1).height(contentSize.height);
