@@ -3,9 +3,7 @@ HLF Tip jQuery Plugin
 =====================
 ###
 
-# __See__: [tests](../../tests/js/tip.html).
-
-# §
+# [Tests](../../tests/js/tip.html)
 
 # The base `tip` plugin does several things. It does basic parsing of trigger
 # element attributes for the tip content. It can anchor itself to a trigger by
@@ -22,77 +20,105 @@ HLF Tip jQuery Plugin
 # axis. For example, snapping to the x-axis will only allow the tip to shift
 # along the y-axis. The x will remain constant.
 
-# §
-
-# Export. Support AMD, CommonJS (Browserify), and browser globals.
-((root, factory) ->
+# __UMD__
+# - When AMD, register the attacher as an anonymous module.
+# - When Node or Browserify, set module exports to the attach result.
+# - When browser globals (root is window), Just run the attach function.
+((root, attach) ->
   if typeof define is 'function' and define.amd?
-    # - AMD. Register as an anonymous module.
     define [
       'jquery'
       'underscore'
       'hlf/jquery.extension.hlf.core'
       'hlf/jquery.extension.hlf.event'
-    ], factory
-  else if typeof exports is 'object'
-    # - Node. Does not work with strict CommonJS, but only CommonJS-like
-    #   environments that support module.exports, like Node.
-    module.exports = factory(
+    ], attach
+  else if typeof module is 'object' && module.exports?
+    module.exports = attach(
       require 'jquery',
       require 'underscore',
       require 'hlf/jquery.extension.hlf.core',
       require 'hlf/jquery.extension.hlf.event'
     )
   else
-    # - Browser globals (root is window). No globals needed.
-    factory jQuery, _, jQuery.hlf
+    attach jQuery, _, jQuery.hlf
+  return
 )(@, ($, _, hlf) ->
 
   #- Cache common references internally.
   _requestAnimationFrame = window.requireAnimationFrame or
     window.Modernizr?.prefixed 'requestAnimationFrame', window
 
+  # Namespace
+  # ---------
+
   # It takes some more boilerplate to write the plugins. Any of this additional
-  # support API is put into a plugin specific namespace under `$.hlf`.
+  # support API is put into a plugin specific namespace under `$.hlf`, which in
+  # this case is __$.hlf.tip__.
+  #
+  # - __debug__ toggles debug logging for all instances of a plugin.
+  # - __toString__ helps to namespace when extending any jQuery API.
+  #
+  # The plugin's __defaults__ are available as reference. Also note that _the
+  # plugin instance gets extended with the options_.
+  #
+  # - __$viewport__ is the element in which the tip must fit. It is _not_ the
+  #   context element, which stores the tip instance and by convention contains
+  #   the triggers.
+  #
+  # - __autoDirection__ automatically changes the direction to better fit the
+  #   tip inside the viewport.
+  #
+  # - __cursorHeight__ is the browser's cursor height. We need to know this to
+  #   properly offset the tip to avoid cases of cursor-tip-stem overlap.
+  #
+  # - __defaultDirection__ is used as a tie-breaker when selecting the best
+  #   direction. Note that the direction data structure must be an array of
+  #   `components`, and conventionally with top/bottom first.
+  #
+  # - __fireEvents__ can allow events __show.hlf.tip__ and __shown.hlf.tip__,
+  #   __hide.hlf.tip__ and __hidden.hlf.tip__ to be triggered from the trigger
+  #   elements. This is off by default to improve performance.
+  #
+  # - __tipTemplate__ should return interpolated html when given the additional
+  #   container class list. Its context is the plugin instance.
+  #
+  # - __triggerContent__ can be the name of the trigger element's attribute or a
+  #   function that provides custom content when given the trigger element.
+  #
+  # - NOTE: For these tip plugins, the majority of presentation state logic is
+  #   in the plugin stylesheet. We update the presentation state by using
+  #   namespaced __classNames__ generated in a closure.
+  # 
+  #   - __classNames.stem__ - Empty string to remove the stem.
+  #   - __classNames.follow__ - Empty string to disable cursor following.
+  #
+  # - __animator__ by default uses the stock jQuery animation system. If you
+  #   want a more performant system, like GreenSock or Velocity, set it here.
+  #   See the visual tests for an example.
+  #
+  # - __animations__ are very configurable. Individual animations can be
+  #   customized and will default to the base animation settings as needed.
+  #
+  # - __followUsingTransform__ will automatically check CSS transforms support
+  #   via Modernizr. So you'll need to use Modernizr or manually enable this
+  #   option to use the more performant transforms.
+  #
   hlf.tip =
-    # To toggle debug logging for all instances of a plugin, use the `debug` flag.
     debug: off
-    # To namespace when extending any jQuery API, we use custom `toString` helpers.
     toString: _.memoize (context) ->
       switch context
         when 'event'  then '.hlf.tip'
         when 'data'   then 'hlf-tip'
         when 'class'  then 'js-tips'
         else 'hlf.tip'
-    # The plugin's default options is available as reference for values like sizes.
 
-    # §
-
-    # Tip Options
-    # -----------
-    #- NOTE: The plugin instance gets extended with the options.
     defaults: do (pre = 'js-tip-') ->
 
-      # - `$viewport` is the element in which the tip must fit into. It is _not_
-      #   the context, which stores the tip instance and by convention contains
-      #   the triggers.
       $viewport: $ 'body'
-      # - `autoDirection` automatically changes the direction so the tip can
-      #   better fit inside the viewport.
       autoDirection: on
-      # - `cursorHeight` is the browser's cursor height. We need to know this to
-      #   properly offset the tip to avoid cases of cursor-tip-stem overlap.
       cursorHeight: 12
-      # - `defaultDirection` is used as a tie-breaker when selecting the best
-      #   direction. Note that the direction data structure must be an array of
-      #   `components`, and conventionally with top/bottom first.
       defaultDirection: ['bottom', 'right']
-      # - `fireEvents` can be enabled to allow `show.hlf.tip` and `shown.hlf.tip`,
-      #   `hide.hlf.tip` and `hidden.hlf.tip` events to be triggered from the
-      #   trigger elements. This is off by default to improve performance.
       fireEvents: on
-      # - `tipTemplate` should return interpolated html when given the
-      #   additional container class list. Its context is the plugin instance.
       tipTemplate: (containerClass) ->
         stemHtml = "<div class='#{@classNames.stem}'></div>" if @doStem is on
         """
@@ -103,29 +129,16 @@ HLF Tip jQuery Plugin
           </div>
         </div>
         """
-      # - `triggerContent` can be the name of the trigger element's attribute or a
-      #   function that provides custom content when given the trigger element.
       triggerContent: null
-      # NOTE: For these tip plugins, the majority of presentation state logic is
-      # in the plugin stylesheet. We update the presentation state by using
-      # namespaced `classNames` generated in a closure.
-      # 
-      # - `classNames.stem` - Empty string to remove the stem.
-      # - `classNames.follow` - Empty string to disable cursor following.
       classNames: do ->
         classNames = {}
         keys = ['inner', 'content', 'stem', 'top', 'right', 'bottom', 'left', 'follow', 'trigger']
         (classNames[key] = "#{pre}#{key}") for key in keys
         classNames.tip = 'js-tip'
         classNames
-      # - `animator` by default uses the stock jQuery animation system. If you
-      #   want a more performant system, like GreenSock or Velocity, replace
-      #   this with a custom implementation.
       animator:
         show: ($el, options) -> $el.stop().fadeIn options
         hide: ($el, options) -> $el.stop().fadeOut options
-      # - `animations` are very configurable. Individual animations can be
-      #   customized and will default to the base animation settings as needed.
       animations:
         base:
           delay: 0
@@ -138,11 +151,19 @@ HLF Tip jQuery Plugin
         resize:
           delay: 300
           easing: 'ease-in-out'
-      # - `followUsingTransform` will automatically check CSS transforms support
-      #   via Modernizr. So you'll need to use Modernizr or manually enable this
-      #   option to use the more performant transforms.
       followUsingTransform: window.Modernizr?.csstransforms
 
+  # Within `$.hlf.tip` is a subnamespace for the `snapTip` plugin
+  # __$.hlf.tip.snap__.
+  #
+  # Its __defaults__ extend `tip`'s defaults.
+  # 
+  # - __snap.toXAxis__ is the switch for snapping along x-axis and only
+  #   following along y-axis. Off by default.
+  # - __snap.toYAxis__ is the switch for snapping along y-axis and only
+  #   following along x-axis. Off by default.
+  # - __snap.toTrigger__ is the switch for snapping to trigger built on
+  #   axis-snapping. On by default.
   hlf.tip.snap =
     debug: off
     toString: _.memoize (context) ->
@@ -152,21 +173,8 @@ HLF Tip jQuery Plugin
         when 'class'  then 'js-snap-tips'
         else 'hlf.tip.snap'
 
-    # SnapTip Options
-    # ---------------
-    #- NOTE: The plugin instance gets extended with the options.
     defaults: do (pre = 'js-snap-tip-') ->
-      # These options extend the tip options.
       $.extend (deep = yes), {}, hlf.tip.defaults,
-        # NOTE: For each snapping option, the plugin adds its class to the tip
-        # if the option is on.
-        # 
-        # - `snap.toXAxis` is the switch for snapping along x-axis and only
-        #   following along y-axis. Off by default.
-        # - `snap.toYAxis` is the switch for snapping along y-axis and only
-        #   following along x-axis. Off by default.
-        # - `snap.toTrigger` is the switch for snapping to trigger built on
-        #   axis-snapping. On by default.
         snap:
           toTrigger: on
           toXAxis: off
@@ -182,50 +190,54 @@ HLF Tip jQuery Plugin
           classNames.tip = 'js-tip js-snap-tip'
           classNames
 
-  # §
-
-  # Tip Implementation
-  # ------------------
-  # Read on to learn about implementation details.
+  # Tip
+  # ---
   class Tip
 
-    # ƒ `constructor` keeps `$triggers` and `$context` as properties. `options`
+    # __constructor__ keeps `$triggers` and `$context` as properties. `options`
     # is further normalized.
     constructor: (@$triggers, options, @$context) ->
       for own name, animation of options.animations when name isnt 'base'
         _.defaults animation, options.animations.base
 
-    # ƒ `init` offloads non-trivial setup to other subroutines.
+    # __init__ offloads non-trivial setup to other subroutines. Otherwise it will:
+    # 1. Store the tip element.
+    # 2. Infer `doStem` and `doFollow` flags from respective `classNames` entries.
+    # 3. Initialize state, which is either: `awake`, `asleep`, `waking`, `sleeping`;
+    #    and which will respectively show or hide the tip.
+    # 4. Initialize timers. The tip should remain visible and `awake` as long as
+    #    there is a high enough frequency of relevant mouse activity. In addition
+    #    to using `hoverIntent`, this is achieved with a basic implementation
+    #    around timers `_sleepCountdown` and `_wakeCountdown`, and an extra
+    #    reference to `_$currentTrigger`.
+    # 5. Initialize tip. Note the initial render.
+    # 6. Initialize context.
+    # 7. Initialize triggers. Note the initial processing.
     init: ->
       _.bindAll @, '_onTriggerMouseMove', '_setBounds'
-      # - Initialize tip element.
+
       @_setTip $ '<div>'
-      # - Infer `doStem` and `doFollow` flags from respective `classNames` entries.
+
       @doStem = @classNames.stem isnt ''
       @doFollow = @classNames.follow isnt ''
-      # - Initialize state, which is either: `awake`, `asleep`, `waking`,
-      # `sleeping`; respectively show, hide.
+
       @_setState 'asleep'
-      # - The tip should remain visible and `awake` as long as there is a high
-      # enough frequency of relevant mouse activity. In addition to using
-      # `hoverIntent`, this is achieved with a simple base implementation around
-      # timers `_sleepCountdown` and `_wakeCountdown` and an extra reference to
-      # `_$currentTrigger`.
+
       @_wakeCountdown = null
       @_sleepCountdown = null
       @_$currentTrigger = null
-      # - Initialize tip. Note the initial render.
+
       @_render()
       @_bind()
-      # - Initialize context.
+      
       @_bindContext()
-      # - Initialize triggers. Note the initial processing.
+
       @_processTriggers()
       @_bindTriggers()
 
-    # ### Accessors
+    # __Accessors__
 
-    # ƒ `_defaultHtml` provides a basic html structure for tip content. It can be
+    # ___defaultHtml__ provides a basic html structure for tip content. It can be
     # customized via the `tipTemplate` external option, or by subclasses using
     # the `htmlOnRender` hook.
     _defaultHtml: ->
@@ -237,28 +249,26 @@ HLF Tip jQuery Plugin
       containerClass = $.trim [@classNames.tip, @classNames.follow, directionClass].join ' '
       html = @tipTemplate containerClass
 
-    # ƒ `_isDirection` is a helper to deduce if `$tip` currently has the given
-    # `directionComponent`. The tip is considered to have the same direction as
-    # the given `$trigger` if it has the classes or if there is no trigger or
-    # saved direction value and the directionComponent is part of
-    # `defaultDirection`. Note that this latter check is placed last for
-    # performance savings.
+    # ___isDirection__ deduces if `$tip` has the given `directionComponent`,
+    # which is true  if it has the classes or if there is no given `$trigger` or
+    # saved direction value, and `directionComponent` is part of
+    # `defaultDirection`.
     _isDirection: (directionComponent, $trigger) ->
       @$tip.hasClass(@classNames[directionComponent]) or (
         (not $trigger? or not $trigger.data(@attr('direction'))) and
         _.include(@defaultDirection, directionComponent)
       )
 
-    # ƒ `_offsetForTrigger` is a helper to return the proper trigger offset for
-    # proper tip attachment. Fixed-position triggers need to fall back to the
-    # fool-proof `$.fn.offset`. This is despite `$.fn.position` being de-facto
-    # for elements sharing a parent positioning context.
+    # ___offsetForTrigger__ computes the proper trigger offset for proper tip
+    # attachment. Fixed-position triggers need to fall back to the fool-proof
+    # `$.fn.offset`. This is despite `$.fn.position` being de-facto for elements
+    # sharing a parent positioning context.
     _offsetForTrigger: ($trigger) ->
       if $trigger.css('position') is 'fixed' then $trigger.offset()
       else $trigger.position()
 
-    # ƒ `_setCurrentTrigger` is a simple setter that updates a trigger and makes
-    # it current, but only if it isn't already.
+    # ___setCurrentTrigger__ also updates a trigger and makes it current, but
+    # only if it isn't already.
     _setCurrentTrigger: ($trigger) ->
       @_triggerChanged = not $trigger.is @_$currentTrigger
       return no unless @_triggerChanged
@@ -266,8 +276,8 @@ HLF Tip jQuery Plugin
       @_$currentTrigger = $trigger
 
 
-    # ƒ `_setState` is a simple setter that returns false if state doesn't
-    # change. It also handles minor tasks when switching to a new state.
+    # ___setState__ also performs minor tasks when switching to a new state, if
+    # it did not first return `false` from no state change.
     _setState: (state, data) ->
       return no if state is @_state
       #- previous = @_state
@@ -293,11 +303,11 @@ HLF Tip jQuery Plugin
           clearTimeout @_sleepCountdown
           @_triggerChanged = yes
 
-    # ƒ `_setTip` aliases the conventional `$el` property to `$tip` for clarity.
+    # ___setTip__ aliases the conventional `$el` property to `$tip` for clarity.
     _setTip: ($tip) => @$tip = @$el = $tip
 
-    # ƒ `_sizeForTrigger` does a stealth render via `_wrapStealthRender` to find tip
-    # size. It will return saved data if possible before doing a measure. The
+    # ___sizeForTrigger__ does a stealth render via `_wrapStealthRender` to find
+    # tip size. It returns saved data if possible before doing a measure. The
     # measures, used by `_updateDirectionByTrigger`, are stored on the trigger
     # as namespaced, `width` and `height` jQuery data values. If on,
     # `contentOnly` will factor in content padding into the size value for the
@@ -325,7 +335,7 @@ HLF Tip jQuery Plugin
 
       size
 
-    # ƒ `_stemSize` does a stealth render via `_wrapStealthRender` to find stem
+    # ___stemSize__ does a stealth render via `_wrapStealthRender` to find stem
     # size. The stem layout styles will add offset to the tip content based on
     # the tip direction. Knowing the size helps operations like overall tip
     # positioning.
