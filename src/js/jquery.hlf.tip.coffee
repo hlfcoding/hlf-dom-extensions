@@ -234,6 +234,7 @@ HLF Tip jQuery Plugin
 
       @_processTriggers()
       @_bindTriggers()
+      return
 
     # § __Accessors__
 
@@ -274,6 +275,7 @@ HLF Tip jQuery Plugin
       return no unless @_triggerChanged
       @_inflateByTrigger $trigger
       @_$currentTrigger = $trigger
+      return
 
 
     # ___setState__ also performs minor tasks when switching to a new state, if
@@ -302,9 +304,10 @@ HLF Tip jQuery Plugin
           @_$currentTrigger?.trigger @evt('show') if @fireEvents is on
           clearTimeout @_sleepCountdown
           @_triggerChanged = yes
+      return
 
     # ___setTip__ aliases the conventional `$el` property to `$tip` for clarity.
-    _setTip: ($tip) => @$tip = @$el = $tip
+    _setTip: ($tip) => @$tip = @$el = $tip; return
 
     # ___sizeForTrigger__ does a stealth render via `_wrapStealthRender` to find
     # tip size. It returns saved data if possible before doing a measure. The
@@ -443,6 +446,7 @@ HLF Tip jQuery Plugin
         (if @followUsingTransform then "transform #{rest}" else "top #{rest}, left #{rest}")
       else ''
       @$tip.css 'transition', transition
+      return
 
     # § __Content__
 
@@ -468,6 +472,7 @@ HLF Tip jQuery Plugin
         if canRemoveAttr then $trigger.removeAttr attr
       if content?
         $trigger.data @attr('content'), content
+      return
 
     # § __Events__
 
@@ -492,6 +497,7 @@ HLF Tip jQuery Plugin
 
       if @autoDirection is on
         $(window).resize _.debounce @_setBounds, 300
+      return
 
     # ___bindContext__ uses `MutationObserver`. If `doLiveUpdate` is inferred to
     # be true, process triggers added in the future. Make sure to ignore mutations
@@ -511,6 +517,7 @@ HLF Tip jQuery Plugin
       @_mutationObserver.observe @$context[0],
         childList: yes
         subtree: yes
+      return
 
     # ___bindTriggers__ links each trigger to the tip for:
     # 1. Possible appearance changes during mouseenter, mouseleave (uses special
@@ -542,6 +549,7 @@ HLF Tip jQuery Plugin
         else 
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
         @$context.on 'mousemove', selector, onMouseMove
+      return
 
     # § __Positioning__
 
@@ -558,6 +566,7 @@ HLF Tip jQuery Plugin
       return no if not $trigger.length
 
       @wakeByTrigger $trigger, event
+      return
 
     # ___positionToTrigger__ will properly update the tip offset per
     # `offsetOnTriggerMouseMove` and `_isDirection`. Also note that `_stemSize`
@@ -585,6 +594,7 @@ HLF Tip jQuery Plugin
       else offset
 
       @$tip.css css
+      return
 
     # ___setBounds__ updates `_bounds` per `$viewport`'s inner bounds, and those
     # measures get used by `_updateDirectionByTrigger`.
@@ -595,6 +605,7 @@ HLF Tip jQuery Plugin
         left:   $.css @$viewport[0], 'padding-left', yes
         bottom: $viewport.innerHeight()
         right:  $viewport.innerWidth()
+      return
 
     # § __Rendering__
 
@@ -624,6 +635,7 @@ HLF Tip jQuery Plugin
             "#{classListMemo} #{@classNames[directionComponent]}"
           , ''
         )
+      return
 
     # ___render__ comes with a base implementation that fills in and attaches
     # `$tip` to the DOM, specifically at the beginning of `$viewport`. It uses
@@ -644,6 +656,7 @@ HLF Tip jQuery Plugin
       @_setTip $tip
       @selectByClass('content').css 'transition', transitionStyle.join(',')
       @$tip.prependTo @$viewport
+      return
 
     # § __Subroutines__
 
@@ -657,6 +670,7 @@ HLF Tip jQuery Plugin
         $trigger.addClass @classNames.trigger
         @_saveTriggerContent $trigger
         @_updateDirectionByTrigger $trigger
+      return
 
     # ___updateDirectionByTrigger__ is the main provider of auto-direction
     # support. Given the `$viewport`'s `_bounds`, it changes to the best
@@ -686,6 +700,7 @@ HLF Tip jQuery Plugin
             when 'top'    then newDirection[0] = 'bottom'
             when 'left'   then newDirection[1] = 'right'
           $trigger.data @attr('direction'), newDirection.join ' '
+      return
 
     # ___wrapStealthRender__ is a helper mostly for size detection on tips and
     # triggers. Without stealth rendering the elements by temporarily un-hiding
@@ -725,6 +740,7 @@ HLF Tip jQuery Plugin
         @snap.toTrigger = @snap.toXAxis is on or @snap.toYAxis is on
       @_offsetStart = null
       @$tip.addClass(@classNames.snap[key]) for own key, active of @snap when active
+      return
 
     # § __Events__
 
@@ -737,6 +753,7 @@ HLF Tip jQuery Plugin
       #- Modify base binding.
       @$context.on @evt('truemouseleave'), selector, { selector },
         (event) => @_offsetStart = null
+      return
     
     # § __Positioning__
 
@@ -769,6 +786,7 @@ HLF Tip jQuery Plugin
     # it won't need to be factored in if we're snapping.
     _positionToTrigger: ($trigger, mouseEvent, cursorHeight=@cursorHeight) ->
       super $trigger, mouseEvent, 0
+      return
 
     # § __Tip Delegation__
 
@@ -777,11 +795,13 @@ HLF Tip jQuery Plugin
     onShow: (event) ->
       return unless @_triggerChanged is yes
       @$tip.css 'visibility', 'hidden'
+      return
         
     afterShow: (event) ->
       return unless @_triggerChanged is yes
       @$tip.css 'visibility', 'visible'
       @_offsetStart = { top: event.pageY, left: event.pageX }
+      return
 
     # Implement __offsetOnTriggerMouseMove__ delegate method as the main snapping
     # positioning handler. Instead of returning false, we return our custom,
