@@ -352,7 +352,7 @@ HLF Tip jQuery Plugin
         size = Math.abs parseInt($stem.css('margin').replace(/0px/g, ''), 10)
         @$tip.data key, size
         size
-      return wrapped()
+      wrapped()
 
     # § __Appearance__
 
@@ -717,9 +717,9 @@ HLF Tip jQuery Plugin
 
     # These methods are hooks for custom functionality from subclasses. (Some are
     # set to no-ops becase they are given no arguments.)
-    onShow: (event) -> undefined
+    onShow: (event) ->
     onHide: $.noop
-    afterShow: (event) -> undefined
+    afterShow: (event) ->
     afterHide: $.noop
     htmlOnRender: $.noop
     offsetOnTriggerMouseMove: (event, offset, $trigger) -> no
@@ -758,7 +758,7 @@ HLF Tip jQuery Plugin
     # § __Positioning__
 
     # ___moveToTrigger__ is the main positioner. The `baseOffset` given is
-    # expected to be the trigger offset.
+    # expected to be the trigger offset. It returns the new offset.
     _moveToTrigger: ($trigger, baseOffset) -> # TODO: Still needs to support all the directions.
       #- @debugLog baseOffset
       offset = @_offsetForTrigger $trigger
