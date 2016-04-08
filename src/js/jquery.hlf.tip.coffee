@@ -20,7 +20,7 @@ HLF Tip jQuery Plugin
 # axis. For example, snapping to the x-axis will only allow the tip to shift
 # along the y-axis. The x will remain constant.
 
-# __UMD__
+# § __UMD__
 # - When AMD, register the attacher as an anonymous module.
 # - When Node or Browserify, set module exports to the attach result.
 # - When browser globals (root is window), Just run the attach function.
@@ -85,7 +85,7 @@ HLF Tip jQuery Plugin
   # - __triggerContent__ can be the name of the trigger element's attribute or a
   #   function that provides custom content when given the trigger element.
   #
-  # - NOTE: For these tip plugins, the majority of presentation state logic is
+  # - Note: for these tip plugins, the majority of presentation state logic is
   #   in the plugin stylesheet. We update the presentation state by using
   #   namespaced __classNames__ generated in a closure.
   # 
@@ -235,7 +235,7 @@ HLF Tip jQuery Plugin
       @_processTriggers()
       @_bindTriggers()
 
-    # __Accessors__
+    # § __Accessors__
 
     # ___defaultHtml__ provides a basic html structure for tip content. It can be
     # customized via the `tipTemplate` external option, or by subclasses using
@@ -351,21 +351,28 @@ HLF Tip jQuery Plugin
         size
       return wrapped()
 
-    # ### Appearance
+    # § __Appearance__
 
-    # ƒ `wakeByTrigger` is the main toggler and a `_state` updater. The toggling and
-    # main changes only happen if the delay is passed. It will return a promise that
-    # fails if waking gets skipped; it also may become done synchronously.
+    # __wakeByTrigger__ is the main toggler and a `_state` updater. The toggling
+    # and main changes only happen if the delay is passed. It returns a promise
+    # that fails if waking gets skipped, but async execution isn't guaranteed.
+    # It will:
+    # 1. Go directly to the position updating if no toggling is needed.
+    # 2. Not toggle if awake or waking, or if event isn't `truemouseenter`.
+    # 3. Declare a `wake` subroutine running the timed-out logic, which includes
+    #    the fade transition, and ensures other tips disappear during it.
+    # 4. Wake up depending on current state. If we are in the middle of sleeping,
+    #    stop sleeping by updating `_sleepCountdown` and wake up sooner.
+    #    Otherwise start the normal wakeup and update `_wakeCountdown`.
     wakeByTrigger: ($trigger, event) ->
       deferred = $.Deferred()
       promise = deferred.promise()
       @_setCurrentTrigger $trigger
-      #- Abstract into subroutine.
-      updateBeforeWake = =>
+
+      updateBeforeWake = => # Abstract into subroutine.
         @_positionToTrigger $trigger, event
         @onShow event # Hook in custom logic.
 
-      # - Go directly to the position updating if no toggling is needed.
       if @_state is 'awake'
         @debugLog 'quick update'
         updateBeforeWake()
@@ -373,13 +380,11 @@ HLF Tip jQuery Plugin
         return promise
 
       @debugLog event.type if event? # Log the event if we made it this far.
-      # - Don't toggle if awake or waking, or if event isn't `truemouseenter`.
+
       if @_state in ['awake', 'waking']
         deferred.reject()
         return promise
 
-      # - Our `wake` subroutine runs the timed-out logic, which includes the fade
-      #   transition. Ensure other tips disappear during the transition.
       wake = (duration) =>
         updateBeforeWake() # Hook in custom logic.
         options = _.defaults { duration }, @animations.show
@@ -392,29 +397,25 @@ HLF Tip jQuery Plugin
           options = _.defaults { duration }, @animation.hide
           @animator.hide $el, options
 
-      # - Wake up depending on current state. If we are in the middle of
-      #   sleeping, stop sleeping by updating `_sleepCountdown` and wake up
-      #   sooner.
       if @_state is 'sleeping'
         @debugLog 'clear sleep'
         clearTimeout @_sleepCountdown
         wake(0)
-      # - Start the normal wakeup and update `_wakeCountdown`.
+
       else if event? and event.type is 'truemouseenter'
         @_setState 'waking', { event }
         @_wakeCountdown = setTimeout wake, @animations.show.delay
 
       promise
 
-    # ƒ `sleepByTrigger` is a much simpler toggler compared to its counterpart
+    # __sleepByTrigger__ is a much simpler toggler compared to its counterpart
     # `wakeByTrigger`. It also updates `_state` and returns a promise that
     # fails if waking gets skipped. As long as the tip isn't truly visible, or
-    # sleeping is redundant, it bails.
+    # sleeping is redundant, or event isn't `truemouseleave`, it bails.
     sleepByTrigger: ($trigger, event) ->
       deferred = $.Deferred()
       promise = deferred.promise()
 
-      # - Don't toggle if asleep or sleeping, or if event isn't `truemouseleave`.
       if @_state in ['asleep', 'sleeping']
         deferred.reject()
         return promise
@@ -432,7 +433,7 @@ HLF Tip jQuery Plugin
 
       promise
 
-    # ƒ `_togglePositionTransition` adds a position css transition to the tip.
+    # __togglePositionTransition__ adds a position css transition to the tip.
     # This normally is very expensive considering we update position on mousemove.
     # But it's used together with a test to see if the cursor is likely currently
     # in a gap between triggers. See `_setState` for details.
@@ -443,9 +444,9 @@ HLF Tip jQuery Plugin
       else ''
       @$tip.css 'transition', transition
 
-    # ### Content
+    # § __Content__
 
-    # ƒ `_saveTriggerContent` comes with a very simple base implementation that
+    # ___saveTriggerContent__ comes with a very simple base implementation that
     # supports the common `title` and `alt` meta content for an element. Support
     # is also provided for the `triggerContent` option. We take that content and
     # store it into a namespaced `content` jQuery data value on the trigger.
@@ -468,9 +469,9 @@ HLF Tip jQuery Plugin
       if content?
         $trigger.data @attr('content'), content
 
-    # ### Events
+    # § __Events__
 
-    # ƒ `_bind` adds event handlers to `$tip` mostly, so state can be updated such
+    # ___bind__ adds event handlers to `$tip` mostly, so state can be updated such
     # that the handlers on `_$currentTrigger` make an exception. So that cursor
     # leaving the trigger for the tip doesn't cause the tip to dismiss.
     # 
@@ -488,11 +489,12 @@ HLF Tip jQuery Plugin
           if @_$currentTrigger?
             @_$currentTrigger.data @attr('is-active'), no
             @sleepByTrigger @_$currentTrigger, event
+
       if @autoDirection is on
         $(window).resize _.debounce @_setBounds, 300
 
-    # ƒ `_bindContext` uses MutationObserver. If `doLiveUpdate` is inferred to be
-    # true, process triggers added in the future. Make sure to ignore mutations
+    # ___bindContext__ uses `MutationObserver`. If `doLiveUpdate` is inferred to
+    # be true, process triggers added in the future. Make sure to ignore mutations
     # related to the tip.
     _bindContext: ->
       return false unless window.MutationObserver?
@@ -510,7 +512,7 @@ HLF Tip jQuery Plugin
         childList: yes
         subtree: yes
 
-    # ƒ `_bindTriggers` links each trigger to the tip for:
+    # ___bindTriggers__ links each trigger to the tip for:
     # 1. Possible appearance changes during mouseenter, mouseleave (uses special
     #    events).
     # 2. Following on mousemove only if `doFollow` is on.
@@ -541,12 +543,12 @@ HLF Tip jQuery Plugin
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
         @$context.on 'mousemove', selector, onMouseMove
 
-    # ### Positioning
+    # § __Positioning__
 
-    # ƒ `_onTriggerMouseMove` is actually the main tip toggling handler. To
-    # explain, first we take into account of child elements triggering the mouse
-    # event by deducing the event's actual `$trigger` element. Then we
-    # `wakeByTrigger` if needed.
+    # ___onTriggerMouseMove__ is actually the main tip toggling handler. To
+    # explain, first account for the child elements triggering the mouse event
+    # by deducing the event's actual `$trigger` element. Then `wakeByTrigger`
+    # if needed.
     _onTriggerMouseMove: (event) ->
       return no if not event.pageX?
 
@@ -557,7 +559,7 @@ HLF Tip jQuery Plugin
 
       @wakeByTrigger $trigger, event
 
-    # ƒ `_positionToTrigger` will properly update the tip offset per
+    # ___positionToTrigger__ will properly update the tip offset per
     # `offsetOnTriggerMouseMove` and `_isDirection`. Also note that `_stemSize`
     # gets factored in.
     _positionToTrigger: ($trigger, mouseEvent, cursorHeight=@cursorHeight) ->
@@ -584,7 +586,7 @@ HLF Tip jQuery Plugin
 
       @$tip.css css
 
-    # ƒ `_setBounds` updates `_bounds` per `$viewport`'s inner bounds, and those
+    # ___setBounds__ updates `_bounds` per `$viewport`'s inner bounds, and those
     # measures get used by `_updateDirectionByTrigger`.
     _setBounds: ->
       $viewport = if @$viewport.is('body') then $(window) else @$viewport
@@ -594,17 +596,17 @@ HLF Tip jQuery Plugin
         bottom: $viewport.innerHeight()
         right:  $viewport.innerWidth()
 
-    # ### Rendering
+    # § __Rendering__
 
-    # ƒ `_inflateByTrigger` will reset and update `$tip` and its content element for the given trigger, so
-    # that it is ready to present, ie. it is 'inflated'. If the `resize` animation
-    # is desired, we need to also specify the content element's dimensions for
-    # respective transitions to take effect.
+    # ___inflateByTrigger__ will reset and update `$tip` and its content element
+    # for the given trigger, so it is ready to present, ie. it is 'inflated'. If
+    # the `resize` animation is on, also specify the content element's dimension
+    # for respective transitions to take effect.
     _inflateByTrigger: ($trigger) ->
       $content = @selectByClass 'content'
       $content.text $trigger.data @attr('content')
 
-      #- NOTE: A transition style is in place, so this causes animation.
+      #- Note that a transition style is in place, so this causes animation.
       if @animations.resize.enabled
         contentSize = @_sizeForTrigger $trigger, (contentOnly = yes)
         $content
@@ -623,7 +625,7 @@ HLF Tip jQuery Plugin
           , ''
         )
 
-    # ƒ `_render` comes with a base implementation that fills in and attaches
+    # ___render__ comes with a base implementation that fills in and attaches
     # `$tip` to the DOM, specifically at the beginning of `$viewport`. It uses
     # the result of `htmlOnRender` and falls back to that of `_defaultHtml`. 
     # Render also sets up any animations per the `shouldAnimate` option.
@@ -643,9 +645,9 @@ HLF Tip jQuery Plugin
       @selectByClass('content').css 'transition', transitionStyle.join(',')
       @$tip.prependTo @$viewport
 
-    # ### Subroutines
+    # § __Subroutines__
 
-    # ƒ `_processTriggers` does just that and sets up content, event, and
+    # ___processTriggers__ does just that and sets up content, event, and
     # positioning aspects.
     _processTriggers: ($triggers) ->
       $triggers ?= @$triggers
@@ -656,10 +658,10 @@ HLF Tip jQuery Plugin
         @_saveTriggerContent $trigger
         @_updateDirectionByTrigger $trigger
 
-    # ƒ `_updateDirectionByTrigger` is the main provider of auto-direction
+    # ___updateDirectionByTrigger__ is the main provider of auto-direction
     # support. Given the `$viewport`'s `_bounds`, it changes to the best
-    # direction as needed. The current `direction` is stored as jQuery data with
-    # trigger.
+    # direction as needed. The current `direction` is stored as jQuery data on
+    # the trigger.
     _updateDirectionByTrigger: ($trigger) ->
       return no if @autoDirection is off
       triggerOffset   = @_offsetForTrigger $trigger
@@ -685,7 +687,7 @@ HLF Tip jQuery Plugin
             when 'left'   then newDirection[1] = 'right'
           $trigger.data @attr('direction'), newDirection.join ' '
 
-    # ƒ `_wrapStealthRender` is a helper mostly for size detection on tips and
+    # ___wrapStealthRender__ is a helper mostly for size detection on tips and
     # triggers. Without stealth rendering the elements by temporarily un-hiding
     # and making invisible, we can't do `getComputedStyle` on them.
     _wrapStealthRender: (func) ->
@@ -696,7 +698,7 @@ HLF Tip jQuery Plugin
         @$tip.css { display: 'none', visibility: 'visible' }
         return result
 
-    # ### Delegation to Subclass
+    # § __Delegation to Subclass__
 
     # These methods are hooks for custom functionality from subclasses. (Some are
     # set to no-ops becase they are given no arguments.)
@@ -707,26 +709,26 @@ HLF Tip jQuery Plugin
     htmlOnRender: $.noop
     offsetOnTriggerMouseMove: (event, offset, $trigger) -> no
 
-  # SnapTip Implementation
-  # ----------------------
+  # SnapTip
+  # -------
   # With such a complete base API, extending it with an implementation with
   # snapping becomes almost trivial.
   class SnapTip extends Tip
 
-    # ƒ `init` continues setting up `$tip` and other properties.
+    # __init__ continues setting up `$tip` and other properties.
+    # 1. Infer `snap.toTrigger`.
+    # 2. `_offsetStart` stores the original offset, which is used for snapping.
+    # 3. Add snapping config as classes.
     init: ->
       super()
-      # - Infer `snap.toTrigger`.
       if @snap.toTrigger is off
         @snap.toTrigger = @snap.toXAxis is on or @snap.toYAxis is on
-      # - `_offsetStart` stores the original offset, which is used for snapping.
       @_offsetStart = null
-      # - Add snapping config as classes.
       @$tip.addClass(@classNames.snap[key]) for own key, active of @snap when active
 
-    # ### Events
+    # § __Events__
 
-    # ƒ `_bindTriggers` extend its super to get initial position for snapping.
+    # ___bindTriggers__ extend its super to get initial position for snapping.
     # This is only for snapping without snapping to the trigger, which is only
     # what's currently supported. See `afterShow` hook.
     _bindTriggers: ->
@@ -736,9 +738,9 @@ HLF Tip jQuery Plugin
       @$context.on @evt('truemouseleave'), selector, { selector },
         (event) => @_offsetStart = null
     
-    # ### Positioning
+    # § __Positioning__
 
-    # ƒ `_moveToTrigger` is the main positioner. The `baseOffset` given is
+    # ___moveToTrigger__ is the main positioner. The `baseOffset` given is
     # expected to be the trigger offset.
     _moveToTrigger: ($trigger, baseOffset) -> # TODO: Still needs to support all the directions.
       #- @debugLog baseOffset
@@ -763,14 +765,14 @@ HLF Tip jQuery Plugin
           offset.top += $trigger.outerHeight()
       offset
 
-    # ƒ `_positionToTrigger` extends its super to set `cursorHeight` to 0, since
+    # ___positionToTrigger__ extends its super to set `cursorHeight` to 0, since
     # it won't need to be factored in if we're snapping.
     _positionToTrigger: ($trigger, mouseEvent, cursorHeight=@cursorHeight) ->
       super $trigger, mouseEvent, 0
 
-    # ### Tip Delegation
+    # § __Tip Delegation__
 
-    # ƒ Implement `onShow` and `afterShow` delegate methods such that they make
+    # Implement __onShow__ and __afterShow__ delegate methods such that they make
     # the tip invisible while it's being positioned and then reveal it.
     onShow: (event) ->
       return unless @_triggerChanged is yes
@@ -781,17 +783,15 @@ HLF Tip jQuery Plugin
       @$tip.css 'visibility', 'visible'
       @_offsetStart = { top: event.pageY, left: event.pageX }
 
-    # ƒ Implement `offsetOnTriggerMouseMove` delegate method as the main snapping
+    # Implement __offsetOnTriggerMouseMove__ delegate method as the main snapping
     # positioning handler. Instead of returning false, we return our custom,
     # snapping offset, so it gets used in lieu of the base `offset`.
     offsetOnTriggerMouseMove: (event, offset, $trigger) ->
       newOffset = @_moveToTrigger $trigger, _.clone(offset)
 
-  # §
+  # § __Attaching__
 
-  # Export
-  # ------
-  # Both are exported with the `asSharedInstance` flag set to true.
+  # Both plugins are created and attached with the `asSharedInstance` flag on.
   hlf.createPlugin
     name: 'tip'
     namespace: hlf.tip
