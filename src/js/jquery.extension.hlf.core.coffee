@@ -295,6 +295,7 @@ HLF Core jQuery Extension
       method.call(context) for method in onceMethods
       # - Auto-bind conventionally-named event handlers.
       if handlerNames.length then _.bindAll context, handlerNames...
+      return
 
     # ƒ `applyMixins`, when given a `context` (class) to decorate with `mixins`,
     # which should be passed in order of application, calls `$.applyMixin` for
@@ -302,6 +303,7 @@ HLF Core jQuery Extension
     # `$.applyMixin`.
     applyMixins: (context, dependencies, mixins...) ->
       @applyMixin context, dependencies, mixin for mixin in mixins
+      return
 
     # ƒ `createMixin`, when given a collection of `mixins`, adds a new mixin with
     # given `name` and `mixin` method collection. Conventionally, each logical
@@ -367,6 +369,7 @@ HLF Core jQuery Extension
           for own name, selector of @selectors
             if (result = @$el.find selector)?
               @["$#{name}"] = result
+          return
         selectByClass: (className) ->
           classNames = @options?.classNames
           classNames ?= @classNames
@@ -382,6 +385,7 @@ HLF Core jQuery Extension
     _oldValue = toContext[key]
     toContext[key] = fromContext[key]
     _noConflicts.push -> toContext[key] = _oldValue
+    return
 
   _safeSet 'applyMixin'
   _safeSet 'applyMixins'
