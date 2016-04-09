@@ -3,10 +3,7 @@ HLF Tip Visual Tests
 ====================
 ###
 
-# __See__: [test page](../../../tests/tip.visual.html), [source](../../src/js/jquery.hlf.tip.html).
-
-# Note that the sample logic in tests is in JavaScript (perhaps easier to
-# understand than CoffeeScript) for your convenience.
+# [Page](../../../tests/tip.visual.html) | [Source](../../src/js/jquery.hlf.tip.html)
 
 require.config
   baseUrl: '../lib'
@@ -19,9 +16,9 @@ require.config
     'jquery.gsap':
       deps: ['jquery', 'CSSPlugin', 'TweenLite']
 
-# For performant animations, custom animators can be used. The below are
+# For performant animations, __custom animators__ can be used. The below are
 # examples of requiring GSAP and Velocity. Note Velocity does not provide a
-# Promise shim and is annoyingly naive, so we must do it ourselves. See
+# Promise shim and is annoyingly naïve, so we must do it ourselves. See
 # http://julian.com/research/velocity/#promises
 animatorName = location.search.match(/\banimator=(\w+)\b/)?[1]
 animatorName ?= 'jquery'
@@ -38,17 +35,22 @@ require [
   'hlf/jquery.hlf.tip'
 ]), ($, _) ->
 
+  # Setup visual tests. Tests are decorated closures queued and run on document-
+  # ready. Tip specific setup:
+  # 1. Some basic input binding for custom animator.
+  # 2. To get back promises, Velocity's API actually requires additional work by
+  #    not directly correlating with jQuery's.
+  #
+  # Note that the sample logic in tests is in JavaScript (perhaps easier to
+  # understand than CoffeeScript) for your convenience.
   shouldRunVisualTests = $('#qunit').length is 0
   return false unless shouldRunVisualTests
   tests = []
 
-  # Some basic input binding for custom animator.
   $('.animator :radio').prop 'checked', no
     .filter("[value=#{animatorName}]").prop 'checked', yes
     .end().click -> location.search = "?animator=#{$(@).val()}"
 
-  # To get back promises, Velocity's API actually requires additional work by
-  # not directly correlating with jQuery's.
   if animatorName is 'velocity'
     `animator = {
       show: function($el, options) {
@@ -64,6 +66,15 @@ require [
   # Basic test with the default settings. Basic tooltips are created and
   # accessed via `$.fn.tip`. Tip should entirely follow mouse. Tip size should
   # change when switching between links.
+  #
+  # Note: currently, the tip only parses content from the `title` and `alt`
+  # attributes. This is limiting, but also conventional and easier to
+  # maintain than a custom attribute.
+  #
+  # Note: `$context` also needs to be passed in. This is the core plugin
+  # generator's convention where if the plugin instance is to be attached to
+  # something besides the element(s) calling the method, it must be passed
+  # in after the first argument (options or command).
   tests.push $.visualTest
 
     label: "by default"
@@ -76,15 +87,8 @@ require [
       </p>
       """
     test: ($context) ->
-      # NOTE: Currently, the tip only parses content from the `title` and `alt`
-      # attributes. This is limiting, but also conventional and easier to
-      # maintain than a custom attribute.
       `$context.find('[title]').tip(null, $context);`
-      # NOTE: `$context` also needs to be passed in. This is the core plugin
-      # generator's convention where if the plugin instance is to be attached to
-      # something besides the element(s) calling the method, it must be passed
-      # in after the first argument (options or command).
-      `api = $context.tip(null, $context);`
+      `var api = $context.tip(null, $context);`
 
     anchorName: 'default'
     className: 'default-call'
@@ -123,8 +127,8 @@ require [
     className: 'list-call'
     vars: { count: 3 }
     beforeTest: ($context) ->
+      # Minor logic to make titles dynamic.
       $.visualTest.setupAppendButton $context, '.list', ($newItem) ->
-        # Minor logic to make titles dynamic.
         $trigger = $newItem.find '[title]'
         title = $trigger.attr('title').replace /\d/, $newItem.index() + 1
         $trigger.attr 'title', title
