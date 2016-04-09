@@ -277,9 +277,9 @@ HLF Core jQuery Extension
     # `context` is conventionally a class instance.
     applyMixin: (context, dependencies, mixin) ->
       # - If `mixin` is a string, check the general `$.mixins` for the mixin.
-      if _.isString(mixin) then mixin = @mixins[mixin] 
-      return unless mixin?
+      if _.isString(mixin) then mixin = @mixins[mixin]
       if _.isFunction(mixin) then mixin = mixin dependencies
+      return unless mixin?
       onceMethods = []
       handlerNames = []
       # - Get run-once methods and filter a clean mixin copy. Run-once methods are
