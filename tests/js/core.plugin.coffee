@@ -3,6 +3,8 @@ HLF Core Plugin Unit Tests
 ==========================
 ###
 
+# [Page](../../../tests/core.unit.html)
+
 define [
   'jquery'
   'underscore'
