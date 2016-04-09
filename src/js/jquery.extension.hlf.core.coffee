@@ -50,7 +50,7 @@ HLF Core jQuery Extension
     debug: on # Turn this off when going to production.
     # ƒ `toString` is mainly for namespacing when extending any jQuery API. For
     # now, its base form is very simple.
-    toString: _.memoize (context) -> 'hlf'
+    toString: _.constant 'hlf'
     # ƒ `noConflict` in its base form will remove assignments to the global
     # jQuery namespace. Properties will have to be accessed through the `$.hlf`
     # namespace. See `_safeSet` below. Also see `createPlugin` for its no-
