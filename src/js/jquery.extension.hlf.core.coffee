@@ -97,8 +97,8 @@ HLF Core jQuery Extension
     #   `toString`, and `defaults`. It can optionally have a `noConflict`
     #   procedure.
     #
-    # - An __apiClass__ definition and/or an `apiMixins` collection. It will get
-    #   modified with base API additions. A `mixinFilter` can be provided to
+    # - An __apiClass__ definition and/or an __apiMixins__ collection. It will
+    #   get modified with base API additions. A `mixinFilter` can be provided to
     #   limit the mixins in the collection that get applied during instantiation.
     #   If provided, the `apiMixins` collection must have a `base` mixin, which
     #   will get the `apiAdditions`. Also note that `apiClass` and `apiMixins`
@@ -140,12 +140,12 @@ HLF Core jQuery Extension
       # triggered.
       #
       # With the command route, if there is a plugin instance and it can
-      # `handleCommand`, call the method, but invoke `userInfo` if needed
+      # __handleCommand__, call the method, but invoke `userInfo` if needed
       # beforehand. With the normal route, if there is a plugin instance and no 
       # arguments are provided we assume the call is to access the instance,
       # not reset it.
       #
-      # Otherwise if the instance exists, it is returned. `asSharedInstance`
+      # Otherwise if the instance exists, it is returned. __asSharedInstance__
       # will decide what the plugin instance's main element will be. The idea is
       # several elements all share the same plugin instance.
       #
