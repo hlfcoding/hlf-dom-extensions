@@ -8,13 +8,13 @@ HLF Event jQuery Extension
   var slice = [].slice,
     hasProp = {}.hasOwnProperty;
 
-  (function(root, factory) {
+  (function(root, attach) {
     if (typeof define === 'function' && (define.amd != null)) {
-      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], factory);
+      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], attach);
     } else if (typeof exports === 'object') {
-      return module.exports = factory(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
+      return module.exports = attach(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
     } else {
-      return factory(jQuery, _, jQuery.hlf);
+      return attach(jQuery, _, jQuery.hlf);
     }
   })(this, function($, _, hlf) {
     $.extend(true, hlf, {
