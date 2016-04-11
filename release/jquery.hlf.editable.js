@@ -7,13 +7,13 @@ HLF Editable jQuery Plugin
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  (function(root, factory) {
+  (function(root, attach) {
     if (typeof define === 'function' && (define.amd != null)) {
-      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], factory);
+      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], attach);
     } else if (typeof exports === 'object') {
-      return module.exports = factory(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
+      return module.exports = attach(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
     } else {
-      return factory(jQuery, _, jQuery.hlf);
+      return attach(jQuery, _, jQuery.hlf);
     }
   })(this, function($, _, hlf) {
     var mixins;
