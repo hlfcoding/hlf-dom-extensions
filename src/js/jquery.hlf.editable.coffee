@@ -3,31 +3,31 @@ HLF Editable jQuery Plugin
 ==========================
 ###
 
-# __See__: [tests](../../tests/js/editable.html).
+# [Styles](../css/jquery.hlf.editable.html) | [Tests](../../tests/js/editable.html)
 
-# §
-
-# Export. Support AMD, CommonJS (Browserify), and browser globals.
-((root, factory) ->
+# § __UMD__
+# - When AMD, register the attacher as an anonymous module.
+# - When Node or Browserify, set module exports to the attach result.
+# - When browser globals (root is window), Just run the attach function.
+((root, attach) ->
   if typeof define is 'function' and define.amd?
-    # - AMD. Register as an anonymous module.
     define [
       'jquery'
       'underscore'
       'hlf/jquery.extension.hlf.core'
-    ], factory
+    ], attach
   else if typeof exports is 'object'
-    # - Node. Does not work with strict CommonJS, but only CommonJS-like
-    #   environments that support module.exports, like Node.
-    module.exports = factory(
+    module.exports = attach(
       require 'jquery',
       require 'underscore',
       require 'hlf/jquery.extension.hlf.core'
     )
   else
-    # - Browser globals (root is window). No globals needed.
-    factory jQuery, _, jQuery.hlf
+    attach jQuery, _, jQuery.hlf
 )(@, ($, _, hlf) ->
+
+  # Namespace
+  # ---------
 
   hlf.editable =
     debug: on
@@ -56,9 +56,10 @@ HLF Editable jQuery Plugin
 
   # Base Mixin
   # ----------
+
   $.createMixin mixins, 'base',
 
-    # Own
+    # § __Own__
     
     isEditing: null
 
@@ -87,10 +88,10 @@ HLF Editable jQuery Plugin
       text = @textOnValueChange text
       userInfo = { text }
       @trigger 'will-commit', userInfo
-      # @event commit.<ns>
+      #- @event commit.<ns>
       @trigger 'commit', userInfo
 
-    # Actions
+    # § __Actions__
     
     toggleEditing: (state) ->
       @isEditing = state
@@ -111,7 +112,7 @@ HLF Editable jQuery Plugin
       else if state is off
         toggleOriginalDisplay @$text, on
         toggleOriginalDisplay @$inputWrap, off
-      # @event toggle-edit.<ns>
+      #- @event toggle-edit.<ns>
       @trigger 'toggle-edit', { state }
 
     renderText: (text) -> @$text.text text
@@ -120,14 +121,17 @@ HLF Editable jQuery Plugin
 
     textOnValueChange: (text) ->
 
+  # Inline Mixin
+  # ------------
+
   $.createMixin mixins, 'inline',
 
-    # Action Overrides
+    # § __Action Overrides__
     
     textOnValueChange: (text) ->
       if not text.length then @$input.attr 'placeholder' else text
 
-    # Onces
+    # § __Onces__
     
     decorateOptions: ->
       @options.classNames.container += " #{@cls('inline')}"
@@ -140,19 +144,22 @@ HLF Editable jQuery Plugin
           when 'update' then @updatePlaceholder()
           else
 
-    # Own
+    # § __Own__
     
     initInline: ->
       @updatePlaceholder()
 
-    # Actions
+    # § __Actions__
     
     updatePlaceholder: ->
       @$input.attr 'placeholder', @$text.text()
 
+  # Editor Mixin
+  # ------------
+
   $.createMixin mixins, 'editor',
 
-    # Action Overrides
+    # § __Action Overrides__
     
     inputValue: ->
       switch @editorName
@@ -164,7 +171,7 @@ HLF Editable jQuery Plugin
         when 'CodeMirror' then @editor.setValue text
         else
 
-    # Onces
+    # § __Onces__
     
     decorateOptions: ->
       @opts.selectors.markup = '.editor-markup'
@@ -173,7 +180,7 @@ HLF Editable jQuery Plugin
       @on 'will-init', =>
       @on 'did-init', => @initEditor()
 
-    # Own
+    # § __Own__
     
     initEditor: ->
       @editorName = @data 'editor'
@@ -195,9 +202,12 @@ HLF Editable jQuery Plugin
           @editor.on 'blur', @handleValueChange
         else
 
+  # Color Picker Mixin
+  # ------------------
+
   $.createMixin mixins, 'color-picker',
 
-    # Onces
+    # § __Onces__
     
     decorateOptions: ->
       @opts.selectors.well = '.color-well'
@@ -205,7 +215,7 @@ HLF Editable jQuery Plugin
       @on 'will-commit', (e) => @renderColor e.userInfo.text
       @on 'did-init', => @initColorPicker()
 
-    # Own
+    # § __Own__
     
     initColorPicker: ->
       _.bindAll @, 'handleColorPickerChange'
@@ -229,15 +239,18 @@ HLF Editable jQuery Plugin
         .val color
         .trigger 'change'
 
-    # Actions
+    # § __Actions__
     
     renderColor: (color) ->
       switch @pickerName
         when 'Spectrum' then @$well.spectrum 'set', color
 
+  # File Uploader Mixin
+  # -------------------
+
   $.createMixin mixins, 'file-uploader',
 
-    # Onces
+    # § __Onces__
     
     decorateOptions: ->
       @opts.selectors.text = '.preview > figcaption'
@@ -247,7 +260,7 @@ HLF Editable jQuery Plugin
       @on 'will-commit', (e) =>
       @on 'did-init', => @initFileUploader()
 
-    # Own
+    # § __Own__
     
     initFileUploader: ->
       @uploaderName = @data 'file-uploader'
@@ -261,10 +274,8 @@ HLF Editable jQuery Plugin
 
     bindFileUploader: ->
 
-  # §
-
-  # Export
-  # ------
+  # Attaching
+  # ---------
   
   hlf.createPlugin
     name: 'editable'
