@@ -195,14 +195,6 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                         "slug": "mixin-support"
                       },
                       "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Export",
-                        "slug": "export"
-                      },
-                      "depth": 2
                     }
                   ]
                 },
@@ -232,14 +224,6 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     "level": 2,
                     "title": "Mixin Support",
                     "slug": "mixin-support"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Export",
-                    "slug": "export"
                   },
                   "depth": 2
                 }
@@ -329,6 +313,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
+                        "title": "Namespace",
+                        "slug": "namespace"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
                         "title": "Base Mixin",
                         "slug": "base-mixin"
                       },
@@ -337,8 +329,40 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "Export",
-                        "slug": "export"
+                        "title": "Inline Mixin",
+                        "slug": "inline-mixin"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Editor Mixin",
+                        "slug": "editor-mixin"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Color Picker Mixin",
+                        "slug": "color-picker-mixin"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "File Uploader Mixin",
+                        "slug": "file-uploader-mixin"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Attaching",
+                        "slug": "attaching"
                       },
                       "depth": 2
                     }
@@ -352,6 +376,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
+                    "title": "Namespace",
+                    "slug": "namespace"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
                     "title": "Base Mixin",
                     "slug": "base-mixin"
                   },
@@ -360,8 +392,40 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Export",
-                    "slug": "export"
+                    "title": "Inline Mixin",
+                    "slug": "inline-mixin"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Editor Mixin",
+                    "slug": "editor-mixin"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Color Picker Mixin",
+                    "slug": "color-picker-mixin"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "File Uploader Mixin",
+                    "slug": "file-uploader-mixin"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Attaching",
+                    "slug": "attaching"
                   },
                   "depth": 2
                 }
@@ -398,134 +462,24 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "Tip Options",
-                        "slug": "tip-options"
+                        "title": "Namespace",
+                        "slug": "namespace"
                       },
                       "depth": 2
                     }, {
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "SnapTip Options",
-                        "slug": "snaptip-options"
+                        "title": "Tip",
+                        "slug": "tip"
                       },
                       "depth": 2
                     }, {
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "Tip Implementation",
-                        "slug": "tip-implementation"
-                      },
-                      "depth": 2,
-                      "children": [
-                        {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Accessors",
-                            "slug": "accessors"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Appearance",
-                            "slug": "appearance"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Content",
-                            "slug": "content"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Events",
-                            "slug": "events"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Positioning",
-                            "slug": "positioning"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Rendering",
-                            "slug": "rendering"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Subroutines",
-                            "slug": "subroutines"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Delegation to Subclass",
-                            "slug": "delegation-to-subclass"
-                          },
-                          "depth": 3
-                        }
-                      ]
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "SnapTip Implementation",
-                        "slug": "snaptip-implementation"
-                      },
-                      "depth": 2,
-                      "children": [
-                        {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Events",
-                            "slug": "events"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Positioning",
-                            "slug": "positioning"
-                          },
-                          "depth": 3
-                        }, {
-                          "type": "heading",
-                          "data": {
-                            "level": 3,
-                            "title": "Tip Delegation",
-                            "slug": "tip-delegation"
-                          },
-                          "depth": 3
-                        }
-                      ]
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Export",
-                        "slug": "export"
+                        "title": "SnapTip",
+                        "slug": "snaptip"
                       },
                       "depth": 2
                     }
@@ -539,134 +493,24 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Tip Options",
-                    "slug": "tip-options"
+                    "title": "Namespace",
+                    "slug": "namespace"
                   },
                   "depth": 2
                 }, {
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "SnapTip Options",
-                    "slug": "snaptip-options"
+                    "title": "Tip",
+                    "slug": "tip"
                   },
                   "depth": 2
                 }, {
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Tip Implementation",
-                    "slug": "tip-implementation"
-                  },
-                  "depth": 2,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Accessors",
-                        "slug": "accessors"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Appearance",
-                        "slug": "appearance"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Content",
-                        "slug": "content"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Events",
-                        "slug": "events"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Positioning",
-                        "slug": "positioning"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Rendering",
-                        "slug": "rendering"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Subroutines",
-                        "slug": "subroutines"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Delegation to Subclass",
-                        "slug": "delegation-to-subclass"
-                      },
-                      "depth": 3
-                    }
-                  ]
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "SnapTip Implementation",
-                    "slug": "snaptip-implementation"
-                  },
-                  "depth": 2,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Events",
-                        "slug": "events"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Positioning",
-                        "slug": "positioning"
-                      },
-                      "depth": 3
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 3,
-                        "title": "Tip Delegation",
-                        "slug": "tip-delegation"
-                      },
-                      "depth": 3
-                    }
-                  ]
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Export",
-                    "slug": "export"
+                    "title": "SnapTip",
+                    "slug": "snaptip"
                   },
                   "depth": 2
                 }
@@ -918,49 +762,12 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     "slug": "visual-test-helpers",
                     "isFileHeader": true
                   },
-                  "depth": 1,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "$.visualTest",
-                        "slug": "visualtest"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "$.loremIpsum",
-                        "slug": "loremipsum"
-                      },
-                      "depth": 2
-                    }
-                  ]
+                  "depth": 1
                 },
                 "title": "Visual Test Helpers"
               },
               "depth": 3,
-              "outline": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "$.visualTest",
-                    "slug": "visualtest"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "$.loremIpsum",
-                    "slug": "loremipsum"
-                  },
-                  "depth": 2
-                }
-              ]
+              "outline": []
             }, {
               "type": "file",
               "data": {

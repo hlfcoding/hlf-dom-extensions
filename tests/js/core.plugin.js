@@ -46,19 +46,19 @@ HLF Core Plugin Unit Tests
         this.mixins = {};
         $.createMixin(this.mixins, 'base', {
           init: function() {
-            return this.trigger('did-init');
+            this.trigger('did-init');
           }
         });
         $.createMixin(this.mixins, 'someMixin', {
           decorate: function() {
-            return this.on('did-init', (function(_this) {
+            this.on('did-init', (function(_this) {
               return function() {
                 return _this.initSomeMixin();
               };
             })(this));
           },
           initSomeMixin: function() {
-            return this.someMixinProperty = 'foo';
+            this.someMixinProperty = 'foo';
           },
           someMixinMethod: function() {
             return 'foo';
@@ -66,14 +66,14 @@ HLF Core Plugin Unit Tests
         });
         $.createMixin(this.mixins, 'someOtherMixin', {
           decorate: function() {
-            return this.on('did-init', (function(_this) {
+            this.on('did-init', (function(_this) {
               return function() {
                 return _this.initSomeOtherMixin();
               };
             })(this));
           },
           initSomeOtherMixin: function() {
-            return this.someOtherMixinProperty = 'bar';
+            this.someOtherMixinProperty = 'bar';
           },
           someOtherMixinMethod: function() {
             return 'bar';
@@ -87,7 +87,7 @@ HLF Core Plugin Unit Tests
           autoSelect: true,
           compactOptions: true
         };
-        return this.$someElement = $('<div>');
+        this.$someElement = $('<div>');
       }
     });
     assertGeneralPlugin = function(assert) {
@@ -104,7 +104,7 @@ HLF Core Plugin Unit Tests
       var result;
       hlf.createPlugin(this.baseCreateOptions);
       result = assertGeneralPlugin.call(this, assert);
-      return assert.ok(result instanceof SomePlugin, 'Plugin method should return instance upon re-invocation without any parameters.');
+      assert.ok(result instanceof SomePlugin, 'Plugin method should return instance upon re-invocation without any parameters.');
     });
     QUnit.test('createPlugin with apiMixins and baseMixins', function(assert) {
       var createOptions, result;
@@ -118,7 +118,7 @@ HLF Core Plugin Unit Tests
       assert.strictEqual(result.someMixinMethod(), 'foo', 'Mixin method attached to instance should work.');
       assert.strictEqual(result.someOtherMixinMethod(), 'bar', 'Mixin method attached to instance should work.');
       assert.strictEqual(result.someMixinProperty, 'foo', 'Mixin property should have been set on deferred initialization.');
-      return assert.strictEqual(result.someOtherMixinProperty, 'bar', 'Mixin property should have been set on deferred initialization.');
+      assert.strictEqual(result.someOtherMixinProperty, 'bar', 'Mixin property should have been set on deferred initialization.');
     });
     QUnit.test('createPlugin with apiClass and baseMixins and asSharedInstance', function(assert) {
       var createOptions, result;
@@ -126,7 +126,7 @@ HLF Core Plugin Unit Tests
       createOptions.asSharedInstance = true;
       hlf.createPlugin(createOptions);
       result = assertGeneralPlugin.call(this, assert);
-      return assert.strictEqual(result, $('body').data('somePlugin'), 'Plugin singleton should be stored with context element.');
+      assert.strictEqual(result, $('body').data('somePlugin'), 'Plugin singleton should be stored with context element.');
     });
     return true;
   });

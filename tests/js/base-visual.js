@@ -39,7 +39,7 @@ further.
         if (config.beforeTest != null) {
           config.beforeTest($test);
         }
-        return config.test($test);
+        config.test($test);
       };
     };
     _.extend($.visualTest, {
@@ -47,12 +47,12 @@ further.
         var $item, $list;
         $list = $context.find(listSelector);
         $item = $list.children(':last-child').clone();
-        return $context.find('[name=list-append]').click(function() {
+        $context.find('[name=list-append]').click(function() {
           var $newItem;
           $newItem = $item.clone();
           $list.append($newItem);
           if (updateItem != null) {
-            return updateItem($newItem);
+            updateItem($newItem);
           }
         });
       }

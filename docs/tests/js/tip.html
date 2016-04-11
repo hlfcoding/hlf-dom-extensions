@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/tip"><meta name="groc-project-path" content="tests/js/tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/tip.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-visual-tests">HLF Tip Visual Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>See</strong>: <a href="../../../tests/tip.visual.html">test page</a>, <a href="../../src/js/jquery.hlf.tip.html">source</a>.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Note that the sample logic in tests is in JavaScript (perhaps easier to
-understand than CoffeeScript) for your convenience.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
+<!DOCTYPE html><html lang="en"><head><title>tests/js/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/tip"><meta name="groc-project-path" content="tests/js/tip.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/tip.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-visual-tests">HLF Tip Visual Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../../../tests/tip.visual.html">Page</a> | <a href="../../src/js/jquery.hlf.tip.html">Source</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
   <span class="hljs-attribute">baseUrl</span>: <span class="hljs-string">'../lib'</span>
   <span class="hljs-attribute">paths</span>:
     <span class="hljs-attribute">hlf</span>: <span class="hljs-string">'../dist'</span>
@@ -8,9 +7,9 @@ understand than CoffeeScript) for your convenience.</p></div></div><div class="c
     <span class="hljs-attribute">TweenLite</span>:
       <span class="hljs-attribute">exports</span>: <span class="hljs-string">'TweenLite'</span>
     <span class="hljs-string">'jquery.gsap'</span>:
-      <span class="hljs-attribute">deps</span>: [<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'CSSPlugin'</span>, <span class="hljs-string">'TweenLite'</span>]</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>For performant animations, custom animators can be used. The below are
+      <span class="hljs-attribute">deps</span>: [<span class="hljs-string">'jquery'</span>, <span class="hljs-string">'CSSPlugin'</span>, <span class="hljs-string">'TweenLite'</span>]</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>For performant animations, <strong>custom animators</strong> can be used. The below are
 examples of requiring GSAP and Velocity. Note Velocity does not provide a
-Promise shim and is annoyingly naive, so we must do it ourselves. See
+Promise shim and is annoyingly naïve, so we must do it ourselves. See
 <a href="http://julian.com/research/velocity/#promises">http://julian.com/research/velocity/#promises</a></p></div></div><div class="code"><div class="wrapper">animatorName = location.search.match(<span class="hljs-regexp">/\banimator=(\w+)\b/</span>)?[<span class="hljs-number">1</span>]
 animatorName ?= <span class="hljs-string">'jquery'</span>
 animatorDeps = <span class="hljs-keyword">switch</span> animatorName
@@ -24,14 +23,23 @@ animatorDeps = <span class="hljs-keyword">switch</span> animatorName
 ].concat(animatorDeps, [
   <span class="hljs-string">'test/base-visual'</span>
   <span class="hljs-string">'hlf/jquery.hlf.tip'</span>
-]), <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
-
-  shouldRunVisualTests = $(<span class="hljs-string">'#qunit'</span>).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+]), <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setup visual tests. Tests are decorated closures queued and run on document-
+ready. Tip specific setup:</p>
+<ol>
+<li>Some basic input binding for custom animator.</li>
+<li>To get back promises, Velocity&#39;s API actually requires additional work by
+not directly correlating with jQuery&#39;s.</li>
+</ol>
+<p>Note that the sample logic in tests is in JavaScript (perhaps easier to
+understand than CoffeeScript) for your convenience.</p></div></div><div class="code"><div class="wrapper">  shouldRunVisualTests = $(<span class="hljs-string">'#qunit'</span>).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
   <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span> <span class="hljs-keyword">unless</span> shouldRunVisualTests
-  tests = []</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Some basic input binding for custom animator.</p></div></div><div class="code"><div class="wrapper">  $(<span class="hljs-string">'.animator :radio'</span>).prop <span class="hljs-string">'checked'</span>, <span class="hljs-literal">no</span>
+  tests = []
+
+  $(<span class="hljs-string">'.animator :radio'</span>).prop <span class="hljs-string">'checked'</span>, <span class="hljs-literal">no</span>
     .filter(<span class="hljs-string">"[value=<span class="hljs-subst">#{animatorName}</span>]"</span>).prop <span class="hljs-string">'checked'</span>, <span class="hljs-literal">yes</span>
-    .end().click -&gt; location.search = <span class="hljs-string">"?animator=<span class="hljs-subst">#{$(@).val()}</span>"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>To get back promises, Velocity&#39;s API actually requires additional work by
-not directly correlating with jQuery&#39;s.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> animatorName <span class="hljs-keyword">is</span> <span class="hljs-string">'velocity'</span>
+    .end().click -&gt; location.search = <span class="hljs-string">"?animator=<span class="hljs-subst">#{$(@).val()}</span>"</span>; <span class="hljs-keyword">return</span>
+
+  <span class="hljs-keyword">if</span> animatorName <span class="hljs-keyword">is</span> <span class="hljs-string">'velocity'</span>
     `<span class="javascript">animator = {
       show: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">($el, options)</span> </span>{
         $.Velocity(<span class="hljs-string">'fadeIn'</span>, options).then(options.done, options.fail);
@@ -42,7 +50,14 @@ not directly correlating with jQuery&#39;s.</p></div></div><div class="code"><di
     };</span>`</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="default">Default</h2>
 <p>Basic test with the default settings. Basic tooltips are created and
 accessed via <code>$.fn.tip</code>. Tip should entirely follow mouse. Tip size should
-change when switching between links.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
+change when switching between links.</p>
+<p>Note: currently, the tip only parses content from the <code>title</code> and <code>alt</code>
+attributes. This is limiting, but also conventional and easier to
+maintain than a custom attribute.</p>
+<p>Note: <code>$context</code> also needs to be passed in. This is the core plugin
+generator&#39;s convention where if the plugin instance is to be attached to
+something besides the element(s) calling the method, it must be passed
+in after the first argument (options or command).</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
 
     <span class="hljs-attribute">label</span>: <span class="hljs-string">"by default"</span>
     <span class="hljs-attribute">template</span>:
@@ -53,12 +68,10 @@ change when switching between links.</p></div></div><div class="code"><div class
         &lt;a class="trigger" title="&lt;%= loremIpsum.long %&gt;" href="javascript:"&gt;tooltip trigger&lt;/a&gt;
       &lt;/p&gt;
       """</span>
-    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>NOTE: Currently, the tip only parses content from the <code>title</code> and <code>alt</code>
-attributes. This is limiting, but also conventional and easier to
-maintain than a custom attribute.</p></div></div><div class="code"><div class="wrapper">      `<span class="javascript">$context.find(<span class="hljs-string">'[title]'</span>).tip(<span class="hljs-literal">null</span>, $context);</span>`</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>NOTE: <code>$context</code> also needs to be passed in. This is the core plugin
-generator&#39;s convention where if the plugin instance is to be attached to
-something besides the element(s) calling the method, it must be passed
-in after the first argument (options or command).</p></div></div><div class="code"><div class="wrapper">      `<span class="javascript">api = $context.tip(<span class="hljs-literal">null</span>, $context);</span>`
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
+      `<span class="javascript">$context.find(<span class="hljs-string">'[title]'</span>).tip(<span class="hljs-literal">null</span>, $context);</span>`
+      `<span class="javascript">api = $context.tip(<span class="hljs-literal">null</span>, $context);</span>`
+      <span class="hljs-keyword">return</span>
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'default'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'default-call'</span>
@@ -88,14 +101,16 @@ the mouse along the y-axis.</p></div></div><div class="code"><div class="wrapper
       """</span>
     <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
       `<span class="javascript">$context.find(<span class="hljs-string">'[title]'</span>).snapTip({ snap: { toYAxis: <span class="hljs-literal">true</span> } }, $context);</span>`
+      <span class="hljs-keyword">return</span>
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'snapping-vertically'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'list-call'</span>
     <span class="hljs-attribute">vars</span>: { <span class="hljs-attribute">count</span>: <span class="hljs-number">3</span> }
-    <span class="hljs-attribute">beforeTest</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
-      $.visualTest.setupAppendButton $context, <span class="hljs-string">'.list'</span>, <span class="hljs-function"><span class="hljs-params">($newItem)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Minor logic to make titles dynamic.</p></div></div><div class="code"><div class="wrapper">        $trigger = $newItem.find <span class="hljs-string">'[title]'</span>
+    <span class="hljs-attribute">beforeTest</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Minor logic to make titles dynamic.</p></div></div><div class="code"><div class="wrapper">      $.visualTest.setupAppendButton $context, <span class="hljs-string">'.list'</span>, <span class="hljs-function"><span class="hljs-params">($newItem)</span> -&gt;</span>
+        $trigger = $newItem.find <span class="hljs-string">'[title]'</span>
         title = $trigger.attr(<span class="hljs-string">'title'</span>).replace <span class="hljs-regexp">/\d/</span>, $newItem.index() + <span class="hljs-number">1</span>
-        $trigger.attr <span class="hljs-string">'title'</span>, title</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="snapping-horizontally">Snapping Horizontally</h2>
+        $trigger.attr <span class="hljs-string">'title'</span>, title
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="snapping-horizontally">Snapping Horizontally</h2>
 <p>Change the flag from <code>toYAxis</code> to <code>toXAxis</code>, and this one should snap to
 an appropriate y position, along the trigger&#39;s most fitting edge (top or bottom).</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
 
@@ -112,6 +127,7 @@ an appropriate y position, along the trigger&#39;s most fitting edge (top or bot
       """</span>
     <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
       `<span class="javascript">$context.find(<span class="hljs-string">'[title]'</span>).snapTip({ snap: { toXAxis: <span class="hljs-literal">true</span> } }, $context);</span>`
+      <span class="hljs-keyword">return</span>
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'snapping-horizontally'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'bar-call'</span>
@@ -137,6 +153,7 @@ avatar images.</p></div></div><div class="code"><div class="wrapper">  tests.pus
         snap: { toXAxis: <span class="hljs-literal">true</span> },
         animations: { hide: { delay: <span class="hljs-number">400</span> } }
       }, $context);</span>`
+      <span class="hljs-keyword">return</span>
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'a-model-use-case'</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'grid-call'</span>
@@ -157,11 +174,15 @@ into place and prevent mouse following.</p></div></div><div class="code"><div cl
         bottom right corner
       &lt;/a&gt;
       """</span>
-    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($fragments)</span> -&gt;</span> `<span class="javascript">$fragments.snapTip();</span>`
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($fragments)</span> -&gt;</span>
+      `<span class="javascript">$fragments.snapTip();</span>`
+      <span class="hljs-keyword">return</span>
 
     <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'corner-cases'</span>
     <span class="hljs-attribute">asFragments</span>: <span class="hljs-literal">yes</span>
     <span class="hljs-attribute">className</span>: <span class="hljs-string">'edge-call'</span>
     <span class="hljs-attribute">vars</span>: _.pick $, <span class="hljs-string">'loremIpsum'</span>
 
-  $ -&gt; test() <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests</div></div></div></div></body></html>
+  $ -&gt;
+    test() <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests
+    <span class="hljs-keyword">return</span></div></div></div></div></body></html>

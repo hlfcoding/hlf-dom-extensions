@@ -1,25 +1,24 @@
-<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.editable"><meta name="groc-project-path" content="src/js/jquery.hlf.editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.editable.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-editable-jquery-plugin">HLF Editable jQuery Plugin</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>See</strong>: <a href="../../tests/js/editable.html">tests</a>.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Export. Support AMD, CommonJS (Browserify), and browser globals.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(root, factory)</span> -&gt;</span>
-  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">and</span> define.amd?</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
-<li>AMD. Register as an anonymous module.</li>
-</ul></div></div><div class="code"><div class="wrapper">    define [
+<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.editable"><meta name="groc-project-path" content="src/js/jquery.hlf.editable.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.editable.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-editable-jquery-plugin">HLF Editable jQuery Plugin</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../css/jquery.hlf.editable.html">Styles</a> | <a href="../../tests/js/editable.html">Tests</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>UMD</strong></p>
+<ul>
+<li>When AMD, register the attacher as an anonymous module.</li>
+<li>When Node or Browserify, set module exports to the attach result.</li>
+<li>When browser globals (root is window), Just run the attach function.</li>
+</ul></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(root, attach)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">and</span> define.amd?
+    define [
       <span class="hljs-string">'jquery'</span>
       <span class="hljs-string">'underscore'</span>
       <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
-    ], factory
-  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> exports <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
-<li>Node. Does not work with strict CommonJS, but only CommonJS-like
-environments that support module.exports, like Node.</li>
-</ul></div></div><div class="code"><div class="wrapper">    <span class="hljs-built_in">module</span>.exports = factory(
+    ], attach
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> exports <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span>
+    <span class="hljs-built_in">module</span>.exports = attach(
       <span class="hljs-built_in">require</span> <span class="hljs-string">'jquery'</span>,
       <span class="hljs-built_in">require</span> <span class="hljs-string">'underscore'</span>,
       <span class="hljs-built_in">require</span> <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
     )
-  <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
-<li>Browser globals (root is window). No globals needed.</li>
-</ul></div></div><div class="code"><div class="wrapper">    factory jQuery, _, jQuery.hlf
-)(@, <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
-
-  hlf.editable =
+  <span class="hljs-keyword">else</span>
+    attach jQuery, _, jQuery.hlf
+)(@, <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="namespace">Namespace</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  hlf.editable =
     <span class="hljs-attribute">debug</span>: <span class="hljs-literal">on</span>
     <span class="hljs-attribute">toString</span>: _.memoize (context) -&gt;
       <span class="hljs-keyword">switch</span> context
@@ -42,7 +41,7 @@ environments that support module.exports, like Node.</li>
         .without <span class="hljs-string">'base'</span>
         .value()
 
-  mixins = {}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base-mixin">Base Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  $.createMixin mixins, <span class="hljs-string">'base'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+  mixins = {}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="base-mixin">Base Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  $.createMixin mixins, <span class="hljs-string">'base'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Own</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">isEditing</span>: <span class="hljs-literal">null</span>
 
     <span class="hljs-attribute">init</span>: <span class="hljs-function">-&gt;</span>
@@ -69,7 +68,9 @@ environments that support module.exports, like Node.</li>
       text = <span class="hljs-property">@inputValue</span>()
       text = <span class="hljs-property">@textOnValueChange</span> text
       userInfo = { text }
-      <span class="hljs-property">@trigger</span> <span class="hljs-string">'will-commit'</span>, userInfo</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event commit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="hljs-property">@trigger</span> <span class="hljs-string">'commit'</span>, userInfo</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'will-commit'</span>, userInfo
+      <span class="hljs-comment">#- @event commit.&lt;ns&gt;</span>
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'commit'</span>, userInfo</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Actions</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">toggleEditing</span>: <span class="hljs-function"><span class="hljs-params">(state)</span> -&gt;</span>
       <span class="hljs-property">@isEditing</span> = state
 <span class="hljs-function">      <span class="hljs-title">toggleOriginalDisplay</span> = <span class="hljs-params">($el, state)</span> =&gt;</span>
@@ -88,17 +89,17 @@ environments that support module.exports, like Node.</li>
         <span class="hljs-property">@$input</span>.focus()
       <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> state <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span>
         toggleOriginalDisplay <span class="hljs-property">@$text</span>, <span class="hljs-literal">on</span>
-        toggleOriginalDisplay <span class="hljs-property">@$inputWrap</span>, <span class="hljs-literal">off</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> event toggle-edit.<ns></span></p></div></div><div class="code"><div class="wrapper">      <span class="hljs-property">@trigger</span> <span class="hljs-string">'toggle-edit'</span>, { state }
+        toggleOriginalDisplay <span class="hljs-property">@$inputWrap</span>, <span class="hljs-literal">off</span>
+      <span class="hljs-comment">#- @event toggle-edit.&lt;ns&gt;</span>
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'toggle-edit'</span>, { state }
 
     <span class="hljs-attribute">renderText</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span> <span class="hljs-property">@$text</span>.text text
 
     <span class="hljs-attribute">inputValue</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@$input</span>.val()
 
+    <span class="hljs-attribute">textOnValueChange</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="inline-mixin">Inline Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  $.createMixin mixins, <span class="hljs-string">'inline'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Action Overrides</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">textOnValueChange</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span>
-
-  $.createMixin mixins, <span class="hljs-string">'inline'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
-    <span class="hljs-attribute">textOnValueChange</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span>
-      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> text.length <span class="hljs-keyword">then</span> <span class="hljs-property">@$input</span>.attr <span class="hljs-string">'placeholder'</span> <span class="hljs-keyword">else</span> text</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> text.length <span class="hljs-keyword">then</span> <span class="hljs-property">@$input</span>.attr <span class="hljs-string">'placeholder'</span> <span class="hljs-keyword">else</span> text</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Onces</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-property">@options</span>.classNames.container += <span class="hljs-string">" <span class="hljs-subst">#{<span class="hljs-property">@cls</span>(<span class="hljs-string">'inline'</span>)}</span>"</span>
     <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
@@ -108,13 +109,11 @@ environments that support module.exports, like Node.</li>
         command = e.userInfo.command
         <span class="hljs-keyword">switch</span> command.type
           <span class="hljs-keyword">when</span> <span class="hljs-string">'update'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@updatePlaceholder</span>()
-          <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+          <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Own</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">initInline</span>: <span class="hljs-function">-&gt;</span>
-      <span class="hljs-property">@updatePlaceholder</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+      <span class="hljs-property">@updatePlaceholder</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Actions</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">updatePlaceholder</span>: <span class="hljs-function">-&gt;</span>
-      <span class="hljs-property">@$input</span>.attr <span class="hljs-string">'placeholder'</span>, <span class="hljs-property">@$text</span>.text()
-
-  $.createMixin mixins, <span class="hljs-string">'editor'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Action Overrides</p></div></div><div class="code"><div class="wrapper">    
+      <span class="hljs-property">@$input</span>.attr <span class="hljs-string">'placeholder'</span>, <span class="hljs-property">@$text</span>.text()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="editor-mixin">Editor Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  $.createMixin mixins, <span class="hljs-string">'editor'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Action Overrides</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">inputValue</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
         <span class="hljs-keyword">when</span> <span class="hljs-string">'CodeMirror'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@editor</span>.getValue()
@@ -123,13 +122,13 @@ environments that support module.exports, like Node.</li>
     <span class="hljs-attribute">renderText</span>: <span class="hljs-function"><span class="hljs-params">(text)</span> -&gt;</span>
       <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
         <span class="hljs-keyword">when</span> <span class="hljs-string">'CodeMirror'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@editor</span>.setValue text
-        <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+        <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Onces</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-property">@opts</span>.selectors.markup = <span class="hljs-string">'.editor-markup'</span>
     <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-keyword">delete</span> <span class="hljs-property">@toggleEditing</span> <span class="hljs-comment"># Unneeded action.</span>
       <span class="hljs-property">@on</span> <span class="hljs-string">'will-init'</span>, <span class="hljs-function">=&gt;</span>
-      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initEditor</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initEditor</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Own</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">initEditor</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-property">@editorName</span> = <span class="hljs-property">@data</span> <span class="hljs-string">'editor'</span>
       <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
@@ -148,14 +147,12 @@ environments that support module.exports, like Node.</li>
       <span class="hljs-keyword">switch</span> <span class="hljs-property">@editorName</span>
         <span class="hljs-keyword">when</span> <span class="hljs-string">'CodeMirror'</span>
           <span class="hljs-property">@editor</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'blur'</span>, <span class="hljs-property">@handleValueChange</span>
-        <span class="hljs-keyword">else</span>
-
-  $.createMixin mixins, <span class="hljs-string">'color-picker'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+        <span class="hljs-keyword">else</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="color-picker-mixin">Color Picker Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  $.createMixin mixins, <span class="hljs-string">'color-picker'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Onces</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-property">@opts</span>.selectors.well = <span class="hljs-string">'.color-well'</span>
     <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-property">@on</span> <span class="hljs-string">'will-commit'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span> <span class="hljs-property">@renderColor</span> e.userInfo.text
-      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initColorPicker</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initColorPicker</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Own</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">initColorPicker</span>: <span class="hljs-function">-&gt;</span>
       _.bindAll @, <span class="hljs-string">'handleColorPickerChange'</span>
       <span class="hljs-property">@pickerName</span> = <span class="hljs-property">@data</span> <span class="hljs-string">'color-picker'</span>
@@ -176,19 +173,17 @@ environments that support module.exports, like Node.</li>
         <span class="hljs-keyword">when</span> <span class="hljs-string">'Spectrum'</span> <span class="hljs-keyword">then</span> color = color.toHexString().substring(<span class="hljs-number">1</span>)
       <span class="hljs-property">@$input</span>
         .val color
-        .trigger <span class="hljs-string">'change'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Actions</p></div></div><div class="code"><div class="wrapper">    
+        .trigger <span class="hljs-string">'change'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Actions</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">renderColor</span>: <span class="hljs-function"><span class="hljs-params">(color)</span> -&gt;</span>
       <span class="hljs-keyword">switch</span> <span class="hljs-property">@pickerName</span>
-        <span class="hljs-keyword">when</span> <span class="hljs-string">'Spectrum'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@$well</span>.spectrum <span class="hljs-string">'set'</span>, color
-
-  $.createMixin mixins, <span class="hljs-string">'file-uploader'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Onces</p></div></div><div class="code"><div class="wrapper">    
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'Spectrum'</span> <span class="hljs-keyword">then</span> <span class="hljs-property">@$well</span>.spectrum <span class="hljs-string">'set'</span>, color</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="file-uploader-mixin">File Uploader Mixin</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  $.createMixin mixins, <span class="hljs-string">'file-uploader'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Onces</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">decorateOptions</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-property">@opts</span>.selectors.text = <span class="hljs-string">'.preview &gt; figcaption'</span>
       <span class="hljs-property">@opts</span>.selectors.thumb = <span class="hljs-string">'.preview &gt; .thumb'</span>
     <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-keyword">delete</span> <span class="hljs-property">@toggleEditing</span> <span class="hljs-comment"># Unneeded action.</span>
       <span class="hljs-property">@on</span> <span class="hljs-string">'will-commit'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
-      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initFileUploader</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Own</p></div></div><div class="code"><div class="wrapper">    
+      <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initFileUploader</span>()</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Own</strong></p></div></div><div class="code"><div class="wrapper">    
     <span class="hljs-attribute">initFileUploader</span>: <span class="hljs-function">-&gt;</span>
       <span class="hljs-property">@uploaderName</span> = <span class="hljs-property">@data</span> <span class="hljs-string">'file-uploader'</span>
       <span class="hljs-keyword">switch</span> <span class="hljs-property">@uploaderName</span>
@@ -199,7 +194,7 @@ environments that support module.exports, like Node.</li>
       <span class="hljs-property">@bindFileUploader</span>()
       didInit <span class="hljs-keyword">isnt</span> <span class="hljs-literal">no</span>
 
-    <span class="hljs-attribute">bindFileUploader</span>: <span class="hljs-function">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="export">Export</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  
+    <span class="hljs-attribute">bindFileUploader</span>: <span class="hljs-function">-&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="attaching">Attaching</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  
   hlf.createPlugin
     <span class="hljs-attribute">name</span>: <span class="hljs-string">'editable'</span>
     <span class="hljs-attribute">namespace</span>: hlf.editable

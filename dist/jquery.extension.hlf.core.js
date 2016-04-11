@@ -9,21 +9,19 @@ HLF Core jQuery Extension
     hasProp = {}.hasOwnProperty,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  (function(root, factory) {
+  (function(root, attach) {
     if (typeof define === 'function' && (define.amd != null)) {
-      return define(['jquery', 'underscore'], factory);
+      return define(['jquery', 'underscore'], attach);
     } else if (typeof exports === 'object') {
-      return module.exports = factory(require('jquery', require('underscore')));
+      return module.exports = attach(require('jquery', require('underscore')));
     } else {
-      return factory(jQuery, _, jQuery.hlf);
+      return attach(jQuery, _);
     }
   })(this, function($, _) {
     var _createPluginAPIAdditions, _createPluginInstance, _noConflicts, _safeSet, hlf;
     hlf = {
       debug: true,
-      toString: _.memoize(function(context) {
-        return 'hlf';
-      }),
+      toString: _.constant('hlf'),
       noConflict: function() {
         var fn;
         return ((function() {
@@ -179,7 +177,7 @@ HLF Core jQuery Extension
       } else if (apiClass == null) {
         hlf.debugLog('ERROR: No `init` method on instance.', instance);
       }
-      return $root.data(instance.attr(), instance);
+      $root.data(instance.attr(), instance);
     };
     _createPluginAPIAdditions = function(name, namespace) {
       return {
@@ -205,11 +203,11 @@ HLF Core jQuery Extension
         if (_.isString(mixin)) {
           mixin = this.mixins[mixin];
         }
-        if (mixin == null) {
-          return;
-        }
         if (_.isFunction(mixin)) {
           mixin = mixin(dependencies);
+        }
+        if (mixin == null) {
+          return;
         }
         onceMethods = [];
         handlerNames = [];
@@ -233,18 +231,16 @@ HLF Core jQuery Extension
           method.call(context);
         }
         if (handlerNames.length) {
-          return _.bindAll.apply(_, [context].concat(slice.call(handlerNames)));
+          _.bindAll.apply(_, [context].concat(slice.call(handlerNames)));
         }
       },
       applyMixins: function() {
-        var context, dependencies, i, len, mixin, mixins, results;
+        var context, dependencies, i, len, mixin, mixins;
         context = arguments[0], dependencies = arguments[1], mixins = 3 <= arguments.length ? slice.call(arguments, 2) : [];
-        results = [];
         for (i = 0, len = mixins.length; i < len; i++) {
           mixin = mixins[i];
-          results.push(this.applyMixin(context, dependencies, mixin));
+          this.applyMixin(context, dependencies, mixin);
         }
-        return results;
       },
       createMixin: function(mixins, name, mixin) {
         var k, prop;
@@ -317,19 +313,15 @@ HLF Core jQuery Extension
         selection: function() {
           return {
             select: function() {
-              var name, ref, result, results, selector;
+              var name, ref, result, selector;
               ref = this.selectors;
-              results = [];
               for (name in ref) {
                 if (!hasProp.call(ref, name)) continue;
                 selector = ref[name];
                 if ((result = this.$el.find(selector)) != null) {
-                  results.push(this["$" + name] = result);
-                } else {
-                  results.push(void 0);
+                  this["$" + name] = result;
                 }
               }
-              return results;
             },
             selectByClass: function(className) {
               var classNames, ref;
@@ -353,7 +345,7 @@ HLF Core jQuery Extension
       }
       _oldValue = toContext[key];
       toContext[key] = fromContext[key];
-      return _noConflicts.push(function() {
+      _noConflicts.push(function() {
         return toContext[key] = _oldValue;
       });
     };
@@ -363,8 +355,7 @@ HLF Core jQuery Extension
     _safeSet('createPlugin');
     _safeSet('mixinOnceNames');
     _safeSet('mixins');
-    $.hlf = hlf;
-    return $.hlf;
+    return $.hlf = hlf;
   });
 
 }).call(this);

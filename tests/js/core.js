@@ -22,13 +22,13 @@ Offloads testing larger corer components to other test modules.
     } else {
       QUnit.module('other');
       QUnit.test('exports', function(assert) {
-        return assert.ok(hlf, 'Namespace should exist.');
+        assert.ok(hlf, 'Namespace should exist.');
       });
       QUnit.test('noConflict', function(assert) {
         assert.ok($.createPlugin, 'Method shortcut for createPlugin should exist.');
         hlf.noConflict();
         assert.strictEqual($.createPlugin, void 0, 'Method shortcut for createPlugin should be back to original value.');
-        return assert.ok(hlf.createPlugin, 'Original method for createPlugin should still exist.');
+        assert.ok(hlf.createPlugin, 'Original method for createPlugin should still exist.');
       });
       QUnit.start();
     }

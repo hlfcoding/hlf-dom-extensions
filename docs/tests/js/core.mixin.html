@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/core.mixin</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core.mixin"><meta name="groc-project-path" content="tests/js/core.mixin.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.mixin.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-core-mixin-unit-tests">HLF Core Mixin Unit Tests</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper">define [
+<!DOCTYPE html><html lang="en"><head><title>tests/js/core.mixin</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core.mixin"><meta name="groc-project-path" content="tests/js/core.mixin.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.mixin.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-core-mixin-unit-tests">HLF Core Mixin Unit Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../../../tests/core.unit.html">Page</a></p></div></div><div class="code"><div class="wrapper">define [
   <span class="hljs-string">'jquery'</span>
   <span class="hljs-string">'underscore'</span>
   <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
@@ -8,7 +8,9 @@
     <span class="hljs-attribute">setup</span>: <span class="hljs-function">-&gt;</span>
       @.mixins = {}
       @.mixin =
-        <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@someOtherProperty</span> = <span class="hljs-string">'baz'</span>
+        <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
+          <span class="hljs-property">@someOtherProperty</span> = <span class="hljs-string">'baz'</span>
+          <span class="hljs-keyword">return</span>
         <span class="hljs-attribute">someMethod</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">'foo'</span>
         <span class="hljs-attribute">someProperty</span>: <span class="hljs-string">'bar'</span>
       @.dynamicMixin = <span class="hljs-function"><span class="hljs-params">(dependencies)</span> -&gt;</span>
@@ -32,6 +34,7 @@
     result = hlf.createMixin <span class="hljs-property">@mixins</span>, <span class="hljs-property">@mixinName</span>, <span class="hljs-property">@mixin</span>
     assert.strictEqual result, <span class="hljs-literal">no</span>,
       <span class="hljs-string">'Mixin should not have been re-added to mixin collection.'</span>
+    <span class="hljs-keyword">return</span>
 <span class="hljs-function">
   <span class="hljs-title">assertMixinInstance</span> = <span class="hljs-params">(assert)</span> -&gt;</span>
     assert.ok <span class="hljs-property">@instance</span>.someMethod,
@@ -42,22 +45,26 @@
       <span class="hljs-string">'Mixin once method should have been removed after invoking.'</span>
     assert.strictEqual <span class="hljs-property">@instance</span>.someOtherProperty, <span class="hljs-string">'baz'</span>,
       <span class="hljs-string">'Mixin once method should have invoked properly.'</span>
+    <span class="hljs-keyword">return</span>
 
   QUnit.test <span class="hljs-string">'applyMixin'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
     result = hlf.createMixin <span class="hljs-property">@mixins</span>, <span class="hljs-property">@mixinName</span>, <span class="hljs-property">@mixin</span>
     hlf.applyMixins <span class="hljs-property">@instance</span>, <span class="hljs-property">@dependencies</span>, <span class="hljs-property">@mixin</span>
     assertMixinInstance.call @, assert
+    <span class="hljs-keyword">return</span>
 <span class="hljs-function">
   <span class="hljs-title">assertDynamicMixinInstance</span> = <span class="hljs-params">(assert)</span> -&gt;</span>
     assert.ok <span class="hljs-property">@instance</span>.someMethod,
       <span class="hljs-string">'Dynamic mixin method should have been added to instance.'</span>
     assert.strictEqual <span class="hljs-property">@instance</span>.someMethod(), <span class="hljs-property">@dependencies</span>.valueA,
       <span class="hljs-string">'Dynamic mixin method should have been generated properly.'</span>
+    <span class="hljs-keyword">return</span>
 
   QUnit.test <span class="hljs-string">'applyMixin with dynamicMixin'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
     result = hlf.createMixin <span class="hljs-property">@mixins</span>, <span class="hljs-property">@dynamicMixinName</span>, <span class="hljs-property">@dynamicMixin</span>
     hlf.applyMixins <span class="hljs-property">@instance</span>, <span class="hljs-property">@dependencies</span>, <span class="hljs-property">@dynamicMixin</span>
     assertDynamicMixinInstance.call @, assert
+    <span class="hljs-keyword">return</span>
 
   QUnit.test <span class="hljs-string">'applyMixins'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
     hlf.createMixin <span class="hljs-property">@mixins</span>, <span class="hljs-property">@mixinName</span>, <span class="hljs-property">@mixin</span>
@@ -65,5 +72,6 @@
     hlf.applyMixins <span class="hljs-property">@instance</span>, <span class="hljs-property">@dependencies</span>, _.values(<span class="hljs-property">@mixins</span>)...
     assertMixinInstance.call @, assert
     assertDynamicMixinInstance.call @, assert
+    <span class="hljs-keyword">return</span>
 
   <span class="hljs-literal">yes</span></div></div></div></div></body></html>

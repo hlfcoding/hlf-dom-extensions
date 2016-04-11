@@ -3,49 +3,62 @@
 further.</p></div></div><div class="code"><div class="wrapper">define [
   <span class="hljs-string">'jquery'</span>
   <span class="hljs-string">'underscore'</span>
-], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="visualtest">$.visualTest</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The test function generator. Invoke tests on document ready.
-Configuration:</p>
+], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>$.visualTest</strong> returns a configured test function generator. Tests should
+be invoked tests on document ready. Configuration:</p>
 <ul>
 <li><code>label</code> - header text describing the test topic.</li>
 <li><code>anchorName</code> - for the section on its docs page, used to generate <code>docsUrl</code>.</li>
 <li><code>asFragments</code> - will render the test differently, directly inside <code>&lt;body&gt;</code>.</li>
 <li><code>className</code> - a hook for any custom css.</li>
 <li><code>footerHtml</code> - optional html for controls for additional testing.</li>
-</ul></div></div><div class="code"><div class="wrapper">  $.visualTest = <span class="hljs-function"><span class="hljs-params">(config)</span> -&gt;</span><span class="hljs-function">
-    -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+</ul>
+<p>It will:</p>
+<ol>
 <li>Ensure config.</li>
-</ul></div></div><div class="code"><div class="wrapper">      config.vars ?= {}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
 <li>Build test template vars.</li>
-</ul></div></div><div class="code"><div class="wrapper">      vars = _.pick config, <span class="hljs-string">'label'</span>, <span class="hljs-string">'className'</span>, <span class="hljs-string">'footerHtml'</span>
+<li>Render test to get test context (or fragments).</li>
+<li>Run tests.</li>
+</ol>
+<p>It also includes helpers for additional setup. <code>setupAppendButton</code> inits a
+button for appending an item to a list, and should be included as part of
+<code>footerHtml</code>.</p></div></div><div class="code"><div class="wrapper">  $.visualTest = <span class="hljs-function"><span class="hljs-params">(config)</span> -&gt;</span><span class="hljs-function">
+    -&gt;</span>
+      config.vars ?= {}
+
+      vars = _.pick config, <span class="hljs-string">'label'</span>, <span class="hljs-string">'className'</span>, <span class="hljs-string">'footerHtml'</span>
       vars.footerHtml ?= <span class="hljs-string">''</span> <span class="hljs-keyword">unless</span> config.asFragments
       vars.docsUrl = $(<span class="hljs-string">'body &gt; header [data-rel=docs]'</span>).attr(<span class="hljs-string">'href'</span>) + <span class="hljs-string">"#<span class="hljs-subst">#{config.anchorName}</span>"</span>
-      vars.html = _.template config.template, config.vars</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
-<li>Render test to get test context (or fragments).</li>
-</ul></div></div><div class="code"><div class="wrapper">      $container = <span class="hljs-keyword">if</span> config.asFragments <span class="hljs-keyword">then</span> $(<span class="hljs-string">'body'</span>) <span class="hljs-keyword">else</span> $(<span class="hljs-string">'#main'</span>)
+      vars.html = _.template config.template, config.vars
+
+      $container = <span class="hljs-keyword">if</span> config.asFragments <span class="hljs-keyword">then</span> $(<span class="hljs-string">'body'</span>) <span class="hljs-keyword">else</span> $(<span class="hljs-string">'#main'</span>)
       opts = { <span class="hljs-attribute">template</span>: <span class="hljs-string">'&lt;%= html %&gt;'</span> } <span class="hljs-keyword">if</span> config.asFragments
       $test = $container.renderVisualTest vars, opts
       <span class="hljs-keyword">if</span> config.asFragments
         $container.addClass config.className <span class="hljs-keyword">if</span> config.className?
         $test = $test.addClass <span class="hljs-string">'visual-test-fragment'</span>
-                     .filter <span class="hljs-string">'.visual-test-fragment'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
-<li>Run tests.</li>
-</ul></div></div><div class="code"><div class="wrapper">      config.beforeTest $test <span class="hljs-keyword">if</span> config.beforeTest?
-      config.test $test</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Helpers for additional setup.</p></div></div><div class="code"><div class="wrapper">  _.extend $.visualTest,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>A button for appending an item to a list.
-This should be included as part of <code>footerHtml</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">setupAppendButton</span>: <span class="hljs-function"><span class="hljs-params">($context, listSelector, updateItem)</span> -&gt;</span>
+                     .filter <span class="hljs-string">'.visual-test-fragment'</span>
+
+      config.beforeTest $test <span class="hljs-keyword">if</span> config.beforeTest?
+      config.test $test
+      <span class="hljs-keyword">return</span>
+
+  _.extend $.visualTest,
+    <span class="hljs-attribute">setupAppendButton</span>: <span class="hljs-function"><span class="hljs-params">($context, listSelector, updateItem)</span> -&gt;</span>
       $list = $context.find listSelector
       $item = $list.children(<span class="hljs-string">':last-child'</span>).clone()
       $context.find(<span class="hljs-string">'[name=list-append]'</span>).click -&gt;
         $newItem = $item.clone()
         $list.append $newItem
-        updateItem $newItem <span class="hljs-keyword">if</span> updateItem?</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Simple method for an element to render and append a test. Only provide a
-custom template if absolutely needed.</p></div></div><div class="code"><div class="wrapper">  $.fn.renderVisualTest = <span class="hljs-function"><span class="hljs-params">(vars, opts)</span> -&gt;</span>
+        updateItem $newItem <span class="hljs-keyword">if</span> updateItem?
+        <span class="hljs-keyword">return</span>
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>$.fn.renderVisualTest</strong> is a simple method for an element to render and
+append a test. Only provide a custom template if absolutely needed.</p></div></div><div class="code"><div class="wrapper">  $.fn.renderVisualTest = <span class="hljs-function"><span class="hljs-params">(vars, opts)</span> -&gt;</span>
     opts ?= {}
     _.defaults opts, $.fn.renderVisualTest.defaults
     opts.template = _.template opts.template <span class="hljs-keyword">if</span> _.isString(opts.template)
     $test = $ opts.template vars 
     @.append $test
     $test
-
   $.fn.renderVisualTest.defaults =
     <span class="hljs-attribute">template</span>: _.template <span class="hljs-string">"""
               &lt;section class="&lt;%- className %&gt; visual-test"&gt;
@@ -56,14 +69,13 @@ custom template if absolutely needed.</p></div></div><div class="code"><div clas
                 &lt;%= html %&gt;
                 &lt;footer&gt;&lt;%= footerHtml %&gt;&lt;/footer&gt;
               &lt;/section&gt;
-              """</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="loremipsum">$.loremIpsum</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  loremIpsum =
+              """</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>$.loremIpsum</strong> is a namespace for storing dummy text.</p></div></div><div class="code"><div class="wrapper">  loremIpsum =
     <span class="hljs-string">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
      nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
      fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
      culpa qui officia deserunt mollit anim id est laborum."</span>
-
   $.loremIpsum = 
      <span class="hljs-attribute">long</span>: loremIpsum
      <span class="hljs-attribute">short</span>: loremIpsum[...<span class="hljs-number">200</span>]

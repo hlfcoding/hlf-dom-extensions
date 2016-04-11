@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/core.plugin</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core.plugin"><meta name="groc-project-path" content="tests/js/core.plugin.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.plugin.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-core-plugin-unit-tests">HLF Core Plugin Unit Tests</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper">define [
+<!DOCTYPE html><html lang="en"><head><title>tests/js/core.plugin</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core.plugin"><meta name="groc-project-path" content="tests/js/core.plugin.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.plugin.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-core-plugin-unit-tests">HLF Core Plugin Unit Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../../../tests/core.unit.html">Page</a></p></div></div><div class="code"><div class="wrapper">define [
   <span class="hljs-string">'jquery'</span>
   <span class="hljs-string">'underscore'</span>
   <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
@@ -31,19 +31,24 @@
       $.createMixin <span class="hljs-property">@mixins</span>, <span class="hljs-string">'base'</span>,
         <span class="hljs-attribute">init</span>: <span class="hljs-function">-&gt;</span>
           <span class="hljs-property">@trigger</span> <span class="hljs-string">'did-init'</span>
+          <span class="hljs-keyword">return</span>
 
       $.createMixin <span class="hljs-property">@mixins</span>, <span class="hljs-string">'someMixin'</span>,
         <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
           <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initSomeMixin</span>()
+          <span class="hljs-keyword">return</span>
         <span class="hljs-attribute">initSomeMixin</span>: <span class="hljs-function">-&gt;</span>
           <span class="hljs-property">@someMixinProperty</span> = <span class="hljs-string">'foo'</span>
+          <span class="hljs-keyword">return</span>
         <span class="hljs-attribute">someMixinMethod</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">'foo'</span>
 
       $.createMixin <span class="hljs-property">@mixins</span>, <span class="hljs-string">'someOtherMixin'</span>,
         <span class="hljs-attribute">decorate</span>: <span class="hljs-function">-&gt;</span>
           <span class="hljs-property">@on</span> <span class="hljs-string">'did-init'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@initSomeOtherMixin</span>()
+          <span class="hljs-keyword">return</span>
         <span class="hljs-attribute">initSomeOtherMixin</span>: <span class="hljs-function">-&gt;</span>
           <span class="hljs-property">@someOtherMixinProperty</span> = <span class="hljs-string">'bar'</span>
+          <span class="hljs-keyword">return</span>
         <span class="hljs-attribute">someOtherMixinMethod</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">'bar'</span>
 
       <span class="hljs-property">@baseCreateOptions</span> = 
@@ -55,6 +60,7 @@
         <span class="hljs-attribute">compactOptions</span>: <span class="hljs-literal">yes</span>
 
       <span class="hljs-property">@$someElement</span> = $ <span class="hljs-string">'&lt;div&gt;'</span>
+      <span class="hljs-keyword">return</span>
 <span class="hljs-function">
   <span class="hljs-title">assertGeneralPlugin</span> = <span class="hljs-params">(assert)</span> -&gt;</span>
     assert.ok <span class="hljs-property">@$someElement</span>.somePlugin,
@@ -67,13 +73,14 @@
       <span class="hljs-string">'Plugin instance should have options merged in as properties.'</span>
     assert.ok result.$someElement,
       <span class="hljs-string">'Plugin instance should have auto-selected sub elements based on selectors option.'</span>
-    <span class="hljs-keyword">return</span> result
+    result
 
   QUnit.test <span class="hljs-string">'createPlugin with apiClass and baseMixins'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
     hlf.createPlugin <span class="hljs-property">@baseCreateOptions</span>
     result = assertGeneralPlugin.call @, assert
     assert.ok result <span class="hljs-keyword">instanceof</span> SomePlugin,
       <span class="hljs-string">'Plugin method should return instance upon re-invocation without any parameters.'</span>
+    <span class="hljs-keyword">return</span>
 
   QUnit.test <span class="hljs-string">'createPlugin with apiMixins and baseMixins'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
     createOptions = <span class="hljs-property">@baseCreateOptions</span>
@@ -92,6 +99,7 @@
       <span class="hljs-string">'Mixin property should have been set on deferred initialization.'</span>
     assert.strictEqual result.someOtherMixinProperty, <span class="hljs-string">'bar'</span>,
       <span class="hljs-string">'Mixin property should have been set on deferred initialization.'</span>
+    <span class="hljs-keyword">return</span>
 
   QUnit.test <span class="hljs-string">'createPlugin with apiClass and baseMixins and asSharedInstance'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
     createOptions = <span class="hljs-property">@baseCreateOptions</span>
@@ -100,6 +108,6 @@
     result = assertGeneralPlugin.call @, assert
     assert.strictEqual result, $(<span class="hljs-string">'body'</span>).data(<span class="hljs-string">'somePlugin'</span>),
       <span class="hljs-string">'Plugin singleton should be stored with context element.'</span>
-
+    <span class="hljs-keyword">return</span>
 
   <span class="hljs-literal">yes</span></div></div></div></div></body></html>
