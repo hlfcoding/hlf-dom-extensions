@@ -47,6 +47,7 @@ define [
 
       config.beforeTest $test if config.beforeTest?
       config.test $test
+      return
 
   _.extend $.visualTest,
     setupAppendButton: ($context, listSelector, updateItem) ->
@@ -56,6 +57,8 @@ define [
         $newItem = $item.clone()
         $list.append $newItem
         updateItem $newItem if updateItem?
+        return
+      return
 
   # __$.fn.renderVisualTest__ is a simple method for an element to render and
   # append a test. Only provide a custom template if absolutely needed.

@@ -15,7 +15,9 @@ define [
     setup: ->
       @.mixins = {}
       @.mixin =
-        decorate: -> @someOtherProperty = 'baz'
+        decorate: ->
+          @someOtherProperty = 'baz'
+          return
         someMethod: -> 'foo'
         someProperty: 'bar'
       @.dynamicMixin = (dependencies) ->
@@ -39,6 +41,7 @@ define [
     result = hlf.createMixin @mixins, @mixinName, @mixin
     assert.strictEqual result, no,
       'Mixin should not have been re-added to mixin collection.'
+    return
 
   assertMixinInstance = (assert) ->
     assert.ok @instance.someMethod,
@@ -49,22 +52,26 @@ define [
       'Mixin once method should have been removed after invoking.'
     assert.strictEqual @instance.someOtherProperty, 'baz',
       'Mixin once method should have invoked properly.'
+    return
 
   QUnit.test 'applyMixin', (assert) ->
     result = hlf.createMixin @mixins, @mixinName, @mixin
     hlf.applyMixins @instance, @dependencies, @mixin
     assertMixinInstance.call @, assert
+    return
 
   assertDynamicMixinInstance = (assert) ->
     assert.ok @instance.someMethod,
       'Dynamic mixin method should have been added to instance.'
     assert.strictEqual @instance.someMethod(), @dependencies.valueA,
       'Dynamic mixin method should have been generated properly.'
+    return
 
   QUnit.test 'applyMixin with dynamicMixin', (assert) ->
     result = hlf.createMixin @mixins, @dynamicMixinName, @dynamicMixin
     hlf.applyMixins @instance, @dependencies, @dynamicMixin
     assertDynamicMixinInstance.call @, assert
+    return
 
   QUnit.test 'applyMixins', (assert) ->
     hlf.createMixin @mixins, @mixinName, @mixin
@@ -72,5 +79,6 @@ define [
     hlf.applyMixins @instance, @dependencies, _.values(@mixins)...
     assertMixinInstance.call @, assert
     assertDynamicMixinInstance.call @, assert
+    return
 
   yes

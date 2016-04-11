@@ -38,19 +38,24 @@ define [
       $.createMixin @mixins, 'base',
         init: ->
           @trigger 'did-init'
+          return
 
       $.createMixin @mixins, 'someMixin',
         decorate: ->
           @on 'did-init', => @initSomeMixin()
+          return
         initSomeMixin: ->
           @someMixinProperty = 'foo'
+          return
         someMixinMethod: -> 'foo'
 
       $.createMixin @mixins, 'someOtherMixin',
         decorate: ->
           @on 'did-init', => @initSomeOtherMixin()
+          return
         initSomeOtherMixin: ->
           @someOtherMixinProperty = 'bar'
+          return
         someOtherMixinMethod: -> 'bar'
 
       @baseCreateOptions = 
@@ -62,6 +67,7 @@ define [
         compactOptions: yes
 
       @$someElement = $ '<div>'
+      return
 
   assertGeneralPlugin = (assert) ->
     assert.ok @$someElement.somePlugin,
@@ -74,13 +80,14 @@ define [
       'Plugin instance should have options merged in as properties.'
     assert.ok result.$someElement,
       'Plugin instance should have auto-selected sub elements based on selectors option.'
-    return result
+    result
 
   QUnit.test 'createPlugin with apiClass and baseMixins', (assert) ->
     hlf.createPlugin @baseCreateOptions
     result = assertGeneralPlugin.call @, assert
     assert.ok result instanceof SomePlugin,
       'Plugin method should return instance upon re-invocation without any parameters.'
+    return
 
   QUnit.test 'createPlugin with apiMixins and baseMixins', (assert) ->
     createOptions = @baseCreateOptions
@@ -99,6 +106,7 @@ define [
       'Mixin property should have been set on deferred initialization.'
     assert.strictEqual result.someOtherMixinProperty, 'bar',
       'Mixin property should have been set on deferred initialization.'
+    return
 
   QUnit.test 'createPlugin with apiClass and baseMixins and asSharedInstance', (assert) ->
     createOptions = @baseCreateOptions
@@ -107,6 +115,6 @@ define [
     result = assertGeneralPlugin.call @, assert
     assert.strictEqual result, $('body').data('somePlugin'),
       'Plugin singleton should be stored with context element.'
-
+    return
 
   yes

@@ -49,7 +49,7 @@ require [
 
   $('.animator :radio').prop 'checked', no
     .filter("[value=#{animatorName}]").prop 'checked', yes
-    .end().click -> location.search = "?animator=#{$(@).val()}"
+    .end().click -> location.search = "?animator=#{$(@).val()}"; return
 
   if animatorName is 'velocity'
     `animator = {
@@ -88,7 +88,8 @@ require [
       """
     test: ($context) ->
       `$context.find('[title]').tip(null, $context);`
-      `var api = $context.tip(null, $context);`
+      `api = $context.tip(null, $context);`
+      return
 
     anchorName: 'default'
     className: 'default-call'
@@ -122,6 +123,7 @@ require [
       """
     test: ($context) ->
       `$context.find('[title]').snapTip({ snap: { toYAxis: true } }, $context);`
+      return
 
     anchorName: 'snapping-vertically'
     className: 'list-call'
@@ -132,6 +134,7 @@ require [
         $trigger = $newItem.find '[title]'
         title = $trigger.attr('title').replace /\d/, $newItem.index() + 1
         $trigger.attr 'title', title
+      return
 
   # Snapping Horizontally
   # ---------------------
@@ -152,6 +155,7 @@ require [
       """
     test: ($context) ->
       `$context.find('[title]').snapTip({ snap: { toXAxis: true } }, $context);`
+      return
 
     anchorName: 'snapping-horizontally'
     className: 'bar-call'
@@ -181,6 +185,7 @@ require [
         snap: { toXAxis: true },
         animations: { hide: { delay: 400 } }
       }, $context);`
+      return
 
     anchorName: 'a-model-use-case'
     className: 'grid-call'
@@ -205,11 +210,15 @@ require [
         bottom right corner
       </a>
       """
-    test: ($fragments) -> `$fragments.snapTip();`
+    test: ($fragments) ->
+      `$fragments.snapTip();`
+      return
 
     anchorName: 'corner-cases'
     asFragments: yes
     className: 'edge-call'
     vars: _.pick $, 'loremIpsum'
 
-  $ -> test() for test in tests
+  $ ->
+    test() for test in tests
+    return

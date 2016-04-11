@@ -30,6 +30,7 @@ require [
     QUnit.test 'exports', (assert) ->
       assert.ok hlf,
         'Namespace should exist.'
+      return
 
     QUnit.test 'noConflict', (assert) ->
       assert.ok $.createPlugin,
@@ -39,6 +40,7 @@ require [
         'Method shortcut for createPlugin should be back to original value.'
       assert.ok hlf.createPlugin,
         'Original method for createPlugin should still exist.'
+      return
 
     QUnit.start()
 

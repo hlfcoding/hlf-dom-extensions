@@ -49,8 +49,11 @@ require [
           // Update data source here.
           $(this).editable('update', { text: e.userInfo.text });
         });`
+      return
 
     anchorName: 'default'
     className: 'default-call'
 
-  $ -> test() for test in tests
+  $ ->
+    test() for test in tests
+    return
