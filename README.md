@@ -47,7 +47,7 @@ $('.avatars').find('img[alt]').tip(); // Tips will follow cursor.
 $('nav.bar').find('a[title]').snapTip({
   snap: { toXAxis: true } // Tips will only follow along x axis.
 });
-$('article').find('a[title]').snapTip() // Tip will not follow.
+$('article').find('a[title]').snapTip(); // Tip will not follow.
 ```
 
 See [Tip's visual tests][] for more examples.
