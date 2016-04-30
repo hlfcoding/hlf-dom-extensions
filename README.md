@@ -2,7 +2,6 @@
 
 [![Build Status](https://img.shields.io/travis/hlfcoding/hlf-jquery.svg)](https://travis-ci.org/hlfcoding/hlf-jquery)
 [![Package](https://img.shields.io/npm/v/hlf-jquery.svg?style=flat)](https://www.npmjs.com/package/hlf-jquery)
-![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg)
 [![Code Climate](https://codeclimate.com/github/hlfcoding/hlf-jquery/badges/gpa.svg)](https://codeclimate.com/github/hlfcoding/hlf-jquery)
 ![GitHub License](https://img.shields.io/github/license/hlfcoding/hlf-jquery.svg)
 

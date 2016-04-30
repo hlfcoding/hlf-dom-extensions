@@ -19,9 +19,6 @@ module.exports = (grunt) ->
       src: aspects.src.autoprefixer
       tests: aspects.tests.autoprefixer
 
-    bower:
-      lib: aspects.lib.bower
-
     bump: aspects.release.bump
 
     clean:
@@ -40,6 +37,7 @@ module.exports = (grunt) ->
     copy:
       dist: aspects.dist.copy
       'gh-pages': aspects['gh-pages'].copy
+      lib: aspects.lib.copy
       release: aspects.release.copy
 
     'gh-pages':
@@ -65,7 +63,6 @@ module.exports = (grunt) ->
       # Caveat: These watch tasks do not clean.
       css: aspects.src.watch.css
       js: aspects.src.watch.js
-      lib: aspects.lib.watch
 
   config.watch.docs = aspects.docs.watch unless grunt.option('fast')?
 
