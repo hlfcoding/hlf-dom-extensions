@@ -1,6 +1,6 @@
 {
   "name": "hlf-jquery",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "jQuery plugins and extensions for quality UI.",
   "main": "release/jquery.hlf.min.js",
   "files": ["release/*"],
