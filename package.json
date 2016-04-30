@@ -30,7 +30,7 @@
     "grunt-groc": "^0.6",
     "grunt-markdown": "^0.7",
     "grunt-newer": "^1.0",
-    "matchdep": "^0.3",
+    "matchdep": "^1.0",
     "merlot": "^0.1",
     "es6-promise": "^3.0",
     "gsap": "^1.0",
