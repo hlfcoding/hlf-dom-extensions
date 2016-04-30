@@ -1,8 +1,9 @@
 # HLF jQuery Library
 
 [![Build Status](https://img.shields.io/travis/hlfcoding/hlf-jquery.svg)](https://travis-ci.org/hlfcoding/hlf-jquery)
-![Bower Version](https://img.shields.io/bower/v/hlf-jquery.svg)
+[![Package](https://img.shields.io/npm/v/hlf-jquery.svg?style=flat)](https://www.npmjs.com/package/hlf-jquery)
 [![Code Climate](https://codeclimate.com/github/hlfcoding/hlf-jquery/badges/gpa.svg)](https://codeclimate.com/github/hlfcoding/hlf-jquery)
+[![Dependency Status](https://img.shields.io/david/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=dependencies)
 ![GitHub License](https://img.shields.io/github/license/hlfcoding/hlf-jquery.svg)
 
 <pre>
@@ -47,7 +48,7 @@ $('.avatars').find('img[alt]').tip(); // Tips will follow cursor.
 $('nav.bar').find('a[title]').snapTip({
   snap: { toXAxis: true } // Tips will only follow along x axis.
 });
-$('article').find('a[title]').snapTip() // Tip will not follow.
+$('article').find('a[title]').snapTip(); // Tip will not follow.
 ```
 
 See [Tip's visual tests][] for more examples.
@@ -103,20 +104,18 @@ your-project> bower install hlf-jquery
 ## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
 
 ```bash
-hlf-jquery> npm install
-hlf-jquery> gem install -N sass # for grunt-contrib-sass
-
 # to install
-hlf-jquery> grunt install
+$ gem install -N sass # for grunt-contrib-sass
+$ npm install
 
 # to run some tests first
-hlf-jquery> grunt test
+$ grunt test
 
 # to read some docs
-hlf-jquery> grunt docs
+$ grunt docs
 
 # to start developing
-hlf-jquery> grunt
+$ grunt
 ```
 
 Note that Grunt task options and multi-tasks are in build/.
