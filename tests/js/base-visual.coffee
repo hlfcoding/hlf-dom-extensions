@@ -93,5 +93,6 @@ define [
   $.loremIpsum = 
      long: loremIpsum
      short: loremIpsum[...200]
+     title: loremIpsum[...26]
 
   yes
