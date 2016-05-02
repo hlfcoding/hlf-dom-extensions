@@ -10,6 +10,7 @@ define [
   'underscore'
   'hlf/jquery.extension.hlf.core'
 ], ($, _, hlf) ->
+  'use strict'
 
   QUnit.module 'mixin',
     setup: ->

@@ -30,6 +30,7 @@ HLF Event jQuery Extension
   else
     attach jQuery, _, jQuery.hlf
 )(@, ($, _, hlf) ->
+  'use strict'
 
   # Hover-Intent
   # ------------

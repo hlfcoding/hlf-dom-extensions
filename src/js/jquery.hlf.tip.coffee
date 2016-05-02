@@ -43,6 +43,7 @@ HLF Tip jQuery Plugin
     attach jQuery, _, jQuery.hlf
   return
 )(@, ($, _, hlf) ->
+  'use strict'
 
   #- Cache common references internally.
   _requestAnimationFrame = window.requireAnimationFrame or

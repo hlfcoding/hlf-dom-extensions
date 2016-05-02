@@ -11,6 +11,7 @@ define [
   'hlf/jquery.extension.hlf.core'
   'test/base'
 ], ($, _, hlf) ->
+  'use strict'
 
   class SomePlugin
     constructor: (@$el, options, @$context) ->

@@ -34,6 +34,7 @@ require [
   'test/base-visual'
   'hlf/jquery.hlf.tip'
 ]), ($, _) ->
+  'use strict'
 
   # Setup visual tests. Tests are decorated closures queued and run on document-
   # ready. Tip specific setup:
@@ -88,7 +89,7 @@ require [
       """
     test: ($context) ->
       `$context.find('[title]').tip(null, $context);`
-      `api = $context.tip(null, $context);`
+      `var api = $context.tip(null, $context);`
       return
 
     anchorName: 'default'

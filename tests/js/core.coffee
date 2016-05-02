@@ -20,6 +20,8 @@ require [
   'test/core.mixin'
   'test/core.plugin'
 ], ($, _, hlf) ->
+  'use strict'
+
   shouldRunVisualTests = $('#qunit').length is 0
 
   if shouldRunVisualTests then $ ->

@@ -9,6 +9,7 @@ define [
   'jquery'
   'underscore'
 ], ($, _) ->
+  'use strict'
 
   # __$.visualTest__ returns a configured test function generator. Tests should
   # be invoked tests on document ready. Configuration:

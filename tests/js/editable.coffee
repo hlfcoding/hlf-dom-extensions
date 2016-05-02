@@ -17,6 +17,7 @@ require [
   'test/base-visual'
   'hlf/jquery.hlf.editable'
 ], ($, _) ->
+  'use strict'
 
   shouldRunVisualTests = $('#qunit').length is 0
   return false unless shouldRunVisualTests

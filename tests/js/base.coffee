@@ -9,6 +9,7 @@ define [
   'jquery'
   'underscore'
 ], ($, _) ->
+  'use strict'
 
   QUnit.extend QUnit.assert,
 

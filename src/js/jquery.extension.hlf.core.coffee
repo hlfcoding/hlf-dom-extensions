@@ -38,6 +38,7 @@ HLF Core jQuery Extension
   else
     attach jQuery, _
 )(@, ($, _) ->
+  'use strict'
 
   # Namespace
   # ---------

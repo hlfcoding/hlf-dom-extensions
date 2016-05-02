@@ -25,6 +25,7 @@ HLF Editable jQuery Plugin
   else
     attach jQuery, _, jQuery.hlf
 )(@, ($, _, hlf) ->
+  'use strict'
 
   # Namespace
   # ---------
