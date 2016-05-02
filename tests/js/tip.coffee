@@ -78,7 +78,7 @@ require [
   # in after the first argument (options or command).
   tests.push $.visualTest
 
-    label: "by default"
+    label: 'by default'
     template:
       """
       <p>

@@ -252,7 +252,7 @@ HLF Tip jQuery Plugin
       html = @tipTemplate containerClass
 
     # ___isDirection__ deduces if `$tip` has the given `directionComponent`,
-    # which is true  if it has the classes or if there is no given `$trigger` or
+    # which is true if it has the classes or if there is no given `$trigger` or
     # saved direction value, and `directionComponent` is part of
     # `defaultDirection`.
     _isDirection: (directionComponent, $trigger) ->
