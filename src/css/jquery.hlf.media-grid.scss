@@ -1,0 +1,207 @@
+$mg-bg: #000 !default; // background
+$mg-fg: #fff !default; // foreground
+$mg-gt: 6px !default; // gutter
+$mg-rd: 4px !default; // radius
+$mg-iw: 212px !default; // item width
+$mg-ih: 232px !default; // item height
+
+%reset-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+%inline-list {
+  @extend %reset-list;
+  li {
+    display: inline;
+
+    &:not(:last-child)::after {
+      content: ',\0020';
+    }
+  }
+}
+
+%line {
+  &::before,
+  &::after {
+    content: ' ';
+    display: table;
+  }
+
+  &::after { clear: both; }
+}
+
+%grid {
+  @extend %line;
+}
+
+%rigid-grid {
+  @extend %grid;
+  position: relative;
+}
+
+%grid-item {
+  border-radius: $mg-rd;
+  float: left;
+  margin: { bottom: $mg-gt; right: $mg-gt; }
+  padding: $mg-gt;
+}
+
+%rigid-grid-item {
+  @extend %grid-item;
+  float: none;
+  position: absolute;
+}
+
+%hidden {
+  display: none;
+}
+
+%toggles {
+  overflow: hidden;
+  transition: {
+    duration: .3s;
+    property: height opacity width;
+    timing-function: ease-in-out;
+  }
+}
+
+%invisible {
+  display: none;
+  height: 0;
+  opacity: 0;
+  width: 0;
+}
+
+%visible {
+  display: block;
+  height: auto;
+  opacity: 1;
+  width: auto;
+}
+
+%floating {
+  z-index: 10;
+  // TODO: Shadow.
+}
+
+%bg {
+  background: $mg-bg;
+  color: $mg-fg;
+}
+
+%fg {
+  background: $mg-fg;
+  color: $mg-bg;
+}
+
+.shadow-dom {
+  @extend %hidden;
+}
+
+.mg-placeholder {
+  visibility: hidden;
+}
+
+.mg {
+  @extend %rigid-grid;
+  background: mix($mg-fg, $mg-bg, 20%);
+  font: {
+    family: Helvetica, sans-serif;
+    size: 10px;
+  }
+  margin: { left: $mg-gt; top: $mg-gt; }
+  transition: opacity .3s ease-in-out;
+
+  // Crucial fix for the unintuitive and inconvenient box model.
+  * { box-sizing: border-box; }
+
+  &.js-mg-ready {
+    visibility: visible;
+  }
+}
+
+.js-mg-item {
+  @extend %bg;
+  @extend %grid-item; // Becomes rigid grid item.
+
+  height: $mg-ih;
+  line-height: 2em;
+  overflow: hidden;
+  transition: {
+    duration: .2s;
+    property: height left opacity top width;
+    timing-function: ease-in-out;
+  }
+  width: $mg-iw;
+
+  >.preview {
+    @extend %toggles;
+    @extend %visible;
+  }
+
+  >.detail {
+    @extend %toggles;
+    @extend %invisible;
+  }
+
+  .title {
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .date {
+    font-size: 10px;
+    margin: 0;
+    padding: 0;
+  }
+
+  p {
+    line-height: 1.6em;
+  }
+
+  .tags {
+    @extend %inline-list;
+  }
+
+  &:hover:not(.js-mg-expanded) {
+    @extend %fg;
+  }
+
+  &.js-mg-expanded {
+    @extend %floating;
+
+    height: (2 * $mg-ih) + $mg-gt;
+    transition: {
+      duration: .2s;
+      property: height opacity width;
+      timing-function: ease-in-out;
+    }
+    width: (2 * $mg-iw) + $mg-gt;
+
+    hgroup {
+      @extend %line;
+
+      >.date {
+        float: right;
+      }
+
+      >.title {
+        float: left;
+      }
+    }
+
+    >.preview {
+      @extend %invisible;
+    }
+
+    >.detail {
+      @extend %visible;
+    }
+  }
+
+  .js-mg-dimmed>&:not(.js-mg-expanded) {
+    opacity: .3;
+  }
+}
