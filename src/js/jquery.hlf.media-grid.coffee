@@ -185,9 +185,9 @@
       if hard is on
         @$metricsSamples.$defaultSample = @$sampleItem.clone()
         @$metricsSamples.$expandedSample = @$sampleItem.clone().addClass @classNames.expanded
+        @$metricsSamples.$sampleWrap ?= @$el.clone().empty().appendTo('body')
         @$metricsSamples.$defaultSample.add(@$metricsSamples.$expandedSample)
-          .css('visibility', 'hidden').appendTo(@$el)
-        @$metricsSamples.$sampleWrap ?= @$el.clone().appendTo('body')
+          .css('visibility', 'hidden').appendTo(@$metricsSamples.$sampleWrap)
 
       {$defaultSample, $expandedSample, $sampleWrap} = @$metricsSamples
       gutter = Math.round parseFloat(@$sampleItem.css('margin-right'))
