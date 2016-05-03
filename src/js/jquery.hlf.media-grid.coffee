@@ -183,26 +183,26 @@
 
     _updateMetrics: (hard=on) ->
       if hard is on
-        @$metricsSamples.$defaultSample = @$sampleItem.clone()
-        @$metricsSamples.$expandedSample = @$sampleItem.clone().addClass @classNames.expanded
-        @$metricsSamples.$sampleWrap ?= @$el.clone().empty().appendTo('body')
-        @$metricsSamples.$defaultSample.add(@$metricsSamples.$expandedSample)
-          .css('visibility', 'hidden').appendTo(@$metricsSamples.$sampleWrap)
+        @$metricsSamples.$item = @$sampleItem.clone()
+        @$metricsSamples.$expanded = @$sampleItem.clone().addClass @classNames.expanded
+        @$metricsSamples.$wrap ?= @$el.clone().empty().appendTo('body')
+        @$metricsSamples.$item.add(@$metricsSamples.$expanded)
+          .css('visibility', 'hidden').appendTo(@$metricsSamples.$wrap)
 
-      {$defaultSample, $expandedSample, $sampleWrap} = @$metricsSamples
+      {$item, $expanded, $wrap} = @$metricsSamples
       gutter = Math.round parseFloat(@$sampleItem.css('margin-right'))
-      fullWidth = $defaultSample.outerWidth() + gutter
-      fullHeight = $defaultSample.outerHeight() + gutter
+      fullWidth = $item.outerWidth() + gutter
+      fullHeight = $item.outerHeight() + gutter
       previous = _.clone @metrics if metrics?
 
       if hard is on then @metrics =
         gutter: gutter
-        itemWidth: $defaultSample.outerWidth()
-        itemHeight: $defaultSample.outerHeight()
-        expandedWidth: $expandedSample.outerWidth()
-        expandedHeight: $expandedSample.outerHeight()
+        itemWidth: $item.outerWidth()
+        itemHeight: $item.outerHeight()
+        expandedWidth: $expanded.outerWidth()
+        expandedHeight: $expanded.outerHeight()
 
-      rowSize = parseInt ($sampleWrap.innerWidth() / fullWidth), 10
+      rowSize = parseInt ($wrap.innerWidth() / fullWidth), 10
       colSize = Math.ceil @$items.length / rowSize
       $.extend @metrics,
         rowSize: rowSize

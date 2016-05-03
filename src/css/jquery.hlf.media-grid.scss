@@ -107,7 +107,8 @@ $mg-ih: 232px !default; // item height
   transition: opacity .3s ease-in-out;
 
   // Crucial fix for the unintuitive and inconvenient box model.
-  &, * { box-sizing: border-box; }
+  &,
+  * { box-sizing: border-box; }
 
   &.js-mg-ready {
     visibility: visible;
