@@ -1,5 +1,6 @@
-$mg-bg: #000 !default; // background
-$mg-fg: #fff !default; // foreground
+$mg-bg: #000 !default; // item background
+$mg-fg: #fff !default; // item foreground
+$mg-pg: mix($mg-fg, $mg-bg, 20%) !default; // page background
 $mg-gt: 6px !default; // gutter
 $mg-rd: 4px !default; // radius
 $mg-iw: 212px !default; // item width
@@ -95,17 +96,9 @@ $mg-ih: 232px !default; // item height
   color: $mg-bg;
 }
 
-.shadow-dom {
-  @extend %hidden;
-}
-
-.mg-placeholder {
-  visibility: hidden;
-}
-
-.mg {
+.js-mg {
   @extend %rigid-grid;
-  background: mix($mg-fg, $mg-bg, 20%);
+  background: $mg-pg;
   font: {
     family: Helvetica, sans-serif;
     size: 10px;
@@ -114,7 +107,7 @@ $mg-ih: 232px !default; // item height
   transition: opacity .3s ease-in-out;
 
   // Crucial fix for the unintuitive and inconvenient box model.
-  * { box-sizing: border-box; }
+  &, * { box-sizing: border-box; }
 
   &.js-mg-ready {
     visibility: visible;
