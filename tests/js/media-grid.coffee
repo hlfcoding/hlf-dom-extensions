@@ -20,8 +20,9 @@ require [
 
     label: 'by default'
     template:
-      _.range(12).reduce (t) ->
-        t + """
+      """
+      <div class="test-body">
+      <% _.range(12).forEach(function() { %>
         <article class="js-mg-item">
           <section class="preview">
             <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" class="thumb" />
@@ -49,10 +50,11 @@ require [
             </ul>
           </section>
         </article>
-        """
-      , ''
+      <% }) %>
+      </div>
+      """
     test: ($context) ->
-      $context.mediaGrid()
+      $context.find('.test-body').mediaGrid()
       return
 
     anchorName: 'default'

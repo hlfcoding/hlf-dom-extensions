@@ -1,2 +1,10 @@
 @import '../../dist/jquery.hlf.media-grid';
 @import 'base';
+
+body {
+  background: $mg-pg;
+}
+
+.test-body {
+  margin-top: 1rem;
+}
