@@ -159,7 +159,10 @@ section.visual-test { /* main test styles */
     inset 0 1px 4px rgba(#000, .3), /* shadow */
     0 1px 0 rgba(#fff, .3) /* highlight */
   );
-  padding-bottom: $rem;
+
+  &:not(:last-child) {
+    padding-bottom: $rem;
+  }
 
   header {
     @extend %clearfix, %pull-left-right;

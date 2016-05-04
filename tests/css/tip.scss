@@ -8,6 +8,10 @@
 @import '../../dist/jquery.hlf.tip';
 @import 'base';
 
+#main {
+  padding-bottom: 3 * $rem;
+}
+
 // A basic example of how to use the tip plugin's style-building mixins.
 .js-tip {
   @include tip-base;
