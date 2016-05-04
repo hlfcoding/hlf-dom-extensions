@@ -284,7 +284,10 @@ HLF Core jQuery Extension
   # - Add the __debugLog__ method and attach functionality instead of a no-op
   #   only if namespace `debug` is on.
   _createPluginAPIAdditions = (name, namespace) ->
-    evt: _.memoize (name) -> "#{name}#{namespace.toString 'event'}"
+    evt: _.memoize (name) ->
+      if _.contains(name, ' ')
+        return name.split(' ').reduce ((names, n) => "#{names} #{@evt(n)}"), ''
+      "#{name}#{namespace.toString 'event'}"
     attr: _.memoize (name) ->
       name = if name? then "-#{name}" else ''
       namespace.toString('data') + name
@@ -399,15 +402,18 @@ HLF Core jQuery Extension
           @$el.data.apply @$el, arguments
 
       event: ->
-        on: (name) ->
-          name = @evt name if name?
+        evtMap: (map) ->
+          namespaced = {}
+          namespaced[@evt(name)] = handler for own name, handler of map
+          namespaced
+        on: (obj) ->
+          arguments[0] = if _.isString(obj) then @evt(obj) else @evtMap(obj)
           @$el.on.apply @$el, arguments
         off: (name) ->
-          name = @evt name if name?
+          arguments[0] = if _.isString(obj) then @evt(obj) else @evtMap(obj)
           @$el.off.apply @$el, arguments
         trigger: (name, userInfo) ->
-          type = @evt name
-          @$el.trigger { type, userInfo }
+          @$el.trigger { type: @evt(name), userInfo }
 
       selection: ->
         select: ->
