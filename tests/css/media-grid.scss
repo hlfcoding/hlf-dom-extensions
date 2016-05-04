@@ -10,5 +10,9 @@ body {
 }
 
 .test-body {
-  margin-top: 1rem;
+  margin: {
+    left: 0;
+    right: 0;
+    top: 1rem;
+  }
 }
