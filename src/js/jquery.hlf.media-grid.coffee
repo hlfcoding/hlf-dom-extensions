@@ -31,7 +31,7 @@
       solo: on
       classNames: do ->
         classNames = {}
-        keys = ['ready', 'item', 'expanded', 'dimmed', 'focused', 'animating']
+        keys = ['ready', 'item', 'expanded', 'dimmed', 'focused', 'sample']
         (classNames[key] = "#{pre}#{key}") for key in keys
         classNames
 
@@ -185,9 +185,10 @@
       if hard is on
         @$metricsSamples.$item = @$sampleItem.clone()
         @$metricsSamples.$expanded = @$sampleItem.clone().addClass @classNames.expanded
-        @$metricsSamples.$wrap ?= @$el.clone().empty().appendTo('body')
-        @$metricsSamples.$item.add(@$metricsSamples.$expanded)
-          .css('visibility', 'hidden').appendTo(@$metricsSamples.$wrap)
+        @$metricsSamples.$wrap ?= @$el.clone().empty().addClass @classNames.sample
+          .append @$metricsSamples.$item
+          .append @$metricsSamples.$expanded
+          .appendTo @$el
 
       {$item, $expanded, $wrap} = @$metricsSamples
       gutter = Math.round parseFloat(@$sampleItem.css('margin-right'))

@@ -113,6 +113,14 @@ $mg-ih: 232px !default; // item height
   &.js-mg-ready {
     visibility: visible;
   }
+
+  &.js-mg-sample {
+    left: 0;
+    position: absolute;
+    top: 0;
+    visibility: hidden;
+    z-index: 0;
+  }
 }
 
 .js-mg-item {
