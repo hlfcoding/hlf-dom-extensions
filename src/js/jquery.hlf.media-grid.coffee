@@ -98,11 +98,11 @@
       return
 
     _adjustItemToBottomEdge: ($item) ->
-      $item.css { left: 'auto', right: 0 }
+      $item.css { top: 'auto', bottom: 0 }
       return
 
     _adjustItemToRightEdge: ($item) ->
-      $item.css { top: 'auto', bottom: 0 }
+      $item.css { left: 'auto', right: 0 }
       return
 
     _handleDimmingOnTogglingItem: ($item, dimmed) ->
@@ -119,7 +119,7 @@
     _handleEnteringDimmedItem: ($item) ->
       return no unless @$el.hasClass @classNames.dimmed
       _.delay =>
-        return if @$expandedItem.hasClass @classNames.focused
+        return if @$expandedItem?.hasClass @classNames.focused
         @$el.removeClass @classNames.dimmed
         return
       , @dimDelay
