@@ -1,9 +1,8 @@
 @import '../../dist/jquery.hlf.media-grid';
-@import 'base';
 
-body {
-  background: $mg-pg;
-}
+$bg-color: $mg-pg;
+$light-color: mix($bg-color, #fff);
+@import 'base';
 
 #main {
   padding-bottom: 0;
