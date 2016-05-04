@@ -176,7 +176,7 @@
             top: 'auto', left: 'auto', bottom: 'auto', right: 'auto'
             position: $item.data @attr('initial-layout-type')
 
-        @layoutItems()
+        @_layoutItems()
         return
       , @_delay
       return
