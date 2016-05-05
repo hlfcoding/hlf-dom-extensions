@@ -14,7 +14,7 @@
 
 // A basic example of how to use the tip plugin's style-building mixins.
 .js-tip {
-  @include tip-base;
-  @include tip-layout($em-size: $rem);
-  @include tip-skin($fill-color: #666, $text-color: #fff);
+  @include hlf-tip-base;
+  @include hlf-tip-layout($em-size: $rem);
+  @include hlf-tip-skin($fill-color: #666, $text-color: #fff);
 }

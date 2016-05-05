@@ -8,10 +8,10 @@
 @import '../../dist/jquery.hlf.editable';
 @import 'base';
 
-#{map-get($editable-inline-selectors, container)} {
-  @include editable-inline-skin;
-  @include editable-inline-layout;
-  #{map-get($editable-inline-selectors, text)} {
+#{map-get($hlf-editable-inline-selectors, container)} {
+  @include hlf-editable-inline-skin;
+  @include hlf-editable-inline-layout;
+  #{map-get($hlf-editable-inline-selectors, text)} {
     transition: background-color 0.2s ease-in-out;
   }
 }
