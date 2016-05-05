@@ -12,8 +12,8 @@
     "url": "https://github.com/hlfcoding/hlf-jquery"
   },
   "dependencies": {
-    "jquery": "^2.0.0",
-    "underscore": "^1.0.0"
+    "jquery": "^2.0",
+    "underscore": "^1.0"
   },
   "devDependencies": {
     "grunt": "^1.0",
