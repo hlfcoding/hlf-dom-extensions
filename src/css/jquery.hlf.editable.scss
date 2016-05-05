@@ -28,12 +28,15 @@ $hlf-editable-inline-selectors: (
       }
     }
   }
+
   #{map-get($selectors, text)} {
     cursor: text;
+
     &:hover {
       background-color: $hover-background-color;
     }
   }
+
   #{map-get($selectors, input)} {
     border-bottom-color: $rule-color;
   }
@@ -49,10 +52,12 @@ $hlf-editable-inline-selectors: (
     padding: 0;
     width: $width;
   }
+
   #{map-get($selectors, text)} {
     overflow-x: hidden;
     white-space: nowrap;
   }
+
   #{map-get($selectors, input)} {
     margin: -1px;
   }

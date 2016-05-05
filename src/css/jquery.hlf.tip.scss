@@ -36,14 +36,19 @@ $_hlf-side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
 @mixin hlf-tip-base {
   display: none;
   position: absolute;
+
   > .js-tip-inner {
     position: relative;
   }
+
   .js-tip-stem {
-    border: 0 solid transparent; width: 0; height: 0; // Initial values.
     background: none;
+    border: 0 solid transparent; // Initial value.
+    height: 0; // Initial value.
     position: absolute;
+    width: 0; // Initial value.
   }
+
   .js-tip-content {
     overflow: hidden;
     position: relative;
@@ -79,9 +84,11 @@ $_hlf-side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
   }
 
   z-index: $z-index;
+
   .js-tip-inner {
     max-width: $max-width;
   }
+
   .js-tip-content {
     padding: #{$content-padding};
   }
@@ -92,7 +99,7 @@ $_hlf-side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
         $inverse-side: map-get($_hlf-side-inverse-map, $side);
         border-#{$side}-width: $stem-size;
 
-        @if $snap-side == y { margin: { top: auto; bottom: auto; } } // Reset.
+        @if $snap-side == y { margin: { bottom: auto; top: auto; } } // Reset.
         @if $snap-side == x { margin: { left: auto; right: auto; } }
         #{$side}: auto;
 
@@ -111,12 +118,13 @@ $_hlf-side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
     left: 50%;
     margin: { left: -$stem-size-wide-half; right: auto; }
   }
+
   &.js-snap-tip-y-side > .js-tip-inner > .js-tip-stem { // Add specifity.
     border: {
       color: transparent; // Partial reset.
       top-width: $stem-size-wide-half; bottom-width: $stem-size-wide-half;
     }
-    margin: { top: -$stem-size-wide-half; bottom: auto; }
+    margin: { bottom: auto; top: -$stem-size-wide-half; }
     top: 50%;
   }
 }
@@ -126,10 +134,12 @@ $_hlf-side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
 @mixin hlf-tip-skin($fill-color, $text-color, $stem-color: null)
 {
   $stem-color: $fill-color !default;
+
   .js-tip-content {
     background-color: $fill-color;
     color: $text-color;
   }
+
   @each $side, $snap-side in $_hlf-side-snap-side-map {
     &.js-tip-#{$side} { &.js-snap-tip-#{$snap-side}-side, & { .js-tip-stem {
       border: {

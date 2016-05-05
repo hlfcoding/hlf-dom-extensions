@@ -11,6 +11,7 @@
 #{map-get($hlf-editable-inline-selectors, container)} {
   @include hlf-editable-inline-skin;
   @include hlf-editable-inline-layout;
+
   #{map-get($hlf-editable-inline-selectors, text)} {
     transition: background-color 0.2s ease-in-out;
   }
