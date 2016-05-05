@@ -1,28 +1,9 @@
-$mg-bg: #000 !default; // item background
-$mg-fg: #fff !default; // item foreground
-$mg-pg: mix($mg-fg, $mg-bg, 20%) !default; // page background
-$mg-gt: 6px !default; // gutter
-$mg-rd: 4px !default; // radius
-$mg-iw: 212px !default; // item width
-$mg-ih: 232px !default; // item height
+$hlf-mg-gutter-size: 6px !default;
+$hlf-mg-item-fill-color: #000 !default;
+$hlf-mg-item-stroke-color: #fff !default;
+$hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%) !default;
 
-%reset-list {
-  list-style: none;
-  padding-left: 0;
-}
-
-%inline-list {
-  @extend %reset-list;
-  li {
-    display: inline;
-
-    &:not(:last-child)::after {
-      content: ',\0020';
-    }
-  }
-}
-
-%line {
+%hlf-mg-clearfix {
   &::before,
   &::after {
     content: ' ';
@@ -32,78 +13,31 @@ $mg-ih: 232px !default; // item height
   &::after { clear: both; }
 }
 
-%grid {
-  @extend %line;
-}
-
-%rigid-grid {
-  @extend %grid;
-  position: relative;
-}
-
-%grid-item {
-  border-radius: $mg-rd;
-  float: left;
-  margin: { bottom: $mg-gt; right: $mg-gt; }
-  padding: $mg-gt;
-}
-
-%rigid-grid-item {
-  @extend %grid-item;
-  float: none;
-  position: absolute;
-}
-
-%hidden {
-  display: none;
-}
-
-%toggles {
-  overflow: hidden;
-  transition: {
-    duration: .3s;
-    property: height opacity width;
-    timing-function: ease-in-out;
-  }
-}
-
-%invisible {
+%hlf-mg-item-invisible {
   display: none;
   height: 0;
   opacity: 0;
   width: 0;
 }
 
-%visible {
+%hlf-mg-item-visible {
   display: block;
   height: auto;
   opacity: 1;
   width: auto;
 }
 
-%floating {
-  z-index: 10;
-  // TODO: Shadow.
-}
+@mixin hlf-media-grid
+{
+  @extend %hlf-mg-clearfix;
 
-%bg {
-  background: $mg-bg;
-  color: $mg-fg;
-}
-
-%fg {
-  background: $mg-fg;
-  color: $mg-bg;
-}
-
-.js-mg {
-  @extend %rigid-grid;
-  background: $mg-pg;
+  background: $hlf-mg-fill-color;
   font: {
     family: Helvetica, sans-serif;
     size: 10px;
   }
-  margin: { left: $mg-gt; top: $mg-gt; }
+  margin: { left: $hlf-mg-gutter-size; top: $hlf-mg-gutter-size; }
+  position: relative;
   transition: opacity .3s ease-in-out;
 
   // Crucial fix for the unintuitive and inconvenient box model.
@@ -123,28 +57,40 @@ $mg-ih: 232px !default; // item height
   }
 }
 
-.js-mg-item {
-  @extend %bg;
-  @extend %grid-item; // Becomes rigid grid item.
-
-  height: $mg-ih;
+@mixin hlf-media-grid-item($height, $width, $radius: 4px)
+{
+  background: $hlf-mg-item-fill-color;
+  border-radius: $radius;
+  color: $hlf-mg-item-stroke-color;
+  float: left; // Becomes none, position-absolute.
+  height: $height;
+  margin: { bottom: $hlf-mg-gutter-size; right: $hlf-mg-gutter-size; }
   line-height: 2em;
   overflow: hidden;
+  padding: $hlf-mg-gutter-size;
   transition: {
     duration: .2s;
     property: height left opacity top width;
     timing-function: ease-in-out;
   }
-  width: $mg-iw;
+  width: $width;
+
+  >.preview,
+  >.detail {
+    overflow: hidden;
+    transition: {
+      duration: .3s;
+      property: height opacity width;
+      timing-function: ease-in-out;
+    }
+  }
 
   >.preview {
-    @extend %toggles;
-    @extend %visible;
+    @extend %hlf-mg-item-visible;
   }
 
   >.detail {
-    @extend %toggles;
-    @extend %invisible;
+    @extend %hlf-mg-item-invisible;
   }
 
   .title {
@@ -153,57 +99,69 @@ $mg-ih: 232px !default; // item height
     padding: 0;
   }
 
+  p {
+    line-height: 1.6em;
+  }
+
+  &:hover:not(.js-mg-expanded) {
+    background: $hlf-mg-item-stroke-color;
+    color: $hlf-mg-item-fill-color;
+  }
+
+  &.js-mg-expanded {
+    height: (2 * $height) + $hlf-mg-gutter-size;
+    transition: {
+      duration: .2s;
+      property: height opacity width;
+      timing-function: ease-in-out;
+    }
+    width: (2 * $width) + $hlf-mg-gutter-size;
+    z-index: 10;
+
+    >.preview {
+      @extend %hlf-mg-item-invisible;
+    }
+
+    >.detail {
+      @extend %hlf-mg-item-visible;
+    }
+  }
+
+  .js-mg-dimmed>&:not(.js-mg-expanded) {
+    opacity: .3;
+  }
+}
+
+@mixin hlf-media-grid-item-extras
+{
   .date {
     font-size: 10px;
     margin: 0;
     padding: 0;
   }
 
-  p {
-    line-height: 1.6em;
-  }
-
   .tags {
-    @extend %inline-list;
-  }
+    list-style: none;
+    padding-left: 0;
 
-  &:hover:not(.js-mg-expanded) {
-    @extend %fg;
-  }
+    li {
+      display: inline;
 
-  &.js-mg-expanded {
-    @extend %floating;
-
-    height: (2 * $mg-ih) + $mg-gt;
-    transition: {
-      duration: .2s;
-      property: height opacity width;
-      timing-function: ease-in-out;
-    }
-    width: (2 * $mg-iw) + $mg-gt;
-
-    hgroup {
-      @extend %line;
-
-      >.date {
-        float: right;
-      }
-
-      >.title {
-        float: left;
+      &:not(:last-child)::after {
+        content: ',\0020';
       }
     }
-
-    >.preview {
-      @extend %invisible;
-    }
-
-    >.detail {
-      @extend %visible;
-    }
   }
 
-  .js-mg-dimmed>&:not(.js-mg-expanded) {
-    opacity: .3;
+  &.js-mg-expanded hgroup {
+    @extend %hlf-mg-clearfix;
+
+    >.date {
+      float: right;
+    }
+
+    >.title {
+      float: left;
+    }
   }
 }

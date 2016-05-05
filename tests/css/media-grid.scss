@@ -1,6 +1,6 @@
 @import '../../dist/jquery.hlf.media-grid';
 
-$bg-color: $mg-pg;
+$bg-color: $hlf-mg-fill-color;
 $light-color: mix($bg-color, #fff);
 @import 'base';
 
@@ -14,4 +14,16 @@ $light-color: mix($bg-color, #fff);
     right: 0;
     top: 1rem;
   }
+}
+
+.js-mg {
+  @include hlf-media-grid;
+}
+
+.js-mg-item {
+  @include hlf-media-grid-item(
+    $height: 232px,
+    $width: 212px
+  );
+  @include hlf-media-grid-item-extras;
 }
