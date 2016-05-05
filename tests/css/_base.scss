@@ -7,6 +7,7 @@
 
 // Variables
 // ---------
+
 $shade-color: #000 !default;
 $light-color: #fff !default;
 
@@ -19,18 +20,10 @@ $line-size: 3px;
 $radius-size: 10px;
 $rem: 14px; // Until we drop IE 8, rem can't replace this.
 
+@import '../../lib/normalize';
+
 // Placeholders
 // ------------
-
-%clearfix {
-  &::before,
-  &::after {
-    content: ' ';
-    display: table;
-  }
-
-  &::after { clear: both; }
-}
 
 %dimmed {
   opacity: .5;
@@ -170,7 +163,7 @@ section.visual-test { /* main test styles */
   header {
     $header-bg-color: darken($bg-color, 10%);
     $header-fg-color: mix($header-bg-color, invert($header-bg-color), 10%);
-    @extend %clearfix, %pull-left-right;
+    @extend .clearfix, %pull-left-right;
     background: $header-bg-color;
     box-shadow: $box-shadow;
     color: $header-fg-color;
@@ -302,7 +295,7 @@ section.visual-test { /* main test styles */
   }
 }
 .bar {
-  @extend %clearfix;
+  @extend .clearfix;
   margin: $rem 0;
 
   .item { @extend .bar-item; }
@@ -327,10 +320,12 @@ section.visual-test { /* main test styles */
   margin: { bottom: $rem / 2; right: $rem / 2; }
 }
 .grid {
-  @extend %clearfix;
+  @extend .clearfix;
   list-style: none;
   padding-left: 0;
   width: 350px;
 
   li { @extend .grid-item; }
 }
+
+@import '../../lib/helpers';

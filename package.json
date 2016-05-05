@@ -34,7 +34,7 @@
     "merlot": "^0.1",
     "es6-promise": "^3.0",
     "gsap": "^1.0",
-    "normalize.css": "^4.0",
+    "hlf-css": "^0.2",
     "qunitjs": "^1.0",
     "requirejs": "^2.0",
     "velocity-animate": "^1.0"
