@@ -27,7 +27,7 @@
 
     defaults: do (pre = 'js-mg-') ->
       autoReady: off
-      dimDelay: 1000
+      focusDelay: 1000
       resizeDelay: 100
       solo: on
       classNames: do ->
@@ -45,29 +45,28 @@
       # TODO: Delegation.
       # Toggling.
       @$items.on 'click', (e) =>
-        @toggleItem $(e.currentTarget)
+        @toggleItemExpansion $(e.currentTarget)
         return
 
       # Dimming.
-      @dimDelay *= parseFloat @$sampleItem.css('transition-duration')
+      @focusDelay *= parseFloat @$sampleItem.css('transition-duration')
       if @solo is on
         @$expandedItem = null
         @on
           mouseenter: (e) =>
-            $item = $ e.currentTarget
-            return if @_handleEnteringExpandedItem $item
-            @_handleEnteringDimmedItem $item
+            @toggleExpandedItemFocus $(e.currentTarget), on
             return
           mouseleave: (e) =>
-            $item = $ e.currentTarget
-            @_handleLeavingExpandedItem $item
+            @toggleExpandedItemFocus $(e.currentTarget), off
             return
-          toggle: (e, dimmed) =>
-            $item = $ e.currentTarget
-            @_handleDimmingOnTogglingItem $item, dimmed
-            @_handleFocusingOnTogglingItem $item
+          expand: (e, expanded) =>
+            @_clearDimTimeout() if expanded
+            @toggleItemFocus $(e.currentTarget), expanded, @focusDelay
             return
         , ".#{@classNames.item}"
+        @on 'mouseleave', =>
+          @toggleItemFocus @$expandedItem, off, 0
+          return
 
       # Layout.
       @metrics = {}
@@ -87,7 +86,7 @@
       , @resizeDelay)
       return
 
-    toggleItem: ($item, expanded, silently=off) ->
+    toggleItemExpansion: ($item, expanded, silently=off) ->
       expanded ?= not $item.hasClass @classNames.expanded
       if expanded
         i = $item.index()
@@ -96,8 +95,25 @@
         if @solo is on then @$items.removeClass @classNames.expanded
 
       $item.toggleClass @classNames.expanded, expanded
+      @$expandedItem = if expanded then $item else null
 
-      $item.trigger @evt('toggle'), [expanded] unless silently is on
+      $item.trigger @evt('expand'), [expanded] unless silently is on
+      return
+
+    toggleExpandedItemFocus: ($item, focused) ->
+      return unless $item?.hasClass @classNames.expanded
+      delay = if focused then 0 else 1000
+      @toggleItemFocus $item, focused, delay
+      return
+
+    toggleItemFocus: ($item, focused, delay) ->
+      return unless $item?
+      $item.toggleClass @classNames.focused, focused
+      @_dimTimeout = setTimeout =>
+        return unless focused is $item.hasClass(@classNames.focused)
+        @$el.toggleClass @classNames.dimmed, focused
+        return
+      , delay
       return
 
     _adjustItemToBottomEdge: ($item) ->
@@ -108,36 +124,11 @@
       $item.css { left: 'auto', right: 0 }
       return
 
-    _handleDimmingOnTogglingItem: ($item, dimmed) ->
-      _.delay =>
-        @$el.toggleClass @classNames.dimmed, dimmed
-        return
-      , @dimDelay
-      yes
-
-    _handleFocusingOnTogglingItem: ($item) ->
-      @$expandedItem = $item.addClass @classNames.focused
-      yes
-
-    _handleEnteringDimmedItem: ($item) ->
-      return no unless @$el.hasClass @classNames.dimmed
-      _.delay =>
-        return if @$expandedItem?.hasClass @classNames.focused
-        @$el.removeClass @classNames.dimmed
-        return
-      , @dimDelay
-      yes
-
-    _handleEnteringExpandedItem: ($item) ->
-      return no unless $item.hasClass @classNames.expanded
-      $item.addClass @classNames.focused
-      @$el.toggleClass @classNames.dimmed
-      yes
-
-    _handleLeavingExpandedItem: ($item) ->
-      return no unless $item.hasClass @classNames.expanded
-      $item.removeClass @classNames.focused
-      yes
+    _clearDimTimeout: ->
+      return unless @_dimTimeout?
+      clearTimeout @_dimTimeout
+      @_dimTimeout = null
+      return
 
     _isBottomEdgeItem: (i) -> (i + 1) > (@$items.length - @metrics.rowSize)
 
@@ -169,7 +160,7 @@
 
     _reLayoutItems: ->
       @$items.each (i, item) =>
-        @toggleItem $(item), off
+        @toggleItemExpansion $(item), off
         return
 
       _.delay =>
@@ -182,7 +173,7 @@
 
         @_layoutItems()
         return
-      , @_delay
+      , @focusDelay
       return
 
     _updateMetrics: (hard=on) ->
