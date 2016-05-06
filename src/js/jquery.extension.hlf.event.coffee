@@ -73,8 +73,9 @@ HLF Event jQuery Extension
 
     # __debugLog__ is our internal logger. It's optimized to be a noop if
     # hover intent debugging is off.
-    debugLog = if hoverIntent.debug is off then $.noop else
-      -> hlf.debugLog hoverIntent.toString('log'), arguments...
+    debugLog = if hoverIntent.debug is off then $.noop else ->
+      hlf.debugLog hoverIntent.toString('log'), arguments...
+      return
 
     # The internals of hover intent is about tracking the state of the trigger
     # element's interaction with the mouse.
@@ -108,6 +109,7 @@ HLF Event jQuery Extension
       debugLog state
       didTeardown = teardownCheckIfNeeded event, $trigger, state
       if didTeardown is no then setupCheckIfNeeded event, $trigger, state
+      return
 
     # __setupCheckIfNeeded__ will setup to `performCheck` after setting up (again)
     # the timer state, but only if the timer state is properly reset.
@@ -153,11 +155,13 @@ HLF Event jQuery Extension
       state.timer.cleared = yes
       $trigger.data attr('intentional'), state.intentional
       $trigger.data attr('timer'), state.timer
+      return
 
     # __trackMouse__ tracks mouse position specifically for checking hover intent.
     trackMouse = _.throttle (event) ->
       mouse.x.current = event.pageX
       mouse.y.current = event.pageY
+      return
     , 16
 
     # __triggerEvent__ abstracts away the generation of and support for custom
@@ -169,6 +173,7 @@ HLF Event jQuery Extension
         relatedTarget: oldEvent.relatedTarget
       debugLog name
       $trigger.trigger event
+      return
 
     # Lastly, we register our custom jQuery events, essentially wrapping our
     # binding over binding to `mouseover`, `mousemove`, and `mouseleave`. We're
@@ -179,17 +184,21 @@ HLF Event jQuery Extension
       setup: (data, namespaces) ->
         $(@).on  { mouseover: check, mousemove: trackMouse },
           data?.selector
+        return
       teardown: (data, namespaces) ->
         $(@).off { mouseover: check, mousemove: trackMouse },
           data?.selector
+        return
 
     $.event.special.truemouseleave =
       setup: (data, namespaces) ->
         $(@).on  { mouseleave: check },
           data?.selector
+        return
       teardown: (data, namespaces) ->
         $(@).off { mouseleave: check },
           data?.selector
+        return
 
 )
 

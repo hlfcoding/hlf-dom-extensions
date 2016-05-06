@@ -130,6 +130,7 @@ HLF Core jQuery Extension
       _noConflicts.push (namespace.noConflict = ->
         if _.isFunction(_noConflict) then _noConflict()
         $.fn[name] = _plugin
+        return
       )
 
       # § __Plugin Method__
@@ -171,6 +172,7 @@ HLF Core jQuery Extension
               if _.isFunction(command.userInfo) then command.userInfo $el
               sender = null
               instance.handleCommand command, sender
+            return
           return @ # Follow plugin return conventions.
 
         else
@@ -182,8 +184,13 @@ HLF Core jQuery Extension
         $el = @
         ( ->
           args = arguments
-          if createOptions.asSharedInstance is yes then _createPluginInstance $el, args...
-          else $el.each -> _createPluginInstance $(@), args...
+          if createOptions.asSharedInstance is yes
+            _createPluginInstance $el, args...
+          else
+            $el.each ->
+              _createPluginInstance $(@), args...
+              return
+          return
         )(options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions)
         return @ # Follow plugin return conventions.
 
@@ -295,8 +302,9 @@ HLF Core jQuery Extension
       _.memoize (name) ->
         name = if name? then "-#{name}" else ''
         namespace.toString('class') + name
-    debugLog: if namespace.debug is off then $.noop else
-      -> hlf.debugLog namespace.toString('log'), arguments...
+    debugLog: if namespace.debug is off then $.noop else ->
+      hlf.debugLog namespace.toString('log'), arguments...
+      return
 
   # Mixin Support
   # -------------
@@ -409,11 +417,14 @@ HLF Core jQuery Extension
         on: (obj) ->
           arguments[0] = if _.isString(obj) then @evt(obj) else @evtMap(obj)
           @$el.on.apply @$el, arguments
+          return
         off: (name) ->
           arguments[0] = if _.isString(obj) then @evt(obj) else @evtMap(obj)
           @$el.off.apply @$el, arguments
+          return
         trigger: (name, userInfo) ->
           @$el.trigger { type: @evt(name), userInfo }
+          return
 
       selection: ->
         select: ->
@@ -432,7 +443,7 @@ HLF Core jQuery Extension
   _safeSet = (key, toContext=$, fromContext=hlf) ->
     _oldValue = toContext[key]
     toContext[key] = fromContext[key]
-    _noConflicts.push -> toContext[key] = _oldValue
+    _noConflicts.push -> toContext[key] = _oldValue; return
     return
 
   _safeSet 'applyMixin'
