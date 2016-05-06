@@ -37,6 +37,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
     size: 10px;
   }
   margin: { left: $hlf-mg-gutter-size; top: $hlf-mg-gutter-size; }
+  opacity: 0;
   position: relative;
   transition: opacity .3s ease-in-out;
 
@@ -45,7 +46,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   * { box-sizing: border-box; }
 
   &.js-mg-ready {
-    visibility: visible;
+    opacity: 1;
   }
 
   &.js-mg-sample {

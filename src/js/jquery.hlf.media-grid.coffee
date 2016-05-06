@@ -26,6 +26,7 @@
         else 'hlf.mg'
 
     defaults: do (pre = 'js-mg-') ->
+      autoReady: off
       dimDelay: 1000
       resizeDelay: 100
       solo: on
@@ -71,12 +72,14 @@
       # Layout.
       @metrics = {}
       @$metricsSamples = {}
-      _.delay =>
+
+      @on 'ready', =>
         @_updateMetrics()
         @_layoutItems()
         @$el.addClass @classNames.ready
         return
-      , @dimDelay
+      @trigger 'ready' if @autoReady is on
+
       $(window).resize _.debounce( =>
         @_updateMetrics(off)
         @_reLayoutItems() if @_needsLayout()

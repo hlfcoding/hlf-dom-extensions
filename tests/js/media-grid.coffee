@@ -54,7 +54,8 @@ require [
       </div>
       """
     test: ($context) ->
-      $context.find('.test-body').mediaGrid()
+      `var mg = $context.find('.test-body').mediaGrid().mediaGrid();
+      _.delay(function() { mg.trigger('ready'); }, 500);` # Better to use imagesLoaded.
       return
 
     anchorName: 'default'
