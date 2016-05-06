@@ -110,11 +110,11 @@
         @$el.toggleClass @classNames.dimmed, dimmed
         return
       , @dimDelay
-      return
+      yes
 
     _handleFocusingOnTogglingItem: ($item) ->
       @$expandedItem = $item.addClass @classNames.focused
-      return
+      yes
 
     _handleEnteringDimmedItem: ($item) ->
       return no unless @$el.hasClass @classNames.dimmed
@@ -123,17 +123,18 @@
         @$el.removeClass @classNames.dimmed
         return
       , @dimDelay
-      return yes
+      yes
 
     _handleEnteringExpandedItem: ($item) ->
       return no unless $item.hasClass @classNames.expanded
       $item.addClass @classNames.focused
       @$el.toggleClass @classNames.dimmed
-      return yes
+      yes
 
     _handleLeavingExpandedItem: ($item) ->
       return no unless $item.hasClass @classNames.expanded
       $item.removeClass @classNames.focused
+      yes
 
     _isBottomEdgeItem: (i) -> (i + 1) > (@$items.length - @metrics.rowSize)
 
