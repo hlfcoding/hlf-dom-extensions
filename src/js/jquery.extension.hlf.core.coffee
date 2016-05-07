@@ -405,7 +405,7 @@ HLF Core jQuery Extension
               arguments[0] = @attr first
             else if _.isObject(first)
               pairs = {}
-              (pairs[attr(k)] = v) for own k, v of first
+              (pairs[@attr(k)] = v) for own k, v of first
               arguments[0] = pairs
           @$el.data.apply @$el, arguments
 
