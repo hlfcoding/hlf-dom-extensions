@@ -82,4 +82,26 @@ define [
     assertDynamicMixinInstance.call @, assert
     return
 
+  QUnit.module 'hlf.mixins.data',
+    setup: ->
+      @instance =
+        attr: (name) -> "some-ns-#{name}"
+        $el: $ '<div>'
+      hlf.applyMixin @instance, [], 'data'
+
+  QUnit.test '#data', (assert) ->
+    @instance.$el.data 'some-ns-some-attr', 'some-value'
+    assert.strictEqual @instance.data('some-attr'), 'some-value',
+      'it gets value for single key'
+
+    @instance.data 'some-attr', 'some-value'
+    assert.strictEqual @instance.$el.data('some-ns-some-attr'), 'some-value',
+      'it sets value for single key'
+
+    @instance.data { 'some-attr': 'some-value', 'other-attr': 'other-value' }
+    assert.strictEqual @instance.$el.data('some-ns-some-attr'), 'some-value',
+      'it sets values in pairs object'
+    assert.strictEqual @instance.$el.data('some-ns-other-attr'), 'other-value',
+      'it sets values in pairs object'
+
   yes
