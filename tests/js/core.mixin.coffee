@@ -14,20 +14,20 @@ define [
 
   QUnit.module 'mixin',
     setup: ->
-      @.mixins = {}
-      @.mixin =
+      @mixins = {}
+      @mixin =
         decorate: ->
           @someOtherProperty = 'baz'
           return
         someMethod: -> 'foo'
         someProperty: 'bar'
-      @.dynamicMixin = (dependencies) ->
+      @dynamicMixin = (dependencies) ->
         someMethod: -> dependencies.valueA
         someProperty: dependencies.valueB
-      @.mixinName = 'foo'
-      @.dynamicMixinName = 'bar'
-      @.instance = {}
-      @.dependencies =
+      @mixinName = 'foo'
+      @dynamicMixinName = 'bar'
+      @instance = {}
+      @dependencies =
         valueA: 'foo'
         valueB: 'bar'
 
