@@ -281,7 +281,7 @@ HLF Core jQuery Extension
     $root.data instance.attr(), instance
     return
 
-  # ___createPluginAPIAdditions__ is a private subroutine that's part of
+  # ___createPluginAPIAdditions__ is an internal subroutine that's part of
   # `createPlugin`, which has more details on its required input.
   #
   # - Add the __evt__ method to namespace an event name.
@@ -305,6 +305,8 @@ HLF Core jQuery Extension
     debugLog: if namespace.debug is off then $.noop else ->
       hlf.debugLog namespace.toString('log'), arguments...
       return
+
+  hlf._createPluginAPIAdditions = _createPluginAPIAdditions
 
   # Mixin Support
   # -------------
@@ -422,7 +424,7 @@ HLF Core jQuery Extension
           arguments[0] = if _.isString(obj) then @evt(obj) else @evtMap(obj)
           @$el.off.apply @$el, arguments
           return
-        trigger: (name, userInfo) ->
+        trigger: (name, userInfo) -> # TODO: WIP.
           @$el.trigger { type: @evt(name), userInfo }
           return
 

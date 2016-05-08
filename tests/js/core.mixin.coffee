@@ -108,4 +108,87 @@ define [
         'It namespaces keys and sets values in pairs object via $.fn.data.'
     return
 
+  QUnit.module 'hlf.mixins.event',
+    beforeEach: ->
+      additions = hlf._createPluginAPIAdditions 'some-plugin',
+        { toString: -> '.some-ns' }
+      @instance =
+        evt: additions.evt
+        $el: $ '<div><div></div></div>'
+      hlf.applyMixin @instance, [], 'event'
+      return
+
+  QUnit.test "#on", (assert) ->
+    assert.expect 10
+
+    @instance.on 'some-event other-event', (e) ->
+      assert.ok e, 'It namespaces, binds event(s) with handler via $.fn.on.'
+      return
+    @instance.$el.trigger('some-event.some-ns').trigger('other-event.some-ns')
+      .off() # 2
+
+    handler = (e) ->
+      assert.ok e, 'It namespaces, binds from event(s)-handler map via $.fn.on.'
+      return
+    @instance.on { 'some-event': handler, 'other-event': handler }
+    @instance.$el.trigger('some-event.some-ns').trigger('other-event.some-ns')
+      .off() # 2
+
+    handler = (e, data) ->
+      assert.ok e, 'It supports selector filter (event delegation) via $.fn.on.'
+      assert.strictEqual data, 'some-value',
+        'It supports event data via $.fn.on.'
+      return
+    @instance.on 'some-event', 'div', handler
+    @instance.$el.find('div')
+      .trigger('some-event.some-ns', 'some-value')
+      .end().off() # 2
+    @instance.on { 'some-event': handler, 'other-event': handler }, 'div'
+    @instance.$el.find('div')
+      .trigger('some-event.some-ns', 'some-value')
+      .trigger('other-event.some-ns', 'some-value')
+      .end().off() # 4
+    return
+
+  QUnit.test '#off', (assert) ->
+    handled = 
+      'some-event.some-ns': 0
+      'other-event.some-ns': 0
+      total: -> @['some-event.some-ns'] + @['other-event.some-ns']
+    handler = (e) ->
+      handled["#{e.type}.#{e.namespace}"] += 1; return
+    handlers = { 'some-event.some-ns': handler, 'other-event.some-ns': handler }
+    boilerplated = (test) =>
+      @instance.$el.on handlers
+      test()
+      @instance.$el.trigger('some-event.some-ns').trigger('other-event.some-ns')
+      @instance.$el.off()
+      return
+
+    boilerplated => @instance.off(); return
+    assert.strictEqual handled.total(), 0,
+      'It unbinds all events via $.fn.off.'
+
+    boilerplated =>
+      @instance.off { 'some-event': handler, 'other-event': handler }
+      return
+    assert.strictEqual handled.total(), 0,
+      'It namespaces, unbinds from event(s)-handler map via $.fn.off.'
+
+    boilerplated => @instance.off('some-event', handler); return
+    assert.ok handled.total() is 1 and handled['other-event.some-ns'] is 1,
+      'It namespaces, unbinds event(s) from handler via $.fn.off.'
+
+    boilerplated => @instance.off('some-event'); return
+    assert.ok handled.total() is 2 and handled['other-event.some-ns'] is 2,
+      'It namespaces, unbinds event(s) from all handlers via $.fn.off.'
+
+    @instance.$el.on handlers, 'div'
+    @instance.off 'some-event', 'div', handler
+    @instance.$el.trigger('some-event.some-ns').trigger('other-event.some-ns')
+      .find('div').trigger('some-event.some-ns').trigger('other-event.some-ns')
+    assert.ok handled.total() is 3 and handled['other-event.some-ns'] is 3,
+      'It supports selector filter (event delegation) via $.fn.off.'
+    return
+
   yes
