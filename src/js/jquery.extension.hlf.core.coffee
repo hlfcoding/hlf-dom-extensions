@@ -418,7 +418,7 @@ HLF Core jQuery Extension
           arguments[0] = if _.isString(obj) then @evt(obj) else @evtMap(obj)
           @$el.on.apply @$el, arguments
           return
-        off: (name) ->
+        off: (obj) ->
           arguments[0] = if _.isString(obj) then @evt(obj) else @evtMap(obj)
           @$el.off.apply @$el, arguments
           return
