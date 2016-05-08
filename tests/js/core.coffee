@@ -36,12 +36,12 @@ require [
 
     QUnit.test 'noConflict', (assert) ->
       assert.ok $.createPlugin,
-        'Method shortcut for createPlugin should exist.'
+        'Method shortcut for createPlugin exists by default, w/o noConflict.'
       hlf.noConflict()
       assert.strictEqual $.createPlugin, undefined,
-        'Method shortcut for createPlugin should be back to original value.'
+        'After call, method shortcut for createPlugin is back to old value.'
       assert.ok hlf.createPlugin,
-        'Original method for createPlugin should still exist.'
+        'After call, original method for createPlugin still exists.'
       return
 
     QUnit.start()

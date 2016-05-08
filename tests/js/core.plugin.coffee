@@ -16,7 +16,7 @@ define [
   class SomePlugin
     constructor: (@$el, options, @$context) ->
 
-  QUnit.module 'plugin',
+  QUnit.module 'plugin core',
     setup: ->
       @namespace = 
         debug: off
@@ -72,25 +72,25 @@ define [
 
   assertGeneralPlugin = (assert) ->
     assert.ok @$someElement.somePlugin,
-      'Plugin method should have been created and attached to jQuery elements.'
+      'Plugin method is created and attached to jQuery elements.'
     @$someElement.somePlugin()
     result = @$someElement.somePlugin()
     assert.hasFunctions result, ['evt', 'attr', 'cls', 'debugLog', 'select'],
-      'Plugin instance should have generated API additions.'
+      'Instance has generated API additions.'
     assert.hasOwnProperties result, _.keys(@namespace.defaults),
-      'Plugin instance should have options merged in as properties.'
+      'Instance has options merged in as properties.'
     assert.ok result.$someElement,
-      'Plugin instance should have auto-selected sub elements based on selectors option.'
+      'Instance has auto-selected sub elements based on selectors option.'
     result
 
-  QUnit.test 'createPlugin with apiClass and baseMixins', (assert) ->
+  QUnit.test '.createPlugin with apiClass and baseMixins', (assert) ->
     hlf.createPlugin @baseCreateOptions
     result = assertGeneralPlugin.call @, assert
     assert.ok result instanceof SomePlugin,
-      'Plugin method should return instance upon re-invocation without any parameters.'
+      'It returns instance upon re-invocation without any parameters.'
     return
 
-  QUnit.test 'createPlugin with apiMixins and baseMixins', (assert) ->
+  QUnit.test '.createPlugin with apiMixins and baseMixins', (assert) ->
     createOptions = @baseCreateOptions
     createOptions.apiClass = null
     createOptions.apiMixins = @mixins
@@ -98,24 +98,24 @@ define [
     hlf.createPlugin createOptions
     result = assertGeneralPlugin.call @, assert
     assert.hasFunctions result, ['data', 'on', 'off', 'trigger'],
-      'Base mixin methods should have been added to instance.'
+      'It adds base mixin methods to instance.'
     assert.strictEqual result.someMixinMethod(), 'foo',
-      'Mixin method attached to instance should work.'
+      'Mixin method attached to instance works.'
     assert.strictEqual result.someOtherMixinMethod(), 'bar',
-      'Mixin method attached to instance should work.'
+      'Mixin method attached to instance works.'
     assert.strictEqual result.someMixinProperty, 'foo',
-      'Mixin property should have been set on deferred initialization.'
+      'Mixin property is set on deferred initialization.'
     assert.strictEqual result.someOtherMixinProperty, 'bar',
-      'Mixin property should have been set on deferred initialization.'
+      'Mixin property is set on deferred initialization.'
     return
 
-  QUnit.test 'createPlugin with apiClass and baseMixins and asSharedInstance', (assert) ->
+  QUnit.test '.createPlugin with apiClass and baseMixins and asSharedInstance', (assert) ->
     createOptions = @baseCreateOptions
     createOptions.asSharedInstance = yes
     hlf.createPlugin createOptions
     result = assertGeneralPlugin.call @, assert
     assert.strictEqual result, $('body').data('somePlugin'),
-      'Plugin singleton should be stored with context element.'
+      'It stores plugin singleton with context element.'
     return
 
   yes

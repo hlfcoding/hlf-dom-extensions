@@ -12,7 +12,7 @@ define [
 ], ($, _, hlf) ->
   'use strict'
 
-  QUnit.module 'mixin',
+  QUnit.module 'mixin core',
     setup: ->
       @mixins = {}
       @mixin =
@@ -31,31 +31,31 @@ define [
         valueA: 'foo'
         valueB: 'bar'
 
-  QUnit.test 'createMixin', (assert) ->
+  QUnit.test '.createMixin', (assert) ->
     result = hlf.createMixin @mixins, @mixinName, @mixin
     assert.strictEqual result, @mixin,
-      'Mixin should have been added to mixin collection.'
+      'Mixin is added to mixin collection.'
     assert.strictEqual @mixins[@mixinName], @mixin,
-      'Mixin should be accessible.'
+      'Mixin is accessible.'
     assert.strictEqual @mixins[@mixinName].someMethod.mixin, @mixinName,
-      'Mixin method should have mixin name attached.'
+      'Mixin method has mixin name attached.'
     result = hlf.createMixin @mixins, @mixinName, @mixin
     assert.strictEqual result, no,
-      'Mixin should not have been re-added to mixin collection.'
+      'Mixin is not re-added to mixin collection.'
     return
 
   assertMixinInstance = (assert) ->
     assert.ok @instance.someMethod,
-      'Mixin method should have been added to instance.'
+      'Mixin method is added to instance.'
     assert.strictEqual @instance.someMethod(), 'foo',
-      'Mixin method should have been generated properly.'
+      'Mixin method is generated properly.'
     assert.strictEqual @instance.decorate, undefined,
-      'Mixin once method should have been removed after invoking.'
+      'Mixin once method is removed after invoking.'
     assert.strictEqual @instance.someOtherProperty, 'baz',
-      'Mixin once method should have invoked properly.'
+      'Mixin once method is invoked properly.'
     return
 
-  QUnit.test 'applyMixin', (assert) ->
+  QUnit.test '.applyMixins', (assert) ->
     result = hlf.createMixin @mixins, @mixinName, @mixin
     hlf.applyMixins @instance, @dependencies, @mixin
     assertMixinInstance.call @, assert
@@ -63,18 +63,18 @@ define [
 
   assertDynamicMixinInstance = (assert) ->
     assert.ok @instance.someMethod,
-      'Dynamic mixin method should have been added to instance.'
+      'Dynamic mixin method is added to instance.'
     assert.strictEqual @instance.someMethod(), @dependencies.valueA,
-      'Dynamic mixin method should have been generated properly.'
+      'Dynamic mixin method is generated properly.'
     return
 
-  QUnit.test 'applyMixin with dynamicMixin', (assert) ->
+  QUnit.test '.applyMixins with dynamicMixin', (assert) ->
     result = hlf.createMixin @mixins, @dynamicMixinName, @dynamicMixin
     hlf.applyMixins @instance, @dependencies, @dynamicMixin
     assertDynamicMixinInstance.call @, assert
     return
 
-  QUnit.test 'applyMixins', (assert) ->
+  QUnit.test '.applyMixins', (assert) ->
     hlf.createMixin @mixins, @mixinName, @mixin
     hlf.createMixin @mixins, @dynamicMixinName, @dynamicMixin
     hlf.applyMixins @instance, @dependencies, _.values(@mixins)...
@@ -92,16 +92,16 @@ define [
   QUnit.test '#data', (assert) ->
     @instance.$el.data 'some-ns-some-attr', 'some-value'
     assert.strictEqual @instance.data('some-attr'), 'some-value',
-      'it gets value for single key'
+      'It namespaces key and gets value for single key via $.fn.data.'
 
     @instance.data 'some-attr', 'some-value'
     assert.strictEqual @instance.$el.data('some-ns-some-attr'), 'some-value',
-      'it sets value for single key'
+      'It namespaces key and sets value for single key via $.fn.data.'
 
-    @instance.data { 'some-attr': 'some-value', 'other-attr': 'other-value' }
-    assert.strictEqual @instance.$el.data('some-ns-some-attr'), 'some-value',
-      'it sets values in pairs object'
-    assert.strictEqual @instance.$el.data('some-ns-other-attr'), 'other-value',
-      'it sets values in pairs object'
+    pairs = { 'some-attr': 'some-value', 'other-attr': 'other-value' }
+    @instance.data pairs
+    for own key, value of pairs
+      assert.strictEqual @instance.$el.data("some-ns-#{key}"), value,
+        'It namespaces keys and sets values in pairs object via $.fn.data.'
 
   yes
