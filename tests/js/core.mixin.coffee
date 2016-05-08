@@ -31,6 +31,7 @@ define [
       @dependencies =
         valueA: 'foo'
         valueB: 'bar'
+      return
 
   QUnit.test '.createMixin', (assert) ->
     result = hlf.createMixin @mixins, @mixinName, @mixin
@@ -89,6 +90,7 @@ define [
         attr: (name) -> "some-ns-#{name}"
         $el: $ '<div>'
       hlf.applyMixin @instance, [], 'data'
+      return
 
   QUnit.test '#data', (assert) ->
     @instance.$el.data 'some-ns-some-attr', 'some-value'
@@ -104,5 +106,6 @@ define [
     for own key, value of pairs
       assert.strictEqual @instance.$el.data("some-ns-#{key}"), value,
         'It namespaces keys and sets values in pairs object via $.fn.data.'
+    return
 
   yes
