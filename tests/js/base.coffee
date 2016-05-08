@@ -27,4 +27,19 @@ define [
         .value()
       QUnit.push result, (actual = result), (expected = yes), message
 
+  # Reporting
+  # ---------
+
+  QUnit.testStart (details) =>
+    console.log '' # For grunt-contrib-qunit.
+    return
+
+  QUnit.log (details) =>
+    if details.result is yes
+      console.log '\x1b[32m', "✔ #{details.message}"
+      return
+    console.log '\x1b[31m', "✘ #{details.message}" +
+      " -- Expected: #{details.expected}, actual: #{details.actual}."
+    return
+
   yes

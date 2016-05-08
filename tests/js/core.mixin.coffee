@@ -9,6 +9,7 @@ define [
   'jquery'
   'underscore'
   'hlf/jquery.extension.hlf.core'
+  'test/base'
 ], ($, _, hlf) ->
   'use strict'
 
