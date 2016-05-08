@@ -17,7 +17,7 @@ define [
     constructor: (@$el, options, @$context) ->
 
   QUnit.module 'plugin core',
-    setup: ->
+    beforeEach: ->
       @namespace = 
         debug: off
         toString: _.memoize (context) ->

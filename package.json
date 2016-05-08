@@ -35,7 +35,7 @@
     "es6-promise": "^3.0",
     "gsap": "^1.0",
     "hlf-css": "^0.2",
-    "qunitjs": "^1.0",
+    "qunitjs": "^2.0.0-rc1",
     "requirejs": "^2.0",
     "velocity-animate": "^1.0"
   },

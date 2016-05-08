@@ -14,7 +14,7 @@ define [
   'use strict'
 
   QUnit.module 'mixin core',
-    setup: ->
+    beforeEach: ->
       @mixins = {}
       @mixin =
         decorate: ->
@@ -84,7 +84,7 @@ define [
     return
 
   QUnit.module 'hlf.mixins.data',
-    setup: ->
+    beforeEach: ->
       @instance =
         attr: (name) -> "some-ns-#{name}"
         $el: $ '<div>'
