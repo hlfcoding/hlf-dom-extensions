@@ -98,7 +98,7 @@ Main features:
 ## Install
 
 ```bash
-your-project> bower install hlf-jquery
+$ npm install hlf-jquery
 ```
 
 ## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
@@ -132,7 +132,7 @@ Copyright (c) 2014-present Peng Wang
 [HLF Tip]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.tip.html
 [Tip's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
 [HLF Core]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.core.html
-[Core's unit tests]: http://localhost/hlf-jquery/tests/core.unit.html
+[Core's unit tests]: http://hlfcoding.github.io/hlf-jquery/tests/core.unit.html
 [HLF Event]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.event.html
 [HLF Editable]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.editable.html
 [Editable's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html
