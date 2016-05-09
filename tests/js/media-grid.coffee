@@ -7,6 +7,7 @@ require.config
 require [
   'jquery'
   'underscore'
+  'test/base'
   'test/base-visual'
   'hlf/jquery.hlf.media-grid'
 ], ($, _) ->
@@ -14,7 +15,27 @@ require [
 
   if window.QUnit?
     {module, test} = QUnit
+
+    module 'hlf.mediaGrid',
+      beforeEach: ->
+        @mg = $ """
+          <div>
+            <div class="js-mg-item"></div>
+            <div class="js-mg-item"></div>
+            <div class="js-mg-item"></div>
+            <div class="js-mg-item"></div>
+          </div>
+          """
+          .mediaGrid().mediaGrid()
   
+    test '#_updateMetrics', (assert) ->
+      {$el, $items} = @mg
+      $el.css width: 600
+      $items.css marginRight: 10, width: 200, height: 200
+      @mg._updateMetrics()
+      assert.strictEqual @mg.metrics.rowSize, 2,
+        'It calculates row size based on item and wrap sizes.'
+
     QUnit.start()
     return
 
