@@ -27,14 +27,16 @@ require [
   if shouldRunVisualTests then $ ->
   else
 
-    QUnit.module 'other'
+    {module, test} = QUnit
 
-    QUnit.test 'exports', (assert) ->
+    module 'other'
+
+    test 'exports', (assert) ->
       assert.ok hlf,
         'Namespace should exist.'
       return
 
-    QUnit.test 'noConflict', (assert) ->
+    test 'noConflict', (assert) ->
       assert.ok $.createPlugin,
         'Method shortcut for createPlugin exists by default, w/o noConflict.'
       hlf.noConflict()

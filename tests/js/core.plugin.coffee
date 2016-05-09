@@ -13,10 +13,12 @@ define [
 ], ($, _, hlf) ->
   'use strict'
 
+  {module, test} = QUnit
+
   class SomePlugin
     constructor: (@$el, options, @$context) ->
 
-  QUnit.module 'plugin core',
+  module 'plugin core',
     beforeEach: ->
       @namespace = 
         debug: off
@@ -83,14 +85,14 @@ define [
       'Instance has auto-selected sub elements based on selectors option.'
     result
 
-  QUnit.test '.createPlugin with apiClass and baseMixins', (assert) ->
+  test '.createPlugin with apiClass, baseMixins', (assert) ->
     hlf.createPlugin @baseCreateOptions
     result = assertGeneralPlugin.call @, assert
     assert.ok result instanceof SomePlugin,
       'It returns instance upon re-invocation without any parameters.'
     return
 
-  QUnit.test '.createPlugin with apiMixins and baseMixins', (assert) ->
+  test '.createPlugin with apiMixins, baseMixins', (assert) ->
     createOptions = @baseCreateOptions
     createOptions.apiClass = null
     createOptions.apiMixins = @mixins
@@ -109,7 +111,7 @@ define [
       'Mixin property is set on deferred initialization.'
     return
 
-  QUnit.test '.createPlugin with apiClass and baseMixins and asSharedInstance', (assert) ->
+  test '.createPlugin with apiClass, baseMixins, asSharedInstance', (assert) ->
     createOptions = @baseCreateOptions
     createOptions.asSharedInstance = yes
     hlf.createPlugin createOptions

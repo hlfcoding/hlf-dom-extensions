@@ -13,7 +13,9 @@ define [
 ], ($, _, hlf) ->
   'use strict'
 
-  QUnit.module 'mixin core',
+  {module, test} = QUnit
+
+  module 'mixin core',
     beforeEach: ->
       @mixins = {}
       @mixin =
@@ -33,7 +35,7 @@ define [
         valueB: 'bar'
       return
 
-  QUnit.test '.createMixin', (assert) ->
+  test '.createMixin', (assert) ->
     result = hlf.createMixin @mixins, @mixinName, @mixin
     assert.strictEqual result, @mixin,
       'Mixin is added to mixin collection.'
@@ -57,7 +59,7 @@ define [
       'Mixin once method is invoked properly.'
     return
 
-  QUnit.test '.applyMixins', (assert) ->
+  test '.applyMixins', (assert) ->
     result = hlf.createMixin @mixins, @mixinName, @mixin
     hlf.applyMixins @instance, @dependencies, @mixin
     assertMixinInstance.call @, assert
@@ -70,13 +72,13 @@ define [
       'Dynamic mixin method is generated properly.'
     return
 
-  QUnit.test '.applyMixins with dynamicMixin', (assert) ->
+  test '.applyMixins with dynamicMixin', (assert) ->
     result = hlf.createMixin @mixins, @dynamicMixinName, @dynamicMixin
     hlf.applyMixins @instance, @dependencies, @dynamicMixin
     assertDynamicMixinInstance.call @, assert
     return
 
-  QUnit.test '.applyMixins', (assert) ->
+  test '.applyMixins', (assert) ->
     hlf.createMixin @mixins, @mixinName, @mixin
     hlf.createMixin @mixins, @dynamicMixinName, @dynamicMixin
     hlf.applyMixins @instance, @dependencies, _.values(@mixins)...
@@ -84,7 +86,7 @@ define [
     assertDynamicMixinInstance.call @, assert
     return
 
-  QUnit.module 'hlf.mixins.data',
+  module 'hlf.mixins.data',
     beforeEach: ->
       @instance =
         attr: (name) -> "some-ns-#{name}"
@@ -92,7 +94,7 @@ define [
       hlf.applyMixin @instance, [], 'data'
       return
 
-  QUnit.test '#data', (assert) ->
+  test '#data', (assert) ->
     @instance.$el.data 'some-ns-some-attr', 'some-value'
     assert.strictEqual @instance.data('some-attr'), 'some-value',
       'It namespaces key and gets value for single key via $.fn.data.'
@@ -108,7 +110,7 @@ define [
         'It namespaces keys and sets values in pairs object via $.fn.data.'
     return
 
-  QUnit.module 'hlf.mixins.event',
+  module 'hlf.mixins.event',
     beforeEach: ->
       additions = hlf._createPluginAPIAdditions 'some-plugin',
         { toString: -> '.some-ns' }
@@ -118,7 +120,7 @@ define [
       hlf.applyMixin @instance, [], 'event'
       return
 
-  QUnit.test "#on", (assert) ->
+  test "#on", (assert) ->
     assert.expect 10
 
     @instance.on 'some-event other-event', (e) ->
@@ -150,7 +152,7 @@ define [
       .end().off() # 4
     return
 
-  QUnit.test '#off', (assert) ->
+  test '#off', (assert) ->
     handled = 
       'some-event.some-ns': 0
       'other-event.some-ns': 0
