@@ -4,18 +4,6 @@ $bg-color: $hlf-mg-fill-color;
 $light-color: mix($bg-color, #fff);
 @import 'base';
 
-#main {
-  padding-bottom: 0;
-}
-
-.test-body {
-  margin: {
-    left: 0;
-    right: 0;
-    top: 1rem;
-  }
-}
-
 .js-mg {
   @include hlf-media-grid;
 }
@@ -26,4 +14,18 @@ $light-color: mix($bg-color, #fff);
     $width: 212px
   );
   @include hlf-media-grid-item-extras;
+}
+
+// section: overrides
+
+#main {
+  padding-bottom: 0;
+}
+
+.js-mg.test-body {
+  margin: {
+    left: 0;
+    right: 0;
+    top: 1rem;
+  }
 }
