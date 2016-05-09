@@ -193,4 +193,37 @@ define [
       'It supports selector filter (event delegation) via $.fn.off.'
     return
 
+  module 'hlf.mixins.selection',
+    beforeEach: ->
+      @instance =
+        classNames:
+          'some-child': 'js-ns-some-child'
+          'other-child': 'js-ns-other-child'
+        selectors:
+          someChild: '.js-ns-some-child'
+          otherChild: '.js-ns-other-child'
+        $el: $ """
+          <div>
+            <div class="js-ns-some-child"></div>
+            <div class="js-ns-other-child"></div>
+          </div>
+          """
+      hlf.applyMixin @instance, [], 'selection'
+      return
+
+  test '#select', (assert) ->
+    @instance.select()
+    assert.ok @instance.$someChild.is('.js-ns-some-child'),
+      "It sets a property for each 'selectors' prop-class-name pair."
+    assert.ok @instance.$otherChild.is('.js-ns-other-child'),
+      "It sets a property for each 'selectors' prop-class-name pair."
+    return
+
+  test '#selectByClass', (assert) ->
+    assert.ok @instance.selectByClass('some-child').is('.js-ns-some-child'),
+      "It returns selector results using full 'classNames' value for key."
+    assert.ok @instance.selectByClass('other-child').is('.js-ns-other-child'),
+      "It returns selector results using full 'classNames' value for key."
+    return
+
   yes
