@@ -223,3 +223,5 @@ require [
   $ ->
     test() for test in tests
     return
+
+  yes
