@@ -22,30 +22,25 @@ require [
 ], ($, _, hlf) ->
   'use strict'
 
-  shouldRunVisualTests = $('#qunit').length is 0
+  {module, test} = QUnit
 
-  if shouldRunVisualTests then $ ->
-  else
+  module 'other'
 
-    {module, test} = QUnit
+  test 'exports', (assert) ->
+    assert.ok hlf,
+      'Namespace should exist.'
+    return
 
-    module 'other'
+  test 'noConflict', (assert) ->
+    assert.ok $.createPlugin,
+      'Method shortcut for createPlugin exists by default, w/o noConflict.'
+    hlf.noConflict()
+    assert.strictEqual $.createPlugin, undefined,
+      'After call, method shortcut for createPlugin is back to old value.'
+    assert.ok hlf.createPlugin,
+      'After call, original method for createPlugin still exists.'
+    return
 
-    test 'exports', (assert) ->
-      assert.ok hlf,
-        'Namespace should exist.'
-      return
-
-    test 'noConflict', (assert) ->
-      assert.ok $.createPlugin,
-        'Method shortcut for createPlugin exists by default, w/o noConflict.'
-      hlf.noConflict()
-      assert.strictEqual $.createPlugin, undefined,
-        'After call, method shortcut for createPlugin is back to old value.'
-      assert.ok hlf.createPlugin,
-        'After call, original method for createPlugin still exists.'
-      return
-
-    QUnit.start()
+  QUnit.start()
 
   yes

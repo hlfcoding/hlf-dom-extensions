@@ -11,6 +11,8 @@ define [
 ], ($, _) ->
   'use strict'
 
+  return no unless window.QUnit?
+
   QUnit.extend QUnit.assert,
 
     hasFunctions: (object, names, message) ->

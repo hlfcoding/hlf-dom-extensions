@@ -19,8 +19,8 @@ require [
 ], ($, _) ->
   'use strict'
 
-  shouldRunVisualTests = $('#qunit').length is 0
-  return false unless shouldRunVisualTests
+  return no if window.QUnit?
+
   tests = []
 
   # Default

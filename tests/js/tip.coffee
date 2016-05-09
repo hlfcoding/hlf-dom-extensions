@@ -44,8 +44,8 @@ require [
   #
   # Note that the sample logic in tests is in JavaScript (perhaps easier to
   # understand than CoffeeScript) for your convenience.
-  shouldRunVisualTests = $('#qunit').length is 0
-  return false unless shouldRunVisualTests
+  return no if window.QUnit?
+
   tests = []
 
   $('.animator :radio').prop 'checked', no

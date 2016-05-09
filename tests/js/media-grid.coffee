@@ -12,8 +12,12 @@ require [
 ], ($, _) ->
   'use strict'
 
-  shouldRunVisualTests = $('#qunit').length is 0
-  return false unless shouldRunVisualTests
+  if window.QUnit?
+    {module, test} = QUnit
+  
+    QUnit.start()
+    return
+
   tests = []
 
   tests.push $.visualTest
