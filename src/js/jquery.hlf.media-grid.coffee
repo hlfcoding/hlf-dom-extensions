@@ -190,7 +190,7 @@
       gutter = Math.round parseFloat(@$sampleItem.css('margin-right'))
       fullWidth = $item.outerWidth() + gutter
       fullHeight = $item.outerHeight() + gutter
-      previous = _.clone @metrics if metrics?
+      previous = _.clone @metrics if @metrics?
 
       if hard is on then @metrics =
         gutter: gutter
