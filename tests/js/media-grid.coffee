@@ -23,18 +23,32 @@ require [
             <div class="js-mg-item"></div>
             <div class="js-mg-item"></div>
             <div class="js-mg-item"></div>
-            <div class="js-mg-item"></div>
           </div>
           """
           .mediaGrid().mediaGrid()
   
     test '#_updateMetrics', (assert) ->
       {$el, $items} = @mg
-      $el.css width: 600
-      $items.css marginRight: 10, width: 200, height: 200
-      @mg._updateMetrics()
+      $el.add($items).css boxSizing: 'border-box'
+      $el.css width: 620, padding: 10
+      $items.css marginRight: 10, padding: 9, borderWidth: 1, width: 200, height: 200
+      @mg._updateMetrics(on)
+      assert.strictEqual @mg.metrics.gutter, 10,
+        'It calculates gutter based on item margin sizes.'
+      assert.strictEqual @mg.metrics.itemWidth, 200,
+        "It uses the item's 'outerWidth' as item width."
       assert.strictEqual @mg.metrics.rowSize, 2,
         'It calculates row size based on item and wrap sizes.'
+      assert.strictEqual @mg.metrics.colSize, 2,
+        'It calculates column size based on row size.'
+
+      $el.css width: 630
+      @mg._updateMetrics(on)
+      assert.strictEqual @mg.metrics.rowSize, 3,
+        'It calculates row size based on item and wrap sizes.'
+      assert.strictEqual @mg.selectByClass('sample').length, 1,
+        'It cleans up after multiple hard updates.'
+      return
 
     QUnit.start()
     return
