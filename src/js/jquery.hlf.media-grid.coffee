@@ -180,7 +180,7 @@
       if hard is on
         @$metricsSamples.$item = @$sampleItem.clone()
         @$metricsSamples.$expanded = @$sampleItem.clone().addClass @classNames.expanded
-        @$metricsSamples.$wrap ?= @$el.clone().empty().addClass @classNames.sample
+        @$metricsSamples.$wrap = @$el.clone().empty().addClass @classNames.sample
           .append @$metricsSamples.$item
           .append @$metricsSamples.$expanded
           .appendTo @$el
