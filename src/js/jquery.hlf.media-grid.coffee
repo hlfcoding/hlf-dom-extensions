@@ -198,7 +198,7 @@
         expandedWidth: $expanded.outerWidth()
         expandedHeight: $expanded.outerHeight()
 
-      rowSize = parseInt ($wrap.innerWidth() / fullWidth), 10
+      rowSize = parseInt ($wrap.outerWidth() / fullWidth), 10
       colSize = Math.ceil @$items.length / rowSize
       $.extend @metrics,
         rowSize: rowSize
