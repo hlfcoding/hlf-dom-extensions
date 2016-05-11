@@ -169,14 +169,14 @@
         @$metricsSamples.$item = @$sampleItem.clone()
         @$metricsSamples.$expanded = @$sampleItem.clone().addClass @classNames.expanded
         @$metricsSamples.$wrap?.remove()
-        @$metricsSamples.$wrap = @$el.clone().empty().addClass @classNames.sample
+        @$metricsSamples.$wrap = $('<div>').addClass @classNames.sample
           .css left: 0, position: 'absolute', right: 0, top: 0
           .css visibility: 'hidden', zIndex: 0
           .append @$metricsSamples.$item
           .append @$metricsSamples.$expanded
           .appendTo @$el
 
-      {$item, $expanded, $wrap} = @$metricsSamples
+      {$item, $expanded} = @$metricsSamples
       gutter = Math.round parseFloat(@$sampleItem.css('margin-right'))
       fullWidth = $item.outerWidth() + gutter
       fullHeight = $item.outerHeight() + gutter
@@ -188,7 +188,8 @@
         expandedWidth: $expanded.outerWidth()
         expandedHeight: $expanded.outerHeight()
 
-      rowSize = parseInt ($wrap.outerWidth() / fullWidth), 10
+      @$el.css width: 'auto', height: 'auto'
+      rowSize = parseInt ((@$el.outerWidth() + gutter) / fullWidth), 10
       colSize = Math.ceil @$items.length / rowSize
       $.extend @metrics,
         rowSize: rowSize
