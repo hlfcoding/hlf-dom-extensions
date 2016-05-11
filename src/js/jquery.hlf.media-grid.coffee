@@ -182,6 +182,8 @@
         @$metricsSamples.$expanded = @$sampleItem.clone().addClass @classNames.expanded
         @$metricsSamples.$wrap?.remove()
         @$metricsSamples.$wrap = @$el.clone().empty().addClass @classNames.sample
+          .css left: 0, position: 'absolute', right: 0, top: 0
+          .css visibility: 'hidden', zIndex: 0
           .append @$metricsSamples.$item
           .append @$metricsSamples.$expanded
           .appendTo @$el

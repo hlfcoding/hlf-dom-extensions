@@ -48,14 +48,6 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   &.js-mg-ready {
     opacity: 1;
   }
-
-  &.js-mg-sample {
-    left: 0;
-    position: absolute;
-    top: 0;
-    visibility: hidden;
-    z-index: 0;
-  }
 }
 
 @mixin hlf-media-grid-item($height, $width, $radius: 4px)
