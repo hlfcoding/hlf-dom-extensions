@@ -709,9 +709,9 @@ HLF Tip jQuery Plugin
     _wrapStealthRender: (func) ->
       =>
         return func.apply @, arguments if not @$tip.is(':hidden')
-        @$tip.css { display: 'block', visibility: 'hidden' }
+        @$tip.css display: 'block', visibility: 'hidden'
         result = func.apply @, arguments
-        @$tip.css { display: 'none', visibility: 'visible' }
+        @$tip.css display: 'none', visibility: 'visible'
         return result
 
     # § __Delegation to Subclass__

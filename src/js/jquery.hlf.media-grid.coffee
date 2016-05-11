@@ -117,11 +117,11 @@
       return
 
     _adjustItemToBottomEdge: ($item) ->
-      $item.css { top: 'auto', bottom: 0 }
+      $item.css top: 'auto', bottom: 0
       return
 
     _adjustItemToRightEdge: ($item) ->
-      $item.css { left: 'auto', right: 0 }
+      $item.css left: 'auto', right: 0
       return
 
     _clearDimTimeout: ->
@@ -143,7 +143,7 @@
         unless $item.data(@attr('initial-layout-type'))
           $item.data @attr('initial-layout-type'), type
         if type isnt 'absolute'
-          $item.css $.extend(p, { position: 'absolute' })
+          $item.css $.extend(p, position: 'absolute')
 
         $item.data @attr('layout-position'), p
 
