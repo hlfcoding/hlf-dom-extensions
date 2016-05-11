@@ -20,19 +20,27 @@ require [
       beforeEach: ->
         @mg = $ """
           <div>
-            <div class="js-mg-item"></div>
-            <div class="js-mg-item"></div>
-            <div class="js-mg-item"></div>
+            <div>
+              <div class="js-mg-item"></div>
+              <div class="js-mg-item"></div>
+              <div class="js-mg-item"></div>
+            </div>
           </div>
           """
-          .mediaGrid().mediaGrid()
+          .appendTo('body') # Required for 'auto' width.
+          .children('div').mediaGrid().mediaGrid()
+
+      afterEach: ->
+        @mg.$el.parent().remove()
   
     test '#_updateMetrics', (assert) ->
       {$el, $items} = @mg
       $el.add($items).css boxSizing: 'border-box'
-      $el.css width: 620, padding: 10
+      $el.css padding: 10
+
+      $el.parent().css width: 610
       $items.css marginRight: 10, padding: 9, borderWidth: 1, width: 200, height: 200
-      @mg._updateMetrics(on)
+      @mg._updateMetrics on
       assert.strictEqual @mg.metrics.gutter, 10,
         'It calculates gutter based on item margin sizes.'
       assert.strictEqual @mg.metrics.itemWidth, 200,
@@ -42,8 +50,8 @@ require [
       assert.strictEqual @mg.metrics.colSize, 2,
         'It calculates column size based on row size.'
 
-      $el.css width: 630
-      @mg._updateMetrics(on)
+      $el.parent().css width: 620
+      @mg._updateMetrics on
       assert.strictEqual @mg.metrics.rowSize, 3,
         'It calculates row size based on item and wrap sizes.'
       assert.strictEqual @mg.selectByClass('sample').length, 1,
