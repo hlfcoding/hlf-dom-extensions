@@ -70,7 +70,6 @@
 
       # Layout.
       @metrics = {}
-      @$metricsSamples = {}
 
       @on 'ready', =>
         @_updateMetrics()
@@ -130,6 +129,17 @@
       @_dimTimeout = null
       return
 
+    _getMetricSamples: ->
+      @selectByClass('sample')?.remove()
+      $item = @$sampleItem.clone()
+      $expanded = @$sampleItem.clone().addClass @classNames.expanded
+      $('<div>').addClass @classNames.sample
+        .css left: 0, position: 'absolute', right: 0, top: 0
+        .css visibility: 'hidden', zIndex: 0
+        .append $item, $expanded
+        .appendTo @$el
+      { $item, $expanded }
+
     _isBottomEdgeItem: (i) -> (i + 1) > (@$items.length - @metrics.rowSize)
 
     _isRightEdgeItem: (i) -> (i + 1) % @metrics.rowSize is 0
@@ -166,34 +176,22 @@
 
     _updateMetrics: (hard=on) ->
       if hard is on
-        @$metricsSamples.$item = @$sampleItem.clone()
-        @$metricsSamples.$expanded = @$sampleItem.clone().addClass @classNames.expanded
-        @$metricsSamples.$wrap?.remove()
-        @$metricsSamples.$wrap = $('<div>').addClass @classNames.sample
-          .css left: 0, position: 'absolute', right: 0, top: 0
-          .css visibility: 'hidden', zIndex: 0
-          .append @$metricsSamples.$item
-          .append @$metricsSamples.$expanded
-          .appendTo @$el
+        {$item, $expanded} = @_getMetricSamples()
+        @metrics =
+          itemWidth: $item.outerWidth()
+          itemHeight: $item.outerHeight()
+          expandedWidth: $expanded.outerWidth()
+          expandedHeight: $expanded.outerHeight()
 
-      {$item, $expanded} = @$metricsSamples
       gutter = Math.round parseFloat(@$sampleItem.css('margin-right'))
-      fullWidth = $item.outerWidth() + gutter
-      fullHeight = $item.outerHeight() + gutter
-
-      if hard is on then @metrics =
-        gutter: gutter
-        itemWidth: $item.outerWidth()
-        itemHeight: $item.outerHeight()
-        expandedWidth: $expanded.outerWidth()
-        expandedHeight: $expanded.outerHeight()
+      fullWidth = @metrics.itemWidth + gutter
+      fullHeight = @metrics.itemHeight + gutter
 
       @$el.css width: 'auto', height: 'auto'
+
       rowSize = parseInt ((@$el.outerWidth() + gutter) / fullWidth), 10
       colSize = Math.ceil @$items.length / rowSize
-      $.extend @metrics,
-        rowSize: rowSize
-        colSize: colSize
+      $.extend @metrics, { gutter, rowSize, colSize },
         wrapWidth: fullWidth * rowSize
         wrapHeight: fullHeight * colSize
       return
