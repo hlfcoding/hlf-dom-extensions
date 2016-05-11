@@ -80,7 +80,7 @@
       @trigger 'ready' if @autoReady is on
 
       $(window).resize _.debounce( =>
-        @_updateMetrics(off)
+        @_updateMetrics off
         @_reLayoutItems()
         return
       , @resizeDelay)
@@ -137,19 +137,14 @@
     _layoutItems: ->
       $(@$items.toArray().reverse()).each (i, item) =>
         $item = $ item
-        p = $item.position()
-        type = $item.css('position')
+        offset = $item.position()
 
-        unless $item.data(@attr('initial-layout-type'))
-          $item.data @attr('initial-layout-type'), type
-        if type isnt 'absolute'
-          $item.css $.extend(p, position: 'absolute')
+        unless $item.data(@attr('original-position'))?
+          $item.data @attr('original-position'), $item.css('position')
 
-        $item.data @attr('layout-position'), p
+        $item.css $.extend(offset, position: 'absolute')
 
-      @$el.css
-        width: @metrics.wrapWidth
-        height: @metrics.wrapHeight
+      @$el.css width: @metrics.wrapWidth, height: @metrics.wrapHeight
       return
 
     _reLayoutItems: ->
@@ -160,10 +155,9 @@
       _.delay =>
         @$items.each (i, item) =>
           $item = $ item
-          p = $item.data @attr('layout-position')
           $item.css 
             top: 'auto', left: 'auto', bottom: 'auto', right: 'auto'
-            position: $item.data @attr('initial-layout-type')
+            position: $item.data @attr('original-position')
 
         @_layoutItems()
         return
