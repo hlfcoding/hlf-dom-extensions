@@ -81,7 +81,7 @@
 
       $(window).resize _.debounce( =>
         @_updateMetrics(off)
-        @_reLayoutItems() if @_needsLayout()
+        @_reLayoutItems()
         return
       , @resizeDelay)
       return
@@ -152,12 +152,6 @@
         height: @metrics.wrapHeight
       return
 
-    _needsLayout: (prevMetrics) ->
-      return yes if not @metrics? or not @metrics.previous?
-      prevMetrics ?= @metrics.previous
-      return @metrics.rowSize isnt prevMetrics.rowSize or
-             @$items.length isnt prevMetrics.count
-
     _reLayoutItems: ->
       @$items.each (i, item) =>
         @toggleItemExpansion $(item), off
@@ -192,7 +186,6 @@
       gutter = Math.round parseFloat(@$sampleItem.css('margin-right'))
       fullWidth = $item.outerWidth() + gutter
       fullHeight = $item.outerHeight() + gutter
-      previous = _.clone @metrics if @metrics?
 
       if hard is on then @metrics =
         gutter: gutter
@@ -208,11 +201,6 @@
         colSize: colSize
         wrapWidth: fullWidth * rowSize
         wrapHeight: fullHeight * colSize
-
-      if previous? and (not @metrics.previous? or (previous? and @_needsLayout(previous)))
-        delete @metrics.previous
-        @metrics.previous = previous
-        @metrics.previous.count = @$items.length
       return
 
   hlf.createPlugin
