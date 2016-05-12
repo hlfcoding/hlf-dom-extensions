@@ -108,53 +108,65 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 }
 
-@mixin hlf-media-grid-item-extras($font-size: 10px, $radius: 4px)
+@mixin hlf-media-grid-item-extras($font-size: 10px,
+                                  $corner-radius: 4px,
+                                  $has-date: true,
+                                  $has-tags: true,
+                                  $has-title: true)
 {
-  border-radius: $radius;
+  border-radius: $corner-radius;
   font: {
     family: Helvetica, sans-serif;
     size: $font-size;
   }
   line-height: 2em;
 
-  .title {
-    font-size: 14px;
-    margin: 0;
-    padding: 0;
-  }
-
   p {
     line-height: 1.6em;
   }
 
-  .date {
-    font-size: $font-size;
-    margin: 0;
-    padding: 0;
+  @if $has-date {
+    .date {
+      font-size: $font-size;
+      margin: 0;
+      padding: 0;
+    }
   }
 
-  .tags {
-    list-style: none;
-    padding-left: 0;
+  @if $has-tags {
+    .tags {
+      list-style: none;
+      padding-left: 0;
 
-    li {
-      display: inline;
+      li {
+        display: inline;
 
-      &:not(:last-child)::after {
-        content: ',\0020';
+        &:not(:last-child)::after {
+          content: ',\0020';
+        }
       }
     }
   }
 
-  &.js-mg-expanded hgroup {
-    @extend %hlf-mg-clearfix;
-
-    >.date {
-      float: right;
+  @if $has-title {
+    .title {
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
     }
+  }
 
-    >.title {
-      float: left;
+  @if $has-title and $has-date {
+    &.js-mg-expanded hgroup {
+      @extend %hlf-mg-clearfix;
+
+      >.date {
+        float: right;
+      }
+
+      >.title {
+        float: left;
+      }
     }
   }
 }
