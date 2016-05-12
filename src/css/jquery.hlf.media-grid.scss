@@ -49,7 +49,8 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
 
 @mixin hlf-media-grid-item($height, $width,
                            $dimmed-opacity: .3,
-                           $expand-duration: .2s,
+                           $expand-duration: .4s,
+                           $expand-easing: cubic-bezier(.8, 0, 0.2, 1),
                            $expanded-ratio: 2)
 {
   background: $hlf-mg-item-fill-color;
@@ -62,7 +63,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   transition: {
     duration: $expand-duration;
     property: height, left, opacity, top, width;
-    timing-function: ease-in-out;
+    timing-function: $expand-easing;
   }
   width: $width;
 
