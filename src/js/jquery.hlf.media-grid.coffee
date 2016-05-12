@@ -29,7 +29,6 @@
       autoReady: off
       focusDelay: 1000
       resizeDelay: 100
-      solo: on
       classNames: do ->
         classNames = {}
         keys = ['ready', 'item', 'expanded', 'dimmed', 'focused', 'sample']
@@ -50,23 +49,22 @@
 
       # Dimming.
       @focusDelay *= parseFloat @$sampleItem.css('transition-duration')
-      if @solo is on
-        @$expandedItem = null
-        @on
-          mouseenter: (e) =>
-            @toggleExpandedItemFocus $(e.currentTarget), on
-            return
-          mouseleave: (e) =>
-            @toggleExpandedItemFocus $(e.currentTarget), off
-            return
-          expand: (e, expanded) =>
-            @_clearDimTimeout() if expanded
-            @toggleItemFocus $(e.currentTarget), expanded, @focusDelay
-            return
-        , ".#{@classNames.item}"
-        @on 'mouseleave', =>
-          @toggleItemFocus @$expandedItem, off, 0
+      @$expandedItem = null
+      @on
+        mouseenter: (e) =>
+          @toggleExpandedItemFocus $(e.currentTarget), on
           return
+        mouseleave: (e) =>
+          @toggleExpandedItemFocus $(e.currentTarget), off
+          return
+        expand: (e, expanded) =>
+          clearTimeout @_dimTimeout if @_dimTimeout? and expanded
+          @toggleItemFocus $(e.currentTarget), expanded, @expandDuration
+          return
+      , ".#{@classNames.item}"
+      @on 'mouseleave', =>
+        @toggleItemFocus @$expandedItem, off, 0
+        return
 
       # Layout.
       @metrics = {}
@@ -91,7 +89,7 @@
         i = $item.index()
         if @_isRightEdgeItem(i) then @_adjustItemToRightEdge $item
         if @_isBottomEdgeItem(i) then @_adjustItemToBottomEdge $item
-        if @solo is on then @$items.removeClass @classNames.expanded
+        @$items.removeClass @classNames.expanded
 
       $item.toggleClass @classNames.expanded, expanded
       @$expandedItem = if expanded then $item else null
@@ -121,12 +119,6 @@
 
     _adjustItemToRightEdge: ($item) ->
       $item.css left: 'auto', right: 0
-      return
-
-    _clearDimTimeout: ->
-      return unless @_dimTimeout?
-      clearTimeout @_dimTimeout
-      @_dimTimeout = null
       return
 
     _getMetricSamples: ->
