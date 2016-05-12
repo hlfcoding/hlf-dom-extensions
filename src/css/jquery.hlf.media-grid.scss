@@ -57,7 +57,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   padding: $hlf-mg-gutter-size;
   transition: {
     duration: .2s;
-    property: height left opacity top width;
+    property: height, left, opacity, top, width;
     timing-function: ease-in-out;
   }
   width: $width;
@@ -67,7 +67,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
     overflow: hidden;
     transition: {
       duration: .3s;
-      property: height opacity width;
+      property: height, opacity, width;
       timing-function: ease-in-out;
     }
   }
@@ -87,11 +87,6 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
 
   &.js-mg-expanded {
     height: (2 * $height) + $hlf-mg-gutter-size;
-    transition: {
-      duration: .2s;
-      property: height opacity width;
-      timing-function: ease-in-out;
-    }
     width: (2 * $width) + $hlf-mg-gutter-size;
     z-index: 10;
 
