@@ -32,10 +32,6 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   @extend %hlf-mg-clearfix;
 
   background: $hlf-mg-fill-color;
-  font: {
-    family: Helvetica, sans-serif;
-    size: 10px;
-  }
   margin: { left: $hlf-mg-gutter-size; top: $hlf-mg-gutter-size; }
   opacity: 0;
   position: relative;
@@ -50,15 +46,13 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 }
 
-@mixin hlf-media-grid-item($height, $width, $radius: 4px)
+@mixin hlf-media-grid-item($height, $width)
 {
   background: $hlf-mg-item-fill-color;
-  border-radius: $radius;
   color: $hlf-mg-item-stroke-color;
   float: left; // Becomes none, position-absolute.
   height: $height;
   margin: { bottom: $hlf-mg-gutter-size; right: $hlf-mg-gutter-size; }
-  line-height: 2em;
   overflow: hidden;
   padding: $hlf-mg-gutter-size;
   transition: {
@@ -84,16 +78,6 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
 
   >.detail {
     @extend %hlf-mg-item-invisible;
-  }
-
-  .title {
-    font-size: 14px;
-    margin: 0;
-    padding: 0;
-  }
-
-  p {
-    line-height: 1.6em;
   }
 
   &:hover:not(.js-mg-expanded) {
@@ -125,10 +109,27 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 }
 
-@mixin hlf-media-grid-item-extras
+@mixin hlf-media-grid-item-extras($font-size: 10px, $radius: 4px)
 {
+  border-radius: $radius;
+  font: {
+    family: Helvetica, sans-serif;
+    size: $font-size;
+  }
+  line-height: 2em;
+
+  .title {
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+  }
+
+  p {
+    line-height: 1.6em;
+  }
+
   .date {
-    font-size: 10px;
+    font-size: $font-size;
     margin: 0;
     padding: 0;
   }
