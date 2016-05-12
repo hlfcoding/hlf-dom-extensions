@@ -53,6 +53,8 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
                            $expand-easing: cubic-bezier(.8, 0, 0.2, 1),
                            $expanded-ratio: 2)
 {
+  $expand-transition: $expand-duration $expand-easing;
+  $fade-transition: opacity $hlf-mg-fade-duration ease-in-out;
   $in-preview: '&:not(.js-mg-expanded):not(.js-mg-transitioning)';
 
   background: $hlf-mg-item-fill-color;
@@ -62,21 +64,19 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   margin: { bottom: $hlf-mg-gutter-size; right: $hlf-mg-gutter-size; }
   overflow: hidden;
   padding: $hlf-mg-gutter-size;
-  transition: {
-    duration: $expand-duration;
-    property: height, left, opacity, top, width;
-    timing-function: $expand-easing;
-  }
+  transition: (
+    height $expand-transition,
+    left $expand-transition,
+    top $expand-transition,
+    width $expand-transition,
+    $fade-transition
+  );
   width: $width;
 
   >.preview,
   >.detail {
     overflow: hidden;
-    transition: {
-      duration: $hlf-mg-fade-duration;
-      property: height, opacity, width;
-      timing-function: ease-in-out;
-    }
+    transition: $fade-transition;
   }
 
   >.preview {
