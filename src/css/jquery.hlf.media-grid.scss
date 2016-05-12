@@ -1,3 +1,4 @@
+$hlf-mg-fade-duration: .3s;
 $hlf-mg-gutter-size: 6px !default;
 $hlf-mg-item-fill-color: #000 !default;
 $hlf-mg-item-stroke-color: #fff !default;
@@ -35,7 +36,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   margin: { left: $hlf-mg-gutter-size; top: $hlf-mg-gutter-size; }
   opacity: 0;
   position: relative;
-  transition: opacity .3s ease-in-out;
+  transition: opacity $hlf-mg-fade-duration ease-in-out;
 
   // Crucial fix for the unintuitive and inconvenient box model.
   &,
@@ -46,7 +47,10 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 }
 
-@mixin hlf-media-grid-item($height, $width)
+@mixin hlf-media-grid-item($height, $width,
+                           $dimmed-opacity: .3,
+                           $expand-duration: .2s,
+                           $expanded-ratio: 2)
 {
   background: $hlf-mg-item-fill-color;
   color: $hlf-mg-item-stroke-color;
@@ -56,7 +60,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   overflow: hidden;
   padding: $hlf-mg-gutter-size;
   transition: {
-    duration: .2s;
+    duration: $expand-duration;
     property: height, left, opacity, top, width;
     timing-function: ease-in-out;
   }
@@ -66,7 +70,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   >.detail {
     overflow: hidden;
     transition: {
-      duration: .3s;
+      duration: $hlf-mg-fade-duration;
       property: height, opacity, width;
       timing-function: ease-in-out;
     }
@@ -86,8 +90,8 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 
   &.js-mg-expanded {
-    height: (2 * $height) + $hlf-mg-gutter-size;
-    width: (2 * $width) + $hlf-mg-gutter-size;
+    height: ($expanded-ratio * $height) + $hlf-mg-gutter-size;
+    width: ($expanded-ratio * $width) + $hlf-mg-gutter-size;
     z-index: 10;
 
     >.preview {
@@ -100,7 +104,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 
   .js-mg-dimmed>&:not(.js-mg-expanded) {
-    opacity: .3;
+    opacity: $dimmed-opacity;
   }
 }
 
