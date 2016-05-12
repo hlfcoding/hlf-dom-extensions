@@ -53,6 +53,8 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
                            $expand-easing: cubic-bezier(.8, 0, 0.2, 1),
                            $expanded-ratio: 2)
 {
+  $in-preview: '&:not(.js-mg-expanded):not(.js-mg-transitioning)';
+
   background: $hlf-mg-item-fill-color;
   color: $hlf-mg-item-stroke-color;
   float: left; // Becomes none, position-absolute.
@@ -85,15 +87,19 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
     @extend %hlf-mg-item-invisible;
   }
 
-  &:hover:not(.js-mg-expanded) {
+  #{$in-preview}:hover {
     background: $hlf-mg-item-stroke-color;
     color: $hlf-mg-item-fill-color;
+  }
+
+  &.js-mg-transitioning,
+  &.js-mg-expanded {
+    z-index: 10;
   }
 
   &.js-mg-expanded {
     height: ($expanded-ratio * $height) + $hlf-mg-gutter-size;
     width: ($expanded-ratio * $width) + $hlf-mg-gutter-size;
-    z-index: 10;
 
     >.preview {
       @extend %hlf-mg-item-invisible;
@@ -104,7 +110,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
     }
   }
 
-  .js-mg-dimmed>&:not(.js-mg-expanded) {
+  .js-mg-dimmed>#{$in-preview} {
     opacity: $dimmed-opacity;
   }
 }

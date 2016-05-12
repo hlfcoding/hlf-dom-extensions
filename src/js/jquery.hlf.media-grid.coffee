@@ -27,11 +27,13 @@
 
     defaults: do (pre = 'js-mg-') ->
       autoReady: off
-      focusDelay: 1000
       resizeDelay: 100
       classNames: do ->
         classNames = {}
-        keys = ['ready', 'item', 'expanded', 'dimmed', 'focused', 'sample']
+        keys = [
+          'item', 'sample'
+          'transitioning', 'expanded', 'dimmed', 'focused', 'ready'
+        ]
         (classNames[key] = "#{pre}#{key}") for key in keys
         classNames
 
@@ -43,12 +45,12 @@
       @$sampleItem = @$items.first()
       # TODO: Delegation.
       # Toggling.
+      @expandDuration = 1000 * parseFloat @$sampleItem.css('transition-duration')
       @$items.on 'click', (e) =>
         @toggleItemExpansion $(e.currentTarget)
         return
 
       # Dimming.
-      @focusDelay *= parseFloat @$sampleItem.css('transition-duration')
       @$expandedItem = null
       @on
         mouseenter: (e) =>
@@ -90,6 +92,12 @@
         if @_isRightEdgeItem(i) then @_adjustItemToRightEdge $item
         if @_isBottomEdgeItem(i) then @_adjustItemToBottomEdge $item
         @$items.removeClass @classNames.expanded
+
+      $item.addClass @classNames.transitioning
+      clearTimeout @_expandTimeout if @_expandTimeout?
+      @_expandTimeout = setTimeout =>
+        $item.removeClass(@classNames.transitioning); return
+      , @expandDuration
 
       $item.toggleClass @classNames.expanded, expanded
       @$expandedItem = if expanded then $item else null
@@ -163,7 +171,7 @@
 
         @_layoutItems()
         return
-      , @focusDelay
+      , @expandDuration
       return
 
     _updateMetrics: (hard=on) ->
