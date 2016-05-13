@@ -93,7 +93,7 @@ HLF Media Grid jQuery Plugin
       , @resizeDelay)
       return
 
-    toggleItemExpansion: ($item, expanded, silently=off) ->
+    toggleItemExpansion: ($item, expanded) ->
       expanded ?= not $item.hasClass @classNames.expanded
       if expanded
         i = $item.index()
@@ -110,7 +110,7 @@ HLF Media Grid jQuery Plugin
       $item.toggleClass @classNames.expanded, expanded
       @$expandedItem = if expanded then $item else null
 
-      $item.trigger @evt('expand'), [expanded] unless silently is on
+      $item.trigger @evt('expand'), [expanded]
       return
 
     toggleExpandedItemFocus: ($item, focused) ->
