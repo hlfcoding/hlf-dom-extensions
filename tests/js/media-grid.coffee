@@ -1,3 +1,10 @@
+###
+HLF Media Grid Visual Tests
+===========================
+###
+
+# [Page](../../../tests/media-grid.visual.html) | [Source](../../src/js/jquery.hlf.media-grid.html)
+
 require.config
   baseUrl: '../lib'
   paths:
@@ -63,6 +70,8 @@ require [
 
   tests = []
 
+  # Default
+  # -------
   tests.push $.visualTest
 
     label: 'by default'

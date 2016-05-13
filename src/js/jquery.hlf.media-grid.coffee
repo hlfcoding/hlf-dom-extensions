@@ -1,3 +1,10 @@
+###
+HLF Media Grid jQuery Plugin
+============================
+###
+
+# [Styles](../css/jquery.hlf.media-grid.html) | [Tests](../../tests/js/media-grid.html)
+
 ((root, attach) ->
   if typeof define is 'function' and define.amd?
     define [
