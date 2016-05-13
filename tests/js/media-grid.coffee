@@ -66,7 +66,7 @@ require [
       return
 
     QUnit.start()
-    return
+    return yes
 
   tests = []
 

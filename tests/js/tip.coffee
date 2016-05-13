@@ -36,6 +36,8 @@ require [
 ]), ($, _) ->
   'use strict'
 
+  return no if window.QUnit?
+
   # Setup visual tests. Tests are decorated closures queued and run on document-
   # ready. Tip specific setup:
   # 1. Some basic input binding for custom animator.
@@ -44,8 +46,6 @@ require [
   #
   # Note that the sample logic in tests is in JavaScript (perhaps easier to
   # understand than CoffeeScript) for your convenience.
-  return no if window.QUnit?
-
   tests = []
 
   $('.animator :radio').prop 'checked', no
