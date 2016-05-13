@@ -73,7 +73,7 @@ HLF Media Grid jQuery Plugin
           return
       , ".#{@classNames.item}"
       @on 'mouseleave', =>
-        @toggleItemFocus @$expandedItem, off, 0
+        @toggleItemFocus @$expandedItem, off, 0 if @$expandedItem?
         return
 
       # Layout.
@@ -120,7 +120,6 @@ HLF Media Grid jQuery Plugin
       return
 
     toggleItemFocus: ($item, focused, delay) ->
-      return unless $item?
       $item.toggleClass @classNames.focused, focused
       @_dimTimeout = setTimeout =>
         return unless focused is $item.hasClass(@classNames.focused)
