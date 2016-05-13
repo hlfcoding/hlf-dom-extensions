@@ -35,6 +35,7 @@ HLF Media Grid jQuery Plugin
     defaults: do (pre = 'js-mg-') ->
       autoReady: off
       resizeDelay: 100
+      undimDelay: 1000
       classNames: do ->
         classNames = {}
         keys = [
@@ -114,7 +115,7 @@ HLF Media Grid jQuery Plugin
 
     toggleExpandedItemFocus: ($item, focused) ->
       return unless $item?.hasClass @classNames.expanded
-      delay = if focused then 0 else 1000
+      delay = if focused then 0 else @undimDelay
       @toggleItemFocus $item, focused, delay
       return
 
