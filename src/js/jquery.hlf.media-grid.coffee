@@ -68,7 +68,6 @@ HLF Media Grid jQuery Plugin
           @toggleExpandedItemFocus $(e.currentTarget), off
           return
         expand: (e, expanded) =>
-          clearTimeout @_dimTimeout if @_dimTimeout? and expanded
           @toggleItemFocus $(e.currentTarget), expanded, @expandDuration
           return
       , ".#{@classNames.item}"
@@ -88,7 +87,11 @@ HLF Media Grid jQuery Plugin
 
       $(window).resize _.debounce( =>
         @_updateMetrics off
-        @_reLayoutItems()
+        if @$expandedItem?
+          @toggleItemExpansion @$expandedItem, off
+          @_reLayoutItems @expandDuration
+        else
+          @_reLayoutItems()
         return
       , @resizeDelay)
       return
@@ -121,6 +124,7 @@ HLF Media Grid jQuery Plugin
 
     toggleItemFocus: ($item, focused, delay) ->
       $item.toggleClass @classNames.focused, focused
+      clearTimeout @_dimTimeout if @_dimTimeout?
       @_dimTimeout = setTimeout =>
         return unless focused is $item.hasClass(@classNames.focused)
         @$el.toggleClass @classNames.dimmed, focused
@@ -152,7 +156,7 @@ HLF Media Grid jQuery Plugin
     _isRightEdgeItem: (i) -> (i + 1) % @metrics.rowSize is 0
 
     _layoutItems: ->
-      $(@$items.toArray().reverse()).each (i, item) =>
+      @$items.get().reverse().forEach (item, i) =>
         $item = $ item
         offset = $item.position()
 
@@ -164,21 +168,16 @@ HLF Media Grid jQuery Plugin
       @$el.css width: @metrics.wrapWidth, height: @metrics.wrapHeight
       return
 
-    _reLayoutItems: ->
-      @$items.each (i, item) =>
-        @toggleItemExpansion $(item), off
-        return
-
-      _.delay =>
-        @$items.each (i, item) =>
-          $item = $ item
-          $item.css 
-            top: 'auto', left: 'auto', bottom: 'auto', right: 'auto'
-            position: $item.data @attr('original-position')
+    _reLayoutItems: (delay=0) ->
+      clearTimeout @_layoutTimeout if @_layoutTimeout?
+      @_layoutTimeout = setTimeout =>
+        key = @attr 'original-position'
+        @$items.css 
+          top: 'auto', left: 'auto', bottom: 'auto', right: 'auto'
+          position: -> $(@).data key
 
         @_layoutItems()
-        return
-      , @expandDuration
+      , delay
       return
 
     _updateMetrics: (hard=on) ->
