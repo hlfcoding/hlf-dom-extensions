@@ -81,7 +81,7 @@ require [
       <% _.range(12).forEach(function() { %>
         <article class="js-mg-item">
           <section class="preview">
-            <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" class="thumb" />
+            <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" />
             <hgroup>
               <h1 class="title"><%= loremIpsum.title %></h1>
               <h2 class="date">July 14, 2012</h2>
@@ -93,12 +93,12 @@ require [
             </ul>
           </section>
           <section class="detail">
-            <img src="http://placehold.it/418x270/888/aaa" alt="main banner" class="banner" />
+            <img src="http://placehold.it/418x270/888/aaa" alt="main banner" />
             <hgroup>
               <h1 class="title"><%= loremIpsum.title %></h1>
               <h2 class="date">July 14, 2012</h2>
             </hgroup>
-            <p class="body"><%= loremIpsum.short %></p>
+            <p><%= loremIpsum.short %></p>
             <ul class="tags">
               <li>foo</li>
               <li>bar</li>
