@@ -4,7 +4,7 @@
   "description": "jQuery plugins and extensions for quality UI.",
   "main": "release/jquery.hlf.min.js",
   "files": ["release/*"],
-  "keywords": ["jquery", "js", "tooltip"],
+  "keywords": ["jquery", "js", "tooltip", "grid"],
   "author": "Peng Wang <peng@pengxwang.com>",
   "license": "MIT",
   "repository": {
