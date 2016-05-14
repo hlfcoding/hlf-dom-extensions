@@ -80,26 +80,26 @@ require [
       <div class="test-body">
       <% _.range(12).forEach(function() { %>
         <article class="js-mg-item">
-          <section class="preview">
+          <section class="mg-preview">
             <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" />
             <hgroup>
-              <h1 class="title"><%= loremIpsum.title %></h1>
-              <h2 class="date">July 14, 2012</h2>
+              <h1 class="mg-title"><%= loremIpsum.title %></h1>
+              <h2 class="mg-date">July 14, 2012</h2>
             </hgroup>
-            <ul class="tags">
+            <ul class="mg-tags">
               <li>foo</li>
               <li>bar</li>
               <li>baz</li>
             </ul>
           </section>
-          <section class="detail">
+          <section class="mg-detail">
             <img src="http://placehold.it/418x270/888/aaa" alt="main banner" />
             <hgroup>
-              <h1 class="title"><%= loremIpsum.title %></h1>
-              <h2 class="date">July 14, 2012</h2>
+              <h1 class="mg-title"><%= loremIpsum.title %></h1>
+              <h2 class="mg-date">July 14, 2012</h2>
             </hgroup>
             <p><%= loremIpsum.short %></p>
-            <ul class="tags">
+            <ul class="mg-tags">
               <li>foo</li>
               <li>bar</li>
               <li>baz</li>

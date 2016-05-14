@@ -82,16 +82,16 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   );
   width: $width;
 
-  >.preview,
-  >.detail {
+  >.mg-preview,
+  >.mg-detail {
     overflow: hidden;
   }
 
-  >.preview {
+  >.mg-preview {
     @extend %hlf-mg-item-visible;
   }
 
-  >.detail {
+  >.mg-detail {
     @extend %hlf-mg-item-invisible;
   }
 
@@ -113,11 +113,11 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
     height: ($expanded-ratio * $height) + $hlf-mg-gutter-size;
     width: ($expanded-ratio * $width) + $hlf-mg-gutter-size;
 
-    >.preview {
+    >.mg-preview {
       @extend %hlf-mg-item-invisible;
     }
 
-    >.detail {
+    >.mg-detail {
       @extend %hlf-mg-item-visible;
     }
   }
@@ -145,7 +145,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 
   @if $has-date {
-    .date {
+    .mg-date {
       font-size: $font-size;
       margin: 0;
       padding: 0;
@@ -153,7 +153,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 
   @if $has-tags {
-    .tags {
+    .mg-tags {
       list-style: none;
       padding-left: 0;
 
@@ -168,7 +168,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 
   @if $has-title {
-    .title {
+    .mg-title {
       font-size: 14px;
       margin: 0;
       padding: 0;
@@ -179,11 +179,11 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
     &.js-mg-expanded hgroup {
       @extend %hlf-mg-clearfix;
 
-      >.date {
+      >.mg-date {
         float: right;
       }
 
-      >.title {
+      >.mg-title {
         float: left;
       }
     }
