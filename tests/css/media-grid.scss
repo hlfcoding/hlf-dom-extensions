@@ -7,9 +7,7 @@
 
 @import '../../dist/jquery.hlf.media-grid';
 
-$bg-color: $hlf-mg-fill-color;
-$light-color: mix($bg-color, #fff);
-@import 'base';
+// A basic example of how to use the media-grid plugin's style-building mixins.
 
 .js-mg {
   @include hlf-media-grid;
@@ -23,7 +21,12 @@ $light-color: mix($bg-color, #fff);
   @include hlf-media-grid-item-extras;
 }
 
-// section: overrides
+// Customize the visual test color scheme to semi-inverted. Reduce the spacing
+// to match the media-grid gutter.
+
+$bg-color: $hlf-mg-fill-color;
+$light-color: mix($bg-color, #fff);
+@import 'base';
 
 #main {
   padding-bottom: 0;

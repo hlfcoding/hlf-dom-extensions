@@ -6,11 +6,23 @@
 
 // [Source](../js/jquery.hlf.media-grid.html) | [Tests](../../tests/css/media-grid.html)
 
+// The required plugin styling is crucial to plugin usage. You must apply the
+// `hlf-media-grid` and `hlf-media-grid-item` mixins. There's an optional,
+// opinionated set of styles in `hlf-media-grid-item-extras`. These styles can
+// be customized by predefining the globals, as well as setting the mixin
+// params.
+
+// Globals
+// -------
+
 $hlf-mg-fade-duration: .3s !default;
 $hlf-mg-gutter-size: 6px !default;
 $hlf-mg-item-fill-color: #000 !default;
 $hlf-mg-item-stroke-color: #fff !default;
 $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%) !default;
+
+// Helpers
+// -------
 
 %hlf-mg-clearfix {
   &::before,
@@ -36,6 +48,12 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   width: auto;
 }
 
+// Mixins
+// ------
+
+// __hlf-media-grid__ should be included on the root element. It is modified
+// with the `-dimmed` and `-ready` classes. Note it sets `box-sizing: border-
+// box` for itself and its descendants.
 @mixin hlf-media-grid
 {
   @extend %hlf-mg-clearfix;
@@ -46,7 +64,6 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   position: relative;
   transition: opacity $hlf-mg-fade-duration ease-in-out;
 
-  // Crucial fix for the unintuitive and inconvenient box model.
   &,
   * { box-sizing: border-box; }
 
@@ -55,6 +72,40 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   }
 }
 
+// __hlf-media-grid-item__ should be included on the item element. It can be
+// modified with the `-expanded`, `-focused`, `-transitioning` classes. Note
+// the initial `float` positioning, as well as the complex `z-index` rules
+// when the item has modifier classes.
+//
+// Its element's DOM can look like (especially if `hlf-media-grid-item-extras`
+// is included):
+// ```html
+// <article class="js-mg-item">
+//   <section class="mg-preview"><!-- hidden when expanded -->
+//     <img src="..." />
+//     <hgroup>
+//       <h1 class="mg-title">...</h1>
+//       <h2 class="mg-date">...</h2>
+//     </hgroup>
+//     <ul class="mg-tags">
+//       <li>...</li>
+//       <li>...</li>
+//     </ul>
+//   </section>
+//   <section class="mg-detail"><!-- visible when expanded -->
+//     <img src="..." />
+//     <hgroup>
+//       <h1 class="mg-title">...</h1>
+//       <h2 class="mg-date">...</h2>
+//     </hgroup>
+//     <p>...</p>
+//     <ul class="mg-tags">
+//       <li>...</li>
+//       <li>...</li>
+//     </ul>
+//   </section>
+// </article>
+// ```
 @mixin hlf-media-grid-item($height, $width,
                            $dimmed-opacity: .3,
                            $expand-duration: .4s,
@@ -68,7 +119,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
 
   background: $hlf-mg-item-fill-color;
   color: $hlf-mg-item-stroke-color;
-  float: left; // Becomes none, position-absolute.
+  float: left; // Original positioning; will be replaced by position-absolute.
   height: $height;
   margin: { bottom: $hlf-mg-gutter-size; right: $hlf-mg-gutter-size; }
   overflow: hidden;

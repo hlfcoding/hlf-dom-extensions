@@ -20,6 +20,9 @@ require [
 ], ($, _) ->
   'use strict'
 
+  # If the context is QUnit, run any unit tests. In most cases, an API class
+  # instance still requires some HTML fragments, and even temporarily attaching
+  # them to the DOM.
   if window.QUnit?
     {module, test} = QUnit
 
@@ -68,10 +71,16 @@ require [
     QUnit.start()
     return yes
 
+  # Setup visual tests. Tests are decorated closures queued and run on document-
+  # ready. Note that the sample logic in tests is in JavaScript (perhaps easier to
+  # understand than CoffeeScript) for your convenience.
   tests = []
 
   # Default
   # -------
+  # Basic test with the default settings and all content extras. `MediaGrid`
+  # instance is created and accessed via `$.fn.mediaGrid`. Item content markup
+  # can be customized as fit.
   tests.push $.visualTest
 
     label: 'by default'
