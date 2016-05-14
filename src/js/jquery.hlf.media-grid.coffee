@@ -105,10 +105,10 @@ HLF Media Grid jQuery Plugin
         if @_isBottomEdgeItem(i) then @_adjustItemToBottomEdge $item
 
       $item.addClass @classNames.transitioning
-      clearTimeout @_expandTimeout if @_expandTimeout?
-      @_expandTimeout = setTimeout =>
+      clearTimeout $item.data(@attr('expand-timeout'))
+      $item.data @attr('expand-timeout'), (setTimeout =>
         $item.removeClass(@classNames.transitioning); return
-      , @expandDuration
+      , @expandDuration)
 
       $item.toggleClass @classNames.expanded, expanded
       @$expandedItem = if expanded then $item else null

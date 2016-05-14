@@ -85,7 +85,6 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   >.preview,
   >.detail {
     overflow: hidden;
-    transition: $fade-transition;
   }
 
   >.preview {
@@ -104,6 +103,10 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
   &.js-mg-transitioning,
   &.js-mg-expanded {
     z-index: $expanded-layer;
+
+    &.js-mg-focused {
+      z-index: $expanded-layer + 1;
+    }
   }
 
   &.js-mg-expanded {
