@@ -6,60 +6,58 @@
 
 // [Source](../js/jquery.hlf.editable.html) | [Tests](../../tests/css/editable.html)
 
-%skin-clear {
-  border-color: transparent;
-  background-color: transparent;
-  &:focus {
-    outline-style: none;
-  }
-}
-
-%spacing-none {
-  margin: 0;
-  padding: 0;
-}
-
-$editable-inline-selectors: (
+$hlf-editable-inline-selectors: (
   container:'.js-editable-inline',
   text:'.js-text', 
   input:'.js-input input'
 );
 
-@mixin editable-inline-skin ($style: clear,
-                             $rule-color: black,
-                             $hover-background-color: rgba(black, 0.1),
-                             $selectors: $editable-inline-selectors)
+@mixin hlf-editable-inline-skin($style: clear,
+                               $rule-color: black,
+                               $hover-background-color: rgba(black, 0.1),
+                               $selectors: $hlf-editable-inline-selectors)
 {
   @if $style == clear {
     #{map-get($selectors, text)},
     #{map-get($selectors, input)} {
-      @extend %skin-clear;
+      border-color: transparent;
+      background-color: transparent;
+
+      &:focus {
+        outline-style: none;
+      }
     }
   }
+
   #{map-get($selectors, text)} {
     cursor: text;
+
     &:hover {
       background-color: $hover-background-color;
     }
   }
+
   #{map-get($selectors, input)} {
     border-bottom-color: $rule-color;
   }
 }
 
-@mixin editable-inline-layout ($width: 160px,
-                               $selectors: $editable-inline-selectors)
+@mixin hlf-editable-inline-layout($width: 160px,
+                                  $selectors: $hlf-editable-inline-selectors)
 {
   #{map-get($selectors, text)},
   #{map-get($selectors, input)} {
-    @extend %spacing-none;
     border-width: 1px;
+    margin: 0;
+    padding: 0;
     width: $width;
   }
+
   #{map-get($selectors, text)} {
     overflow-x: hidden;
     white-space: nowrap;
   }
+
   #{map-get($selectors, input)} {
     margin: -1px;
   }

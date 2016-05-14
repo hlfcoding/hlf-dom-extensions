@@ -1,0 +1,242 @@
+/*
+  HLF Media Grid jQuery Plugin
+  ============================
+  There should be no css output from this file.
+*/
+
+// [Source](../js/jquery.hlf.media-grid.html) | [Tests](../../tests/css/media-grid.html)
+
+// The required plugin styling is crucial to plugin usage. You must apply the
+// `hlf-media-grid` and `hlf-media-grid-item` mixins. There's an optional,
+// opinionated set of styles in `hlf-media-grid-item-extras`. These styles can
+// be customized by predefining the globals, as well as setting the mixin
+// params.
+
+// Globals
+// -------
+
+$hlf-mg-fade-duration: .3s !default;
+$hlf-mg-gutter-size: 6px !default;
+$hlf-mg-item-fill-color: #000 !default;
+$hlf-mg-item-stroke-color: #fff !default;
+$hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%) !default;
+
+// Helpers
+// -------
+
+%hlf-mg-clearfix {
+  &::before,
+  &::after {
+    content: ' ';
+    display: table;
+  }
+
+  &::after { clear: both; }
+}
+
+%hlf-mg-item-invisible {
+  display: none;
+  height: 0;
+  opacity: 0;
+  width: 0;
+}
+
+%hlf-mg-item-visible {
+  display: block;
+  height: auto;
+  opacity: 1;
+  width: auto;
+}
+
+// Mixins
+// ------
+
+// __hlf-media-grid__ should be included on the root element. It is modified
+// with the `-dimmed` and `-ready` classes. Note it sets `box-sizing: border-
+// box` for itself and its descendants.
+@mixin hlf-media-grid
+{
+  @extend %hlf-mg-clearfix;
+
+  background: $hlf-mg-fill-color;
+  margin: { left: $hlf-mg-gutter-size; top: $hlf-mg-gutter-size; }
+  opacity: 0;
+  position: relative;
+  transition: opacity $hlf-mg-fade-duration ease-in-out;
+
+  &,
+  * { box-sizing: border-box; }
+
+  &.js-mg-ready {
+    opacity: 1;
+  }
+}
+
+// __hlf-media-grid-item__ should be included on the item element. It can be
+// modified with the `-expanded`, `-focused`, `-transitioning` classes. Note
+// the initial `float` positioning, as well as the complex `z-index` rules
+// when the item has modifier classes.
+//
+// Its element's DOM can look like (especially if `hlf-media-grid-item-extras`
+// is included):
+// ```html
+// <article class="js-mg-item">
+//   <section class="mg-preview"><!-- hidden when expanded -->
+//     <img src="..." />
+//     <hgroup>
+//       <h1 class="mg-title">...</h1>
+//       <h2 class="mg-date">...</h2>
+//     </hgroup>
+//     <ul class="mg-tags">
+//       <li>...</li>
+//       <li>...</li>
+//     </ul>
+//   </section>
+//   <section class="mg-detail"><!-- visible when expanded -->
+//     <img src="..." />
+//     <hgroup>
+//       <h1 class="mg-title">...</h1>
+//       <h2 class="mg-date">...</h2>
+//     </hgroup>
+//     <p>...</p>
+//     <ul class="mg-tags">
+//       <li>...</li>
+//       <li>...</li>
+//     </ul>
+//   </section>
+// </article>
+// ```
+@mixin hlf-media-grid-item($height, $width,
+                           $dimmed-opacity: .3,
+                           $expand-duration: .4s,
+                           $expand-easing: cubic-bezier(.8, 0, 0.2, 1),
+                           $expanded-layer: 10,
+                           $expanded-ratio: 2)
+{
+  $expand-transition: $expand-duration $expand-easing;
+  $fade-transition: opacity $hlf-mg-fade-duration ease-in-out;
+  $in-preview: '&:not(.js-mg-expanded):not(.js-mg-transitioning)';
+
+  background: $hlf-mg-item-fill-color;
+  color: $hlf-mg-item-stroke-color;
+  float: left; // Original positioning; will be replaced by position-absolute.
+  height: $height;
+  margin: { bottom: $hlf-mg-gutter-size; right: $hlf-mg-gutter-size; }
+  overflow: hidden;
+  padding: $hlf-mg-gutter-size;
+  transition: (
+    height $expand-transition,
+    left $expand-transition,
+    top $expand-transition,
+    width $expand-transition,
+    $fade-transition
+  );
+  width: $width;
+
+  >.mg-preview,
+  >.mg-detail {
+    overflow: hidden;
+  }
+
+  >.mg-preview {
+    @extend %hlf-mg-item-visible;
+  }
+
+  >.mg-detail {
+    @extend %hlf-mg-item-invisible;
+  }
+
+  #{$in-preview}:hover {
+    background: $hlf-mg-item-stroke-color;
+    color: $hlf-mg-item-fill-color;
+  }
+
+  &.js-mg-transitioning,
+  &.js-mg-expanded {
+    z-index: $expanded-layer;
+
+    &.js-mg-focused {
+      z-index: $expanded-layer + 1;
+    }
+  }
+
+  &.js-mg-expanded {
+    height: ($expanded-ratio * $height) + $hlf-mg-gutter-size;
+    width: ($expanded-ratio * $width) + $hlf-mg-gutter-size;
+
+    >.mg-preview {
+      @extend %hlf-mg-item-invisible;
+    }
+
+    >.mg-detail {
+      @extend %hlf-mg-item-visible;
+    }
+  }
+
+  .js-mg-dimmed>#{$in-preview} {
+    opacity: $dimmed-opacity;
+  }
+}
+
+@mixin hlf-media-grid-item-extras($font-size: 10px,
+                                  $corner-radius: 4px,
+                                  $has-date: true,
+                                  $has-tags: true,
+                                  $has-title: true)
+{
+  border-radius: $corner-radius;
+  font: {
+    family: Helvetica, sans-serif;
+    size: $font-size;
+  }
+  line-height: 2em;
+
+  p {
+    line-height: 1.6em;
+  }
+
+  @if $has-date {
+    .mg-date {
+      font-size: $font-size;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  @if $has-tags {
+    .mg-tags {
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        display: inline;
+
+        &:not(:last-child)::after {
+          content: ',\0020';
+        }
+      }
+    }
+  }
+
+  @if $has-title {
+    .mg-title {
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  @if $has-title and $has-date {
+    &.js-mg-expanded hgroup {
+      @extend %hlf-mg-clearfix;
+
+      >.mg-date {
+        float: right;
+      }
+
+      >.mg-title {
+        float: left;
+      }
+    }
+  }
+}

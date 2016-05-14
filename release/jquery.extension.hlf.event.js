@@ -17,6 +17,7 @@ HLF Event jQuery Extension
       return attach(jQuery, _, jQuery.hlf);
     }
   })(this, function($, _, hlf) {
+    'use strict';
     $.extend(true, hlf, {
       hoverIntent: {
         debug: false,
@@ -51,7 +52,7 @@ HLF Event jQuery Extension
         return (hoverIntent.toString('attr')) + "-" + name;
       };
       debugLog = hoverIntent.debug === false ? $.noop : function() {
-        return hlf.debugLog.apply(hlf, [hoverIntent.toString('log')].concat(slice.call(arguments)));
+        hlf.debugLog.apply(hlf, [hoverIntent.toString('log')].concat(slice.call(arguments)));
       };
       defaultState = {
         intentional: true,
@@ -82,7 +83,7 @@ HLF Event jQuery Extension
         debugLog(state);
         didTeardown = teardownCheckIfNeeded(event, $trigger, state);
         if (didTeardown === false) {
-          return setupCheckIfNeeded(event, $trigger, state);
+          setupCheckIfNeeded(event, $trigger, state);
         }
       };
       setupCheckIfNeeded = function(event, $trigger, state) {
@@ -119,11 +120,11 @@ HLF Event jQuery Extension
         }
         state.timer.cleared = true;
         $trigger.data(attr('intentional'), state.intentional);
-        return $trigger.data(attr('timer'), state.timer);
+        $trigger.data(attr('timer'), state.timer);
       };
       trackMouse = _.throttle(function(event) {
         mouse.x.current = event.pageX;
-        return mouse.y.current = event.pageY;
+        mouse.y.current = event.pageY;
       }, 16);
       triggerEvent = function(name, $trigger, oldEvent) {
         var event;
@@ -133,17 +134,17 @@ HLF Event jQuery Extension
           relatedTarget: oldEvent.relatedTarget
         });
         debugLog(name);
-        return $trigger.trigger(event);
+        $trigger.trigger(event);
       };
       $.event.special.truemouseenter = {
         setup: function(data, namespaces) {
-          return $(this).on({
+          $(this).on({
             mouseover: check,
             mousemove: trackMouse
           }, data != null ? data.selector : void 0);
         },
         teardown: function(data, namespaces) {
-          return $(this).off({
+          $(this).off({
             mouseover: check,
             mousemove: trackMouse
           }, data != null ? data.selector : void 0);
@@ -151,12 +152,12 @@ HLF Event jQuery Extension
       };
       return $.event.special.truemouseleave = {
         setup: function(data, namespaces) {
-          return $(this).on({
+          $(this).on({
             mouseleave: check
           }, data != null ? data.selector : void 0);
         },
         teardown: function(data, namespaces) {
-          return $(this).off({
+          $(this).off({
             mouseleave: check
           }, data != null ? data.selector : void 0);
         }

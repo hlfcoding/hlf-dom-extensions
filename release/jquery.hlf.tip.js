@@ -18,6 +18,7 @@ HLF Tip jQuery Plugin
       attach(jQuery, _, jQuery.hlf);
     }
   })(this, function($, _, hlf) {
+    'use strict';
     var SnapTip, Tip, _requestAnimationFrame, ref;
     _requestAnimationFrame = window.requireAnimationFrame || ((ref = window.Modernizr) != null ? ref.prefixed('requestAnimationFrame', window) : void 0);
     hlf.tip = {
