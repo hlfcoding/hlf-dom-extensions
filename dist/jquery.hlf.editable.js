@@ -16,6 +16,7 @@ HLF Editable jQuery Plugin
       return attach(jQuery, _, jQuery.hlf);
     }
   })(this, function($, _, hlf) {
+    'use strict';
     var mixins;
     hlf.editable = {
       debug: true,

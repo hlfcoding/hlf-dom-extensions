@@ -1,12 +1,95 @@
 /*
-  HLF Editable Visual Tests
-  =========================
+  HLF Media Grid Visual Tests
+  ===========================
 */
 /*
-  HLF Editable jQuery Plugin
-  ==========================
+  HLF Media Grid jQuery Plugin
+  ============================
   There should be no css output from this file.
 */
+.js-mg::before, .js-mg-item.js-mg-expanded hgroup::before, .js-mg::after, .js-mg-item.js-mg-expanded hgroup::after {
+  content: ' ';
+  display: table; }
+.js-mg::after, .js-mg-item.js-mg-expanded hgroup::after {
+  clear: both; }
+
+.js-mg-item > .mg-detail, .js-mg-item.js-mg-expanded > .mg-preview {
+  display: none;
+  height: 0;
+  opacity: 0;
+  width: 0; }
+
+.js-mg-item > .mg-preview, .js-mg-item.js-mg-expanded > .mg-detail {
+  display: block;
+  height: auto;
+  opacity: 1;
+  width: auto; }
+
+.js-mg {
+  background: #333333;
+  margin-left: 6px;
+  margin-top: 6px;
+  opacity: 0;
+  position: relative;
+  transition: opacity 0.3s ease-in-out; }
+  .js-mg,
+  .js-mg * {
+    box-sizing: border-box; }
+  .js-mg.js-mg-ready {
+    opacity: 1; }
+
+.js-mg-item {
+  background: #000;
+  color: #fff;
+  float: left;
+  height: 232px;
+  margin-bottom: 6px;
+  margin-right: 6px;
+  overflow: hidden;
+  padding: 6px;
+  transition: height 0.4s cubic-bezier(0.8, 0, 0.2, 1), left 0.4s cubic-bezier(0.8, 0, 0.2, 1), top 0.4s cubic-bezier(0.8, 0, 0.2, 1), width 0.4s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.3s ease-in-out;
+  width: 212px;
+  border-radius: 4px;
+  font-family: Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 2em; }
+  .js-mg-item > .mg-preview,
+  .js-mg-item > .mg-detail {
+    overflow: hidden; }
+  .js-mg-item:not(.js-mg-expanded):not(.js-mg-transitioning):hover {
+    background: #fff;
+    color: #000; }
+  .js-mg-item.js-mg-transitioning, .js-mg-item.js-mg-expanded {
+    z-index: 10; }
+    .js-mg-item.js-mg-transitioning.js-mg-focused, .js-mg-item.js-mg-expanded.js-mg-focused {
+      z-index: 11; }
+  .js-mg-item.js-mg-expanded {
+    height: 470px;
+    width: 430px; }
+  .js-mg-dimmed > .js-mg-item:not(.js-mg-expanded):not(.js-mg-transitioning) {
+    opacity: 0.3; }
+  .js-mg-item p {
+    line-height: 1.6em; }
+  .js-mg-item .mg-date {
+    font-size: 10px;
+    margin: 0;
+    padding: 0; }
+  .js-mg-item .mg-tags {
+    list-style: none;
+    padding-left: 0; }
+    .js-mg-item .mg-tags li {
+      display: inline; }
+      .js-mg-item .mg-tags li:not(:last-child)::after {
+        content: ',\0020'; }
+  .js-mg-item .mg-title {
+    font-size: 14px;
+    margin: 0;
+    padding: 0; }
+  .js-mg-item.js-mg-expanded hgroup > .mg-date {
+    float: right; }
+  .js-mg-item.js-mg-expanded hgroup > .mg-title {
+    float: left; }
+
 /*
   Base Visual Test
   ================
@@ -397,15 +480,15 @@ body > header > *:not(:first-child), section.visual-test header > [data-rel=docs
 .edge-call > .visual-test-fragment, .box, .list-item, .list .item, .list > a,
 .list li.no-a, .list li:not(.no-a) > a, .list .bar > a, .bar-item, .bar .item, .bar .list > a, .bar > a,
 .bar li.no-a, .bar li:not(.no-a) > a {
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(153, 153, 153, 0.95);
   background-clip: padding-box;
   border: 3px solid rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 0 14px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(153, 153, 153, 0.7), inset 0 0 14px rgba(0, 0, 0, 0.05);
   box-sizing: border-box; }
   .edge-call > .visual-test-fragment:hover, .box:hover, .list-item:hover, .list .item:hover, .list > a:hover,
   .list li.no-a:hover, .list li:not(.no-a) > a:hover, .list .bar > a:hover, .bar-item:hover, .bar .item:hover, .bar .list > a:hover, .bar > a:hover,
   .bar li.no-a:hover, .bar li:not(.no-a) > a:hover {
-    background-color: white; }
+    background-color: #999999; }
 
 body > header, section.visual-test header {
   margin-left: -14px;
@@ -417,7 +500,7 @@ html {
   font-size: 14px; }
 
 body {
-  background-color: #dadad6;
+  background-color: #333333;
   font-family: Helvetica, sans-serif;
   padding: 14px;
   padding-top: 0; }
@@ -431,7 +514,7 @@ a {
 
 button {
   background-clip: padding-box;
-  background-color: #f2f2f1;
+  background-color: #4d4d4d;
   border: 1px solid rgba(0, 0, 0, 0.5);
   padding: .3em .6em; }
   button:focus {
@@ -440,9 +523,9 @@ button {
 
 body > header {
   /* test page header */
-  background: #272724;
+  background: black;
   box-shadow: inset 0 30px 40px -20px rgba(0, 0, 0, 0.4);
-  color: #a3a3a4;
+  color: #b3b3b3;
   text-shadow: 0 1px rgba(0, 0, 0, 0.7); }
   body > header > * {
     display: inline-block; }
@@ -453,7 +536,7 @@ body > header {
     font-weight: normal;
     margin: 0; }
   body > header > fieldset {
-    border-color: #5d5d54;
+    border-color: #333333;
     border-radius: 10px;
     padding: 0 10px 10px; }
     body > header > fieldset > legend {
@@ -482,22 +565,22 @@ section.visual-test {
   section.visual-test:not(:last-child) {
     padding-bottom: 14px; }
   section.visual-test header {
-    background: #c2c2bb;
-    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3);
-    color: #4a4a50;
+    background: #1a1a1a;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(153, 153, 153, 0.3);
+    color: #d1d1d1;
     font-weight: bold;
     padding-bottom: 7px;
     padding-top: 14px;
-    text-shadow: 0 1px #dadad6; }
+    text-shadow: 0 1px #333333; }
     section.visual-test header > .label::after {
       content: ':'; }
     section.visual-test header > [data-rel=docs] {
       float: right;
       font-weight: normal; }
   section.visual-test footer:not(:empty) {
-    background: #cecec9;
+    background: #262626;
     border-radius: 10px;
-    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(153, 153, 153, 0.3);
     margin-bottom: 14px;
     padding: 7px; }
     section.visual-test footer:not(:empty) > button {
@@ -673,31 +756,12 @@ section.visual-test header:after,
 .clearfix, section.visual-test header, .bar, .grid {
   *zoom: 1; }
 
-.js-editable-inline .js-text,
-.js-editable-inline .js-input input {
-  border-color: transparent;
-  background-color: transparent; }
-  .js-editable-inline .js-text:focus,
-  .js-editable-inline .js-input input:focus {
-    outline-style: none; }
-.js-editable-inline .js-text {
-  cursor: text; }
-  .js-editable-inline .js-text:hover {
-    background-color: rgba(0, 0, 0, 0.1); }
-.js-editable-inline .js-input input {
-  border-bottom-color: black; }
-.js-editable-inline .js-text,
-.js-editable-inline .js-input input {
-  border-width: 1px;
-  margin: 0;
-  padding: 0;
-  width: 160px; }
-.js-editable-inline .js-text {
-  overflow-x: hidden;
-  white-space: nowrap; }
-.js-editable-inline .js-input input {
-  margin: -1px; }
-.js-editable-inline .js-text {
-  transition: background-color 0.2s ease-in-out; }
+#main {
+  padding-bottom: 0; }
 
-/*# sourceMappingURL=editable.css.map */
+.js-mg.test-body {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 1rem; }
+
+/*# sourceMappingURL=media-grid.css.map */

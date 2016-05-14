@@ -30,7 +30,8 @@ for other extensions and plugins are attached to this main namespace.</p></div><
     )
   <span class="hljs-keyword">else</span>
     attach jQuery, _
-)(@, <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="namespace">Namespace</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>It takes some more boilerplate and helpers to write jQuery modules. That
+)(@, <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
+  <span class="hljs-string">'use strict'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="namespace">Namespace</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>It takes some more boilerplate and helpers to write jQuery modules. That
 code and set of conventions is here in the root namespace <strong>$.hlf</strong>. Child
 namespaces follow suit convention.</p>
 <ul>
@@ -111,6 +112,7 @@ beforehand as well.</p>
       _noConflicts.push (namespace.noConflict = <span class="hljs-function">-&gt;</span>
         <span class="hljs-keyword">if</span> _.isFunction(_noConflict) <span class="hljs-keyword">then</span> _noConflict()
         $.fn[name] = _plugin
+        <span class="hljs-keyword">return</span>
       )</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Plugin Method</strong></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The <strong>plugin</strong> method handles two variations of input. A command <code>type</code>
 (name) and <code>userInfo</code> can be passed in to trigger the command route. The
 latter is typically additional, command-specific parameters. Otherwise,
@@ -144,6 +146,7 @@ deciding the main element before passing over to <code>_createPluginInstance</co
               <span class="hljs-keyword">if</span> _.isFunction(command.userInfo) <span class="hljs-keyword">then</span> command.userInfo $el
               sender = <span class="hljs-literal">null</span>
               instance.handleCommand command, sender
+            <span class="hljs-keyword">return</span>
           <span class="hljs-keyword">return</span> @ <span class="hljs-comment"># Follow plugin return conventions.</span>
 
         <span class="hljs-keyword">else</span>
@@ -155,8 +158,13 @@ deciding the main element before passing over to <code>_createPluginInstance</co
         $el = @
         ( <span class="hljs-function">-&gt;</span>
           args = arguments
-          <span class="hljs-keyword">if</span> createOptions.asSharedInstance <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span> <span class="hljs-keyword">then</span> _createPluginInstance $el, args...
-          <span class="hljs-keyword">else</span> $el.each -&gt; _createPluginInstance $(@), args...
+          <span class="hljs-keyword">if</span> createOptions.asSharedInstance <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span>
+            _createPluginInstance $el, args...
+          <span class="hljs-keyword">else</span>
+            $el.each -&gt;
+              _createPluginInstance $(@), args...
+              <span class="hljs-keyword">return</span>
+          <span class="hljs-keyword">return</span>
         )(options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions)
         <span class="hljs-keyword">return</span> @ <span class="hljs-comment"># Follow plugin return conventions.</span>
 
@@ -244,7 +252,7 @@ the API, call it. Convention is to always provide it.</p>
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> apiClass? <span class="hljs-keyword">then</span> hlf.debugLog <span class="hljs-string">'ERROR: No `init` method on instance.'</span>, instance
 
     $root.data instance.attr(), instance
-    <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>_createPluginAPIAdditions</strong> is a private subroutine that&#39;s part of
+    <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>_createPluginAPIAdditions</strong> is an internal subroutine that&#39;s part of
 <code>createPlugin</code>, which has more details on its required input.</p>
 <ul>
 <li>Add the <strong>evt</strong> method to namespace an event name.</li>
@@ -254,7 +262,10 @@ class namespacing is unique.</li>
 <li>Add the <strong>debugLog</strong> method and attach functionality instead of a no-op
 only if namespace <code>debug</code> is on.</li>
 </ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function">  <span class="hljs-title">_createPluginAPIAdditions</span> = <span class="hljs-params">(name, namespace)</span> -&gt;</span>
-    <span class="hljs-attribute">evt</span>: _.memoize (name) -&gt; <span class="hljs-string">"<span class="hljs-subst">#{name}</span><span class="hljs-subst">#{namespace.toString <span class="hljs-string">'event'</span>}</span>"</span>
+    <span class="hljs-attribute">evt</span>: _.memoize (name) -&gt;
+      <span class="hljs-keyword">if</span> _.contains(name, <span class="hljs-string">' '</span>)
+        <span class="hljs-keyword">return</span> name.split(<span class="hljs-string">' '</span>).reduce (<span class="hljs-function"><span class="hljs-params">(names, n)</span> =&gt;</span> <span class="hljs-string">"<span class="hljs-subst">#{names}</span> <span class="hljs-subst">#{<span class="hljs-property">@evt</span>(n)}</span>"</span>), <span class="hljs-string">''</span>
+      <span class="hljs-string">"<span class="hljs-subst">#{name}</span><span class="hljs-subst">#{namespace.toString <span class="hljs-string">'event'</span>}</span>"</span>
     <span class="hljs-attribute">attr</span>: _.memoize (name) -&gt;
       name = <span class="hljs-keyword">if</span> name? <span class="hljs-keyword">then</span> <span class="hljs-string">"-<span class="hljs-subst">#{name}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
       namespace.toString(<span class="hljs-string">'data'</span>) + name
@@ -262,8 +273,11 @@ only if namespace <code>debug</code> is on.</li>
       _.memoize (name) -&gt;
         name = <span class="hljs-keyword">if</span> name? <span class="hljs-keyword">then</span> <span class="hljs-string">"-<span class="hljs-subst">#{name}</span>"</span> <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
         namespace.toString(<span class="hljs-string">'class'</span>) + name
-    <span class="hljs-attribute">debugLog</span>: <span class="hljs-keyword">if</span> namespace.debug <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span> <span class="hljs-keyword">then</span> $.noop <span class="hljs-keyword">else</span>
-      -&gt; hlf.debugLog namespace.toString(<span class="hljs-string">'log'</span>), arguments...</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="mixin-support">Mixin Support</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Mixins are another approach to encapsulating object-oriented behavior. This
+    <span class="hljs-attribute">debugLog</span>: <span class="hljs-keyword">if</span> namespace.debug <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span> <span class="hljs-keyword">then</span> $.noop <span class="hljs-keyword">else</span> -&gt;
+      hlf.debugLog namespace.toString(<span class="hljs-string">'log'</span>), arguments...
+      <span class="hljs-keyword">return</span>
+
+  hlf._createPluginAPIAdditions = _createPluginAPIAdditions</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="mixin-support">Mixin Support</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Mixins are another approach to encapsulating object-oriented behavior. This
 set of helper functions are to fill the gap of a generic mixin system left
 by jQuery&#39;s highly-specified plugin system. General mixins are also provided
 to add helper methods for even more flexible extensions between mixins.</p></div></div><div class="code"><div class="wrapper">  _.extend hlf,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>applyMixin</strong>, when given a <code>context</code> to decorate with a valid <code>mixin</code>,
@@ -349,20 +363,26 @@ Also provide selection helpers for common tasks.</p>
               arguments[<span class="hljs-number">0</span>] = <span class="hljs-property">@attr</span> first
             <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> _.isObject(first)
               pairs = {}
-              (pairs[attr(k)] = v) <span class="hljs-keyword">for</span> own k, v <span class="hljs-keyword">of</span> first
+              (pairs[<span class="hljs-property">@attr</span>(k)] = v) <span class="hljs-keyword">for</span> own k, v <span class="hljs-keyword">of</span> first
               arguments[<span class="hljs-number">0</span>] = pairs
           <span class="hljs-property">@$el</span>.data.apply <span class="hljs-property">@$el</span>, arguments
 
       <span class="hljs-attribute">event</span>: <span class="hljs-function">-&gt;</span>
-        <span class="hljs-attribute">on</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span>
-          name = <span class="hljs-property">@evt</span> name <span class="hljs-keyword">if</span> name?
+        <span class="hljs-attribute">evtMap</span>: <span class="hljs-function"><span class="hljs-params">(map)</span> -&gt;</span>
+          namespaced = {}
+          namespaced[<span class="hljs-property">@evt</span>(name)] = handler <span class="hljs-keyword">for</span> own name, handler <span class="hljs-keyword">of</span> map
+          namespaced
+        <span class="hljs-attribute">on</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span>
+          arguments[<span class="hljs-number">0</span>] = <span class="hljs-keyword">if</span> _.isString(obj) <span class="hljs-keyword">then</span> <span class="hljs-property">@evt</span>(obj) <span class="hljs-keyword">else</span> <span class="hljs-property">@evtMap</span>(obj)
           <span class="hljs-property">@$el</span>.<span class="hljs-literal">on</span>.apply <span class="hljs-property">@$el</span>, arguments
-        <span class="hljs-attribute">off</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span>
-          name = <span class="hljs-property">@evt</span> name <span class="hljs-keyword">if</span> name?
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-attribute">off</span>: <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span>
+          arguments[<span class="hljs-number">0</span>] = <span class="hljs-keyword">if</span> _.isString(obj) <span class="hljs-keyword">then</span> <span class="hljs-property">@evt</span>(obj) <span class="hljs-keyword">else</span> <span class="hljs-property">@evtMap</span>(obj)
           <span class="hljs-property">@$el</span>.<span class="hljs-literal">off</span>.apply <span class="hljs-property">@$el</span>, arguments
-        <span class="hljs-attribute">trigger</span>: <span class="hljs-function"><span class="hljs-params">(name, userInfo)</span> -&gt;</span>
-          type = <span class="hljs-property">@evt</span> name
-          <span class="hljs-property">@$el</span>.trigger { type, userInfo }
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-attribute">trigger</span>: <span class="hljs-function"><span class="hljs-params">(name, userInfo)</span> -&gt;</span> <span class="hljs-comment"># TODO: WIP.</span>
+          <span class="hljs-property">@$el</span>.trigger { <span class="hljs-attribute">type</span>: <span class="hljs-property">@evt</span>(name), userInfo }
+          <span class="hljs-keyword">return</span>
 
       <span class="hljs-attribute">selection</span>: <span class="hljs-function">-&gt;</span>
         <span class="hljs-attribute">select</span>: <span class="hljs-function">-&gt;</span>
@@ -376,7 +396,7 @@ Also provide selection helpers for common tasks.</p>
           <span class="hljs-property">@$el</span>.find <span class="hljs-string">".<span class="hljs-subst">#{<span class="hljs-property">@classNames</span>[className]}</span>"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Attaching</strong></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>_safeSet</strong> is an internal wrapper around <code>_noConflict</code>.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">  <span class="hljs-title">_safeSet</span> = <span class="hljs-params">(key, toContext=$, fromContext=hlf)</span> -&gt;</span>
     _oldValue = toContext[key]
     toContext[key] = fromContext[key]
-    _noConflicts.push -&gt; toContext[key] = _oldValue
+    _noConflicts.push -&gt; toContext[key] = _oldValue; <span class="hljs-keyword">return</span>
     <span class="hljs-keyword">return</span>
 
   _safeSet <span class="hljs-string">'applyMixin'</span>

@@ -14,9 +14,9 @@ HLF Editable Visual Tests
   });
 
   require(['jquery', 'underscore', 'test/base-visual', 'hlf/jquery.hlf.editable'], function($, _) {
-    var shouldRunVisualTests, tests;
-    shouldRunVisualTests = $('#qunit').length === 0;
-    if (!shouldRunVisualTests) {
+    'use strict';
+    var tests;
+    if (window.QUnit != null) {
       return false;
     }
     tests = [];
@@ -33,13 +33,14 @@ HLF Editable Visual Tests
       anchorName: 'default',
       className: 'default-call'
     }));
-    return $(function() {
+    $(function() {
       var i, len, test;
       for (i = 0, len = tests.length; i < len; i++) {
         test = tests[i];
         test();
       }
     });
+    return true;
   });
 
 }).call(this);

@@ -53,6 +53,34 @@ $('article').find('a[title]').snapTip(); // Tip will not follow.
 
 See [Tip's visual tests][] for more examples.
 
+### [HLF Media Grid][]
+
+Main features summary:
+
+- Allows expanding an item inline without affecting the position of its siblings.
+- Handles additional effects like focusing on the expanded item and dimming its
+  siblings.
+
+Short examples:
+
+```html
+<div class="tiles">
+  <div class="js-mg-item">
+    <div class="mg-preview">...</div>
+    <div class="mg-detail">...</div>
+  </div>
+  ...
+</div>
+```
+
+```js
+var mg = $('.tiles').mediaGrid().mediaGrid();
+setTimeout(function() { mg.trigger('ready'); }, 500); // Better to use imagesLoaded.
+```
+
+See [Media Grid's unit tests][] and [Media Grid's visual tests][] for more
+examples.
+
 ## Extensions
 
 All extensions should be covered by QUnit tests.
@@ -98,7 +126,7 @@ Main features:
 ## Install
 
 ```bash
-your-project> bower install hlf-jquery
+$ npm install hlf-jquery
 ```
 
 ## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
@@ -131,8 +159,11 @@ Copyright (c) 2014-present Peng Wang
 [annotated source code]: http://hlfcoding.github.io/hlf-jquery/docs/index.html
 [HLF Tip]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.tip.html
 [Tip's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
+[HLF Media Grid]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.media-grid.html
+[Media Grid's unit tests]: http://hlfcoding.github.io/hlf-jquery/tests/media-grid.unit.html
+[Media Grid's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/media-grid.visual.html
 [HLF Core]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.core.html
-[Core's unit tests]: http://localhost/hlf-jquery/tests/core.unit.html
+[Core's unit tests]: http://hlfcoding.github.io/hlf-jquery/tests/core.unit.html
 [HLF Event]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.event.html
 [HLF Editable]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.editable.html
 [Editable's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/editable.visual.html

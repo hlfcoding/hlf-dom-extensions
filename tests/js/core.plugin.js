@@ -6,7 +6,9 @@ HLF Core Plugin Unit Tests
 
 (function() {
   define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core', 'test/base'], function($, _, hlf) {
-    var SomePlugin, assertGeneralPlugin;
+    'use strict';
+    var SomePlugin, assertGeneralPlugin, module, test;
+    module = QUnit.module, test = QUnit.test;
     SomePlugin = (function() {
       function SomePlugin($el, options, $context) {
         this.$el = $el;
@@ -16,8 +18,8 @@ HLF Core Plugin Unit Tests
       return SomePlugin;
 
     })();
-    QUnit.module('plugin', {
-      setup: function() {
+    module('plugin core', {
+      beforeEach: function() {
         this.namespace = {
           debug: false,
           toString: _.memoize(function(context) {
@@ -92,21 +94,21 @@ HLF Core Plugin Unit Tests
     });
     assertGeneralPlugin = function(assert) {
       var result;
-      assert.ok(this.$someElement.somePlugin, 'Plugin method should have been created and attached to jQuery elements.');
+      assert.ok(this.$someElement.somePlugin, 'Plugin method is created and attached to jQuery elements.');
       this.$someElement.somePlugin();
       result = this.$someElement.somePlugin();
-      assert.hasFunctions(result, ['evt', 'attr', 'cls', 'debugLog', 'select'], 'Plugin instance should have generated API additions.');
-      assert.hasOwnProperties(result, _.keys(this.namespace.defaults), 'Plugin instance should have options merged in as properties.');
-      assert.ok(result.$someElement, 'Plugin instance should have auto-selected sub elements based on selectors option.');
+      assert.hasFunctions(result, ['evt', 'attr', 'cls', 'debugLog', 'select'], 'Instance has generated API additions.');
+      assert.hasOwnProperties(result, _.keys(this.namespace.defaults), 'Instance has options merged in as properties.');
+      assert.ok(result.$someElement, 'Instance has auto-selected sub elements based on selectors option.');
       return result;
     };
-    QUnit.test('createPlugin with apiClass and baseMixins', function(assert) {
+    test('.createPlugin with apiClass, baseMixins', function(assert) {
       var result;
       hlf.createPlugin(this.baseCreateOptions);
       result = assertGeneralPlugin.call(this, assert);
-      assert.ok(result instanceof SomePlugin, 'Plugin method should return instance upon re-invocation without any parameters.');
+      assert.ok(result instanceof SomePlugin, 'It returns instance upon re-invocation without any parameters.');
     });
-    QUnit.test('createPlugin with apiMixins and baseMixins', function(assert) {
+    test('.createPlugin with apiMixins, baseMixins', function(assert) {
       var createOptions, result;
       createOptions = this.baseCreateOptions;
       createOptions.apiClass = null;
@@ -114,19 +116,19 @@ HLF Core Plugin Unit Tests
       createOptions.baseMixins.push('data', 'event');
       hlf.createPlugin(createOptions);
       result = assertGeneralPlugin.call(this, assert);
-      assert.hasFunctions(result, ['data', 'on', 'off', 'trigger'], 'Base mixin methods should have been added to instance.');
-      assert.strictEqual(result.someMixinMethod(), 'foo', 'Mixin method attached to instance should work.');
-      assert.strictEqual(result.someOtherMixinMethod(), 'bar', 'Mixin method attached to instance should work.');
-      assert.strictEqual(result.someMixinProperty, 'foo', 'Mixin property should have been set on deferred initialization.');
-      assert.strictEqual(result.someOtherMixinProperty, 'bar', 'Mixin property should have been set on deferred initialization.');
+      assert.hasFunctions(result, ['data', 'on', 'off', 'trigger'], 'It adds base mixin methods to instance.');
+      assert.strictEqual(result.someMixinMethod(), 'foo', 'Mixin method attached to instance works.');
+      assert.strictEqual(result.someOtherMixinMethod(), 'bar', 'Mixin method attached to instance works.');
+      assert.strictEqual(result.someMixinProperty, 'foo', 'Mixin property is set on deferred initialization.');
+      assert.strictEqual(result.someOtherMixinProperty, 'bar', 'Mixin property is set on deferred initialization.');
     });
-    QUnit.test('createPlugin with apiClass and baseMixins and asSharedInstance', function(assert) {
+    test('.createPlugin with apiClass, baseMixins, asSharedInstance', function(assert) {
       var createOptions, result;
       createOptions = this.baseCreateOptions;
       createOptions.asSharedInstance = true;
       hlf.createPlugin(createOptions);
       result = assertGeneralPlugin.call(this, assert);
-      assert.strictEqual(result, $('body').data('somePlugin'), 'Plugin singleton should be stored with context element.');
+      assert.strictEqual(result, $('body').data('somePlugin'), 'It stores plugin singleton with context element.');
     });
     return true;
   });

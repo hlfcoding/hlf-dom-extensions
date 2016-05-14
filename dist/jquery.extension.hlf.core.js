@@ -18,6 +18,7 @@ HLF Core jQuery Extension
       return attach(jQuery, _);
     }
   })(this, function($, _) {
+    'use strict';
     var _createPluginAPIAdditions, _createPluginInstance, _noConflicts, _safeSet, hlf;
     hlf = {
       debug: true,
@@ -66,7 +67,7 @@ HLF Core jQuery Extension
           if (_.isFunction(_noConflict)) {
             _noConflict();
           }
-          return $.fn[name] = _plugin;
+          $.fn[name] = _plugin;
         }));
         return plugin = $.fn[name] = $.fn[safeName] = function() {
           var $context, $el, command, instance, options;
@@ -94,7 +95,7 @@ HLF Core jQuery Extension
                   command.userInfo($el);
                 }
                 sender = null;
-                return instance.handleCommand(command, sender);
+                instance.handleCommand(command, sender);
               }
             });
             return this;
@@ -111,10 +112,10 @@ HLF Core jQuery Extension
             var args;
             args = arguments;
             if (createOptions.asSharedInstance === true) {
-              return _createPluginInstance.apply(null, [$el].concat(slice.call(args)));
+              _createPluginInstance.apply(null, [$el].concat(slice.call(args)));
             } else {
-              return $el.each(function() {
-                return _createPluginInstance.apply(null, [$(this)].concat(slice.call(args)));
+              $el.each(function() {
+                _createPluginInstance.apply(null, [$(this)].concat(slice.call(args)));
               });
             }
           })(options, $context, namespace, apiClass, apiMixins, mixinFilter, createOptions);
@@ -182,6 +183,13 @@ HLF Core jQuery Extension
     _createPluginAPIAdditions = function(name, namespace) {
       return {
         evt: _.memoize(function(name) {
+          if (_.contains(name, ' ')) {
+            return name.split(' ').reduce(((function(_this) {
+              return function(names, n) {
+                return names + " " + (_this.evt(n));
+              };
+            })(this)), '');
+          }
           return "" + name + (namespace.toString('event'));
         }),
         attr: _.memoize(function(name) {
@@ -193,10 +201,11 @@ HLF Core jQuery Extension
           return namespace.toString('class') + name;
         }),
         debugLog: namespace.debug === false ? $.noop : function() {
-          return hlf.debugLog.apply(hlf, [namespace.toString('log')].concat(slice.call(arguments)));
+          hlf.debugLog.apply(hlf, [namespace.toString('log')].concat(slice.call(arguments)));
         }
       };
     };
+    hlf._createPluginAPIAdditions = _createPluginAPIAdditions;
     _.extend(hlf, {
       applyMixin: function(context, dependencies, mixin) {
         var handlerNames, i, len, method, mixinToApply, name, onceMethods, prop;
@@ -277,7 +286,7 @@ HLF Core jQuery Extension
                   for (k in first) {
                     if (!hasProp.call(first, k)) continue;
                     v = first[k];
-                    pairs[attr(k)] = v;
+                    pairs[this.attr(k)] = v;
                   }
                   arguments[0] = pairs;
                 }
@@ -288,23 +297,27 @@ HLF Core jQuery Extension
         },
         event: function() {
           return {
-            on: function(name) {
-              if (name != null) {
-                name = this.evt(name);
+            evtMap: function(map) {
+              var handler, name, namespaced;
+              namespaced = {};
+              for (name in map) {
+                if (!hasProp.call(map, name)) continue;
+                handler = map[name];
+                namespaced[this.evt(name)] = handler;
               }
-              return this.$el.on.apply(this.$el, arguments);
+              return namespaced;
             },
-            off: function(name) {
-              if (name != null) {
-                name = this.evt(name);
-              }
-              return this.$el.off.apply(this.$el, arguments);
+            on: function(obj) {
+              arguments[0] = _.isString(obj) ? this.evt(obj) : this.evtMap(obj);
+              this.$el.on.apply(this.$el, arguments);
+            },
+            off: function(obj) {
+              arguments[0] = _.isString(obj) ? this.evt(obj) : this.evtMap(obj);
+              this.$el.off.apply(this.$el, arguments);
             },
             trigger: function(name, userInfo) {
-              var type;
-              type = this.evt(name);
-              return this.$el.trigger({
-                type: type,
+              this.$el.trigger({
+                type: this.evt(name),
                 userInfo: userInfo
               });
             }
@@ -346,7 +359,7 @@ HLF Core jQuery Extension
       _oldValue = toContext[key];
       toContext[key] = fromContext[key];
       _noConflicts.push(function() {
-        return toContext[key] = _oldValue;
+        toContext[key] = _oldValue;
       });
     };
     _safeSet('applyMixin');

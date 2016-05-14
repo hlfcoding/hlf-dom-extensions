@@ -1,10 +1,11 @@
 <!DOCTYPE html><html lang="en"><head><title>tests/css/editable</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/css/editable"><meta name="groc-project-path" content="tests/css/editable.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/css/editable.scss</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="-hlf-editable-visual-tests">  HLF Editable Visual Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../../../tests/editable.visual.html">Page</a> | <a href="../../src/css/jquery.hlf.editable.html">Styles</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-at_rule">@<span class="hljs-keyword">import</span> <span class="hljs-string">'../../dist/jquery.hlf.editable'</span>;</span>
 <span class="hljs-at_rule">@<span class="hljs-keyword">import</span> <span class="hljs-string">'base'</span>;</span>
 
-#{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$editable-inline-selectors</span>, container)} {
-  <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> editable-inline-skin</span>;</span>
-  <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> editable-inline-layout</span>;</span>
-  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$editable-inline-selectors</span>, <span class="hljs-value">text</span>)} {
+#{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$hlf-editable-inline-selectors</span>, container)} {
+  <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> hlf-editable-inline-skin</span>;</span>
+  <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> hlf-editable-inline-layout</span>;</span>
+
+  #{<span class="hljs-function">map-get</span>(<span class="hljs-variable">$hlf-editable-inline-selectors</span>, <span class="hljs-value">text</span>)} {
     <span class="hljs-attribute">transition</span><span class="hljs-value">: background-color <span class="hljs-number">0.2s</span> ease-in-out;</span>
   }
 }</div></div></div></div></body></html>

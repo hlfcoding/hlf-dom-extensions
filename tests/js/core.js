@@ -15,23 +15,20 @@ Offloads testing larger corer components to other test modules.
   });
 
   require(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core', 'test/base', 'test/core.mixin', 'test/core.plugin'], function($, _, hlf) {
-    var shouldRunVisualTests;
-    shouldRunVisualTests = $('#qunit').length === 0;
-    if (shouldRunVisualTests) {
-      $(function() {});
-    } else {
-      QUnit.module('other');
-      QUnit.test('exports', function(assert) {
-        assert.ok(hlf, 'Namespace should exist.');
-      });
-      QUnit.test('noConflict', function(assert) {
-        assert.ok($.createPlugin, 'Method shortcut for createPlugin should exist.');
-        hlf.noConflict();
-        assert.strictEqual($.createPlugin, void 0, 'Method shortcut for createPlugin should be back to original value.');
-        assert.ok(hlf.createPlugin, 'Original method for createPlugin should still exist.');
-      });
-      QUnit.start();
-    }
+    'use strict';
+    var module, test;
+    module = QUnit.module, test = QUnit.test;
+    module('other');
+    test('exports', function(assert) {
+      assert.ok(hlf, 'Namespace should exist.');
+    });
+    test('noConflict', function(assert) {
+      assert.ok($.createPlugin, 'Method shortcut for createPlugin exists by default, w/o noConflict.');
+      hlf.noConflict();
+      assert.strictEqual($.createPlugin, void 0, 'After call, method shortcut for createPlugin is back to old value.');
+      assert.ok(hlf.createPlugin, 'After call, original method for createPlugin still exists.');
+    });
+    QUnit.start();
     return true;
   });
 

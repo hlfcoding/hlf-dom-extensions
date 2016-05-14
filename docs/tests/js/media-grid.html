@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en"><head><title>tests/js/media-grid</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/media-grid"><meta name="groc-project-path" content="tests/js/media-grid.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/media-grid.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-media-grid-visual-tests">HLF Media Grid Visual Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../../../tests/media-grid.visual.html">Page</a> | <a href="../../src/js/jquery.hlf.media-grid.html">Source</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
+  <span class="hljs-attribute">baseUrl</span>: <span class="hljs-string">'../lib'</span>
+  <span class="hljs-attribute">paths</span>:
+    <span class="hljs-attribute">hlf</span>: <span class="hljs-string">'../dist'</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-string">'../tests/js'</span>
+
+<span class="hljs-built_in">require</span> [
+  <span class="hljs-string">'jquery'</span>
+  <span class="hljs-string">'underscore'</span>
+  <span class="hljs-string">'test/base'</span>
+  <span class="hljs-string">'test/base-visual'</span>
+  <span class="hljs-string">'hlf/jquery.hlf.media-grid'</span>
+], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
+  <span class="hljs-string">'use strict'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the context is QUnit, run any unit tests. In most cases, an API class
+instance still requires some HTML fragments, and even temporarily attaching
+them to the DOM.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> <span class="hljs-built_in">window</span>.QUnit?
+    {<span class="hljs-built_in">module</span>, test} = QUnit
+
+    <span class="hljs-built_in">module</span> <span class="hljs-string">'hlf.mediaGrid'</span>,
+      <span class="hljs-attribute">beforeEach</span>: <span class="hljs-function">-&gt;</span>
+        <span class="hljs-property">@mg</span> = $ <span class="hljs-string">"""
+          &lt;div&gt;
+            &lt;div&gt;
+              &lt;div class="js-mg-item"&gt;&lt;/div&gt;
+              &lt;div class="js-mg-item"&gt;&lt;/div&gt;
+              &lt;div class="js-mg-item"&gt;&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          """</span>
+          .appendTo(<span class="hljs-string">'body'</span>) <span class="hljs-comment"># Required for 'auto' width.</span>
+          .children(<span class="hljs-string">'div'</span>).mediaGrid().mediaGrid()
+
+      <span class="hljs-attribute">afterEach</span>: <span class="hljs-function">-&gt;</span>
+        <span class="hljs-property">@mg</span>.$el.parent().remove()
+  
+    test <span class="hljs-string">'#_updateMetrics'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
+      {$el, $items} = <span class="hljs-property">@mg</span>
+      $el.add($items).css <span class="hljs-attribute">boxSizing</span>: <span class="hljs-string">'border-box'</span>
+      $el.css <span class="hljs-attribute">padding</span>: <span class="hljs-number">10</span>
+
+      $el.parent().css <span class="hljs-attribute">width</span>: <span class="hljs-number">610</span>
+      $items.css <span class="hljs-attribute">marginRight</span>: <span class="hljs-number">10</span>, <span class="hljs-attribute">padding</span>: <span class="hljs-number">9</span>, <span class="hljs-attribute">borderWidth</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">width</span>: <span class="hljs-number">200</span>, <span class="hljs-attribute">height</span>: <span class="hljs-number">200</span>
+      <span class="hljs-property">@mg</span>._updateMetrics <span class="hljs-literal">on</span>
+      assert.strictEqual <span class="hljs-property">@mg</span>.metrics.gutter, <span class="hljs-number">10</span>,
+        <span class="hljs-string">'It calculates gutter based on item margin sizes.'</span>
+      assert.strictEqual <span class="hljs-property">@mg</span>.metrics.itemWidth, <span class="hljs-number">200</span>,
+        <span class="hljs-string">"It uses the item's 'outerWidth' as item width."</span>
+      assert.strictEqual <span class="hljs-property">@mg</span>.metrics.rowSize, <span class="hljs-number">2</span>,
+        <span class="hljs-string">'It calculates row size based on item and wrap sizes.'</span>
+      assert.strictEqual <span class="hljs-property">@mg</span>.metrics.colSize, <span class="hljs-number">2</span>,
+        <span class="hljs-string">'It calculates column size based on row size.'</span>
+
+      $el.parent().css <span class="hljs-attribute">width</span>: <span class="hljs-number">620</span>
+      <span class="hljs-property">@mg</span>._updateMetrics <span class="hljs-literal">on</span>
+      assert.strictEqual <span class="hljs-property">@mg</span>.metrics.rowSize, <span class="hljs-number">3</span>,
+        <span class="hljs-string">'It calculates row size based on item and wrap sizes.'</span>
+      assert.strictEqual <span class="hljs-property">@mg</span>.selectByClass(<span class="hljs-string">'sample'</span>).length, <span class="hljs-number">1</span>,
+        <span class="hljs-string">'It cleans up after multiple hard updates.'</span>
+      <span class="hljs-keyword">return</span>
+
+    QUnit.start()
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">yes</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setup visual tests. Tests are decorated closures queued and run on document-
+ready. Note that the sample logic in tests is in JavaScript (perhaps easier to
+understand than CoffeeScript) for your convenience.</p></div></div><div class="code"><div class="wrapper">  tests = []</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="default">Default</h2>
+<p>Basic test with the default settings and all content extras. <code>MediaGrid</code>
+instance is created and accessed via <code>$.fn.mediaGrid</code>. Item content markup
+can be customized as fit.</p></div></div><div class="code"><div class="wrapper">  tests.push $.visualTest
+
+    <span class="hljs-attribute">label</span>: <span class="hljs-string">'by default'</span>
+    <span class="hljs-attribute">template</span>:
+      <span class="hljs-string">"""
+      &lt;div class="test-body"&gt;
+      &lt;% _.range(12).forEach(function() { %&gt;
+        &lt;article class="js-mg-item"&gt;
+          &lt;section class="mg-preview"&gt;
+            &lt;img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" /&gt;
+            &lt;hgroup&gt;
+              &lt;h1 class="mg-title"&gt;&lt;%= loremIpsum.title %&gt;&lt;/h1&gt;
+              &lt;h2 class="mg-date"&gt;July 14, 2012&lt;/h2&gt;
+            &lt;/hgroup&gt;
+            &lt;ul class="mg-tags"&gt;
+              &lt;li&gt;foo&lt;/li&gt;
+              &lt;li&gt;bar&lt;/li&gt;
+              &lt;li&gt;baz&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/section&gt;
+          &lt;section class="mg-detail"&gt;
+            &lt;img src="http://placehold.it/418x270/888/aaa" alt="main banner" /&gt;
+            &lt;hgroup&gt;
+              &lt;h1 class="mg-title"&gt;&lt;%= loremIpsum.title %&gt;&lt;/h1&gt;
+              &lt;h2 class="mg-date"&gt;July 14, 2012&lt;/h2&gt;
+            &lt;/hgroup&gt;
+            &lt;p&gt;&lt;%= loremIpsum.short %&gt;&lt;/p&gt;
+            &lt;ul class="mg-tags"&gt;
+              &lt;li&gt;foo&lt;/li&gt;
+              &lt;li&gt;bar&lt;/li&gt;
+              &lt;li&gt;baz&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/section&gt;
+        &lt;/article&gt;
+      &lt;% }) %&gt;
+      &lt;/div&gt;
+      """</span>
+    <span class="hljs-attribute">test</span>: <span class="hljs-function"><span class="hljs-params">($context)</span> -&gt;</span>
+      `<span class="javascript"><span class="hljs-keyword">var</span> mg = $context.find(<span class="hljs-string">'.test-body'</span>).mediaGrid().mediaGrid();
+      _.delay(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ mg.trigger(<span class="hljs-string">'ready'</span>); }, <span class="hljs-number">500</span>);</span>` <span class="hljs-comment"># Better to use imagesLoaded.</span>
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-attribute">anchorName</span>: <span class="hljs-string">'default'</span>
+    <span class="hljs-attribute">className</span>: <span class="hljs-string">'default-call'</span>
+    <span class="hljs-attribute">vars</span>: _.pick $, <span class="hljs-string">'loremIpsum'</span>
+
+  $ -&gt;
+    test() <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests
+    <span class="hljs-keyword">return</span>
+
+  <span class="hljs-literal">yes</span></div></div></div></div></body></html>

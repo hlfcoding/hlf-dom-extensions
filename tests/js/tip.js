@@ -41,9 +41,9 @@ HLF Tip Visual Tests
   })();
 
   require(['jquery', 'underscore'].concat(animatorDeps, ['test/base-visual', 'hlf/jquery.hlf.tip']), function($, _) {
-    var shouldRunVisualTests, tests;
-    shouldRunVisualTests = $('#qunit').length === 0;
-    if (!shouldRunVisualTests) {
+    'use strict';
+    var tests;
+    if (window.QUnit != null) {
       return false;
     }
     tests = [];
@@ -61,11 +61,11 @@ HLF Tip Visual Tests
     };;
     }
     tests.push($.visualTest({
-      label: "by default",
+      label: 'by default',
       template: "<p>\n  <a class=\"trigger\" title=\"link details\" href=\"javascript:\">tooltip trigger</a> &middot;\n  <a class=\"trigger\" title=\"<%= loremIpsum.short %>\" href=\"javascript:\">tooltip trigger</a> &middot;\n  <a class=\"trigger\" title=\"<%= loremIpsum.long %>\" href=\"javascript:\">tooltip trigger</a>\n</p>",
       test: function($context) {
         $context.find('[title]').tip(null, $context);;
-        api = $context.tip(null, $context);;
+        var api = $context.tip(null, $context);;
       },
       anchorName: 'default',
       className: 'default-call',
@@ -129,13 +129,14 @@ HLF Tip Visual Tests
       className: 'edge-call',
       vars: _.pick($, 'loremIpsum')
     }));
-    return $(function() {
+    $(function() {
       var i, len, test;
       for (i = 0, len = tests.length; i < len; i++) {
         test = tests[i];
         test();
       }
     });
+    return true;
   });
 
 }).call(this);

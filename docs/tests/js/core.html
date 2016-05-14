@@ -13,28 +13,27 @@
   <span class="hljs-string">'test/core.mixin'</span>
   <span class="hljs-string">'test/core.plugin'</span>
 ], <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
-  shouldRunVisualTests = $(<span class="hljs-string">'#qunit'</span>).length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span>
+  <span class="hljs-string">'use strict'</span>
 
-  <span class="hljs-keyword">if</span> shouldRunVisualTests <span class="hljs-keyword">then</span> $ -&gt;
-  <span class="hljs-keyword">else</span>
+  {<span class="hljs-built_in">module</span>, test} = QUnit
 
-    QUnit.<span class="hljs-built_in">module</span> <span class="hljs-string">'other'</span>
+  <span class="hljs-built_in">module</span> <span class="hljs-string">'other'</span>
 
-    QUnit.test <span class="hljs-string">'exports'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
-      assert.ok hlf,
-        <span class="hljs-string">'Namespace should exist.'</span>
-      <span class="hljs-keyword">return</span>
+  test <span class="hljs-string">'exports'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
+    assert.ok hlf,
+      <span class="hljs-string">'Namespace should exist.'</span>
+    <span class="hljs-keyword">return</span>
 
-    QUnit.test <span class="hljs-string">'noConflict'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
-      assert.ok $.createPlugin,
-        <span class="hljs-string">'Method shortcut for createPlugin should exist.'</span>
-      hlf.noConflict()
-      assert.strictEqual $.createPlugin, <span class="hljs-literal">undefined</span>,
-        <span class="hljs-string">'Method shortcut for createPlugin should be back to original value.'</span>
-      assert.ok hlf.createPlugin,
-        <span class="hljs-string">'Original method for createPlugin should still exist.'</span>
-      <span class="hljs-keyword">return</span>
+  test <span class="hljs-string">'noConflict'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
+    assert.ok $.createPlugin,
+      <span class="hljs-string">'Method shortcut for createPlugin exists by default, w/o noConflict.'</span>
+    hlf.noConflict()
+    assert.strictEqual $.createPlugin, <span class="hljs-literal">undefined</span>,
+      <span class="hljs-string">'After call, method shortcut for createPlugin is back to old value.'</span>
+    assert.ok hlf.createPlugin,
+      <span class="hljs-string">'After call, original method for createPlugin still exists.'</span>
+    <span class="hljs-keyword">return</span>
 
-    QUnit.start()
+  QUnit.start()
 
   <span class="hljs-literal">yes</span></div></div></div></div></body></html>

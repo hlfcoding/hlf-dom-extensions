@@ -16,13 +16,13 @@
 // Note the order in this map used to styling the tip based on its side classes.
 // Because it gets more than one side class, the style for the side class that's
 // later wins, and so we want vertical to override horizontal.
-$_side-snap-side-map: (right: y, left: y, bottom: x, top: x);
-$_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
+$_hlf-side-snap-side-map: (right: y, left: y, bottom: x, top: x);
+$_hlf-side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
 
 // Mixins
 // ------
 
-// __tip-base__ should always be included. It contains the basic styles for tips
+// __hlf-tip-base__ should always be included. It contains the basic styles for tips
 // to display and position correctly that rarely need to re-implementation. The
 // resulting DOM structure looks like:
 // ```html
@@ -33,24 +33,29 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
 //   </div>
 // </div>
 // ```
-@mixin tip-base {
+@mixin hlf-tip-base {
   display: none;
   position: absolute;
+
   > .js-tip-inner {
     position: relative;
   }
+
   .js-tip-stem {
-    border: 0 solid transparent; width: 0; height: 0; // Initial values.
     background: none;
+    border: 0 solid transparent; // Initial value.
+    height: 0; // Initial value.
     position: absolute;
+    width: 0; // Initial value.
   }
+
   .js-tip-content {
     overflow: hidden;
     position: relative;
   }
 }
 
-// __tip-layout__ should be included unless you want to implement your own tip
+// __hlf-tip-layout__ should be included unless you want to implement your own tip
 // layout, specifically around tip stem position. The sizing logic structures
 // around `em-size`. Most of this mixin is handling the variations of classes on
 // the tip element. For example:
@@ -63,12 +68,12 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
 //    stem, and offset the content to match the stem size.
 // 4. Then make any stem layout adjustments for when the tip is snapping to an
 //    axis. The stem gets centered in this implementation.
-@mixin tip-layout($em-size: 12px,
-                  $content-padding-em: 2/3 1 5/6 1,
-                  $max-width-em: 18,
-                  $stem-size-em: 1,
-                  $stem-wide-base-em: 1.5,
-                  $z-index: 9999)
+@mixin hlf-tip-layout($em-size: 12px,
+                      $content-padding-em: 2/3 1 5/6 1,
+                      $max-width-em: 18,
+                      $stem-size-em: 1,
+                      $stem-wide-base-em: 1.5,
+                      $z-index: 9999)
 {
   $max-width: $max-width-em * $em-size;
   $stem-size: round($stem-size-em * $em-size);
@@ -79,20 +84,22 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
   }
 
   z-index: $z-index;
+
   .js-tip-inner {
     max-width: $max-width;
   }
+
   .js-tip-content {
     padding: #{$content-padding};
   }
 
-  @each $side, $snap-side in $_side-snap-side-map {
+  @each $side, $snap-side in $_hlf-side-snap-side-map {
     &.js-tip-#{$side}, &.js-tip-#{$side}.js-snap-tip-#{$snap-side}-side {
       .js-tip-stem {
-        $inverse-side: map-get($_side-inverse-map, $side);
+        $inverse-side: map-get($_hlf-side-inverse-map, $side);
         border-#{$side}-width: $stem-size;
 
-        @if $snap-side == y { margin: { top: auto; bottom: auto; } } // Reset.
+        @if $snap-side == y { margin: { bottom: auto; top: auto; } } // Reset.
         @if $snap-side == x { margin: { left: auto; right: auto; } }
         #{$side}: auto;
 
@@ -111,26 +118,29 @@ $_side-inverse-map: (right: left, left: right, bottom: top, top: bottom);
     left: 50%;
     margin: { left: -$stem-size-wide-half; right: auto; }
   }
+
   &.js-snap-tip-y-side > .js-tip-inner > .js-tip-stem { // Add specifity.
     border: {
       color: transparent; // Partial reset.
       top-width: $stem-size-wide-half; bottom-width: $stem-size-wide-half;
     }
-    margin: { top: -$stem-size-wide-half; bottom: auto; }
+    margin: { bottom: auto; top: -$stem-size-wide-half; }
     top: 50%;
   }
 }
 
-// __tip-skin__ is entirely optional and easy to re-implement. You should use it
+// __hlf-tip-skin__ is entirely optional and easy to re-implement. You should use it
 // if you just need to configure colors.
-@mixin tip-skin($fill-color, $text-color, $stem-color: null)
+@mixin hlf-tip-skin($fill-color, $text-color, $stem-color: null)
 {
   $stem-color: $fill-color !default;
+
   .js-tip-content {
     background-color: $fill-color;
     color: $text-color;
   }
-  @each $side, $snap-side in $_side-snap-side-map {
+
+  @each $side, $snap-side in $_hlf-side-snap-side-map {
     &.js-tip-#{$side} { &.js-snap-tip-#{$snap-side}-side, & { .js-tip-stem {
       border: {
         color: transparent; // Reset.

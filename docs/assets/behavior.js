@@ -78,6 +78,89 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "foldPrefix": "^",
                   "name": "SCSS"
                 },
+                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/css/jquery.hlf.media-grid.scss",
+                "projectPath": "src/css/jquery.hlf.media-grid.scss",
+                "targetPath": "src/css/jquery.hlf.media-grid",
+                "pageTitle": "src/css/jquery.hlf.media-grid",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "  HLF Media Grid jQuery Plugin",
+                    "slug": "-hlf-media-grid-jquery-plugin",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Globals",
+                        "slug": "globals"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Helpers",
+                        "slug": "helpers"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Mixins",
+                        "slug": "mixins"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "  HLF Media Grid jQuery Plugin"
+              },
+              "depth": 3,
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Globals",
+                    "slug": "globals"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Helpers",
+                    "slug": "helpers"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Mixins",
+                    "slug": "mixins"
+                  },
+                  "depth": 2
+                }
+              ]
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".scss"],
+                  "pygmentsLexer": "scss",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "SCSS"
+                },
                 "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/css/jquery.hlf.tip.scss",
                 "projectPath": "src/css/jquery.hlf.tip.scss",
                 "targetPath": "src/css/jquery.hlf.tip",
@@ -444,6 +527,75 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "foldPrefix": "^",
                   "name": "CoffeeScript"
                 },
+                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/js/jquery.hlf.media-grid.coffee",
+                "projectPath": "src/js/jquery.hlf.media-grid.coffee",
+                "targetPath": "src/js/jquery.hlf.media-grid",
+                "pageTitle": "src/js/jquery.hlf.media-grid",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Media Grid jQuery Plugin",
+                    "slug": "hlf-media-grid-jquery-plugin",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Namespace",
+                        "slug": "namespace"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "MediaGrid",
+                        "slug": "mediagrid"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "HLF Media Grid jQuery Plugin"
+              },
+              "depth": 3,
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Namespace",
+                    "slug": "namespace"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "MediaGrid",
+                    "slug": "mediagrid"
+                  },
+                  "depth": 2
+                }
+              ]
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "highlightJS": "coffeescript",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
                 "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/js/jquery.hlf.tip.coffee",
                 "projectPath": "src/js/jquery.hlf.tip.coffee",
                 "targetPath": "src/js/jquery.hlf.tip",
@@ -676,6 +828,36 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "foldPrefix": "^",
                   "name": "SCSS"
                 },
+                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/media-grid.scss",
+                "projectPath": "tests/css/media-grid.scss",
+                "targetPath": "tests/css/media-grid",
+                "pageTitle": "tests/css/media-grid",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "  HLF Media Grid Visual Tests",
+                    "slug": "-hlf-media-grid-visual-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "  HLF Media Grid Visual Tests"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".scss"],
+                  "pygmentsLexer": "scss",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "SCSS"
+                },
                 "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/tip.scss",
                 "projectPath": "tests/css/tip.scss",
                 "targetPath": "tests/css/tip",
@@ -730,12 +912,33 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     "slug": "unit-test-helpers",
                     "isFileHeader": true
                   },
-                  "depth": 1
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Reporting",
+                        "slug": "reporting"
+                      },
+                      "depth": 2
+                    }
+                  ]
                 },
                 "title": "Unit Test Helpers"
               },
               "depth": 3,
-              "outline": []
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Reporting",
+                    "slug": "reporting"
+                  },
+                  "depth": 2
+                }
+              ]
             }, {
               "type": "file",
               "data": {
@@ -904,6 +1107,59 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   ]
                 },
                 "title": "HLF Editable Visual Tests"
+              },
+              "depth": 3,
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Default",
+                    "slug": "default"
+                  },
+                  "depth": 2
+                }
+              ]
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "highlightJS": "coffeescript",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "CoffeeScript"
+                },
+                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/media-grid.coffee",
+                "projectPath": "tests/js/media-grid.coffee",
+                "targetPath": "tests/js/media-grid",
+                "pageTitle": "tests/js/media-grid",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Media Grid Visual Tests",
+                    "slug": "hlf-media-grid-visual-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Default",
+                        "slug": "default"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                },
+                "title": "HLF Media Grid Visual Tests"
               },
               "depth": 3,
               "outline": [

@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/jquery.hlf.media-grid</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/jquery.hlf.media-grid"><meta name="groc-project-path" content="src/js/jquery.hlf.media-grid.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/jquery.hlf.media-grid.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-media-grid-jquery-plugin">HLF Media Grid jQuery Plugin</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../css/jquery.hlf.media-grid.html">Styles</a> | <a href="../../tests/js/media-grid.html">Tests</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The <code>mediaGrid</code> plugin, inspired by the Cargo Voyager design template, allows
+expanding an item inline without affecting the position of its siblings. The
+plugin tries to add the minimal amount of DOM elements and styles. So the
+layout rules are mostly defined in the styles, and initial html for items is
+required (see the tests for an example). The plugin also handles additional
+effects like focusing on the expanded item and dimming its siblings.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>UMD</strong></p>
+<ul>
+<li>When AMD, register the attacher as an anonymous module.</li>
+<li>When Node or Browserify, set module exports to the attach result.</li>
+<li>When browser globals (root is window), Just run the attach function.</li>
+</ul></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-params">(root, attach)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> define <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">and</span> define.amd?
+    define [
+      <span class="hljs-string">'jquery'</span>
+      <span class="hljs-string">'underscore'</span>
+      <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
+    ], attach
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">module</span> <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span> &amp;&amp; <span class="hljs-built_in">module</span>.exports?
+    <span class="hljs-built_in">module</span>.exports = attach(
+      <span class="hljs-built_in">require</span> <span class="hljs-string">'jquery'</span>,
+      <span class="hljs-built_in">require</span> <span class="hljs-string">'underscore'</span>,
+      <span class="hljs-built_in">require</span> <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
+    )
+  <span class="hljs-keyword">else</span>
+    attach jQuery, _, jQuery.hlf
+  <span class="hljs-keyword">return</span>
+)(@, <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="namespace">Namespace</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>It takes some more boilerplate to write the plugins. Any of this additional
+support API is put into a plugin specific namespace under <code>$.hlf</code>, which in
+this case is <strong>$.hlf.mediaGrid</strong>.</p>
+<ul>
+<li><strong>debug</strong> toggles debug logging for all instances of a plugin.</li>
+<li><strong>toString</strong> helps to namespace when extending any jQuery API.</li>
+</ul>
+<p>The plugin&#39;s <strong>defaults</strong> are available as reference. Also note that <em>the
+plugin instance gets extended with the options</em>.</p>
+<ul>
+<li><p><strong>autoReady</strong> is <code>false</code> by default, as recommended. Turning it on means
+the <code>ready</code> event gets triggered immediately, synchronously, and is only
+recommended if your grid doesn&#39;t have images and such that require a wait
+before being fully loaded and sized.</p>
+</li>
+<li><p><strong>resizeDelay</strong> is the millis to wait for window resizing to stop before
+doing a re-layout. <code>100</code> is the default to balance responsiveness and
+performance.</p>
+</li>
+<li><p>Note: for these tip plugins, the majority of presentation state logic is
+in the plugin stylesheet. We update the presentation state by using
+namespaced <strong>classNames</strong> generated in a closure.</p>
+</li>
+</ul></div></div><div class="code"><div class="wrapper">  hlf.mediaGrid =
+    <span class="hljs-attribute">debug</span>: <span class="hljs-literal">off</span>
+    <span class="hljs-attribute">toString</span>: _.memoize (context) -&gt;
+      <span class="hljs-keyword">switch</span> context
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'event'</span>  <span class="hljs-keyword">then</span> <span class="hljs-string">'.hlf.mg'</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'data'</span>   <span class="hljs-keyword">then</span> <span class="hljs-string">'hlf-mg'</span>
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'class'</span>  <span class="hljs-keyword">then</span> <span class="hljs-string">'js-mg'</span>
+        <span class="hljs-keyword">else</span> <span class="hljs-string">'hlf.mg'</span>
+
+    <span class="hljs-attribute">defaults</span>: <span class="hljs-keyword">do</span> (pre = <span class="hljs-string">'js-mg-'</span>) -&gt;
+      <span class="hljs-attribute">autoReady</span>: <span class="hljs-literal">off</span>
+      <span class="hljs-attribute">resizeDelay</span>: <span class="hljs-number">100</span>
+      <span class="hljs-attribute">undimDelay</span>: <span class="hljs-number">1000</span>
+      <span class="hljs-attribute">classNames</span>: <span class="hljs-keyword">do</span> -&gt;
+        classNames = {}
+        keys = [
+          <span class="hljs-string">'item'</span>, <span class="hljs-string">'sample'</span>
+          <span class="hljs-string">'transitioning'</span>, <span class="hljs-string">'expanded'</span>, <span class="hljs-string">'dimmed'</span>, <span class="hljs-string">'focused'</span>, <span class="hljs-string">'ready'</span>
+        ]
+        (classNames[key] = <span class="hljs-string">"<span class="hljs-subst">#{pre}</span><span class="hljs-subst">#{key}</span>"</span>) <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> keys
+        classNames</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="mediagrid">MediaGrid</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MediaGrid</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>constructor</strong> keeps <code>$el</code> as property. <code>options</code> is further normalized.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@$el</span>, options)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>init</strong> completes the setup:</p>
+<ol>
+<li>Select <code>$items</code> and <code>$sampleItem</code>.</li>
+<li>Get <code>expandDuration</code> from styles, create event bindings for expansion.
+This also relies on the <code>$expandedItem</code> state.</li>
+<li>Create event bindings for dimming on expansion, hovering expanded item.</li>
+<li>Set up initial layout for running when <code>ready</code>.</li>
+<li>Set up re-layout for running on window resize.</li>
+</ol></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">init</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@$items</span> ?= <span class="hljs-property">@selectByClass</span> <span class="hljs-string">'item'</span>
+      <span class="hljs-property">@$sampleItem</span> = <span class="hljs-property">@$items</span>.first()
+
+      <span class="hljs-property">@expandDuration</span> = <span class="hljs-number">1000</span> * parseFloat <span class="hljs-property">@$sampleItem</span>.css(<span class="hljs-string">'transition-duration'</span>)
+      <span class="hljs-property">@$items</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+        <span class="hljs-property">@toggleItemExpansion</span> $(e.currentTarget)
+        <span class="hljs-keyword">return</span>
+
+      <span class="hljs-property">@$expandedItem</span> = <span class="hljs-literal">null</span>
+      <span class="hljs-property">@on</span>
+        <span class="hljs-attribute">mouseenter</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+          <span class="hljs-property">@toggleExpandedItemFocus</span> $(e.currentTarget), <span class="hljs-literal">on</span>
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-attribute">mouseleave</span>: <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+          <span class="hljs-property">@toggleExpandedItemFocus</span> $(e.currentTarget), <span class="hljs-literal">off</span>
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-attribute">expand</span>: <span class="hljs-function"><span class="hljs-params">(e, expanded)</span> =&gt;</span>
+          <span class="hljs-property">@toggleItemFocus</span> $(e.currentTarget), expanded, <span class="hljs-property">@expandDuration</span>
+          <span class="hljs-keyword">return</span>
+      , <span class="hljs-string">".<span class="hljs-subst">#{<span class="hljs-property">@classNames</span>.item}</span>"</span>
+      <span class="hljs-property">@on</span> <span class="hljs-string">'mouseleave'</span>, <span class="hljs-function">=&gt;</span>
+        <span class="hljs-property">@toggleItemFocus</span> <span class="hljs-property">@$expandedItem</span>, <span class="hljs-literal">off</span>, <span class="hljs-number">0</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@$expandedItem</span>?
+        <span class="hljs-keyword">return</span>
+
+      <span class="hljs-property">@metrics</span> = {}
+      <span class="hljs-property">@on</span> <span class="hljs-string">'ready'</span>, <span class="hljs-function">=&gt;</span>
+        <span class="hljs-property">@_updateMetrics</span>()
+        <span class="hljs-property">@_layoutItems</span>()
+        <span class="hljs-property">@$el</span>.addClass <span class="hljs-property">@classNames</span>.ready
+        <span class="hljs-keyword">return</span>
+      <span class="hljs-property">@trigger</span> <span class="hljs-string">'ready'</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@autoReady</span> <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
+
+      $(<span class="hljs-built_in">window</span>).resize _.debounce( <span class="hljs-function">=&gt;</span>
+        <span class="hljs-property">@_updateMetrics</span> <span class="hljs-literal">off</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@$expandedItem</span>?
+          <span class="hljs-property">@toggleItemExpansion</span> <span class="hljs-property">@$expandedItem</span>, <span class="hljs-literal">off</span>
+          <span class="hljs-property">@_reLayoutItems</span> <span class="hljs-property">@expandDuration</span>
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-property">@_reLayoutItems</span>()
+        <span class="hljs-keyword">return</span>
+      , <span class="hljs-property">@resizeDelay</span>)
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Public</strong></p>
+<p>You are welcome to call these methods from your own code, though currently
+there is no intended use case for that.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>toggleItemExpansion</strong> basically toggles the <code>-expanded</code> class on the
+given <code>$item</code> to <code>expanded</code> and triggers the <code>expand.</code> event. To allow
+styling or scripting during the transition, it adds the <code>-transitioning</code>
+class and removes it afterwards per <code>expandDuration</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">toggleItemExpansion</span>: <span class="hljs-function"><span class="hljs-params">($item, expanded)</span> -&gt;</span>
+      expanded ?= <span class="hljs-keyword">not</span> $item.hasClass <span class="hljs-property">@classNames</span>.expanded
+      <span class="hljs-keyword">if</span> expanded
+        <span class="hljs-property">@toggleItemExpansion</span> <span class="hljs-property">@$expandedItem</span>, <span class="hljs-literal">off</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@$expandedItem</span>? 
+        i = $item.index()
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@_isRightEdgeItem</span>(i) <span class="hljs-keyword">then</span> <span class="hljs-property">@_adjustItemToRightEdge</span> $item
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@_isBottomEdgeItem</span>(i) <span class="hljs-keyword">then</span> <span class="hljs-property">@_adjustItemToBottomEdge</span> $item
+
+      $item.addClass <span class="hljs-property">@classNames</span>.transitioning
+      clearTimeout $item.data(<span class="hljs-property">@attr</span>(<span class="hljs-string">'expand-timeout'</span>))
+      $item.data <span class="hljs-property">@attr</span>(<span class="hljs-string">'expand-timeout'</span>), (setTimeout =&gt;
+        $item.removeClass(<span class="hljs-property">@classNames</span>.transitioning); <span class="hljs-keyword">return</span>
+      , <span class="hljs-property">@expandDuration</span>)
+
+      $item.toggleClass <span class="hljs-property">@classNames</span>.expanded, expanded
+      <span class="hljs-property">@$expandedItem</span> = <span class="hljs-keyword">if</span> expanded <span class="hljs-keyword">then</span> $item <span class="hljs-keyword">else</span> <span class="hljs-literal">null</span>
+
+      $item.trigger <span class="hljs-property">@evt</span>(<span class="hljs-string">'expand'</span>), [expanded]
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>toggleExpandedItemFocus</strong> wraps <code>toggleItemFocus</code> to factor in
+<code>undimDelay</code> when toggling off <code>focus</code>. Focusing dims without delay.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">toggleExpandedItemFocus</span>: <span class="hljs-function"><span class="hljs-params">($item, focused)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> $item?.hasClass <span class="hljs-property">@classNames</span>.expanded
+      delay = <span class="hljs-keyword">if</span> focused <span class="hljs-keyword">then</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> <span class="hljs-property">@undimDelay</span>
+      <span class="hljs-property">@toggleItemFocus</span> $item, focused, delay
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>toggleItemFocus</strong> basically toggles the <code>-focused</code> class on the given
+<code>$item</code> to <code>focused</code> and the <code>-dimmed</code> class on the root element after any
+given <code>delay</code>. </p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">toggleItemFocus</span>: <span class="hljs-function"><span class="hljs-params">($item, focused, delay)</span> -&gt;</span>
+      <span class="hljs-property">@$items</span>.removeClass <span class="hljs-property">@classNames</span>.focused <span class="hljs-keyword">if</span> focused
+      $item.toggleClass <span class="hljs-property">@classNames</span>.focused, focused
+      clearTimeout <span class="hljs-property">@_dimTimeout</span>
+      <span class="hljs-property">@_dimTimeout</span> = setTimeout =&gt;
+        <span class="hljs-property">@$el</span>.toggleClass <span class="hljs-property">@classNames</span>.dimmed, focused
+        <span class="hljs-keyword">return</span>
+      , delay
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Internal</strong></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>These are layout helpers for changing offset for an <code>$item</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_adjustItemToBottomEdge</span>: <span class="hljs-function"><span class="hljs-params">($item)</span> -&gt;</span>
+      $item.css <span class="hljs-attribute">top</span>: <span class="hljs-string">'auto'</span>, <span class="hljs-attribute">bottom</span>: <span class="hljs-number">0</span>
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-attribute">_adjustItemToRightEdge</span>: <span class="hljs-function"><span class="hljs-params">($item)</span> -&gt;</span>
+      $item.css <span class="hljs-attribute">left</span>: <span class="hljs-string">'auto'</span>, <span class="hljs-attribute">right</span>: <span class="hljs-number">0</span>
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>_getMetricSamples</strong> returns cloned <code>$item</code> and <code>$expanded</code> elements
+mainly for calculating initial metrics. For them to have the right sizes,
+they&#39;re attached to an invisible container appended to the root element.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_getMetricSamples</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@selectByClass</span>(<span class="hljs-string">'sample'</span>)?.remove()
+      $item = <span class="hljs-property">@$sampleItem</span>.clone()
+      $expanded = <span class="hljs-property">@$sampleItem</span>.clone().addClass <span class="hljs-property">@classNames</span>.expanded
+      $(<span class="hljs-string">'&lt;div&gt;'</span>).addClass <span class="hljs-property">@classNames</span>.sample
+        .css <span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">position</span>: <span class="hljs-string">'absolute'</span>, <span class="hljs-attribute">right</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>
+        .css <span class="hljs-attribute">visibility</span>: <span class="hljs-string">'hidden'</span>, <span class="hljs-attribute">zIndex</span>: <span class="hljs-number">0</span>
+        .append $item, $expanded
+        .appendTo <span class="hljs-property">@$el</span>
+      { $item, $expanded }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>These are layout helpers for checking item position based on index and the
+current <code>rowSize</code> metric.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_isBottomEdgeItem</span>: <span class="hljs-function"><span class="hljs-params">(i)</span> -&gt;</span> (i + <span class="hljs-number">1</span>) &gt; (<span class="hljs-property">@$items</span>.length - <span class="hljs-property">@metrics</span>.rowSize)
+
+    <span class="hljs-attribute">_isRightEdgeItem</span>: <span class="hljs-function"><span class="hljs-params">(i)</span> -&gt;</span> (i + <span class="hljs-number">1</span>) % <span class="hljs-property">@metrics</span>.rowSize <span class="hljs-keyword">is</span> <span class="hljs-number">0</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>_layoutItems</strong> occurs once <code>metrics</code> is updated. With the latest
+<code>wrapWidth</code> and <code>wrapHeight</code> metrics, the root element is resized. Each
+element in <code>$items</code> gets its position style set to <code>absolute</code> non-
+destructively; this method assumes the original is <code>float</code>, and so
+iterates in reverse.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_layoutItems</span>: <span class="hljs-function">-&gt;</span>
+      <span class="hljs-property">@$items</span>.get().reverse().forEach (item, i) =&gt;
+        $item = $ item
+        offset = $item.position()
+
+        <span class="hljs-keyword">unless</span> $item.data(<span class="hljs-property">@attr</span>(<span class="hljs-string">'original-position'</span>))?
+          $item.data <span class="hljs-property">@attr</span>(<span class="hljs-string">'original-position'</span>), $item.css(<span class="hljs-string">'position'</span>)
+
+        $item.css $.extend(offset, <span class="hljs-attribute">position</span>: <span class="hljs-string">'absolute'</span>)
+
+      <span class="hljs-property">@$el</span>.css <span class="hljs-attribute">width</span>: <span class="hljs-property">@metrics</span>.wrapWidth, <span class="hljs-attribute">height</span>: <span class="hljs-property">@metrics</span>.wrapHeight
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>_reLayoutItems</strong> wraps <code>_layoutItems</code> to be its idempotent version by
+first resetting each item&#39;s to its <code>original-position</code>. It can run after a
+custom <code>delay</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_reLayoutItems</span>: <span class="hljs-function"><span class="hljs-params">(delay=<span class="hljs-number">0</span>)</span> -&gt;</span>
+      clearTimeout <span class="hljs-property">@_layoutTimeout</span>
+      <span class="hljs-property">@_layoutTimeout</span> = setTimeout =&gt;
+        key = <span class="hljs-property">@attr</span> <span class="hljs-string">'original-position'</span>
+        <span class="hljs-property">@$items</span>.css 
+          <span class="hljs-attribute">top</span>: <span class="hljs-string">'auto'</span>, <span class="hljs-attribute">left</span>: <span class="hljs-string">'auto'</span>, <span class="hljs-attribute">bottom</span>: <span class="hljs-string">'auto'</span>, <span class="hljs-attribute">right</span>: <span class="hljs-string">'auto'</span>
+          <span class="hljs-attribute">position</span>: <span class="hljs-function">-&gt;</span> $(@).data key
+
+        <span class="hljs-property">@_layoutItems</span>()
+      , delay
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>_updateMetrics</strong> builds the <code>metrics</code> around item and wrap as well as
+row and column sizes. It does so by measuring sample elements and their
+margins, as well as sizing the wrap (root element) to fit its items. As
+such, this method isn&#39;t idempotent and expects to be followed by a call
+to <code>_layoutItems</code>.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-attribute">_updateMetrics</span>: <span class="hljs-function"><span class="hljs-params">(hard=<span class="hljs-literal">on</span>)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> hard <span class="hljs-keyword">is</span> <span class="hljs-literal">on</span>
+        {$item, $expanded} = <span class="hljs-property">@_getMetricSamples</span>()
+        <span class="hljs-property">@metrics</span> =
+          <span class="hljs-attribute">itemWidth</span>: $item.outerWidth()
+          <span class="hljs-attribute">itemHeight</span>: $item.outerHeight()
+          <span class="hljs-attribute">expandedWidth</span>: $expanded.outerWidth()
+          <span class="hljs-attribute">expandedHeight</span>: $expanded.outerHeight()
+
+      gutter = Math.round parseFloat(<span class="hljs-property">@$sampleItem</span>.css(<span class="hljs-string">'margin-right'</span>))
+      fullWidth = <span class="hljs-property">@metrics</span>.itemWidth + gutter
+      fullHeight = <span class="hljs-property">@metrics</span>.itemHeight + gutter
+
+      <span class="hljs-property">@$el</span>.css <span class="hljs-attribute">width</span>: <span class="hljs-string">'auto'</span>, <span class="hljs-attribute">height</span>: <span class="hljs-string">'auto'</span>
+
+      rowSize = parseInt ((<span class="hljs-property">@$el</span>.outerWidth() + gutter) / fullWidth), <span class="hljs-number">10</span>
+      colSize = Math.ceil <span class="hljs-property">@$items</span>.length / rowSize
+      $.extend <span class="hljs-property">@metrics</span>, { gutter, rowSize, colSize },
+        <span class="hljs-attribute">wrapWidth</span>: fullWidth * rowSize
+        <span class="hljs-attribute">wrapHeight</span>: fullHeight * colSize
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>§ <strong>Attaching</strong></p></div></div><div class="code"><div class="wrapper">  hlf.createPlugin
+    <span class="hljs-attribute">name</span>: <span class="hljs-string">'mediaGrid'</span>
+    <span class="hljs-attribute">namespace</span>: hlf.mediaGrid
+    <span class="hljs-attribute">apiClass</span>: MediaGrid
+    <span class="hljs-attribute">baseMixins</span>: [<span class="hljs-string">'data'</span>, <span class="hljs-string">'event'</span>, <span class="hljs-string">'selection'</span>]
+    <span class="hljs-attribute">compactOptions</span>: <span class="hljs-literal">yes</span>
+
+  <span class="hljs-literal">yes</span>
+
+)</div></div></div></div></body></html>

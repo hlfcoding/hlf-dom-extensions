@@ -8,6 +8,7 @@ further.
 
 (function() {
   define(['jquery', 'underscore'], function($, _) {
+    'use strict';
     var loremIpsum;
     $.visualTest = function(config) {
       return function() {
@@ -76,7 +77,8 @@ further.
     loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     $.loremIpsum = {
       long: loremIpsum,
-      short: loremIpsum.slice(0, 200)
+      short: loremIpsum.slice(0, 200),
+      title: loremIpsum.slice(0, 26)
     };
     return true;
   });

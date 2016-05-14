@@ -24,7 +24,8 @@ composed of three parts:</p>
     )
   <span class="hljs-keyword">else</span>
     attach jQuery, _, jQuery.hlf
-)(@, <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="hover-intent">Hover-Intent</h2></div></div><div class="code"><div class="wrapper">  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>A set of custom events based on a distance check with a customizable
+)(@, <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
+  <span class="hljs-string">'use strict'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="hover-intent">Hover-Intent</h2></div></div><div class="code"><div class="wrapper">  </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>A set of custom events based on a distance check with a customizable
 <code>interval</code> of delay to limit &#39;un-intentional&#39; mouse-enter&#39;s and mouse-
 leave&#39;s. Also, unlike the jQuery <code>mouseenter</code> and <code>mouseleave</code> events,
 <strong>truemouseenter</strong> and <strong>truemouseleave</strong> provide <code>pageX</code> and <code>pageY</code>
@@ -56,8 +57,9 @@ function and pass the appropriate context. Note we&#39;re memoizing it.</li>
   <span class="hljs-comment">#- Alias and don't pollute the extension scope.</span>
   <span class="hljs-keyword">do</span> (hoverIntent = hlf.hoverIntent, mouse = hlf.hoverIntent.mouse) -&gt;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>attr</strong> is an internal formatter for attribute names,
 mainly those of jQuery data keys.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">    <span class="hljs-title">attr</span> = <span class="hljs-params">(name=<span class="hljs-string">''</span>)</span> -&gt;</span> <span class="hljs-string">"<span class="hljs-subst">#{hoverIntent.toString <span class="hljs-string">'attr'</span>}</span>-<span class="hljs-subst">#{name}</span>"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>debugLog</strong> is our internal logger. It&#39;s optimized to be a noop if
-hover intent debugging is off.</p></div></div><div class="code"><div class="wrapper">    debugLog = <span class="hljs-keyword">if</span> hoverIntent.debug <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span> <span class="hljs-keyword">then</span> $.noop <span class="hljs-keyword">else</span>
-      -&gt; hlf.debugLog hoverIntent.toString(<span class="hljs-string">'log'</span>), arguments...</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The internals of hover intent is about tracking the state of the trigger
+hover intent debugging is off.</p></div></div><div class="code"><div class="wrapper">    debugLog = <span class="hljs-keyword">if</span> hoverIntent.debug <span class="hljs-keyword">is</span> <span class="hljs-literal">off</span> <span class="hljs-keyword">then</span> $.noop <span class="hljs-keyword">else</span> -&gt;
+      hlf.debugLog hoverIntent.toString(<span class="hljs-string">'log'</span>), arguments...
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The internals of hover intent is about tracking the state of the trigger
 element&#39;s interaction with the mouse.</p>
 <p>With <code>defaultState</code>, we start with <code>intentional</code> to yes, so the first
 interaction is always successful. <code>timer</code> is also set to an empty state,
@@ -80,7 +82,8 @@ subroutines. It is an event handler (see below).</p></div></div><div class="code
       state = getComputedState $trigger
       debugLog state
       didTeardown = teardownCheckIfNeeded event, $trigger, state
-      <span class="hljs-keyword">if</span> didTeardown <span class="hljs-keyword">is</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">then</span> setupCheckIfNeeded event, $trigger, state</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>setupCheckIfNeeded</strong> will setup to <code>performCheck</code> after setting up (again)
+      <span class="hljs-keyword">if</span> didTeardown <span class="hljs-keyword">is</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">then</span> setupCheckIfNeeded event, $trigger, state
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>setupCheckIfNeeded</strong> will setup to <code>performCheck</code> after setting up (again)
 the timer state, but only if the timer state is properly reset.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">    <span class="hljs-title">setupCheckIfNeeded</span> = <span class="hljs-params">(event, $trigger, state)</span> -&gt;</span>
       <span class="hljs-keyword">return</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">if</span> state.timer.cleared <span class="hljs-keyword">is</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">and</span> state.timer.timeout?
       debugLog <span class="hljs-string">'setup'</span>
@@ -116,9 +119,11 @@ trigger.</p></div></div><div class="code"><div class="wrapper"><span class="hljs
         triggerEvent <span class="hljs-string">'truemouseenter'</span>, $trigger, event
       state.timer.cleared = <span class="hljs-literal">yes</span>
       $trigger.data attr(<span class="hljs-string">'intentional'</span>), state.intentional
-      $trigger.data attr(<span class="hljs-string">'timer'</span>), state.timer</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>trackMouse</strong> tracks mouse position specifically for checking hover intent.</p></div></div><div class="code"><div class="wrapper">    trackMouse = _.throttle (event) -&gt;
+      $trigger.data attr(<span class="hljs-string">'timer'</span>), state.timer
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>trackMouse</strong> tracks mouse position specifically for checking hover intent.</p></div></div><div class="code"><div class="wrapper">    trackMouse = _.throttle (event) -&gt;
       mouse.x.current = event.pageX
       mouse.y.current = event.pageY
+      <span class="hljs-keyword">return</span>
     , <span class="hljs-number">16</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>triggerEvent</strong> abstracts away the generation of and support for custom
 hover intent events.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function">    <span class="hljs-title">triggerEvent</span> = <span class="hljs-params">(name, $trigger, oldEvent)</span> -&gt;</span>
       event = <span class="hljs-keyword">new</span> $.Event name, 
@@ -126,23 +131,28 @@ hover intent events.</p></div></div><div class="code"><div class="wrapper"><span
         <span class="hljs-attribute">pageY</span>: mouse.y.current
         <span class="hljs-attribute">relatedTarget</span>: oldEvent.relatedTarget
       debugLog name
-      $trigger.trigger event</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Lastly, we register our custom jQuery events, essentially wrapping our
+      $trigger.trigger event
+      <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Lastly, we register our custom jQuery events, essentially wrapping our
 binding over binding to <code>mouseover</code>, <code>mousemove</code>, and <code>mouseleave</code>. We&#39;re
 not using <code>mouseenter</code>, since its detection mechanism conflicts with hover
 intent&#39;s.</p></div></div><div class="code"><div class="wrapper">    $.event.special.truemouseenter =
       <span class="hljs-attribute">setup</span>: <span class="hljs-function"><span class="hljs-params">(data, namespaces)</span> -&gt;</span>
         $(@).<span class="hljs-literal">on</span>  { <span class="hljs-attribute">mouseover</span>: check, <span class="hljs-attribute">mousemove</span>: trackMouse },
           data?.selector
+        <span class="hljs-keyword">return</span>
       <span class="hljs-attribute">teardown</span>: <span class="hljs-function"><span class="hljs-params">(data, namespaces)</span> -&gt;</span>
         $(@).<span class="hljs-literal">off</span> { <span class="hljs-attribute">mouseover</span>: check, <span class="hljs-attribute">mousemove</span>: trackMouse },
           data?.selector
+        <span class="hljs-keyword">return</span>
 
     $.event.special.truemouseleave =
       <span class="hljs-attribute">setup</span>: <span class="hljs-function"><span class="hljs-params">(data, namespaces)</span> -&gt;</span>
         $(@).<span class="hljs-literal">on</span>  { <span class="hljs-attribute">mouseleave</span>: check },
           data?.selector
+        <span class="hljs-keyword">return</span>
       <span class="hljs-attribute">teardown</span>: <span class="hljs-function"><span class="hljs-params">(data, namespaces)</span> -&gt;</span>
         $(@).<span class="hljs-literal">off</span> { <span class="hljs-attribute">mouseleave</span>: check },
           data?.selector
+        <span class="hljs-keyword">return</span>
 
 )</div></div></div></div></body></html>

@@ -3,7 +3,8 @@
 further.</p></div></div><div class="code"><div class="wrapper">define [
   <span class="hljs-string">'jquery'</span>
   <span class="hljs-string">'underscore'</span>
-], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>$.visualTest</strong> returns a configured test function generator. Tests should
+], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
+  <span class="hljs-string">'use strict'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>$.visualTest</strong> returns a configured test function generator. Tests should
 be invoked tests on document ready. Configuration:</p>
 <ul>
 <li><code>label</code> - header text describing the test topic.</li>
@@ -79,5 +80,6 @@ append a test. Only provide a custom template if absolutely needed.</p></div></d
   $.loremIpsum = 
      <span class="hljs-attribute">long</span>: loremIpsum
      <span class="hljs-attribute">short</span>: loremIpsum[...<span class="hljs-number">200</span>]
+     <span class="hljs-attribute">title</span>: loremIpsum[...<span class="hljs-number">26</span>]
 
   <span class="hljs-literal">yes</span></div></div></div></div></body></html>
