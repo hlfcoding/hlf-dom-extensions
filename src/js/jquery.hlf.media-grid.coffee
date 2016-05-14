@@ -127,7 +127,6 @@ HLF Media Grid jQuery Plugin
       $item.toggleClass @classNames.focused, focused
       clearTimeout @_dimTimeout
       @_dimTimeout = setTimeout =>
-        return unless focused is $item.hasClass(@classNames.focused)
         @$el.toggleClass @classNames.dimmed, focused
         return
       , delay

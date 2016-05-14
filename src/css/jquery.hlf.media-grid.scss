@@ -6,7 +6,7 @@
 
 // [Source](../js/jquery.hlf.media-grid.html) | [Tests](../../tests/css/media-grid.html)
 
-$hlf-mg-fade-duration: .3s;
+$hlf-mg-fade-duration: .3s !default;
 $hlf-mg-gutter-size: 6px !default;
 $hlf-mg-item-fill-color: #000 !default;
 $hlf-mg-item-stroke-color: #fff !default;
@@ -59,6 +59,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
                            $dimmed-opacity: .3,
                            $expand-duration: .4s,
                            $expand-easing: cubic-bezier(.8, 0, 0.2, 1),
+                           $expanded-layer: 10,
                            $expanded-ratio: 2)
 {
   $expand-transition: $expand-duration $expand-easing;
@@ -102,7 +103,7 @@ $hlf-mg-fill-color: mix($hlf-mg-item-stroke-color, $hlf-mg-item-fill-color, 20%)
 
   &.js-mg-transitioning,
   &.js-mg-expanded {
-    z-index: 10;
+    z-index: $expanded-layer;
   }
 
   &.js-mg-expanded {
