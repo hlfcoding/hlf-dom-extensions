@@ -44,11 +44,16 @@ Main features summary:
 Short examples:
 
 ```js
-$('.avatars').find('img[alt]').tip(); // Tips will follow cursor.
-$('nav.bar').find('a[title]').snapTip({
+var $context = $('.avatars');
+$context.find('img[alt]').tip(null, $context); // Tips will follow cursor.
+
+$context = $('nav.bar');
+$context.find('a[title]').snapTip({
   snap: { toXAxis: true } // Tips will only follow along x axis.
-});
-$('article').find('a[title]').snapTip(); // Tip will not follow.
+}, $context);
+
+$context = $('article');
+$context.find('a[title]').snapTip(null, $context); // Tip will not follow.
 ```
 
 See [Tip's visual tests][] for more examples.
