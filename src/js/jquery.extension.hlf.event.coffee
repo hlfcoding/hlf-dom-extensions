@@ -34,7 +34,7 @@ HLF Event jQuery Extension
 
   # Hover-Intent
   # ------------
-  
+
   # A set of custom events based on a distance check with a customizable
   # `interval` of delay to limit 'un-intentional' mouse-enter's and mouse-
   # leave's. Also, unlike the jQuery `mouseenter` and `mouseleave` events,
@@ -167,7 +167,7 @@ HLF Event jQuery Extension
     # __triggerEvent__ abstracts away the generation of and support for custom
     # hover intent events.
     triggerEvent = (name, $trigger, oldEvent) ->
-      event = new $.Event name, 
+      event = new $.Event name,
         pageX: mouse.x.current
         pageY: mouse.y.current
         relatedTarget: oldEvent.relatedTarget

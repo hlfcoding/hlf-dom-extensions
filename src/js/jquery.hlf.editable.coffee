@@ -61,7 +61,7 @@ HLF Editable jQuery Plugin
   $.createMixin mixins, 'base',
 
     # § __Own__
-    
+
     isEditing: null
 
     init: ->
@@ -93,7 +93,7 @@ HLF Editable jQuery Plugin
       @trigger 'commit', userInfo
 
     # § __Actions__
-    
+
     toggleEditing: (state) ->
       @isEditing = state
       toggleOriginalDisplay = ($el, state) =>
@@ -128,12 +128,12 @@ HLF Editable jQuery Plugin
   $.createMixin mixins, 'inline',
 
     # § __Action Overrides__
-    
+
     textOnValueChange: (text) ->
       if not text.length then @$input.attr 'placeholder' else text
 
     # § __Onces__
-    
+
     decorateOptions: ->
       @options.classNames.container += " #{@cls('inline')}"
     decorate: ->
@@ -146,12 +146,12 @@ HLF Editable jQuery Plugin
           else
 
     # § __Own__
-    
+
     initInline: ->
       @updatePlaceholder()
 
     # § __Actions__
-    
+
     updatePlaceholder: ->
       @$input.attr 'placeholder', @$text.text()
 
@@ -161,7 +161,7 @@ HLF Editable jQuery Plugin
   $.createMixin mixins, 'editor',
 
     # § __Action Overrides__
-    
+
     inputValue: ->
       switch @editorName
         when 'CodeMirror' then @editor.getValue()
@@ -173,7 +173,7 @@ HLF Editable jQuery Plugin
         else
 
     # § __Onces__
-    
+
     decorateOptions: ->
       @opts.selectors.markup = '.editor-markup'
     decorate: ->
@@ -182,7 +182,7 @@ HLF Editable jQuery Plugin
       @on 'did-init', => @initEditor()
 
     # § __Own__
-    
+
     initEditor: ->
       @editorName = @data 'editor'
       switch @editorName
@@ -209,7 +209,7 @@ HLF Editable jQuery Plugin
   $.createMixin mixins, 'color-picker',
 
     # § __Onces__
-    
+
     decorateOptions: ->
       @opts.selectors.well = '.color-well'
     decorate: ->
@@ -217,7 +217,7 @@ HLF Editable jQuery Plugin
       @on 'did-init', => @initColorPicker()
 
     # § __Own__
-    
+
     initColorPicker: ->
       _.bindAll @, 'handleColorPickerChange'
       @pickerName = @data 'color-picker'
@@ -241,7 +241,7 @@ HLF Editable jQuery Plugin
         .trigger 'change'
 
     # § __Actions__
-    
+
     renderColor: (color) ->
       switch @pickerName
         when 'Spectrum' then @$well.spectrum 'set', color
@@ -252,7 +252,7 @@ HLF Editable jQuery Plugin
   $.createMixin mixins, 'file-uploader',
 
     # § __Onces__
-    
+
     decorateOptions: ->
       @opts.selectors.text = '.preview > figcaption'
       @opts.selectors.thumb = '.preview > .thumb'
@@ -262,7 +262,7 @@ HLF Editable jQuery Plugin
       @on 'did-init', => @initFileUploader()
 
     # § __Own__
-    
+
     initFileUploader: ->
       @uploaderName = @data 'file-uploader'
       switch @uploaderName
@@ -277,7 +277,7 @@ HLF Editable jQuery Plugin
 
   # Attaching
   # ---------
-  
+
   hlf.createPlugin
     name: 'editable'
     namespace: hlf.editable

@@ -151,7 +151,7 @@ HLF Media Grid jQuery Plugin
     toggleItemExpansion: ($item, expanded) ->
       expanded ?= not $item.hasClass @classNames.expanded
       if expanded
-        @toggleItemExpansion @$expandedItem, off if @$expandedItem? 
+        @toggleItemExpansion @$expandedItem, off if @$expandedItem?
         i = $item.index()
         if @_isRightEdgeItem(i) then @_adjustItemToRightEdge $item
         if @_isBottomEdgeItem(i) then @_adjustItemToBottomEdge $item
@@ -178,7 +178,7 @@ HLF Media Grid jQuery Plugin
 
     # __toggleItemFocus__ basically toggles the `-focused` class on the given
     # `$item` to `focused` and the `-dimmed` class on the root element after any
-    # given `delay`. 
+    # given `delay`.
     toggleItemFocus: ($item, focused, delay) ->
       @$items.removeClass @classNames.focused if focused
       $item.toggleClass @classNames.focused, focused
@@ -247,7 +247,7 @@ HLF Media Grid jQuery Plugin
       clearTimeout @_layoutTimeout
       @_layoutTimeout = setTimeout =>
         key = @attr 'original-position'
-        @$items.css 
+        @$items.css
           top: 'auto', left: 'auto', bottom: 'auto', right: 'auto'
           position: -> $(@).data key
 

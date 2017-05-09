@@ -3,17 +3,17 @@ HLF Core jQuery Extension
 =========================
 ###
 
-# [Tests](../../tests/js/core.html) | [Plugin Tests](../../tests/js/core.plugin.html) | [Mixin Tests](../../tests/js/core.mixin.html) 
+# [Tests](../../tests/js/core.html) | [Plugin Tests](../../tests/js/core.plugin.html) | [Mixin Tests](../../tests/js/core.mixin.html)
 
 # The core extension is comprised of several aspects.
 #
 # - Mixin creation and manipulation, as well as providing base mixins, via:
 #   `$.applyMixin`, `$.applyMixins`, `$.createMixins`, `$.mixins`.
 #
-# - Plugin creation with support for both classes and mixins, via: 
+# - Plugin creation with support for both classes and mixins, via:
 #   `$.createPlugin`.
 #
-# - Integrated no-conflict handling and debug-logging, via: `$.hlf.noConflict`, 
+# - Integrated no-conflict handling and debug-logging, via: `$.hlf.noConflict`,
 #   `$.hlf.debugLog`. Child namespaces (for plugins, etc.) automatically inherit
 #   these methods unless they provide their own.
 #
@@ -57,7 +57,7 @@ HLF Core jQuery Extension
   #   jQuery namespace. Properties will have to be accessed through the `$.hlf`
   #   namespace. See `_safeSet` below. Also see `createPlugin` for its no-
   #   conflict integration.
-  #   
+  #
   #   Using `_noConflicts`, we keep track of no-conflict procedures. This is
   #   essentially working with a callback queue. Calling `$.hlf.noConflict`
   #   simply runs these procedures. Procedures should be simple and idempotent,
@@ -75,7 +75,7 @@ HLF Core jQuery Extension
     (if console.log.bind then console.log.bind(console) else console.log)
 
   _noConflicts = []
-  
+
   # Plugin Support
   # --------------
 
@@ -143,7 +143,7 @@ HLF Core jQuery Extension
       #
       # With the command route, if there is a plugin instance and it can
       # __handleCommand__, call the method, but invoke `userInfo` if needed
-      # beforehand. With the normal route, if there is a plugin instance and no 
+      # beforehand. With the normal route, if there is a plugin instance and no
       # arguments are provided we assume the call is to access the instance,
       # not reset it.
       #
