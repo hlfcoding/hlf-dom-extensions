@@ -29,6 +29,7 @@ HLF Event jQuery Extension
     )
   else
     attach jQuery, _, jQuery.hlf
+  return
 )(@, ($, _, hlf) ->
   'use strict'
 

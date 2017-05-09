@@ -24,6 +24,7 @@ HLF Editable jQuery Plugin
     )
   else
     attach jQuery, _, jQuery.hlf
+  return
 )(@, ($, _, hlf) ->
   'use strict'
 

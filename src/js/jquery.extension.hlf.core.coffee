@@ -37,6 +37,7 @@ HLF Core jQuery Extension
     )
   else
     attach jQuery, _
+  return
 )(@, ($, _) ->
   'use strict'
 
