@@ -104,7 +104,7 @@ See [Core's unit tests][] for examples.
 
 Main features:
 
-- Hover-intent provides rate-limited versions of mouseenter and mouseleave 
+- Hover-intent provides rate-limited versions of mouseenter and mouseleave
   events through a customizable delay.
 
 ## Requirements
@@ -125,7 +125,7 @@ prefixing solution.
 Main features:
 
 - Uses mixins for encapsulate editing behaviors, so plugin instances can be
-  composed based on data-attribute configuration. 
+  composed based on data-attribute configuration.
 - Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).
 
 ## Install
