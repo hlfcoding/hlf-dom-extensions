@@ -9,8 +9,7 @@
         "dist/*",
         "docs/index.html",
         "release/*",
-        "tests/*.css",
-        "tests/*.js"
+        "tests/*.css"
       ],
       "folder_exclude_patterns":
       [

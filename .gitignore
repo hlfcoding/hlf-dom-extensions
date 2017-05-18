@@ -2,5 +2,6 @@
 node_modules
 /tests/**/*.css
 /tests/**/*.js
+!/tests/**/core.js
 /tests/**/*.map
 /.grunt
