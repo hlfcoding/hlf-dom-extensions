@@ -20,21 +20,25 @@
   function createExtensionConstructor(args) {
     const { name, namespace } = args;
 
-    let namingMethods = createExtensionNamingMethods(namespace);
-    const { attrName } = namingMethods;
-    const { apiClass, apiMixins } = args;
+    const { apiClass, apiMixins, autoSelect } = args;
+    let groups = args.baseMethodGroups || [];
+    groups.push('naming');
+    if (autoSelect) {
+      groups.push('selection');
+    }
+    let baseMethods = createExtensionBaseMethods(namespace, groups);
     if (apiClass) {
       namespace.apiClass = apiClass;
-      Object.assign(apiClass.prototype, namingMethods);
+      Object.assign(apiClass.prototype, baseMethods);
     } else if (apiMixins) {
       namespace.apiMixins = apiMixins;
-      Object.assign(apiMixins.base, namingMethods);
+      Object.assign(apiMixins.base, baseMethods);
     }
+    const { attrName } = baseMethods;
 
+    const { asSharedInstance, compactOptions } = args;
     let idCounter = 0;
     let instances = {};
-    const { asSharedInstance, autoSelect, compactOptions } = args;
-
     function extension(elements, ...args) {
       let { command, options, contextElement } = parseExtensionArguments(args);
       contextElement = contextElement || document.body;
@@ -51,8 +55,8 @@
           Object.assign(instance, finalOptions);
           delete instance.options;
         }
-        if (autoSelect && typeof instance.select === 'function') {
-          instance.select();
+        if (autoSelect && typeof instance.selectToProperties === 'function') {
+          instance.selectToProperties();
         }
         if (instance.className) {
           rootElement.classList.add(instance.className());
@@ -111,21 +115,45 @@
     return { command, options, contextElement };
   }
 
-  function createExtensionNamingMethods(namespace) {
-    return {
-      attrName(name = '') {
-        if (name.length) {
-          name = `-${name}`;
-        }
-        return `data-${namespace.toString('data')}${name}`;
-      },
-      className(name = '') {
-        if (name.length) {
-          name = `-${name}`;
-        }
-        return `js-${namespace.toString('class')}${name}`;
-      },
-    };
+  function createExtensionBaseMethods(namespace, groups) {
+    let methods = {};
+    if (groups.indexOf('naming') !== -1) {
+      Object.assign(methods, {
+        attrName(name = '') {
+          if (name.length) {
+            name = `-${name}`;
+          }
+          return `data-${namespace.toString('data')}${name}`;
+        },
+        className(name = '') {
+          if (name.length) {
+            name = `-${name}`;
+          }
+          return `js-${namespace.toString('class')}${name}`;
+        },
+      });
+    }
+    if (groups.indexOf('selection') !== -1) {
+      Object.assign(methods, {
+        selectByClass(name) {
+          let selector = `.${this.classNames[name]}`;
+          return this.element.querySelector(selector);
+        },
+        selectToProperties() {
+          if (!this.element || !this.selectors) {
+            throw 'Missing requirements.';
+          }
+          for (let name in this.selectors) {
+            if (!this.selectors.hasOwnProperty(name)) {
+              continue;
+            }
+            let selector = this.selectors[name];
+            this[name] = this.element.querySelector(selector);
+          }
+        },
+      });
+    }
+    return methods;
   }
 
   Object.assign(hlf, { createExtensionConstructor });

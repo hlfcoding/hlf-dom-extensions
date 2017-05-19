@@ -53,7 +53,6 @@
           name: 'someExtension',
           namespace: this.namespace,
           apiClass: SomeExtension,
-          baseMixins: ['selection'],
           autoSelect: true,
           compactOptions: true,
         }, testedOptions));
@@ -76,6 +75,8 @@
           assert.ok(propertyName in instance,
             'Instance has options merged in as property.');
         });
+      assert.ok('someElement' in instance,
+        'Instance has auto-selected sub elements based on selectors option.');
       return instance;
     }
 
