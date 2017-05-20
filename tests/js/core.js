@@ -33,6 +33,9 @@
         this.element = element;
         this.contextElement = contextElement;
       }
+      performSomeAction(payload) {
+        this.someActionPayload = payload;
+      }
     }
 
     // ---
@@ -77,6 +80,10 @@
         });
       assert.ok('someElement' in instance,
         'Instance has auto-selected sub elements based on selectors option.');
+      const payload = { key: 'value' };
+      extension(module.someNodeList, 'performSomeAction', payload);
+      assert.equal(instance.someActionPayload, payload,
+        'Extension function can perform action, using default perform.');
       return instance;
     }
 

@@ -40,7 +40,7 @@
     let idCounter = 0;
     let instances = {};
     function extension(elements, ...args) {
-      let { command, options, contextElement } = parseExtensionArguments(args);
+      let { action, options, contextElement } = parseExtensionArguments(args);
       contextElement = contextElement || document.body;
 
       function createExtensionInstance(element) {
@@ -68,10 +68,11 @@
         return instance;
       }
 
-      if (command) {
-        elements.forEach((element) => {
+      if (action) {
+        let targetElements = asSharedInstance ? [contextElement] : elements;
+        targetElements.forEach((element) => {
           let instance = getExtensionInstance(element);
-          instance.handleCommand(command);
+          instance.perform(action);
         });
         return;
       } else {
@@ -102,21 +103,28 @@
   }
 
   function parseExtensionArguments(args) {
-    let command, options, contextElement;
-    let [first, second] = args;
+    let action, options, contextElement;
+    const [first, second] = args;
     if (typeof first === 'string') {
-      command = { type: first, userInfo: second };
+      action = { name: first, payload: second };
     } else {
       options = first;
       if (second) {
         contextElement = second;
       }
     }
-    return { command, options, contextElement };
+    return { action, options, contextElement };
   }
 
   function createExtensionBaseMethods(namespace, groups) {
-    let methods = {};
+    let methods = {
+      perform(action) {
+        const { name, payload } = action;
+        if (this[name]) {
+          this[name](payload);
+        }
+      }
+    };
     if (groups.indexOf('naming') !== -1) {
       Object.assign(methods, {
         attrName(name = '') {
