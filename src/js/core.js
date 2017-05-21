@@ -22,7 +22,7 @@
 
     const { apiClass, apiMixins, autoSelect } = args;
     let groups = args.baseMethodGroups || [];
-    groups.push('naming');
+    groups.push('action', 'naming');
     if (autoSelect) {
       groups.push('selection');
     }
@@ -117,14 +117,17 @@
   }
 
   function createExtensionBaseMethods(namespace, groups) {
-    let methods = {
-      perform(action) {
-        const { name, payload } = action;
-        if (this[name]) {
-          this[name](payload);
+    let methods = {};
+    if (groups.indexOf('action') !== -1) {
+      Object.assign(methods, {
+        perform(action) {
+          const { name, payload } = action;
+          if (this[name]) {
+            this[name](payload);
+          }
         }
-      }
-    };
+      });
+    }
     if (groups.indexOf('naming') !== -1) {
       Object.assign(methods, {
         attrName(name = '') {
@@ -140,26 +143,26 @@
           return `js-${namespace.toString('class')}${name}`;
         },
       });
-    }
-    if (groups.indexOf('selection') !== -1) {
-      Object.assign(methods, {
-        selectByClass(name) {
-          let selector = `.${this.classNames[name]}`;
-          return this.element.querySelector(selector);
-        },
-        selectToProperties() {
-          if (!this.element || !this.selectors) {
-            throw 'Missing requirements.';
-          }
-          for (let name in this.selectors) {
-            if (!this.selectors.hasOwnProperty(name)) {
-              continue;
+      if (groups.indexOf('selection') !== -1) {
+        Object.assign(methods, {
+          selectByClass(name) {
+            let selector = `.${this.classNames[name]}`;
+            return this.element.querySelector(selector);
+          },
+          selectToProperties() {
+            if (!this.element || !this.selectors) {
+              throw 'Missing requirements.';
             }
-            let selector = this.selectors[name];
-            this[name] = this.element.querySelector(selector);
-          }
-        },
-      });
+            for (let name in this.selectors) {
+              if (!this.selectors.hasOwnProperty(name)) {
+                continue;
+              }
+              let selector = this.selectors[name];
+              this[name] = this.element.querySelector(selector);
+            }
+          },
+        });
+      }
     }
     return methods;
   }
