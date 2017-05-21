@@ -16,7 +16,7 @@
     },
   });
 
-  define(['hlf/core'], function(hlf) {
+  define(['hlf/core', 'test/base'], function(hlf, base) {
     const { module, test } = QUnit;
 
     // ---
