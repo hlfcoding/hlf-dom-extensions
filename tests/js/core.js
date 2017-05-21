@@ -16,7 +16,7 @@
     },
   });
 
-  require(['hlf/core'], (hlf) => {
+  define(['hlf/core'], function(hlf) {
     const { module, test } = QUnit;
 
     // ---
