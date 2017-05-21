@@ -17,7 +17,7 @@
   hlf.debugLog = (hlf.debug === false) ? function(){} :
     (console.log.bind ? console.log.bind(console) : console.log);
 
-  function createExtensionConstructor(args) {
+  function createExtension(args) {
     const { name, namespace } = args;
 
     const { apiClass, apiMixins, autoListen, autoSelect } = args;
@@ -129,12 +129,12 @@
     }
 
     function getExtensionInstance(element) {
-      let id = element.getAttribute(attrName('instance-id'));
+      const id = element.getAttribute(attrName('instance-id'));
       return instances[id];
     }
 
     function setExtensionInstance(element, instance) {
-      let id = idCounter;
+      const id = idCounter;
       idCounter += 1;
       instance.id = id;
       instances[id] = instance;
@@ -244,7 +244,7 @@
     return methods;
   }
 
-  Object.assign(hlf, { createExtensionConstructor });
+  Object.assign(hlf, { createExtension });
 
   return hlf;
 

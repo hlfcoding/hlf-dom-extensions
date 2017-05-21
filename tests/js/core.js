@@ -23,9 +23,9 @@
 
     module('other');
 
-    test('exports', (assert) => {
+    test('exports', function(assert) {
       assert.ok(hlf, 'Namespace should exist.');
-      assert.ok(hlf.createExtensionConstructor, 'Method should exist.');
+      assert.ok(hlf.createExtension, 'Method should exist.');
     });
 
     class SomeExtension {
@@ -82,12 +82,12 @@
       ['attrName', 'className', 'eventName']
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
-            'Instance has generated API addition.');
+            `Instance has generated API addition ${methodName}.`);
         });
-      ['someOption', 'someOptionGroup', 'selectors', 'classNames']
+      Object.keys(module.namespace.defaults)
         .forEach((propertyName) => {
           assert.ok(propertyName in instance,
-            'Instance has options merged in as property.');
+            `Instance has option ${propertyName} merged in as property.`);
         });
       assert.ok('someElement' in instance,
         'Instance has auto-selected sub elements based on selectors option.');
@@ -101,20 +101,20 @@
       return instance;
     }
 
-    test('.createExtensionConstructor with apiClass, additions', function(assert) {
-      let extension = hlf.createExtensionConstructor(this.createOptions());
+    test('.createExtension with apiClass, additions', function(assert) {
+      let extension = hlf.createExtension(this.createOptions());
       let instance = assertExtensionBase(this, extension, assert);
       assert.ok(instance instanceof SomeExtension,
-        'It returns instance upon re-invocation without any parameters.');
+        'Extension returns instance upon re-invocation without any parameters.');
     });
 
-    test('.createPlugin with apiClass, additions, asSharedInstance', function(assert) {
+    test('.createExtension with apiClass, additions, asSharedInstance', function(assert) {
       let createOptions = Object.assign(this.createOptions(), { asSharedInstance: true });
-      let extension = hlf.createExtensionConstructor(createOptions);
+      let extension = hlf.createExtension(createOptions);
       let instance = assertExtensionBase(this, extension, assert);
       assert.strictEqual(instance.id,
         parseInt(document.body.getAttribute('data-se-instance-id')),
-        'It stores plugin singleton with context element.');
+        'Extension stores plugin singleton with context element.');
     });
 
     // ---
