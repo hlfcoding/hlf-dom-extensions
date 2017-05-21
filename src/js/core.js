@@ -39,7 +39,7 @@
     const { asSharedInstance, compactOptions } = args;
     let idCounter = 0;
     let instances = {};
-    function extension(elements, ...args) {
+    function extension(subject, ...args) {
       let { action, options, contextElement } = parseExtensionArguments(args);
       contextElement = contextElement || document.body;
 
@@ -68,22 +68,52 @@
         return instance;
       }
 
-      if (action) {
-        let targetElements = asSharedInstance ? [contextElement] : elements;
-        targetElements.forEach((element) => {
-          let instance = getExtensionInstance(element);
-          instance.perform(action);
-        });
-        return;
-      } else {
-        let element = asSharedInstance ? contextElement : elements[0];
-        let instance = getExtensionInstance(element);
-        if (instance && !options) {
-          return instance;
+      function dispatchAction() {
+        let target = asSharedInstance ? contextElement : subject;
+        if (target instanceof HTMLElement) {
+          getExtensionInstance(target).perform(action);
+        } else {
+          Array.from(target).map(getExtensionInstance)
+            .forEach((instance) => instance.perform(action));
         }
       }
+
+      function getInstanceOrInstances() {
+        let source = asSharedInstance ? contextElement : subject;
+        let instance, instances;
+        if (source instanceof HTMLElement &&
+          (instance = getExtensionInstance(source))
+        ) {
+          return instance;
+        } else if ((instances = Array.from(source).map(getExtensionInstance)) &&
+          instances.length
+        ) {
+          return instances;
+        }
+      }
+
+      if (action) {
+        dispatchAction();
+        return;
+
+      } else if (!options) {
+        let result = getInstanceOrInstances(subject);
+        if (result) {
+          return result;
+        }
+
+      } else if (Object.keys(instances).length) {
+        instances = {};
+      }
+
       options = Object.assign({}, namespace.defaults, options);
-      return Array.from(elements).map(createExtensionInstance);
+      if (subject instanceof HTMLElement) {
+        createExtensionInstance(subject);
+      } else {
+        subject.forEach(createExtensionInstance);
+      }
+
+      return extension.bind(null, subject);
     }
 
     function getExtensionInstance(element) {

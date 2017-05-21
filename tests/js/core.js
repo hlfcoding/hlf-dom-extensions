@@ -67,7 +67,8 @@
     });
 
     function assertExtensionBase(module, extension, assert) {
-      let instance = extension(module.someNodeList)[0];
+      let someExtension = extension(module.someElement);
+      let instance = someExtension();
       ['attrName', 'className']
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
@@ -81,7 +82,7 @@
       assert.ok('someElement' in instance,
         'Instance has auto-selected sub elements based on selectors option.');
       const payload = { key: 'value' };
-      extension(module.someNodeList, 'performSomeAction', payload);
+      someExtension('performSomeAction', payload);
       assert.equal(instance.someActionPayload, payload,
         'Extension function can perform action, using default perform.');
       return instance;
