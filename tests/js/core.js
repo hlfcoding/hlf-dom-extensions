@@ -34,6 +34,9 @@
           someevent: this.handleSomeEvent.bind(this),
         };
       }
+      init() {
+        this.didInit = true;
+      }
       handleSomeEvent(event) {
         this.someEventDetail = event.detail;
       }
@@ -75,6 +78,7 @@
     function assertExtensionBase(module, extension, assert) {
       let someExtension = extension(module.someElement);
       let instance = someExtension();
+      assert.ok(instance.didInit, 'Instance had initialization method called.');
       ['attrName', 'className', 'eventName']
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
