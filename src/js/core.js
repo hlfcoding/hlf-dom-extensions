@@ -20,7 +20,7 @@
   function createExtension(args) {
     const { name, namespace } = args;
 
-    const { apiClass, apiMixins, autoListen, autoSelect } = args;
+    const { apiClass, autoListen, autoSelect } = args;
     let groups = args.baseMethodGroups || [];
     groups.push('action', 'naming');
     if (autoListen) {
@@ -33,9 +33,6 @@
     if (apiClass) {
       namespace.apiClass = apiClass;
       Object.assign(apiClass.prototype, baseMethods);
-    } else if (apiMixins) {
-      namespace.apiMixins = apiMixins;
-      Object.assign(apiMixins.base, baseMethods);
     }
     const { attrName } = baseMethods;
 
@@ -47,7 +44,13 @@
       contextElement = contextElement || document.body;
 
       function createExtensionInstance(element) {
-        let finalOptions = Object.assign({}, options);
+        let data;
+        if (element.hasAttribute(attrName())) {
+          try {
+            data = JSON.parse(element.getAttribute(attrName()));
+          } catch (error) {}
+        }
+        let finalOptions = Object.assign({}, options, data);
         let attrOptions = JSON.parse(element.getAttribute(attrName('instance-id')));
         if (attrOptions) {
           Object.assign(finalOptions, attrOptions);
@@ -61,6 +64,13 @@
         if (compactOptions) {
           Object.assign(instance, finalOptions);
           delete instance.options;
+        } else {
+          if (finalOptions.selectors) {
+            instance.selectors = finalOptions.selectors;
+          }
+          if (finalOptions.classNames) {
+            instance.classNames = finalOptions.classNames;
+          }
         }
         if (autoListen && typeof instance.addEventListeners === 'function' &&
           instance.eventListeners
@@ -133,6 +143,20 @@
       return instances[id];
     }
 
+    function parseExtensionArguments(args) {
+      let action, options, contextElement;
+      const [first, second] = args;
+      if (typeof first === 'string') {
+        action = { name: first, payload: second };
+      } else {
+        options = first;
+        if (second) {
+          contextElement = second;
+        }
+      }
+      return { action, options, contextElement };
+    }
+
     function setExtensionInstance(element, instance) {
       const id = idCounter;
       idCounter += 1;
@@ -144,22 +168,11 @@
     return extension;
   }
 
-  function parseExtensionArguments(args) {
-    let action, options, contextElement;
-    const [first, second] = args;
-    if (typeof first === 'string') {
-      action = { name: first, payload: second };
-    } else {
-      options = first;
-      if (second) {
-        contextElement = second;
-      }
-    }
-    return { action, options, contextElement };
-  }
-
   function createExtensionBaseMethods(namespace, groups) {
     let methods = {};
+    methods.debugLog = (!namespace.debug ? function(){} :
+      hlf.debugLog.bind(null, namespace.toString('log'))
+    );
     if (groups.indexOf('action') !== -1) {
       Object.assign(methods, {
         perform(action) {

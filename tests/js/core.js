@@ -68,6 +68,7 @@
           compactOptions: true,
         }, testedOptions));
         this.someElement = document.createElement('div');
+        this.someElement.setAttribute('data-se', '{ "someOption": "bar" }');
         document.getElementById('qunit-fixture').appendChild(this.someElement);
         let fragment = document.createDocumentFragment();
         fragment.appendChild(this.someElement);
@@ -89,6 +90,8 @@
           assert.ok(propertyName in instance,
             `Instance has option ${propertyName} merged in as property.`);
         });
+      assert.equal(instance.someOption, 'bar',
+        'Extension allows custom options via element data attribute.');
       assert.ok('someElement' in instance,
         'Instance has auto-selected sub elements based on selectors option.');
       const data = { key: 'value' };
@@ -104,6 +107,8 @@
     test('.createExtension with apiClass, additions', function(assert) {
       let extension = hlf.createExtension(this.createOptions());
       let instance = assertExtensionBase(this, extension, assert);
+      assert.ok(instance.element.classList.contains('js-se'),
+        'Extension stores the element as property and gives it the main class.');
       assert.ok(instance instanceof SomeExtension,
         'Extension returns instance upon re-invocation without any parameters.');
     });
@@ -112,6 +117,8 @@
       let createOptions = Object.assign(this.createOptions(), { asSharedInstance: true });
       let extension = hlf.createExtension(createOptions);
       let instance = assertExtensionBase(this, extension, assert);
+      assert.ok(instance.contextElement.classList.contains('js-se'),
+        'Extension stores the context element as property and gives it the main class.');
       assert.strictEqual(instance.id,
         parseInt(document.body.getAttribute('data-se-instance-id')),
         'Extension stores plugin singleton with context element.');
