@@ -20,9 +20,12 @@
   function createExtensionConstructor(args) {
     const { name, namespace } = args;
 
-    const { apiClass, apiMixins, autoSelect } = args;
+    const { apiClass, apiMixins, autoListen, autoSelect } = args;
     let groups = args.baseMethodGroups || [];
     groups.push('action', 'naming');
+    if (autoListen) {
+      groups.push('event');
+    }
     if (autoSelect) {
       groups.push('selection');
     }
@@ -51,9 +54,18 @@
         }
         let rootElement = asSharedInstance ? contextElement : element;
         let instance = new apiClass(element, finalOptions, contextElement);
+        instance.element = element;
+        if (contextElement) {
+          instance.contextElement = contextElement;
+        }
         if (compactOptions) {
           Object.assign(instance, finalOptions);
           delete instance.options;
+        }
+        if (autoListen && typeof instance.addEventListeners === 'function' &&
+          instance.eventListeners
+        ) {
+          instance.addEventListeners(instance.eventListeners);
         }
         if (autoSelect && typeof instance.selectToProperties === 'function') {
           instance.selectToProperties();
@@ -172,7 +184,44 @@
           }
           return `js-${namespace.toString('class')}${name}`;
         },
+        eventName(name) {
+          return `${namespace.toString('event')}${name}`;
+        },
       });
+      if (groups.indexOf('event') !== -1) {
+        let normalizeInfos = function(infos) {
+          for (const type in infos) {
+            if (!infos.hasOwnProperty(type)) { continue; }
+            if (typeof infos[type] !== 'function') { continue; }
+            infos[type] = [infos[type]];
+          }
+        };
+        Object.assign(methods, {
+          addEventListeners(infos) {
+            normalizeInfos(infos);
+            for (const type in infos) {
+              if (!infos.hasOwnProperty(type)) { continue; }
+              const [handler, options] = infos[type];
+              this.element.addEventListener(this.eventName(type), handler, options);
+            }
+          },
+          removeEventListeners(infos) {
+            for (const type in infos) {
+              if (!infos.hasOwnProperty(type)) { continue; }
+              const [handler, options] = infos[type];
+              this.element.removeEventListener(this.eventName(type), handler, options);
+            }
+          },
+          createCustomEvent(type, detail) {
+            let initArgs = { detail };
+            initArgs.bubbles = true;
+            return new CustomEvent(this.eventName(type), initArgs);
+          },
+          dispatchCustomEvent(type, detail) {
+            return this.element.dispatchEvent(this.createCustomEvent(type, detail));
+          },
+        });
+      }
       if (groups.indexOf('selection') !== -1) {
         Object.assign(methods, {
           selectByClass(name) {
@@ -183,11 +232,9 @@
             if (!this.element || !this.selectors) {
               throw 'Missing requirements.';
             }
-            for (let name in this.selectors) {
-              if (!this.selectors.hasOwnProperty(name)) {
-                continue;
-              }
-              let selector = this.selectors[name];
+            for (const name in this.selectors) {
+              if (!this.selectors.hasOwnProperty(name)) { continue; }
+              const selector = this.selectors[name];
               this[name] = this.element.querySelector(selector);
             }
           },

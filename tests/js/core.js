@@ -30,8 +30,12 @@
 
     class SomeExtension {
       constructor(element, options, contextElement) {
-        this.element = element;
-        this.contextElement = contextElement;
+        this.eventListeners = {
+          someevent: this.handleSomeEvent.bind(this),
+        };
+      }
+      handleSomeEvent(event) {
+        this.someEventDetail = event.detail;
       }
       performSomeAction(payload) {
         this.someActionPayload = payload;
@@ -44,7 +48,7 @@
       beforeEach() {
         this.namespace = {
           debug: false,
-          toString() { return 'some-extension'; },
+          toString() { return 'se'; },
           defaults: {
             someOption: 'foo',
             someOptionGroup: { someOption: 'bar' },
@@ -56,10 +60,12 @@
           name: 'someExtension',
           namespace: this.namespace,
           apiClass: SomeExtension,
+          autoListen: true,
           autoSelect: true,
           compactOptions: true,
         }, testedOptions));
         this.someElement = document.createElement('div');
+        document.getElementById('qunit-fixture').appendChild(this.someElement);
         let fragment = document.createDocumentFragment();
         fragment.appendChild(this.someElement);
         this.someNodeList = fragment.childNodes;
@@ -69,7 +75,7 @@
     function assertExtensionBase(module, extension, assert) {
       let someExtension = extension(module.someElement);
       let instance = someExtension();
-      ['attrName', 'className']
+      ['attrName', 'className', 'eventName']
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
             'Instance has generated API addition.');
@@ -81,9 +87,12 @@
         });
       assert.ok('someElement' in instance,
         'Instance has auto-selected sub elements based on selectors option.');
-      const payload = { key: 'value' };
-      someExtension('performSomeAction', payload);
-      assert.equal(instance.someActionPayload, payload,
+      const data = { key: 'value' };
+      instance.dispatchCustomEvent('someevent', data);
+      assert.equal(instance.someEventDetail, data,
+        'Instance has auto-added listeners based on eventListeners.');
+      someExtension('performSomeAction', data);
+      assert.equal(instance.someActionPayload, data,
         'Extension function can perform action, using default perform.');
       return instance;
     }
@@ -100,7 +109,7 @@
       let extension = hlf.createExtensionConstructor(createOptions);
       let instance = assertExtensionBase(this, extension, assert);
       assert.strictEqual(instance.id,
-        parseInt(document.body.getAttribute('data-some-extension-instance-id')),
+        parseInt(document.body.getAttribute('data-se-instance-id')),
         'It stores plugin singleton with context element.');
     });
 
