@@ -59,10 +59,9 @@
   // - __namespace__ is required and must correctly implement `debug`,
   //   `toString`, and `defaults`.
   //
-  // - An __apiClass__ definition. It will
-  //   get modified with base API additions. Also note that `apiClass`
-  //   will get published into the namespace, so additional flexibility is
-  //   possible.
+  // - An __apiClass__ definition. It will get modified with base API additions.
+  //   Also note that `apiClass` will get published into the namespace, so more
+  //   flexibility is possible.
   //
   function createExtension(args) {
     const { name, namespace } = args;

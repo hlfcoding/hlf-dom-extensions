@@ -1,6 +1,6 @@
 //
-// HLF Core Unit Tests
-// ===================
+// HLF Extensions Core Tests
+// =========================
 // Offloads testing larger core components to other test modules.
 //
 // [Page](../../../tests/core.unit.html)
