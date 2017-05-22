@@ -1,0 +1,33 @@
+/*
+The required DOM structure looks like:
+```html
+<div class="js-tip">
+  <div class="js-tip-inner">
+    <div class="js-tip-stem"></div>
+    <div class="js-tip-content">...</div>
+  </div>
+</div>
+```
+*/
+
+.js-tip {
+  display: none;
+  position: absolute;
+}
+
+.js-tip-inner {
+  position: relative;
+}
+
+.js-tip-stem {
+  background: none;
+  border: 0 solid transparent; /* Initial value. */
+  height: 0; /* Initial value. */
+  position: absolute;
+  width: 0; /* Initial value. */
+}
+
+.js-tip-content {
+  overflow: hidden;
+  position: relative;
+}
