@@ -8,8 +8,7 @@
         "*.sublime-workspace",
         "dist/*",
         "docs/index.html",
-        "release/*",
-        "tests/*.css"
+        "release/*"
       ],
       "folder_exclude_patterns":
       [
