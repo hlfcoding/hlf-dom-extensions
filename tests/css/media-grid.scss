@@ -24,9 +24,12 @@
 // Customize the visual test color scheme to semi-inverted. Reduce the spacing
 // to match the media-grid gutter.
 
-$bg-color: $hlf-mg-fill-color;
-$light-color: mix($bg-color, #fff);
-@import 'base';
+:root {
+  --bg-color: #333;
+  --header-bg-color: #1a1a1a;
+  --section-header-bg-color: #1a1a1a;
+  --section-header-fg-color: #d1d1d1;
+}
 
 #main {
   padding-bottom: 0;
