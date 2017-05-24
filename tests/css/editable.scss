@@ -6,7 +6,6 @@
 // [Page](../../../tests/editable.visual.html) | [Styles](../../src/css/jquery.hlf.editable.html)
 
 @import '../../dist/jquery.hlf.editable';
-@import 'base';
 
 #{map-get($hlf-editable-inline-selectors, container)} {
   @include hlf-editable-inline-skin;
