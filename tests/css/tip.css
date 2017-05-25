@@ -1,0 +1,13 @@
+/*
+HLF Tip Visual Tests
+====================
+[Page](../../../tests/tip.visual.html) | [Styles](../../src/css/jquery.hlf.tip.html)
+*/
+
+#main {
+  padding-bottom: 3rem;
+}
+
+.js-tip {
+  --tip-em: 14px;
+}
