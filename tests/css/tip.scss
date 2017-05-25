@@ -5,15 +5,10 @@
 
 // [Page](../../../tests/tip.visual.html) | [Styles](../../src/css/jquery.hlf.tip.html)
 
-@import '../../dist/jquery.hlf.tip';
-
 #main {
   padding-bottom: 3rem;
 }
 
-// A basic example of how to use the tip plugin's style-building mixins.
 .js-tip {
-  @include hlf-tip-base;
-  @include hlf-tip-layout($em-size: 14px);
-  @include hlf-tip-skin($fill-color: #666, $text-color: #fff);
+  --tip-em: 14px;
 }
