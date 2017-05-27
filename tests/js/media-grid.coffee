@@ -42,7 +42,7 @@ require [
 
       afterEach: ->
         @mg.$el.parent().remove()
-  
+
     test '#_updateMetrics', (assert) ->
       {$el, $items} = @mg
       $el.add($items).css boxSizing: 'border-box'

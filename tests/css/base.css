@@ -47,8 +47,8 @@ clearfix
 .bar::after,
 .grid::after,
 section.visual-test header::after {
-  content: '';
   clear: both;
+  content: '';
   display: table;
 }
 
