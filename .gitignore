@@ -2,6 +2,7 @@
 node_modules
 /tests/**/*.css
 !/tests/**/base.css
+!/tests/**/media-grid.css
 !/tests/**/tip.css
 /tests/**/*.js
 !/tests/**/core.js

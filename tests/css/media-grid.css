@@ -1,0 +1,26 @@
+/*
+HLF Media Grid Visual Tests
+===========================
+[Page](../../../tests/media-grid.visual.html) | [Styles](../../src/css/media-grid.html)
+*/
+
+/*
+Customize the visual test color scheme to semi-inverted. Reduce the spacing
+to match the media-grid gutter.
+*/
+:root {
+  --bg-color: #333;
+  --header-bg-color: #1a1a1a;
+  --section-header-bg-color: #1a1a1a;
+  --section-header-fg-color: #d1d1d1;
+}
+
+#main {
+  padding-bottom: 0;
+}
+
+.js-mg.test-body {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 1rem;
+}

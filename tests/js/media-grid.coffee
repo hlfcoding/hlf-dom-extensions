@@ -86,7 +86,7 @@ require [
     label: 'by default'
     template:
       """
-      <div class="test-body">
+      <div class="test-body mg-item-extras">
       <% _.range(12).forEach(function() { %>
         <article class="js-mg-item">
           <section class="mg-preview">
