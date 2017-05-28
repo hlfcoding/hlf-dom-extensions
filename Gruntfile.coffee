@@ -52,16 +52,11 @@ module.exports = (grunt) ->
     qunit:
       tests: aspects.tests.qunit
 
-    sass:
-      src: aspects.src.sass
-      tests: aspects.tests.sass
-
     uglify:
       release: aspects.release.uglify
 
     watch:
       # Caveat: These watch tasks do not clean.
-      css: aspects.src.watch.css
       js: aspects.src.watch.js
 
   config.watch.docs = aspects.docs.watch unless grunt.option('fast')?

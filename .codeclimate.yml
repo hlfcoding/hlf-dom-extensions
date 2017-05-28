@@ -9,7 +9,7 @@ engines:
 ratings:
   paths:
   - "**.coffee"
-  - "**.scss"
+  - "**.css"
 exclude_paths:
 - "dist/**/*"
 - "release/**/*"

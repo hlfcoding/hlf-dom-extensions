@@ -3,8 +3,8 @@ grunt = require 'grunt'
 # For working docs generation, disable automatic trailing whitespace trimming.
 
 src = [
-  'src/**/*.{coffee,scss}'
-  'tests/**/*.{coffee,scss}'
+  'src/**/*.{coffee,css}'
+  'tests/**/*.{coffee,css}'
   'docs/README.md'
 ]
 

@@ -19,7 +19,6 @@ module.exports =
     expand: yes
     src: [
       'dist/*'
-      '!dist/*.css*'
     ]
     dest: 'release/'
     extDot: 'last'

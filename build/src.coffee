@@ -14,18 +14,7 @@ module.exports =
     extDot: 'last'
     flatten: yes
 
-  sass:
-    expand: yes
-    src: 'src/**/*.scss'
-    dest: 'dist/'
-    ext: '.css'
-    extDot: 'last'
-    flatten: yes
-
   watch:
-    css:
-      files: '{src,tests}/**/*.scss'
-      tasks: ['newer:copy:dist', 'sass', 'newer:autoprefixer']
     js:
       files: '{src,tests}/**/*.coffee'
       tasks: ['newer:coffee', 'newer:qunit']

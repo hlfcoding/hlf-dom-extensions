@@ -138,7 +138,6 @@ $ npm install hlf-jquery
 
 ```bash
 # to install
-$ gem install -N sass # for grunt-contrib-sass
 $ npm install
 
 # to run some tests first
