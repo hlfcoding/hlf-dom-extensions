@@ -2,7 +2,7 @@ grunt = require 'grunt'
 
 module.exports =
 
-  'gh-pages': 
+  'gh-pages':
     options:
       base: 'gh-pages'
       add: yes

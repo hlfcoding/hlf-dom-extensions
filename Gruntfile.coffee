@@ -42,7 +42,7 @@ module.exports = (grunt) ->
 
     'gh-pages':
       'gh-pages': aspects['gh-pages']['gh-pages']
-      
+
     groc:
       docs: aspects.docs.groc
 

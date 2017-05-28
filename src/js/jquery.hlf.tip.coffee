@@ -89,7 +89,7 @@ HLF Tip jQuery Plugin
   # - Note: for these tip plugins, the majority of presentation state logic is
   #   in the plugin stylesheet. We update the presentation state by using
   #   namespaced __classNames__ generated in a closure.
-  # 
+  #
   #   - __classNames.stem__ - Empty string to remove the stem.
   #   - __classNames.follow__ - Empty string to disable cursor following.
   #
@@ -158,7 +158,7 @@ HLF Tip jQuery Plugin
   # __$.hlf.tip.snap__.
   #
   # Its __defaults__ extend `tip`'s defaults.
-  # 
+  #
   # - __snap.toXAxis__ is the switch for snapping along x-axis and only
   #   following along y-axis. Off by default.
   # - __snap.toYAxis__ is the switch for snapping along y-axis and only
@@ -230,7 +230,7 @@ HLF Tip jQuery Plugin
 
       @_render()
       @_bind()
-      
+
       @_bindContext()
 
       @_processTriggers()
@@ -480,7 +480,7 @@ HLF Tip jQuery Plugin
     # ___bind__ adds event handlers to `$tip` mostly, so state can be updated such
     # that the handlers on `_$currentTrigger` make an exception. So that cursor
     # leaving the trigger for the tip doesn't cause the tip to dismiss.
-    # 
+    #
     # Additionally, track viewport `_bounds` at a reasonable rate, so that
     # `_updateDirectionByTrigger` can work properly.
     _bind: ->
@@ -524,7 +524,7 @@ HLF Tip jQuery Plugin
     # 1. Possible appearance changes during mouseenter, mouseleave (uses special
     #    events).
     # 2. Following on mousemove only if `doFollow` is on.
-    # 
+    #
     # Also note for our `onMouseMove` handler, it's throttled by `requestAnimationFrame`
     # when available, otherwise manually at hopefully 60fps.
     _bindTriggers: ->
@@ -547,7 +547,7 @@ HLF Tip jQuery Plugin
         if _requestAnimationFrame?
           onMouseMove = (event) =>
             _requestAnimationFrame (timestamp) => @_onTriggerMouseMove event
-        else 
+        else
           onMouseMove = _.throttle @_onTriggerMouseMove, 16
         @$context.on 'mousemove', selector, onMouseMove
       return
@@ -640,7 +640,7 @@ HLF Tip jQuery Plugin
 
     # ___render__ comes with a base implementation that fills in and attaches
     # `$tip` to the DOM, specifically at the beginning of `$viewport`. It uses
-    # the result of `htmlOnRender` and falls back to that of `_defaultHtml`. 
+    # the result of `htmlOnRender` and falls back to that of `_defaultHtml`.
     # Render also sets up any animations per the `shouldAnimate` option.
     _render: ->
       return no if @$tip.html().length
@@ -755,7 +755,7 @@ HLF Tip jQuery Plugin
       @$context.on @evt('truemouseleave'), selector, { selector },
         (event) => @_offsetStart = null
       return
-    
+
     # § __Positioning__
 
     # ___moveToTrigger__ is the main positioner. The `baseOffset` given is
@@ -797,7 +797,7 @@ HLF Tip jQuery Plugin
       return unless @_triggerChanged is yes
       @$tip.css 'visibility', 'hidden'
       return
-        
+
     afterShow: (event) ->
       return unless @_triggerChanged is yes
       @$tip.css 'visibility', 'visible'
