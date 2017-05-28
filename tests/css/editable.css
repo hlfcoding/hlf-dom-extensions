@@ -1,0 +1,9 @@
+/*
+HLF Editable Visual Tests
+=========================
+[Page](../../../tests/editable.visual.html) | [Styles](../../src/css/editable.html)
+*/
+
+.js-editable-inline .js-text {
+  transition: background-color 0.2s ease-in-out;
+}
