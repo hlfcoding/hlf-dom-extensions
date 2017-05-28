@@ -3,7 +3,7 @@ HLF Media Grid jQuery Plugin
 ============================
 ###
 
-# [Styles](../css/jquery.hlf.media-grid.html) | [Tests](../../tests/js/media-grid.html)
+# [Styles](../css/media-grid.html) | [Tests](../../tests/js/media-grid.html)
 
 # The `mediaGrid` plugin, inspired by the Cargo Voyager design template, allows
 # expanding an item inline without affecting the position of its siblings. The

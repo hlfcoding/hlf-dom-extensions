@@ -3,7 +3,7 @@ HLF Editable jQuery Plugin
 ==========================
 ###
 
-# [Styles](../css/jquery.hlf.editable.html) | [Tests](../../tests/js/editable.html)
+# [Styles](../css/editable.html) | [Tests](../../tests/js/editable.html)
 
 # § __UMD__
 # - When AMD, register the attacher as an anonymous module.
