@@ -19,10 +19,10 @@ module.exports =
     grunt.registerTask 'dist', [
       'clean:dist'
       'copy:dist'
-      'coffee'
+      'coffee:src'
     ]
     # This task's optimized for speed, at cost of artifacts.
     grunt.registerTask 'lazy-dist', [
       'newer:copy:dist'
-      'newer:coffee'
+      'newer:coffee:src'
     ]
