@@ -3,7 +3,7 @@ HLF Tip jQuery Plugin
 =====================
 ###
 
-# [Styles](../css/jquery.hlf.tip.html) | [Tests](../../tests/js/tip.html)
+# [Styles](../css/tip.html) | [Tests](../../tests/js/tip.html)
 
 # The base `tip` plugin does several things. It does basic parsing of trigger
 # element attributes for the tip content. It can anchor itself to a trigger by
