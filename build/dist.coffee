@@ -20,11 +20,9 @@ module.exports =
       'clean:dist'
       'copy:dist'
       'coffee'
-      'autoprefixer'
     ]
     # This task's optimized for speed, at cost of artifacts.
     grunt.registerTask 'lazy-dist', [
       'newer:copy:dist'
       'newer:coffee'
-      'newer:autoprefixer'
     ]

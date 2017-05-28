@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "grunt": "^1.0",
-    "grunt-autoprefixer": "^3.0",
     "grunt-bump": "^0.8",
     "grunt-contrib-clean": "^1.0",
     "grunt-contrib-coffee": "^1.0",

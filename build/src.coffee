@@ -1,11 +1,5 @@
 module.exports =
 
-  autoprefixer:
-    expand: yes
-    src: 'dist/**/*.css'
-    ext: '.css'
-    extDot: 'last'
-
   coffee:
     expand: yes
     src: 'src/**/*.coffee'
