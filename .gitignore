@@ -3,5 +3,4 @@ node_modules
 /tests/**/*.js
 !/tests/**/core.js
 !/tests/**/base.js
-/tests/**/*.map
 /.grunt

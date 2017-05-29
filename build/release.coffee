@@ -25,9 +25,6 @@ module.exports =
     flatten: yes
 
   uglify:
-    options:
-      sourceMap: yes
-      sourceMapName: 'release/jquery.hlf.min.js.map'
     files:
       'release/jquery.hlf.min.js': [
         'dist/jquery.extension.hlf.core.js'

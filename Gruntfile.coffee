@@ -21,8 +21,6 @@ module.exports = (grunt) ->
       release: aspects.release.clean
 
     coffee:
-      options:
-        sourceMap: yes
       src: aspects.src.coffee
       tests: aspects.tests.coffee
 
