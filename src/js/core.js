@@ -358,6 +358,10 @@
             let selector = `.${this.classNames[name]}`;
             return this.element.querySelector(selector);
           },
+          selectAllByClass(name) {
+            let selector = `.${this.classNames[name]}`;
+            return this.element.querySelectorAll(selector);
+          },
           selectToProperties() {
             if (!this.element || !this.selectors) {
               throw 'Missing requirements.';
