@@ -335,5 +335,3 @@ HLF Editable jQuery Plugin
   });
 
 }).call(this);
-
-//# sourceMappingURL=jquery.hlf.editable.js.map

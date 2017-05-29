@@ -166,5 +166,3 @@ HLF Event jQuery Extension
   });
 
 }).call(this);
-
-//# sourceMappingURL=jquery.extension.hlf.event.js.map

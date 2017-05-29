@@ -874,5 +874,3 @@ HLF Tip jQuery Plugin
   });
 
 }).call(this);
-
-//# sourceMappingURL=jquery.hlf.tip.js.map

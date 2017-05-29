@@ -297,5 +297,3 @@ HLF Media Grid jQuery Plugin
   });
 
 }).call(this);
-
-//# sourceMappingURL=jquery.hlf.media-grid.js.map
