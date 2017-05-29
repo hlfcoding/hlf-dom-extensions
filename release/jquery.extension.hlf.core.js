@@ -11,11 +11,11 @@ HLF Core jQuery Extension
 
   (function(root, attach) {
     if (typeof define === 'function' && (define.amd != null)) {
-      return define(['jquery', 'underscore'], attach);
+      define(['jquery', 'underscore'], attach);
     } else if (typeof exports === 'object') {
-      return module.exports = attach(require('jquery', require('underscore')));
+      module.exports = attach(require('jquery', require('underscore')));
     } else {
-      return attach(jQuery, _);
+      attach(jQuery, _);
     }
   })(this, function($, _) {
     'use strict';

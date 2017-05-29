@@ -10,11 +10,11 @@ HLF Event jQuery Extension
 
   (function(root, attach) {
     if (typeof define === 'function' && (define.amd != null)) {
-      return define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], attach);
+      define(['jquery', 'underscore', 'hlf/jquery.extension.hlf.core'], attach);
     } else if (typeof exports === 'object') {
-      return module.exports = attach(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
+      module.exports = attach(require('jquery', require('underscore', require('hlf/jquery.extension.hlf.core'))));
     } else {
-      return attach(jQuery, _, jQuery.hlf);
+      attach(jQuery, _, jQuery.hlf);
     }
   })(this, function($, _, hlf) {
     'use strict';
