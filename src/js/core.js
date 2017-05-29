@@ -332,14 +332,14 @@
             for (const type in infos) {
               if (!infos.hasOwnProperty(type)) { continue; }
               const [handler, options] = infos[type];
-              this.element.addEventListener(this.eventName(type), handler, options);
+              this.element.addEventListener(type, handler, options);
             }
           },
           removeEventListeners(infos) {
             for (const type in infos) {
               if (!infos.hasOwnProperty(type)) { continue; }
               const [handler, options] = infos[type];
-              this.element.removeEventListener(this.eventName(type), handler, options);
+              this.element.removeEventListener(type, handler, options);
             }
           },
           createCustomEvent(type, detail) {

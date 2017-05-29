@@ -30,9 +30,9 @@
 
     class SomeExtension {
       constructor(element, options, contextElement) {
-        this.eventListeners = {
-          someevent: this.handleSomeEvent.bind(this),
-        };
+        this.eventListeners = {};
+        this.eventListeners[this.eventName('someevent')] =
+          this.handleSomeEvent.bind(this);
       }
       init() {
         this.didInit = true;
