@@ -55,8 +55,8 @@
           defaults: {
             someOption: 'foo',
             someOptionGroup: { someOption: 'bar' },
-            selectors: { someElement: '.foo' },
-            classNames: { someElement: 'foo' },
+            selectors: { someOtherElement: '.foo' },
+            classNames: { someOtherElement: 'foo' },
           },
         };
         this.createOptions = (testedOptions) => (Object.assign({}, {
@@ -70,9 +70,9 @@
         this.someElement = document.createElement('div');
         this.someElement.setAttribute('data-se', '{ "someOption": "bar" }');
         document.getElementById('qunit-fixture').appendChild(this.someElement);
-        let fragment = document.createDocumentFragment();
-        fragment.appendChild(this.someElement);
-        this.someNodeList = fragment.childNodes;
+        this.someOtherElement = document.createElement('div');
+        this.someOtherElement.classList.add('foo');
+        this.someElement.appendChild(this.someOtherElement);
       },
     });
 
@@ -92,7 +92,7 @@
         });
       assert.equal(instance.someOption, 'bar',
         'Extension allows custom options via element data attribute.');
-      assert.ok('someElement' in instance,
+      assert.ok(instance.someOtherElement instanceof HTMLElement,
         'Instance has auto-selected sub elements based on selectors option.');
       const data = { key: 'value' };
       instance.dispatchCustomEvent('someevent', data);
