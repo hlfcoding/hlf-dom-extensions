@@ -1,7 +1,7 @@
 const matchdep = require('matchdep');
 
 let aspects = {}; // Like an aspect of work. Somewhat maps to directories and tasks.
-['gh-pages', 'lib', 'release', 'src', 'tests']
+['lib', 'release', 'src', 'tests']
   .forEach(name => aspects[name] = require(`./build/${name}`));
 
 const dist = {
@@ -54,6 +54,74 @@ const docs = (function() {
   };
 }());
 
+const pages = {
+  'gh-pages': {
+    options: {
+      base: 'gh-pages',
+      add: true,
+    },
+    src: [
+      '**',
+      '!template.jst.html',
+    ],
+  },
+  clean: [
+    'gh-pages/*',
+    '!gh-pages/.gitignore',
+    '!gh-pages/template.jst.html',
+  ],
+  copy: {
+    nonull: true,
+    files: [
+      {
+        expand: true,
+        src: [
+          'dist/**/*',
+          'docs/**/*',
+          'lib/**/*',
+          'tests/**/*',
+          '!tests/**/*.{css,js,coffee}',
+          'README.md',
+        ],
+        dest: 'gh-pages/',
+      },
+      {
+        src: 'node_modules/merlot/template.jst.html',
+        dest: 'gh-pages/',
+      },
+    ],
+  },
+  markdown: {
+    options: {
+      markdownOptions: {
+        gfm: true,
+        highlight: 'auto',
+      },
+      template: 'gh-pages/template.jst.html',
+      templateContext: {
+        githubAuthor: 'hlfcoding',
+        githubPath: 'hlfcoding/hlf-jquery',
+        headline: 'HLF jQuery',
+        pageTitle: 'HLF jQuery by hlfcoding',
+        subHeadline: 'Custom jQuery Plugins',
+      },
+    },
+    src: 'gh-pages/README.md',
+    dest: 'gh-pages/index.html',
+  },
+  registerTasks(grunt) {
+    grunt.registerTask('pages', [
+      'dist',
+      'docs',
+      'clean:gh-pages',
+      'copy:gh-pages',
+      'markdown:gh-pages',
+      'gh-pages:gh-pages',
+    ]);
+  },
+};
+
+
 module.exports = (grunt) => {
   config = {
     pkg: grunt.file.readJSON('package.json'),
@@ -61,7 +129,7 @@ module.exports = (grunt) => {
     clean: {
       dist: dist.clean,
       docs: docs.clean,
-      'gh-pages': aspects['gh-pages'].clean,
+      'gh-pages': pages.clean,
       lib: aspects.lib.clean,
       release: aspects.release.clean,
     },
@@ -71,18 +139,18 @@ module.exports = (grunt) => {
     },
     copy: {
       dist: dist.copy,
-      'gh-pages': aspects['gh-pages'].copy,
+      'gh-pages': pages.copy,
       lib: aspects.lib.copy,
       release: aspects.release.copy,
     },
     'gh-pages': {
-      'gh-pages': aspects['gh-pages']['gh-pages'],
+      'gh-pages': pages['gh-pages'],
     },
     groc: {
       docs: docs.groc,
     },
     markdown: {
-      'gh-pages': aspects['gh-pages'].markdown,
+      'gh-pages': pages.markdown,
     },
     qunit: {
       tests: aspects.tests.qunit,
@@ -107,6 +175,7 @@ module.exports = (grunt) => {
 
   dist.registerTasks(grunt);
   docs.registerTasks(grunt);
+  pages.registerTasks(grunt);
   for (const name in aspects) {
     if (aspects.hasOwnProperty(name)) {
       if (name === 'src') { continue; }
