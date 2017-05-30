@@ -1,7 +1,7 @@
 const matchdep = require('matchdep');
 
 let aspects = {}; // Like an aspect of work. Somewhat maps to directories and tasks.
-['lib', 'release', 'src', 'tests']
+['release', 'src', 'tests']
   .forEach(name => aspects[name] = require(`./build/${name}`));
 
 const dist = {
@@ -53,6 +53,25 @@ const docs = (function() {
     },
   };
 }());
+
+const lib = {
+  clean: ['lib/*', '!lib/.gitignore'],
+  copy: {
+    files: [
+      { src: 'node_modules/jquery/dist/jquery.js', dest: 'lib/jquery.js' },
+      { src: 'node_modules/underscore/underscore.js', dest: 'lib/underscore.js' },
+      { src: 'node_modules/es6-promise/dist/es6-promise.js', dest: 'lib/promise.js' },
+      { expand: true, flatten: true, src: 'node_modules/gsap/src/uncompressed/{jquery.gsap,TweenLite,plugins/CSSPlugin}.js', dest: 'lib/' },
+      { src: 'node_modules/hlf-css/lib/modified/_normalize.scss', dest: 'lib/normalize.css' },
+      { expand: true, flatten: true, src: 'node_modules/qunitjs/qunit/qunit.{css,js}', dest: 'lib/' },
+      { src: 'node_modules/requirejs/require.js', dest: 'lib/require.js' },
+      { src: 'node_modules/velocity-animate/velocity.js', dest: 'lib/velocity.js' },
+    ]
+  },
+  registerTasks(grunt) {
+    grunt.registerTask('lib', ['clean:lib', 'copy:lib']);
+  },
+};
 
 const pages = {
   'gh-pages': {
@@ -130,7 +149,7 @@ module.exports = (grunt) => {
       dist: dist.clean,
       docs: docs.clean,
       'gh-pages': pages.clean,
-      lib: aspects.lib.clean,
+      lib: lib.clean,
       release: aspects.release.clean,
     },
     coffee: {
@@ -140,7 +159,7 @@ module.exports = (grunt) => {
     copy: {
       dist: dist.copy,
       'gh-pages': pages.copy,
-      lib: aspects.lib.copy,
+      lib: lib.copy,
       release: aspects.release.copy,
     },
     'gh-pages': {
@@ -175,6 +194,7 @@ module.exports = (grunt) => {
 
   dist.registerTasks(grunt);
   docs.registerTasks(grunt);
+  lib.registerTasks(grunt);
   pages.registerTasks(grunt);
   for (const name in aspects) {
     if (aspects.hasOwnProperty(name)) {
