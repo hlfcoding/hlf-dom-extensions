@@ -55,7 +55,7 @@
           defaults: {
             someOption: 'foo',
             someOptionGroup: { someOption: 'bar' },
-            selectors: { someOtherElement: '.foo' },
+            selectors: { someOtherElement: '.foo', someOtherElements: '.foo' },
             classNames: { someOtherElement: 'foo' },
           },
         };
@@ -93,6 +93,8 @@
       assert.equal(instance.someOption, 'bar',
         'Extension allows custom options via element data attribute.');
       assert.ok(instance.someOtherElement instanceof HTMLElement,
+        'Instance has auto-selected sub elements based on selectors option.');
+      assert.ok(instance.someOtherElements instanceof NodeList,
         'Instance has auto-selected sub elements based on selectors option.');
       const data = { key: 'value' };
       instance.dispatchCustomEvent('someevent', data);

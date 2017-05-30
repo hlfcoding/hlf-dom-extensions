@@ -369,7 +369,11 @@
             for (const name in this.selectors) {
               if (!this.selectors.hasOwnProperty(name)) { continue; }
               const selector = this.selectors[name];
-              this[name] = this.element.querySelector(selector);
+              if (name.substr(-1) === 's') {
+                this[name] = this.element.querySelectorAll(selector);
+              } else {
+                this[name] = this.element.querySelector(selector);
+              }
             }
           },
         });
