@@ -1,7 +1,7 @@
 const matchdep = require('matchdep');
 
 let aspects = {}; // Like an aspect of work. Somewhat maps to directories and tasks.
-['docs', 'gh-pages', 'lib', 'release', 'src', 'tests']
+['gh-pages', 'lib', 'release', 'src', 'tests']
   .forEach(name => aspects[name] = require(`./build/${name}`));
 
 const dist = {
@@ -24,13 +24,43 @@ const dist = {
   },
 };
 
+const docs = (function() {
+  const src = [
+    'src/**/*.{coffee,css}',
+    'tests/**/*.{coffee,css}',
+    'docs/README.md',
+  ];
+  return {
+    clean: [
+      'docs/*/**',
+      '!docs/.gitignore',
+      '!docs/README.md',
+    ],
+    groc: {
+      src: src,
+      options: {
+        index: 'docs/README.md',
+        out: 'docs/',
+      },
+    },
+    watch: {
+      files: src,
+      // Sadly groc needs to run with all the sources to build its ToC.
+      tasks: ['docs'],
+    },
+    registerTasks(grunt) {
+      grunt.registerTask('docs', ['clean:docs', 'groc:docs']);
+    },
+  };
+}());
+
 module.exports = (grunt) => {
   config = {
     pkg: grunt.file.readJSON('package.json'),
     bump: aspects.release.bump,
     clean: {
       dist: dist.clean,
-      docs: aspects.docs.clean,
+      docs: docs.clean,
       'gh-pages': aspects['gh-pages'].clean,
       lib: aspects.lib.clean,
       release: aspects.release.clean,
@@ -49,7 +79,7 @@ module.exports = (grunt) => {
       'gh-pages': aspects['gh-pages']['gh-pages'],
     },
     groc: {
-      docs: aspects.docs.groc,
+      docs: docs.groc,
     },
     markdown: {
       'gh-pages': aspects['gh-pages'].markdown,
@@ -66,7 +96,7 @@ module.exports = (grunt) => {
     },
   };
   if (!grunt.option('fast')) {
-    config.watch.docs = aspects.docs.watch;
+    config.watch.docs = docs.watch;
   }
   grunt.initConfig(config);
 
@@ -76,6 +106,7 @@ module.exports = (grunt) => {
   grunt.registerTask('install', ['lib', 'dist']);
 
   dist.registerTasks(grunt);
+  docs.registerTasks(grunt);
   for (const name in aspects) {
     if (aspects.hasOwnProperty(name)) {
       if (name === 'src') { continue; }
