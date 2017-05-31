@@ -150,8 +150,6 @@ $ grunt docs
 $ grunt
 ```
 
-Note that Grunt task options and multi-tasks are in build/.
-
 ## License
 
 The MIT License (MIT)
