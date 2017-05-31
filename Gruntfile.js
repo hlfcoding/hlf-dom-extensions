@@ -1,9 +1,5 @@
 const matchdep = require('matchdep');
 
-let aspects = {}; // Like an aspect of work. Somewhat maps to directories and tasks.
-['release', 'src', 'tests']
-  .forEach(name => aspects[name] = require(`./build/${name}`));
-
 const dist = {
   clean: [
     'dist/*',
@@ -140,27 +136,96 @@ const pages = {
   },
 };
 
+const release = {
+  bump: {
+    options: {
+      files: ['bower.json', 'package.json'],
+      commitFiles: ['.'],
+      pushTo: 'origin',
+    },
+  },
+  clean: ['release/*'],
+  copy: {
+    expand: true,
+    src: ['dist/*'],
+    dest: 'release/',
+    extDot: 'last',
+    flatten: true,
+  },
+  uglify: {
+    files: {
+      'release/jquery.hlf.min.js': [
+        'dist/jquery.extension.hlf.core.js',
+        'dist/jquery.extension.hlf.event.js',
+        'dist/jquery.hlf.tip.js',
+      ],
+    },
+  },
+  registerTasks(grunt) {
+    grunt.registerTask('release', [
+      'dist',
+      // Uncompressed version.
+      'clean:release',
+      'copy:release',
+      // Compressed version.
+      'uglify:release',
+    ]);
+  },
+};
+
+const src = {
+  coffee: {
+    expand: true,
+    src: 'src/**/*.coffee',
+    dest: 'dist/',
+    ext: '.js',
+    extDot: 'last',
+    flatten: true,
+  },
+  watch: {
+    js: {
+      files: '{src,tests}/**/*.coffee',
+      tasks: ['newer:coffee', 'newer:qunit'],
+    },
+  },
+};
+
+const tests = {
+  qunit: {
+    expand: true,
+    src: 'tests/*.unit.html',
+  },
+  coffee: {
+    expand: true,
+    src: 'tests/**/*.coffee',
+    ext: '.js',
+    extDot: 'last',
+  },
+  registerTasks(grunt) {
+    grunt.registerTask('test', ['coffee:tests', 'qunit']);
+  },
+};
 
 module.exports = (grunt) => {
   config = {
     pkg: grunt.file.readJSON('package.json'),
-    bump: aspects.release.bump,
+    bump: release.bump,
     clean: {
       dist: dist.clean,
       docs: docs.clean,
       'gh-pages': pages.clean,
       lib: lib.clean,
-      release: aspects.release.clean,
+      release: release.clean,
     },
     coffee: {
-      src: aspects.src.coffee,
-      tests: aspects.tests.coffee,
+      src: src.coffee,
+      tests: tests.coffee,
     },
     copy: {
       dist: dist.copy,
       'gh-pages': pages.copy,
       lib: lib.copy,
-      release: aspects.release.copy,
+      release: release.copy,
     },
     'gh-pages': {
       'gh-pages': pages['gh-pages'],
@@ -172,14 +237,14 @@ module.exports = (grunt) => {
       'gh-pages': pages.markdown,
     },
     qunit: {
-      tests: aspects.tests.qunit,
+      tests: tests.qunit,
     },
     uglify: {
-      release: aspects.release.uglify,
+      release: release.uglify,
     },
     watch: {
       // Caveat: These watch tasks do not clean.
-      js: aspects.src.watch.js,
+      js: src.watch.js,
     },
   };
   if (!grunt.option('fast')) {
@@ -196,10 +261,6 @@ module.exports = (grunt) => {
   docs.registerTasks(grunt);
   lib.registerTasks(grunt);
   pages.registerTasks(grunt);
-  for (const name in aspects) {
-    if (aspects.hasOwnProperty(name)) {
-      if (name === 'src') { continue; }
-      aspects[name].task();
-    }
-  }
+  release.registerTasks(grunt);
+  tests.registerTasks(grunt);
 };
