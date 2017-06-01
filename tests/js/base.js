@@ -82,7 +82,7 @@ define(function() {
   Object.assign(createVisualTest, {
     setupAppendButton(testElement, listSelector, updateItem) {
       let listElement = testElement.querySelector(listSelector);
-      let itemElement = listElement.lastChild.cloneNode();
+      let itemElement = listElement.lastChild.cloneNode(true);
       testElement.querySelector('[name=list-append]').addEventListener('click', () => {
         let newElement = itemElement.cloneNode();
         listElement.appendChild(newElement);
