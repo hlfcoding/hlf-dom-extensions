@@ -6,26 +6,24 @@
 //
 define(function() {
   'use strict';
-
-  let namespace = {};
-
-  if (!window.QUnit) { return namespace; }
   //
   // Reporting
   // ---------
   //
-  QUnit.testStart(function(details) {
-    console.log(''); // For grunt-contrib-qunit.
-  });
-
-  QUnit.log(function(details) {
-    if (details.result) {
-      console.log('\x1b[32m', `✔ ${details.message}`);
-      return;
-    }
-    console.log('\x1b[31m', `✘ ${details.message}` +
-      ` -- Expected: ${details.expected}, actual: ${details.actual}.`);
-  });
+  if (window.QUnit) {
+    QUnit.testStart(function(details) {
+      console.log(''); // For grunt-contrib-qunit.
+    });
+    QUnit.log(function(details) {
+      if (details.result) {
+        console.log('\x1b[32m', `✔ ${details.message}`);
+        return;
+      }
+      console.log('\x1b[31m', `✘ ${details.message}` +
+        ` -- Expected: ${details.expected}, actual: ${details.actual}.`);
+    });
+    return;
+  }
   //
   // __createVisualTest__ returns a configured test function generator. Tests
   // should be invoked tests on document ready. Configuration:
@@ -62,7 +60,7 @@ define(function() {
       let containerElement = asFragments ? document.body : document.getElementById('main');
       let opts;
       if (asFragments) {
-        opts = { template: (vars => `${vars.html}`) };
+        opts = { template: (vars => vars.html) };
       }
       let testElement = renderVisualTest(containerElement,
         { className, docsUrl, footerHtml, html, label }, opts
@@ -104,21 +102,24 @@ define(function() {
     let { template } = Object.assign({}, renderVisualTest.defaults, opts);
     let templateElement = document.createElement('template');
     templateElement.innerHTML = template(vars);
-    let testElement = template.content.firstChild;
+    let testElement = templateElement.content.firstChild;
     containerElement.appendChild(testElement);
     return testElement;
   }
   renderVisualTest.defaults = {
-    template: (vars) => (
-`<section class="${vars.className} visual-test">
+    template: (vars) => {
+      const { className, docsUrl, footerHtml, html, label } = vars;
+      return (
+`<section class="${className} visual-test">
   <header>
-    <span class="label">${vars.label}</span>
-    <a data-rel="docs" href="${vars.docsUrl}">docs</a>
+    <span class="label">${label}</span>
+    <a data-rel="docs" href="${docsUrl}">docs</a>
   </header>
-  ${vars.html}
-  <footer>${vars.footerHtml}</footer>
+  ${html}
+  <footer>${footerHtml}</footer>
 </section>`
-    )
+      );
+    }
   };
   const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed " +
     "do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim " +
@@ -132,7 +133,6 @@ define(function() {
     short: loremIpsum.slice(0, 200),
     title: loremIpsum.slice(0, 26)
   };
-  Object.assign(namespace, { createVisualTest, placeholderText, renderVisualTest });
 
-  return namespace;
+  return { createVisualTest, placeholderText, renderVisualTest };
 });

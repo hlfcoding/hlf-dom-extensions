@@ -355,11 +355,11 @@
       if (groups.indexOf('selection') !== -1) {
         Object.assign(methods, {
           selectByClass(name) {
-            let selector = `.${this.classNames[name]}`;
+            let selector = `.${this.className(name)}`;
             return this.element.querySelector(selector);
           },
           selectAllByClass(name) {
-            let selector = `.${this.classNames[name]}`;
+            let selector = `.${this.className(name)}`;
             return this.element.querySelectorAll(selector);
           },
           selectToProperties() {

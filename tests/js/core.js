@@ -4,7 +4,7 @@
 // Offloads testing larger core components to other test modules.
 //
 // [Page](../../../tests/core.unit.html)
-
+//
 (function() {
   'use strict';
 
