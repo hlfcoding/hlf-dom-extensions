@@ -265,6 +265,8 @@
       element.setAttribute(attrName('instance-id'), id);
     }
 
+    namespace.extension = extension;
+
     return extension;
   }
   //
@@ -386,4 +388,4 @@
 
   return hlf;
 
-}());
+});
