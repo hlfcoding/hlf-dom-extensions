@@ -1,4 +1,22 @@
+//
+// HLF Media Grid Extensions
+// =========================
+// [Styles](../css/media-grid.html) | [Tests](../../tests/js/media-grid.html)
+//
+// The `mediaGrid` extension, inspired by the Cargo Voyager design template, can
+// expand an item inline without affecting the position of its siblings. The
+// extension tries to add the minimal amount of DOM elements and styles. So the
+// layout rules are mostly defined in the styles, and initial html for items is
+// required (see the tests for an example). The extension also handles additional
+// effects like focusing on the expanded item and dimming its siblings.
+//
 (function(root, attach) {
+  //
+  // § __UMD__
+  // - When AMD, register the attacher as an anonymous module.
+  // - When Node or Browserify, set module exports to the attach result.
+  // - When browser globals (root is window), Just run the attach function.
+  //
   if (typeof define === 'function' && define.amd) {
     define(['hlf/core'], attach);
   } else if (typeof exports === 'object') {
@@ -7,6 +25,33 @@
     attach(hlf);
   }
 })(this, function(hlf) {
+  //
+  // Namespace
+  // ---------
+  //
+  // It takes some more boilerplate to write the extension. Any of this additional
+  // support API is put into a extension specific namespace under `hlf`, which in
+  // this case is __hlf.mediaGrid__.
+  //
+  // - __debug__ toggles debug logging for all instances of an extension.
+  // - __toString__ helps to namespace when registering any DOM names.
+  //
+  // The extension's __defaults__ are available as reference. Also note that _the
+  // extension instance gets extended with the options_.
+  //
+  // - __autoReady__ is `false` by default, as recommended. Turning it on means
+  //   the `ready` event gets triggered immediately, synchronously, and is only
+  //   recommended if your grid doesn't have images and such that require a wait
+  //   before being fully loaded and sized.
+  //
+  // - __resizeDelay__ is the millis to wait for window resizing to stop before
+  //   doing a re-layout. `100` is the default to balance responsiveness and
+  //   performance.
+  //
+  // - Note: for these extensions, the majority of presentation state logic is
+  //   in the extension stylesheet. We update the presentation state by using
+  //   namespaced __classNames__ generated in a closure.
+  //
   hlf.mediaGrid = {
     debug: false,
     toString(context) {
@@ -23,6 +68,10 @@
       undimDelay: 1000,
     },
   };
+  //
+  // MediaGrid
+  // ---------
+  //
   class MediaGrid {
     constructor(element, options) {
       this.eventListeners = {
@@ -38,6 +87,15 @@
         this.toggleItemFocus(target, expanded, this.expandDuration);
       };
     }
+    //
+    // __init__ completes the setup:
+    // 1. Select `itemElements` and `sampleItemElement`.
+    // 2. Get `expandDuration` from styles, create event bindings for expansion.
+    //    This also relies on the `expandedItemElement` state.
+    // 3. Create event bindings for dimming on expansion, hovering expanded item.
+    // 4. Set up initial layout for running when `ready`.
+    // 5. Set up re-layout for running on window resize.
+    //
     init() {
       if (!this.itemElements) {
         this.itemElements = this.selectAllByClass('item');
@@ -81,6 +139,17 @@
       this._layoutItems();
       this.element.classList.add(this.className('ready'));
     }
+    //
+    // § __Public__
+    //
+    // You are welcome to call these methods from your own code, though currently
+    // there is no intended use case for that.
+    //
+    // __toggleItemExpansion__ basically toggles the `-expanded` class on the
+    // given `itemElement` to `expanded` and triggers the `expand` event. To allow
+    // styling or scripting during the transition, it adds the `-transitioning`
+    // class and removes it afterwards per `expandDuration`.
+    //
     toggleItemExpansion(itemElement, expanded) {
       if (typeof expanded === 'undefined') {
         expanded = !itemElement.classList.contains(this.className('expanded'));
@@ -110,11 +179,20 @@
 
       itemElement.dispatchEvent(this.createCustomEvent('expand', { expanded }));
     }
+    //
+    // __toggleExpandedItemFocus__ wraps `toggleItemFocus` to factor in
+    // `undimDelay` when toggling off `focus`. Focusing dims without delay.
+    //
     toggleExpandedItemFocus(itemElement, focused) {
       if (!itemElement.classList.contains(this.className('expanded'))) { return; }
       let delay = focused ? 0 : this.undimDelay;
       this.toggleItemFocus(itemElement, focused, delay);
     }
+    //
+    // __toggleItemFocus__ basically toggles the `-focused` class on the given
+    // `itemElement` to `focused` and the `-dimmed` class on the root element
+    // after any given `delay`.
+    //
     toggleItemFocus(itemElement, focused, delay) {
       if (focused) {
         Array.from(this.itemElements).forEach((itemElement) => {
@@ -127,6 +205,11 @@
         this.element.classList.toggle(this.className('dimmed'), focused);
       }, delay);
     }
+    //
+    // § __Internal__
+    //
+    // These are layout helpers for changing offset for an `itemElement`.
+    //
     _adjustItemToBottomEdge(itemElement) {
       itemElement.style.top = 'auto';
       itemElement.style.bottom = '0px';
@@ -135,6 +218,11 @@
       itemElement.style.left = 'auto';
       itemElement.style.right = '0px';
     }
+    //
+    // ___getMetricSamples__ returns cloned `itemElement` and `expandedItemElement`
+    // mainly for calculating initial metrics. For them to have the right sizes,
+    // they're attached to an invisible container appended to the root element.
+    //
     _getMetricSamples() {
       let containerElement = this.selectByClass('sample');
       if (containerElement) {
@@ -155,12 +243,23 @@
       this.element.appendChild(containerElement);
       return { itemElement, expandedItemElement };
     }
+    //
+    // These are layout helpers for checking item position based on index and the
+    // current `rowSize` metric.
+    //
     _isBottomEdgeItem(i) {
       return (i + 1) > (this.itemElements.length - this.metrics.rowSize);
     }
     _isRightEdgeItem(i) {
       return ((i + 1) % this.metrics.rowSize) === 0;
     }
+    //
+    // ___layoutItems__ occurs once `metrics` is updated. With the latest
+    // `wrapWidth` and `wrapHeight` metrics, the root element is resized. Each
+    // element in `itemElements` gets its position style set to `absolute` non-
+    // destructively; this method assumes the original is `float`, and so
+    // iterates in reverse.
+    //
     _layoutItems() {
       Array.from(this.itemElements).reverse().forEach((itemElement) => {
         if (!itemElement.hasAttribute(this.attrName('original-position'))) {
@@ -176,6 +275,11 @@
       style.width = `${this.metrics.wrapWidth}px`;
       style.height = `${this.metrics.wrapHeight}px`;
     }
+    //
+    // ___reLayoutItems__ wraps `_layoutItems` to be its idempotent version by
+    // first resetting each item's to its `original-position`. It can run after a
+    // custom `delay`.
+    //
     _reLayoutItems(delay = 0) {
       clearTimeout(this._layoutTimeout);
       this._layoutTimeout = setTimeout(() => {
@@ -187,6 +291,13 @@
         this._layoutItems();
       }, delay);
     }
+    //
+    // ___updateMetrics__ builds the `metrics` around item and wrap as well as
+    // row and column sizes. It does so by measuring sample elements and their
+    // margins, as well as sizing the wrap (root element) to fit its items. As
+    // such, this method isn't idempotent and expects to be followed by a call
+    // to `_layoutItems`.
+    //
     _updateMetrics(hard = true) {
       if (hard) {
         const { itemElement, expandedItemElement } = this._getMetricSamples();
@@ -214,6 +325,9 @@
       });
     }
   }
+  //
+  // § __Attaching__
+  //
   return hlf.createExtension({
     name: 'mediaGrid',
     namespace: hlf.mediaGrid,
