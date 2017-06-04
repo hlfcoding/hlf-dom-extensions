@@ -17,49 +17,49 @@
   define(['hlf/core', 'test/base', 'hlf/media-grid'], function(hlf, base, mediaGrid) {
     if (window.QUnit) {
       const { module, test } = QUnit;
-      /*
       module('hlf.mediaGrid', {
         beforeEach() {
-          return this.mg = $("<div>\n  <div>\n    <div class=\"js-mg-item\"></div>\n    <div class=\"js-mg-item\"></div>\n    <div class=\"js-mg-item\"></div>\n  </div>\n</div>").appendTo('body').children('div').mediaGrid().mediaGrid();
+          let element = document.createElement('div');
+          element.innerHTML = '<div>' +
+            '<div class="js-mg-item"></div>' +
+            '<div class="js-mg-item"></div>' +
+            '<div class="js-mg-item"></div>' +
+            '</div>';
+          document.getElementById('qunit-fixture').appendChild(element);
+          this.instance = mediaGrid(element)();
         },
-        afterEach() {
-          return this.mg.$el.parent().remove();
-        }
       });
       test('#_updateMetrics', function(assert) {
-        var $el, $items, ref;
-        ref = this.mg, $el = ref.$el, $items = ref.$items;
-        $el.add($items).css({
-          boxSizing: 'border-box'
+        const { instance } = this;
+        let { style } = instance.element;
+        style.boxSizing = 'border-box';
+        style.padding = '10px';
+        Array.from(instance.itemElements).forEach((itemElement) => {
+          let { style } = itemElement;
+          style.borderWidth = '1px';
+          style.boxSizing = 'border-box';
+          style.marginRight = '10px';
+          style.padding = '9px';
+          style.width = style.height = '200px';
         });
-        $el.css({
-          padding: 10
-        });
-        $el.parent().css({
-          width: 610
-        });
-        $items.css({
-          marginRight: 10,
-          padding: 9,
-          borderWidth: 1,
-          width: 200,
-          height: 200
-        });
-        this.mg._updateMetrics(true);
-        assert.strictEqual(this.mg.metrics.gutter, 10, 'It calculates gutter based on item margin sizes.');
-        assert.strictEqual(this.mg.metrics.itemWidth, 200, "It uses the item's 'outerWidth' as item width.");
-        assert.strictEqual(this.mg.metrics.rowSize, 2, 'It calculates row size based on item and wrap sizes.');
-        assert.strictEqual(this.mg.metrics.colSize, 2, 'It calculates column size based on row size.');
-        $el.parent().css({
-          width: 620
-        });
-        this.mg._updateMetrics(true);
-        assert.strictEqual(this.mg.metrics.rowSize, 3, 'It calculates row size based on item and wrap sizes.');
-        assert.strictEqual(this.mg.selectByClass('sample').length, 1, 'It cleans up after multiple hard updates.');
+        style = instance.element.parentElement.style;
+        style.width = '610px';
+        let metrics;
+        instance._updateMetrics(true);
+        metrics = instance.metrics;
+        assert.strictEqual(metrics.gutter, 10, 'It bases gutter on item margin sizes.');
+        assert.strictEqual(metrics.itemWidth, 200, "It uses the item's 'outerWidth' as width.");
+        assert.strictEqual(metrics.rowSize, 2, 'It bases row size on item and wrap sizes.');
+        assert.strictEqual(metrics.colSize, 2, 'It bases column size on row size.');
+        style.width = '620px';
+        instance._updateMetrics(true);
+        metrics = instance.metrics;
+        assert.strictEqual(metrics.rowSize, 3, 'It bases row size on item and wrap sizes.');
+        assert.strictEqual(instance.selectAllByClass('sample').length, 1,
+          'It cleans up after multiple hard updates.');
       });
       QUnit.start();
       return true;
-      */
     }
 
     // ---
