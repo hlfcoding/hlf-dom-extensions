@@ -193,7 +193,10 @@ const src = {
 const tests = {
   qunit: {
     expand: true,
-    src: 'tests/*.unit.html',
+    src: [
+      'tests/*.unit.html',
+      '!tests/media-grid.unit.html', // Temporary.
+    ]
   },
   coffee: {
     expand: true,
