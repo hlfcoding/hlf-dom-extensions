@@ -1,7 +1,7 @@
 /*
 HLF Media Grid Extension
 ========================
-[Source](../js/jquery.hlf.media-grid.html) | [Tests](../../tests/css/media-grid.html)
+[Source](../js/media-grid.html) | [Tests](../../tests/css/media-grid.html)
 
 The required extension styling is crucial to extension usage. There's an
 optional, opinionated set of styles in `mg-item-extras`.
