@@ -3,4 +3,5 @@ node_modules
 /tests/**/*.js
 !/tests/**/core.js
 !/tests/**/base.js
+!/tests/**/media-grid.js
 /.grunt
