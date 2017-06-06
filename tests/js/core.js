@@ -100,7 +100,7 @@
       instance.dispatchCustomEvent('someevent', data);
       assert.equal(instance.someEventDetail, data,
         'Instance has auto-added listeners based on eventListeners.');
-      someExtension('performSomeAction', data);
+      someExtension('someAction', data);
       assert.equal(instance.someActionPayload, data,
         'Extension function can perform action, using default perform.');
       return instance;

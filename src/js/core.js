@@ -296,9 +296,9 @@
       Object.assign(methods, {
         perform(action) {
           const { name, payload } = action;
-          if (this[name]) {
-            this[name](payload);
-          }
+          let methodName = `perform${name[0].toUpperCase()}${name.substr(1)}`;
+          if (!this[methodName]) { return; }
+          this[methodName](payload);
         }
       });
     }
