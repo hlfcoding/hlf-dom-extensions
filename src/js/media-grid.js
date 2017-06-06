@@ -131,10 +131,10 @@
         }
       });
       if (this.autoLoad) {
-        this.load();
+        this.performLoad();
       }
     }
-    load() {
+    performLoad() {
       this._updateMetrics();
       this._layoutItems();
       this.element.classList.add(this.className('ready'));

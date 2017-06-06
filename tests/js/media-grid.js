@@ -107,12 +107,8 @@
         return html;
       },
       test(testElement) {
-        let instance = mediaGrid(
-          testElement.querySelector('.test-body')
-        )();
-        setTimeout(() => {
-          instance.load();
-        }, 500);
+        let extension = mediaGrid(testElement.querySelector('.test-body'));
+        setTimeout((() => extension('load')), 500);
       },
       anchorName: 'default',
       className: 'default-call',
