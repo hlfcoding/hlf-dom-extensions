@@ -105,7 +105,7 @@
     // deciding the main element before passing over to `createExtensionInstance`.
     //
     function extension(subject, ...args) {
-      let { action, options, contextElement } = parseExtensionArguments(args);
+      let { action, options, contextElement } = extension.parseArguments(args);
       contextElement = contextElement || document.body;
       //
       // __createExtensionInstance__ is a private subroutine that's part of
@@ -182,16 +182,16 @@
         if (typeof instance.init === 'function') {
           instance.init();
         }
-        setExtensionInstance(rootElement, instance);
+        extension.setInstance(rootElement, instance);
         return instance;
       }
 
       function dispatchAction() {
         let target = asSharedInstance ? contextElement : subject;
         if (target instanceof HTMLElement) {
-          getExtensionInstance(target).perform(action);
+          extension.getInstance(target).perform(action);
         } else {
-          Array.from(target).map(getExtensionInstance)
+          Array.from(target).map(extension.getInstance)
             .forEach((instance) => instance.perform(action));
         }
       }
@@ -200,10 +200,10 @@
         let source = asSharedInstance ? contextElement : subject;
         let instance, instances;
         if (source instanceof HTMLElement &&
-          (instance = getExtensionInstance(source))
+          (instance = extension.getInstance(source))
         ) {
           return instance;
-        } else if ((instances = Array.from(source).map(getExtensionInstance)) &&
+        } else if ((instances = Array.from(source).map(extension.getInstance)) &&
           instances.length
         ) {
           return instances;
@@ -234,32 +234,32 @@
       return extension.bind(null, subject);
     }
 
-    function getExtensionInstance(element) {
-      const id = element.getAttribute(attrName('instance-id'));
-      return instances[id];
-    }
-
-    function parseExtensionArguments(args) {
-      let action, options, contextElement;
-      const [first, second] = args;
-      if (typeof first === 'string') {
-        action = { name: first, payload: second };
-      } else {
-        options = first;
-        if (second) {
-          contextElement = second;
+    Object.assign(extension, {
+      getInstance(element) {
+        const id = element.getAttribute(attrName('instance-id'));
+        return instances[id];
+      },
+      parseArguments(args) {
+        let action, options, contextElement;
+        const [first, second] = args;
+        if (typeof first === 'string') {
+          action = { name: first, payload: second };
+        } else {
+          options = first;
+          if (second) {
+            contextElement = second;
+          }
         }
-      }
-      return { action, options, contextElement };
-    }
-
-    function setExtensionInstance(element, instance) {
-      const id = idCounter;
-      idCounter += 1;
-      instance.id = id;
-      instances[id] = instance;
-      element.setAttribute(attrName('instance-id'), id);
-    }
+        return { action, options, contextElement };
+      },
+      setInstance(element, instance) {
+        const id = idCounter;
+        idCounter += 1;
+        instance.id = id;
+        instances[id] = instance;
+        element.setAttribute(attrName('instance-id'), id);
+      },
+    });
 
     namespace.extension = extension;
 
