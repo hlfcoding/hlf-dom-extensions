@@ -10,7 +10,7 @@ optional, opinionated set of styles in `mg-item-extras`.
 /*
 clearfix
 */
-.mg-item-extras .js-mg-item.js-mg-expanded hgroup::after,
+.mg-item-extras .js-mg-item.js-mg-expanded .mg-headings::after,
 .js-mg::after {
   clear: both;
   content: '';
@@ -56,10 +56,10 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
 <article class="js-mg-item">
   <section class="mg-preview"><!-- hidden when expanded -->
     <img src="..." />
-    <hgroup>
+    <div class="mg-headings">
       <h1 class="mg-title">...</h1>
       <h2 class="mg-date">...</h2>
-    </hgroup>
+    </div>
     <ul class="mg-tags">
       <li>...</li>
       <li>...</li>
@@ -67,10 +67,10 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
   </section>
   <section class="mg-detail"><!-- visible when expanded -->
     <img src="..." />
-    <hgroup>
+    <div class="mg-headings">
       <h1 class="mg-title">...</h1>
       <h2 class="mg-date">...</h2>
-    </hgroup>
+    </div>
     <p>...</p>
     <ul class="mg-tags">
       <li>...</li>
@@ -153,7 +153,7 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
   margin: 0;
   padding: 0;
 }
-.mg-item-extras .js-mg-item.js-mg-expanded hgroup > .mg-date {
+.mg-item-extras .js-mg-item.js-mg-expanded .mg-headings > .mg-date {
   float: right;
 }
 .mg-item-extras .js-mg-item .mg-tags {
@@ -171,6 +171,6 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
   margin: 0;
   padding: 0;
 }
-.mg-item-extras .js-mg-item.js-mg-expanded hgroup > .mg-title {
+.mg-item-extras .js-mg-item.js-mg-expanded .mg-headings > .mg-title {
   float: left;
 }

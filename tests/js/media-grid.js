@@ -77,10 +77,10 @@
 `<article class="js-mg-item">
   <section class="mg-preview">
     <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" />
-    <hgroup>
+    <div class="mg-headings">
       <h1 class="mg-title">${placeholderText.title}</h1>
       <h2 class="mg-date">July 14, 2012</h2>
-    </hgroup>
+    </div>
     <ul class="mg-tags">
       <li>foo</li>
       <li>bar</li>
@@ -89,10 +89,10 @@
   </section>
   <section class="mg-detail">
     <img src="http://placehold.it/418x270/888/aaa" alt="main banner" />
-    <hgroup>
+    <div class="mg-headings">
       <h1 class="mg-title">${placeholderText.title}</h1>
       <h2 class="mg-date">July 14, 2012</h2>
-    </hgroup>
+    </div>
     <p>${placeholderText.short}</p>
     <ul class="mg-tags">
       <li>foo</li>
