@@ -102,14 +102,44 @@
     // is several elements all share the same extension instance.
     //
     // Otherwise, continue creating the instance by preparing the options and
-    // deciding the main element before passing over to `createExtensionInstance`.
+    // deciding the main element before passing over to `buildInstance`.
     //
     function extension(subject, ...args) {
       let { action, options, contextElement } = extension.parseArguments(args);
       contextElement = contextElement || document.body;
+
+      if (action) {
+        let target = asSharedInstance ? contextElement : subject;
+        extension.dispatchAction(action, target);
+        return;
+
+      } else if (!options) {
+        let source = asSharedInstance ? contextElement : subject;
+        let result = extension.getInstanceOrInstances(source);
+        if (result) {
+          return result;
+        }
+
+      } else if (Object.keys(instances).length) {
+        instances = {};
+      }
+
+      options = Object.assign({}, namespace.defaults, options);
+      if (subject instanceof HTMLElement) {
+        extension.buildInstance(subject, options, contextElement);
+      } else {
+        subject.forEach((element) => {
+          extension.buildInstance(element, options, contextElement);
+        });
+      }
+
+      return extension.bind(null, subject);
+    }
+
+    Object.assign(extension, {
       //
-      // __createExtensionInstance__ is a private subroutine that's part of
-      // `createExtension`, which has more details on its required input.
+      // __buildInstance__ is a subroutine that's part of `createExtension`,
+      // which has more details on its required input.
       //
       // 1. Check if element has options set in its root data attribute. If
       //    so, merge those options into our own `finalOptions`.
@@ -143,7 +173,7 @@
       //
       // 9. Lastly, store the instance id on `rootElement`.
       //
-      function createExtensionInstance(element) {
+      buildInstance(element, options, contextElement) {
         let attrOptions;
         if (element.hasAttribute(attrName())) {
           try {
@@ -168,36 +198,34 @@
             instance.classNames = finalOptions.classNames;
           }
         }
-        if (autoListen && typeof instance.addEventListeners === 'function' &&
-          instance.eventListeners
-        ) {
+        if (autoListen && instance.addEventListeners && instance.eventListeners) {
           instance.addEventListeners(instance.eventListeners);
         }
-        if (autoSelect && typeof instance.selectToProperties === 'function') {
+        if (autoSelect && instance.selectToProperties) {
           instance.selectToProperties();
         }
         if (instance.className) {
           rootElement.classList.add(instance.className());
         }
-        if (typeof instance.init === 'function') {
+        if (instance.init) {
           instance.init();
         }
         extension.setInstance(rootElement, instance);
         return instance;
-      }
-
-      function dispatchAction() {
-        let target = asSharedInstance ? contextElement : subject;
+      },
+      dispatchAction(action, target) {
         if (target instanceof HTMLElement) {
           extension.getInstance(target).perform(action);
         } else {
           Array.from(target).map(extension.getInstance)
             .forEach((instance) => instance.perform(action));
         }
-      }
-
-      function getInstanceOrInstances() {
-        let source = asSharedInstance ? contextElement : subject;
+      },
+      getInstance(element) {
+        const id = element.getAttribute(attrName('instance-id'));
+        return instances[id];
+      },
+      getInstanceOrInstances(source) {
         let instance, instances;
         if (source instanceof HTMLElement &&
           (instance = extension.getInstance(source))
@@ -208,36 +236,6 @@
         ) {
           return instances;
         }
-      }
-
-      if (action) {
-        dispatchAction();
-        return;
-
-      } else if (!options) {
-        let result = getInstanceOrInstances(subject);
-        if (result) {
-          return result;
-        }
-
-      } else if (Object.keys(instances).length) {
-        instances = {};
-      }
-
-      options = Object.assign({}, namespace.defaults, options);
-      if (subject instanceof HTMLElement) {
-        createExtensionInstance(subject);
-      } else {
-        subject.forEach(createExtensionInstance);
-      }
-
-      return extension.bind(null, subject);
-    }
-
-    Object.assign(extension, {
-      getInstance(element) {
-        const id = element.getAttribute(attrName('instance-id'));
-        return instances[id];
       },
       parseArguments(args) {
         let action, options, contextElement;
