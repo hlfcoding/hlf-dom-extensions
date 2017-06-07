@@ -111,8 +111,8 @@
       // __createExtensionInstance__ is a private subroutine that's part of
       // `createExtension`, which has more details on its required input.
       //
-      // 1. Check if element has options set in its data attribute. If so, merge
-      //    those options into our own `finalOptions`.
+      // 1. Check if element has options set in its root data attribute. If
+      //    so, merge those options into our own `finalOptions`.
       //
       // 2. Also decide the `rootElement` based on the situation. It's where the
       //    extension instance id gets stored and the root class gets added. A
@@ -144,17 +144,13 @@
       // 9. Lastly, store the instance id on `rootElement`.
       //
       function createExtensionInstance(element) {
-        let data;
+        let attrOptions;
         if (element.hasAttribute(attrName())) {
           try {
-            data = JSON.parse(element.getAttribute(attrName()));
+            attrOptions = JSON.parse(element.getAttribute(attrName()));
           } catch (error) {}
         }
-        let finalOptions = Object.assign({}, options, data);
-        let attrOptions = JSON.parse(element.getAttribute(attrName('instance-id')));
-        if (attrOptions) {
-          Object.assign(finalOptions, attrOptions);
-        }
+        let finalOptions = Object.assign({}, options, attrOptions);
         let rootElement = asSharedInstance ? contextElement : element;
         let instance = new apiClass(element, finalOptions, contextElement);
         instance.element = element;
