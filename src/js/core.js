@@ -105,20 +105,20 @@
     // is several elements all share the same extension instance.
     //
     // Otherwise, continue creating the instance by preparing the options and
-    // deciding the main element before passing over to `buildInstance`.
+    // deciding the main element before passing over to `_buildInstance`.
     //
     function extension(subject, ...args) {
-      let { action, options, contextElement } = extension.parseArguments(args);
+      let { action, options, contextElement } = extension._parseArguments(args);
       contextElement = contextElement || document.body;
 
       if (action) {
         let target = asSharedInstance ? contextElement : subject;
-        extension.dispatchAction(action, target);
+        extension._dispatchAction(action, target);
         return;
 
       } else if (!options) {
         let source = asSharedInstance ? contextElement : subject;
-        let result = extension.getInstanceOrInstances(source);
+        let result = extension._getInstanceOrInstances(source);
         if (result) {
           return result;
         }
@@ -129,10 +129,10 @@
 
       options = Object.assign({}, namespace.defaults, options);
       if (subject instanceof HTMLElement) {
-        extension.buildInstance(subject, options, contextElement);
+        extension._buildInstance(subject, options, contextElement);
       } else {
         subject.forEach((element) => {
-          extension.buildInstance(element, options, contextElement);
+          extension._buildInstance(element, options, contextElement);
         });
       }
 
@@ -142,7 +142,7 @@
     Object.assign(extension, {
       baseMethods,
       //
-      // __buildInstance__ is a subroutine that's part of `createExtension`,
+      // ___buildInstance__ is a subroutine that's part of `createExtension`,
       // which has more details on its required input.
       //
       // 1. Check if element has options set in its root data attribute. If
@@ -177,7 +177,7 @@
       //
       // 9. Lastly, store the instance id on `rootElement`.
       //
-      buildInstance(element, options, contextElement) {
+      _buildInstance(element, options, contextElement) {
         let attrOptions;
         if (element.hasAttribute(attrName())) {
           try {
@@ -214,34 +214,34 @@
         if (instance.init) {
           instance.init();
         }
-        extension.setInstance(rootElement, instance);
+        extension._setInstance(rootElement, instance);
         return instance;
       },
-      dispatchAction(action, target) {
+      _dispatchAction(action, target) {
         if (target instanceof HTMLElement) {
-          extension.getInstance(target).perform(action);
+          extension._getInstance(target).perform(action);
         } else {
-          Array.from(target).map(extension.getInstance)
+          Array.from(target).map(extension._getInstance)
             .forEach((instance) => instance.perform(action));
         }
       },
-      getInstance(element) {
+      _getInstance(element) {
         const id = element.getAttribute(attrName('instance-id'));
         return instances[id];
       },
-      getInstanceOrInstances(source) {
+      _getInstanceOrInstances(source) {
         let instance, instances;
         if (source instanceof HTMLElement &&
-          (instance = extension.getInstance(source))
+          (instance = extension._getInstance(source))
         ) {
           return instance;
-        } else if ((instances = Array.from(source).map(extension.getInstance)) &&
+        } else if ((instances = Array.from(source).map(extension._getInstance)) &&
           instances.length
         ) {
           return instances;
         }
       },
-      parseArguments(args) {
+      _parseArguments(args) {
         let action, options, contextElement;
         const [first, second] = args;
         if (typeof first === 'string') {
@@ -254,7 +254,7 @@
         }
         return { action, options, contextElement };
       },
-      setInstance(element, instance) {
+      _setInstance(element, instance) {
         const id = idCounter;
         idCounter += 1;
         instance.id = id;
