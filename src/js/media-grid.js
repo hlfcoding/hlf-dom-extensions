@@ -113,6 +113,17 @@
         this.performLoad();
       }
     }
+    deinit() {
+      this.removeEventListeners(this.eventListeners);
+      Array.from(this.itemElements).forEach((itemElement) => {
+        this.removeEventListeners({
+          'click': this._onItemClick,
+          'mouseenter': this._onItemMouseEnter,
+          'mouseleave': this._onItemMouseLeave,
+        }, itemElement);
+      });
+      window.removeEventListener('resize', this._onWindowResize);
+    }
     performLoad() {
       this._updateMetrics();
       this._layoutItems();

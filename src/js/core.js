@@ -217,6 +217,10 @@
         extension._setInstance(rootElement, instance);
         return instance;
       },
+      _deleteInstance(element) {
+        const id = element.getAttribute(attrName('instance-id'));
+        delete instances[id];
+      },
       _dispatchAction(action, target) {
         if (target instanceof HTMLElement) {
           extension._getInstance(target).perform(action);
@@ -297,7 +301,11 @@
           let methodName = `perform${name[0].toUpperCase()}${name.substr(1)}`;
           if (!this[methodName]) { return; }
           this[methodName](payload);
-        }
+        },
+        performRemove() {
+          namespace.extension._deleteInstance(this.element);
+          this.deinit();
+        },
       });
     }
     if (groups.indexOf('naming') !== -1) {
