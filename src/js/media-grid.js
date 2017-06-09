@@ -74,18 +74,13 @@
   //
   class MediaGrid {
     constructor(element, options) {
-      this.eventListeners = {
-        mouseleave: (event) => {
-          if (!this.expandedItemElement) { return; }
-          this.toggleItemFocus(this.expandedItemElement, false, 0);
-        },
-      };
-      this.eventListeners[this.eventName('expand')] = (event) => {
-        const { target } = event;
-        if (!target.classList.contains(this.className('item'))) { return; }
-        const { expanded } = event.detail;
-        this.toggleItemFocus(target, expanded, this.expandDuration);
-      };
+      [ '_onItemClick', '_onItemExpand', '_onItemMouseEnter',
+        '_onItemMouseLeave', '_onMouseLeave', '_onWindowResize',
+      ].forEach((name) => {
+        this[name] = this[name].bind(this);
+      });
+      this.eventListeners = { mouseleave: this._onMouseLeave };
+      this.eventListeners[this.eventName('expand')] = this._onItemExpand;
     }
     //
     // __init__ completes the setup:
@@ -100,36 +95,20 @@
       if (!this.itemElements) {
         this.itemElements = this.selectAllByClass('item');
       }
+      Array.from(this.itemElements).forEach((itemElement) => {
+        this.addEventListeners({
+          'click': this._onItemClick,
+          'mouseenter': this._onItemMouseEnter,
+          'mouseleave': this._onItemMouseLeave,
+        }, itemElement);
+      });
+      window.addEventListener('resize', this._onWindowResize);
       this.sampleItemElement = this.itemElements[0];
       this.expandDuration = 1000 * parseFloat(
         getComputedStyle(this.sampleItemElement).transitionDuration
       );
-      Array.from(this.itemElements).forEach((itemElement) => {
-        itemElement.addEventListener('click', (_) => {
-          this.toggleItemExpansion(itemElement);
-        });
-        itemElement.addEventListener('mouseenter', (_) => {
-          this.toggleExpandedItemFocus(itemElement, true);
-        });
-        itemElement.addEventListener('mouseleave', (_) => {
-          this.toggleExpandedItemFocus(itemElement, false);
-        });
-      });
       this.expandedItemElement = null;
       this.metrics = {};
-      let ran;
-      window.addEventListener('resize', (_) => {
-        const now = Date.now();
-        if (ran && now < ran + this.resizeDelay) { return; }
-        ran = now;
-        this._updateMetrics(false);
-        if (this.expandedItemElement) {
-          this.toggleItemExpansion(this.expandedItemElement, false);
-          this._reLayoutItems(this.expandDuration);
-        } else {
-          this._reLayoutItems();
-        }
-      });
       if (this.autoLoad) {
         this.performLoad();
       }
@@ -207,6 +186,38 @@
     }
     //
     // § __Internal__
+    //
+    _onItemClick(event) {
+      this.toggleItemExpansion(event.currentTarget);
+    }
+    _onItemExpand(event) {
+      const { target } = event;
+      if (!target.classList.contains(this.className('item'))) { return; }
+      const { expanded } = event.detail;
+      this.toggleItemFocus(target, expanded, this.expandDuration);
+    }
+    _onItemMouseEnter(event) {
+      this.toggleExpandedItemFocus(event.currentTarget, true);
+    }
+    _onItemMouseLeave(event) {
+      this.toggleExpandedItemFocus(event.currentTarget, false);
+    }
+    _onMouseLeave(_) {
+      if (!this.expandedItemElement) { return; }
+      this.toggleItemFocus(this.expandedItemElement, false, 0);
+    }
+    _onWindowResize(_) {
+      const now = Date.now();
+      if (this._ran && now < this._ran + this.resizeDelay) { return; }
+      this._ran = now;
+      this._updateMetrics(false);
+      if (this.expandedItemElement) {
+        this.toggleItemExpansion(this.expandedItemElement, false);
+        this._reLayoutItems(this.expandDuration);
+      } else {
+        this._reLayoutItems();
+      }
+    }
     //
     // These are layout helpers for changing offset for an `itemElement`.
     //

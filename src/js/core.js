@@ -327,19 +327,22 @@
           }
         };
         Object.assign(methods, {
-          addEventListeners(infos) {
+          addEventListeners(infos, target) {
+            target = target || this.element;
             normalizeInfos(infos);
             for (const type in infos) {
               if (!infos.hasOwnProperty(type)) { continue; }
               const [handler, options] = infos[type];
-              this.element.addEventListener(type, handler, options);
+              target.addEventListener(type, handler, options);
             }
           },
-          removeEventListeners(infos) {
+          removeEventListeners(infos, target) {
+            target = target || this.element;
+            normalizeInfos(infos);
             for (const type in infos) {
               if (!infos.hasOwnProperty(type)) { continue; }
               const [handler, options] = infos[type];
-              this.element.removeEventListener(type, handler, options);
+              target.removeEventListener(type, handler, options);
             }
           },
           createCustomEvent(type, detail) {
