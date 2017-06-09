@@ -29,6 +29,13 @@
     });
 
     class SomeExtension {
+      static init() {
+        const perform = this.prototype.perform;
+        this.prototype.perform = function(action) {
+          this.lastAction = action;
+          return perform.call(this, action);
+        };
+      }
       constructor(element, options, contextElement) {
         this.eventListeners = {};
         this.eventListeners[this.eventName('someevent')] =
@@ -79,7 +86,7 @@
     function assertExtensionBase(module, extension, assert) {
       let someExtension = extension(module.someElement);
       let instance = someExtension();
-      assert.ok(instance.didInit, 'Instance had initialization method called.');
+      assert.ok(instance.didInit, 'Instance had initializer called.');
       ['attrName', 'className', 'eventName']
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
@@ -103,6 +110,8 @@
       someExtension('someAction', data);
       assert.equal(instance.someActionPayload, data,
         'Extension function can perform action, using default perform.');
+      assert.equal(instance.lastAction.name, 'someAction',
+        'Extension class had initializer called.');
       return instance;
     }
 
@@ -123,7 +132,7 @@
         'Extension stores the context element as property and gives it the main class.');
       assert.strictEqual(instance.id,
         parseInt(document.body.getAttribute('data-se-instance-id')),
-        'Extension stores plugin singleton with context element.');
+        'Extension stores singleton with context element.');
     });
 
     // ---

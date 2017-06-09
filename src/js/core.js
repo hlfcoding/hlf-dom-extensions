@@ -79,6 +79,9 @@
     if (apiClass) {
       namespace.apiClass = apiClass;
       Object.assign(apiClass.prototype, baseMethods);
+      if (apiClass.init) {
+        apiClass.init();
+      }
     }
     const { attrName } = baseMethods;
 
@@ -137,6 +140,7 @@
     }
 
     Object.assign(extension, {
+      baseMethods,
       //
       // __buildInstance__ is a subroutine that's part of `createExtension`,
       // which has more details on its required input.
