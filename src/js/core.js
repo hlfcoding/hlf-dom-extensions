@@ -326,6 +326,14 @@
           return `${namespace.toString('event')}${name}`;
         },
       });
+      if (groups.indexOf('css') !== -1) {
+        Object.assign(methods, {
+          cssVariable(name) {
+            return getComputedStyle(this.element)
+              .getPropertyValue(`--${namespace.toString('class')}-${name}`);
+          }
+        });
+      }
       if (groups.indexOf('event') !== -1) {
         let normalizeInfos = function(infos) {
           for (const type in infos) {

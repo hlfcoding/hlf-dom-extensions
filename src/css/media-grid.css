@@ -93,6 +93,7 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
     height var(--mg-item-transition),
     left var(--mg-item-transition),
     top var(--mg-item-transition),
+    transform var(--mg-item-transition),
     width var(--mg-item-transition),
     opacity var(--mg-fade-duration) ease-in-out;
   width: var(--mg-item-width);
@@ -133,6 +134,10 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
 }
 .js-mg-dimmed > .js-mg-item:not(.js-mg-expanded):not(.js-mg-transitioning) {
   opacity: 0.3;
+}
+.js-mg-item.js-mg-recessed {
+  opacity: 0;
+  transform: scale(0.9);
 }
 
 .mg-item-extras {

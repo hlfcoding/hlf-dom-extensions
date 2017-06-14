@@ -144,11 +144,11 @@
       if (typeof expanded === 'undefined') {
         expanded = !itemElement.classList.contains(this.className('expanded'));
       }
+      let index = Array.from(this.itemElements).indexOf(itemElement);
       if (expanded) {
         if (this.expandedItemElement) {
           this.toggleItemExpansion(this.expandedItemElement, false);
         }
-        let index = Array.from(this.itemElements).indexOf(itemElement);
         if (this._isRightEdgeItem(index)) {
           this._adjustItemToRightEdge(itemElement);
         }
@@ -156,6 +156,7 @@
           this._adjustItemToBottomEdge(itemElement);
         }
       }
+      this._toggleNeighborItemsRecessed(index, expanded);
       itemElement.classList.add(this.className('transitioning'));
       clearTimeout(itemElement.getAttribute(this.attrName('expand-timeout')));
       itemElement.setAttribute(this.attrName('expand-timeout'),
@@ -314,6 +315,27 @@
       }, delay);
     }
     //
+    // TODO
+    //
+    _toggleNeighborItemsRecessed(index, recessed) {
+      const { expandedScale, rowSize } = this.metrics;
+      let dx = this._isRightEdgeItem(index) ? -1 : 1;
+      let dy = this._isBottomEdgeItem(index) ? -1 : 1;
+      let level = 1;
+      let neighbors = [];
+      while (level < expandedScale) {
+        neighbors.push(
+          this.itemElements[index + level * dx],
+          this.itemElements[index + level * dy * rowSize],
+          this.itemElements[index + level * (dy * rowSize + dx)]
+        );
+        level += 1;
+      }
+      neighbors.forEach((itemElement) => {
+        itemElement.classList.toggle(this.className('recessed'));
+      });
+    }
+    //
     // ___updateMetrics__ builds the `metrics` around item and wrap as well as
     // row and column sizes. It does so by measuring sample elements and their
     // margins, as well as sizing the wrap (root element) to fit its items. As
@@ -328,6 +350,7 @@
           itemHeight: itemElement.offsetHeight,
           expandedWidth: expandedItemElement.offsetWidth,
           expandedHeight: expandedItemElement.offsetHeight,
+          expandedScale: parseInt(this.cssVariable('item-expanded-scale')),
         };
       }
       let gutter = Math.round(parseFloat(
@@ -355,7 +378,7 @@
     namespace: hlf.mediaGrid,
     apiClass: MediaGrid,
     autoListen: true,
-    baseMethodGroups: ['event', 'selection'],
+    baseMethodGroups: ['css', 'event', 'selection'],
     compactOptions: true,
   });
 });
