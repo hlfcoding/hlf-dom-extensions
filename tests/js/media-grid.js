@@ -88,7 +88,7 @@
     </ul>
   </section>
   <section class="mg-detail">
-    <img src="http://placehold.it/418x270/888/aaa" alt="main banner" />
+    <img src="http://placehold.it/418x280/888/aaa" alt="main banner" />
     <div class="mg-headings">
       <h1 class="mg-title">${placeholderText.title}</h1>
       <h2 class="mg-date">July 14, 2012</h2>

@@ -104,23 +104,34 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
     opacity var(--mg-fade-duration) ease-in-out;
   width: var(--mg-item-width);
 }
-.js-mg-item >.mg-preview,
-.js-mg-item >.mg-detail {
+.js-mg-item > .mg-preview,
+.js-mg-item > .mg-detail {
+  height: calc(100% - 2 * var(--mg-gutter-size));
   overflow: hidden;
+  position: absolute;
+  top: var(--mg-gutter-size);
+  transition: opacity var(--mg-fade-duration) ease-out;
+  width: calc(100% - 2 * var(--mg-gutter-size));
 }
-.js-mg-item.js-mg-expanded >.mg-detail,
-.js-mg-item >.mg-preview {
+.js-mg-item > .mg-preview > img:first-child,
+.js-mg-item > .mg-detail > img:first-child {
+  width: 100%;
+}
+.js-mg-item.js-mg-expanded:not(.js-mg-transitioning) > .mg-detail,
+.js-mg-item:not(.js-mg-transitioning) > .mg-preview {
   display: block;
-  height: auto;
-  opacity: 1;
-  width: auto;
 }
-.js-mg-item.js-mg-expanded >.mg-preview,
-.js-mg-item >.mg-detail {
+.js-mg-item.js-mg-expanded:not(.js-mg-transitioning) > .mg-preview,
+.js-mg-item:not(.js-mg-transitioning) > .mg-detail {
   display: none;
-  height: 0;
+}
+.js-mg-item.js-mg-expanded > .mg-detail,
+.js-mg-item > .mg-preview {
+  opacity: 1;
+}
+.js-mg-item.js-mg-expanded > .mg-preview,
+.js-mg-item > .mg-detail {
   opacity: 0;
-  width: 0;
 }
 .js-mg-item:not(.js-mg-expanded):not(.js-mg-transitioning):hover {
   background: var(--mg-item-stroke-color);
@@ -158,6 +169,15 @@ Its element's DOM can look like (especially if using `mg-item-extras`):
 }
 .mg-item-extras .js-mg-item p {
   line-height: 1.6em;
+}
+.mg-item-extras .js-mg-item p {
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-in-out 0.1s;
+}
+.mg-item-extras .js-mg-item.js-mg-transitioning p {
+  transform: translateY(20%);
+  opacity: 0;
 }
 .mg-item-extras .js-mg-item .mg-date {
   font-size: var(--mg-item-font-size);
