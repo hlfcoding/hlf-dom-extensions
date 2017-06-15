@@ -5,6 +5,10 @@ HLF Media Grid Extension
 
 The required extension styling is crucial to extension usage. There's an
 optional, opinionated set of styles in `mg-item-extras`.
+
+Note that `--mg-item-expanded-scale` is set to `2` and other values are
+not yet supported. This also requires the item count be enough to form at
+least two rows.
 */
 
 /*
