@@ -70,7 +70,7 @@
       label: 'by default',
       template(vars) {
         const { placeholderText } = vars;
-        let html = '<div class="test-body mg-item-extras">';
+        let html = '<div class="test-body mg-theme-folio">';
         let i = 12;
         do {
           html += (
