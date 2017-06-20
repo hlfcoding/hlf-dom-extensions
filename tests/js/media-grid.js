@@ -73,12 +73,13 @@
         const tagsHTML = (
 `
 <ul class="mg-tags">
-  <li>foo</li>
-  <li>bar</li>
-  <li>baz</li>
+  <li><a href="#">foo</a></li>
+  <li><a href="#">bar</a></li>
+  <li><a href="#">baz</a></li>
 </ul>
 `
         );
+        const title = placeholderText.title.toUpperCase();
         let html = '<div class="test-body mg-theme-folio">';
         let i = 12;
         do {
@@ -87,16 +88,16 @@
   <section class="mg-preview">
     <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" />
     <div class="mg-headings">
-      <h1 class="mg-title">${placeholderText.title}</h1>
-      <h2 class="mg-date">July 14, 2012</h2>
+      <h1 class="mg-title">${title}</h1>
+      <h2 class="mg-date">July 2012</h2>
     </div>
     ${tagsHTML}
   </section>
   <section class="mg-detail">
     <img src="http://placehold.it/418x280/888/aaa" alt="main banner" />
     <div class="mg-headings">
-      <h1 class="mg-title">${placeholderText.title}</h1>
-      <h2 class="mg-date">July 14, 2012</h2>
+      <h1 class="mg-title">${title}</h1>
+      <h2 class="mg-date">July 2012</h2>
     </div>
     <p>${placeholderText.short}</p>
     ${tagsHTML}

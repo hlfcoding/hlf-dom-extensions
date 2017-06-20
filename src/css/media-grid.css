@@ -14,7 +14,6 @@ least two rows.
 /*
 clearfix
 */
-.mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings::after,
 .js-mg::after {
   clear: both;
   content: '';
@@ -179,13 +178,32 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
   transform: translateY(20%);
   opacity: 0;
 }
-.mg-theme-folio .js-mg-item .mg-date {
-  font-size: var(--mg-item-font-size);
+.mg-theme-folio .js-mg-item .mg-title {
+  font-size: 1.4em;
+  font-weight: normal;
   margin: 0;
   padding: 0;
 }
+.mg-theme-folio .js-mg-item .mg-date {
+  font-size: var(--mg-item-font-size);
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+.mg-theme-folio .js-mg-item:not(.js-mg-expanded) .mg-title {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings {
+  display: flex;
+}
+.mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings > .mg-title {
+  flex-grow: 1;
+}
 .mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings > .mg-date {
-  float: right;
+  margin-left: 1em;
+  white-space: nowrap;
 }
 .mg-theme-folio .js-mg-item .mg-tags {
   list-style: none;
@@ -194,14 +212,9 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
 .mg-theme-folio .mg-tags li {
   display: inline;
 }
+.mg-theme-folio .mg-tags li > a {
+  color: inherit;
+}
 .mg-theme-folio .mg-tags li:not(:last-child)::after {
   content: ',\0020';
-}
-.mg-theme-folio .js-mg-item .mg-title {
-  font-size: 14px;
-  margin: 0;
-  padding: 0;
-}
-.mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings > .mg-title {
-  float: left;
 }
