@@ -200,6 +200,8 @@
     // § __Internal__
     //
     _onItemClick(event) {
+      const actionElementTags = ['A', 'AUDIO', 'BUTTON', 'INPUT', 'VIDEO'];
+      if (actionElementTags.indexOf(event.target.tagName) !== -1) { return; }
       this.toggleItemExpansion(event.currentTarget);
     }
     _onItemExpand(event) {
