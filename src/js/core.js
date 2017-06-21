@@ -366,7 +366,7 @@
             initArgs.bubbles = true;
             return new CustomEvent(this.eventName(type), initArgs);
           },
-          dispatchCustomEvent(type, detail) {
+          dispatchCustomEvent(type, detail = {}) {
             return this.element.dispatchEvent(this.createCustomEvent(type, detail));
           },
         });

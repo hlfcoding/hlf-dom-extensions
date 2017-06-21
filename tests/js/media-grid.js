@@ -108,6 +108,7 @@
         html += '</div>';
         return html;
       },
+      footerHtml: "<button name=\"list-append\">load more</button>",
       test(testElement) {
         let extension = mediaGrid(testElement.querySelector('.test-body'));
         setTimeout((() => extension('load')), 500);
@@ -115,6 +116,15 @@
       anchorName: 'default',
       className: 'default-call',
       vars: { placeholderText },
+      beforeTest(testElement) {
+        testElement.addEventListener('hlfmgready', (_) => {
+          createVisualTest.setupAppendButton({
+            testElement,
+            listSelector: '.test-body',
+            itemSelector: 'article:last-of-type'
+          });
+        });
+      },
     }));
     function run() {
       tests.forEach(test => test());

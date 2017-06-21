@@ -77,11 +77,12 @@ define(function() {
     };
   }
   Object.assign(createVisualTest, {
-    setupAppendButton(testElement, listSelector, updateItem) {
+    setupAppendButton({ testElement, listSelector, itemSelector, updateItem }) {
+      itemSelector = itemSelector || '>:last-child';
       let listElement = testElement.querySelector(listSelector);
-      let itemElement = listElement.lastChild.cloneNode(true);
+      let itemElement = listElement.querySelector(itemSelector).cloneNode(true);
       testElement.querySelector('[name=list-append]').addEventListener('click', () => {
-        let newElement = itemElement.cloneNode();
+        let newElement = itemElement.cloneNode(true);
         listElement.appendChild(newElement);
         if (updateItem) {
           updateItem(newElement);

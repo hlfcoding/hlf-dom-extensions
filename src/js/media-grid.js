@@ -128,6 +128,7 @@
       this._updateMetrics();
       this._layoutItems();
       this.element.classList.add(this.className('ready'));
+      this.dispatchCustomEvent('ready');
     }
     //
     // § __Public__
