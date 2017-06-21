@@ -37,31 +37,30 @@ define(function() {
   // It will:
   // 1. Ensure config.
   // 2. Build test template vars.
-  // 3. Render test to get test context (or fragments).
+  // 3. Render test to get test element (or fragments).
   // 4. Run tests.
   //
   // It also includes helpers for additional setup. `setupAppendButton` inits a
   // button for appending an item to a list, and should be included as part of
   // `footerHtml`.
   //
-  function createVisualTest(config) {
+  function createVisualTest({
+    asFragments, anchorName, beforeTest, className, label, template, test,
+    footerHtml, vars
+  }) {
+    if (!asFragments) {
+      footerHtml = footerHtml || '';
+    }
+    vars = vars || {};
+    let docsUrl = document.querySelector('body > header [data-rel=docs]').href;
+    docsUrl += `#${anchorName}`;
+    let containerElement = asFragments ? document.body : document.getElementById('main');
+    let opts;
+    if (asFragments) {
+      opts = { template: (vars => vars.html) };
+    }
     return function() {
-      const {
-        asFragments, anchorName, beforeTest, className, label, template, test
-      } = config;
-      let { footerHtml, vars } = config;
-      if (!asFragments) {
-        footerHtml = footerHtml || '';
-      }
-      vars = vars || {};
-      let docsUrl = document.querySelector('body > header [data-rel=docs]').href;
-      docsUrl += `#${anchorName}`;
       let html = template(vars);
-      let containerElement = asFragments ? document.body : document.getElementById('main');
-      let opts;
-      if (asFragments) {
-        opts = { template: (vars => vars.html) };
-      }
       let testElement = renderVisualTest(containerElement,
         { className, docsUrl, footerHtml, html, label }, opts
       );
@@ -107,8 +106,7 @@ define(function() {
     return testElement;
   }
   renderVisualTest.defaults = {
-    template: (vars) => {
-      const { className, docsUrl, footerHtml, html, label } = vars;
+    template: ({ className, docsUrl, footerHtml, html, label }) => {
       return (
 `<section class="${className} visual-test">
   <header>
