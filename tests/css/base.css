@@ -15,6 +15,7 @@ variables
   --bg-color: #dadad6;
   --bg-color-dark: #cecec9;
   --bg-color-light: #f2f2f1;
+  --fg-color: #111;
   --fill-color: rgba(255, 255, 255, 0.95);
   --header-bg-color: #272724;
   --header-bg-color-light: #5d5d54;
@@ -131,6 +132,7 @@ button {
   background-clip: padding-box;
   background-color: var(--bg-color-light);
   border: 1px solid rgba(0, 0, 0, 0.5);
+  color: var(--fg-color);
   padding: 0.3em 0.6em;
 }
 button:focus {
@@ -215,7 +217,6 @@ section.visual-test footer:not(:empty) {
   box-shadow:
     inset 0 1px 4px var(--bezel-shadow-color),
     0 1px 0 var(--bezel-highlight-color);
-  margin-bottom: 1rem;
   padding: 0.5rem;
 }
 section.visual-test footer:not(:empty) > button {
