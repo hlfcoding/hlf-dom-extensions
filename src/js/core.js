@@ -374,12 +374,10 @@
       if (groups.indexOf('selection') !== -1) {
         Object.assign(methods, {
           selectByClass(name) {
-            let selector = `.${this.className(name)}`;
-            return this.element.querySelector(selector);
+            return this.element.querySelector(`.${this.className(name)}`);
           },
           selectAllByClass(name) {
-            let selector = `.${this.className(name)}`;
-            return this.element.querySelectorAll(selector);
+            return this.element.querySelectorAll(`.${this.className(name)}`);
           },
           selectToProperties() {
             if (!this.element || !this.selectors) {
