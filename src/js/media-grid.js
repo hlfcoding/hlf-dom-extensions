@@ -272,7 +272,10 @@
     // current `rowSize` metric.
     //
     _isBottomEdgeItem(i) {
-      return (i + 1) > (this.itemElements.length - this.metrics.rowSize);
+      const { rowSize } = this.metrics;
+      let lastRowSize = (this.itemElements.length % rowSize) || rowSize;
+      let untilLastRow = this.itemElements.length - lastRowSize;
+      return (i + 1) > untilLastRow;
     }
     _isRightEdgeItem(i) {
       return ((i + 1) % this.metrics.rowSize) === 0;
