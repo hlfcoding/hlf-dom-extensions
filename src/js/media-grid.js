@@ -141,7 +141,7 @@
     // styling or scripting during the transition, it adds the `-transitioning`
     // class and removes it afterwards per `expandDuration`.
     //
-    toggleItemExpansion(itemElement, expanded) {
+    toggleItemExpansion(itemElement, expanded, completion) {
       if (typeof expanded === 'undefined') {
         expanded = !itemElement.classList.contains(this.className('expanded'));
       }
@@ -163,6 +163,9 @@
       itemElement.setAttribute(this.attrName('expand-timeout'),
         setTimeout(() => {
           itemElement.classList.remove(this.className('transitioning'));
+          if (completion) {
+            completion();
+          }
         }, this.expandDuration)
       );
 
@@ -226,12 +229,7 @@
       if (this._ran && now < this._ran + this.resizeDelay) { return; }
       this._ran = now;
       this._updateMetrics(false);
-      if (this.expandedItemElement) {
-        this.toggleItemExpansion(this.expandedItemElement, false);
-        this._reLayoutItems(this.expandDuration);
-      } else {
-        this._reLayoutItems();
-      }
+      this._reLayoutItems();
     }
     //
     // These are layout helpers for changing offset for an `itemElement`.
@@ -306,16 +304,20 @@
     // first resetting each item's to its `original-position`. It can run after a
     // custom `delay`.
     //
-    _reLayoutItems(delay = 0) {
-      clearTimeout(this._layoutTimeout);
-      this._layoutTimeout = setTimeout(() => {
-        Array.from(this.itemElements).forEach((itemElement) => {
-          let { style } = itemElement;
-          style.bottom = style.left = style.right = style.top = 'auto';
-          style.position = itemElement.getAttribute(this.attrName('original-position'));
-        });
-        this._layoutItems();
-      }, delay);
+    _reLayoutItems() {
+      if (this.expandedItemElement) {
+        this.toggleItemExpansion(
+          this.expandedItemElement, false, this._reLayoutItems.bind(this)
+        );
+        return;
+      }
+      Array.from(this.itemElements).forEach((itemElement) => {
+        let { style } = itemElement;
+        style.bottom = style.left = style.right = style.top = 'auto';
+        style.position = itemElement.getAttribute(this.attrName('original-position'));
+        itemElement.classList.remove(this.className('raw'));
+      });
+      this._layoutItems();
     }
     //
     // TODO
