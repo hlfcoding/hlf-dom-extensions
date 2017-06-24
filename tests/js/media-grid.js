@@ -55,7 +55,7 @@
         instance._updateMetrics(true);
         metrics = instance.metrics;
         assert.strictEqual(metrics.rowSize, 3, 'It bases row size on item and wrap sizes.');
-        assert.strictEqual(instance.selectAllByClass('sample').length, 1,
+        assert.strictEqual(instance.selectAllByClass('samples').length, 1,
           'It cleans up after multiple hard updates.');
       });
       QUnit.start();
@@ -121,7 +121,10 @@
           createVisualTest.setupAppendButton({
             testElement,
             listSelector: '.test-body',
-            itemSelector: 'article:last-of-type'
+            itemSelector: 'article:last-of-type',
+            onAppend(newElement) {
+              newElement.classList.add('js-mg-raw');
+            },
           });
         });
       },

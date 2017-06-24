@@ -93,21 +93,19 @@
     //
     init() {
       if (!this.itemElements) {
-        this.itemElements = this.selectAllByClass('item');
+        this.itemElements = this._selectItemElements();
       }
-      Array.from(this.itemElements).forEach((itemElement) => {
-        this.addEventListeners({
-          'click': this._onItemClick,
-          'mouseenter': this._onItemMouseEnter,
-          'mouseleave': this._onItemMouseLeave,
-        }, itemElement);
-      });
+      Array.from(this.itemElements).forEach(this._addItemEventListeners.bind(this));
       window.addEventListener('resize', this._onWindowResize);
       this.sampleItemElement = this.itemElements[0];
       this.expandDuration = 1000 * parseFloat(
         getComputedStyle(this.sampleItemElement).transitionDuration
       );
       this.expandedItemElement = null;
+      this.itemsObserver = new MutationObserver(this._onItemsMutation.bind(this));
+      this.itemsObserver.connect = () => {
+        this.itemsObserver.observe(this.element, { childList: true });
+      };
       this.metrics = {};
       if (this.autoLoad) {
         this.performLoad();
@@ -127,6 +125,7 @@
     performLoad() {
       this._updateMetrics();
       this._layoutItems();
+      this.itemsObserver.connect();
       this.element.classList.add(this.className('ready'));
       this.dispatchCustomEvent('ready');
     }
@@ -210,7 +209,7 @@
     }
     _onItemExpand(event) {
       const { target } = event;
-      if (!target.classList.contains(this.className('item'))) { return; }
+      if (!this._isItemElement(target)) { return; }
       const { expanded } = event.detail;
       this.toggleItemFocus(target, expanded, this.expandDuration);
     }
@@ -219,6 +218,20 @@
     }
     _onItemMouseLeave(event) {
       this.toggleExpandedItemFocus(event.currentTarget, false);
+    }
+    _onItemsMutation(mutations) {
+      this.itemElements = this._selectItemElements();
+      this.itemsObserver.disconnect();
+      this._updateMetrics(false);
+      this._reLayoutItems();
+      mutations
+        .filter(m => !!m.addedNodes.length)
+        .forEach((mutation) => {
+          Array.from(mutation.addedNodes)
+            .filter(this._isItemElement.bind(this))
+            .forEach(this._addItemEventListeners.bind(this));
+        });
+      this.itemsObserver.connect();
     }
     _onMouseLeave(_) {
       if (!this.expandedItemElement) { return; }
@@ -230,6 +243,22 @@
       this._ran = now;
       this._updateMetrics(false);
       this._reLayoutItems();
+    }
+    _addItemEventListeners(itemElement) {
+      this.addEventListeners({
+        'click': this._onItemClick,
+        'mouseenter': this._onItemMouseEnter,
+        'mouseleave': this._onItemMouseLeave,
+      }, itemElement);
+    }
+    _isItemElement(node) {
+      return (node instanceof HTMLElement &&
+        node.classList.contains(this.className('item')));
+    }
+    _selectItemElements() {
+      return this.element.querySelectorAll(
+        `.${this.className('item')}:not(.${this.className('sample')})`
+      );
     }
     //
     // These are layout helpers for changing offset for an `itemElement`.
@@ -248,15 +277,18 @@
     // they're attached to an invisible container appended to the root element.
     //
     _getMetricSamples() {
-      let containerElement = this.selectByClass('sample');
+      let containerElement = this.selectByClass('samples');
       if (containerElement) {
         containerElement.parentNode.removeChild(containerElement);
       }
       let itemElement = this.sampleItemElement.cloneNode(true);
+      itemElement.classList.add(this.className('sample'));
       let expandedItemElement = this.sampleItemElement.cloneNode(true);
-      expandedItemElement.classList.add(this.className('expanded'));
+      expandedItemElement.classList.add(
+        this.className('expanded'), this.className('sample')
+      );
       containerElement = document.createElement('div');
-      containerElement.classList.add(this.className('sample'));
+      containerElement.classList.add(this.className('samples'));
       let { style } = containerElement;
       style.left = style.right = style.top = '0px';
       style.position = 'absolute';
@@ -339,7 +371,7 @@
         );
         level += 1;
       }
-      neighbors.forEach((itemElement) => {
+      neighbors.filter(n => !!n).forEach((itemElement) => {
         itemElement.classList.toggle(this.className('recessed'));
       });
     }
