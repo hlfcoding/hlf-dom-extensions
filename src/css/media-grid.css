@@ -33,6 +33,7 @@ flex-box positioning.
   flex-wrap: wrap;
   margin-left: var(--mg-gutter-size);
   margin-top: var(--mg-gutter-size);
+  min-width: calc((var(--mg-item-width) + var(--mg-gutter-size)) * var(--mg-item-expanded-scale));
   opacity: 0;
   position: relative;
   transition: opacity var(--mg-fade-duration) ease-in-out;
