@@ -5,6 +5,7 @@
 //
 (function() {
   'use strict';
+  if (window.guard && !guard.isNavigatorSupported) { return; }
 
   require.config({
     baseUrl: '../lib',
