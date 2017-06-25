@@ -12,17 +12,9 @@ least two rows.
 */
 
 /*
-clearfix
-*/
-.js-mg::after {
-  clear: both;
-  content: '';
-  display: table;
-}
-
-/*
 `js-mg` is modified with the `-dimmed` and `-ready` classes. Note it sets
-`box-sizing: border-box` for itself and its descendants.
+`box-sizing: border-box` for itself and its descendants, and the (initial)
+flex-box positioning.
 */
 .js-mg {
   --mg-duration: 0.4s;
@@ -37,6 +29,8 @@ clearfix
   --mg-item-width: 212px;
 
   background: var(--mg-fill-color);
+  display: flex;
+  flex-wrap: wrap;
   margin-left: var(--mg-gutter-size);
   margin-top: var(--mg-gutter-size);
   opacity: 0;
@@ -53,7 +47,7 @@ clearfix
 
 /*
 `js-mg-item` can be modified with the `-expanded`, `-focused`, `-transitioning`
-classes. Note the initial `float` positioning, as well as the complex `z-index`
+classes. Note the (initial) flex-box positioning, as well as the complex `z-index`
 rules when the item has modifier classes.
 
 Its element's DOM can look like (especially if using `mg-theme-folio`):
@@ -88,7 +82,8 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
 .js-mg-item {
   background: var(--mg-item-fill-color);
   color: var(--mg-item-stroke-color);
-  float: left; /* Original positioning; will be replaced by position-absolute. */
+  flex-basis: var(--mg-item-width);
+  flex-shrink: 0;
   height: var(--mg-item-height);
   margin-bottom: var(--mg-gutter-size);
   margin-right: var(--mg-gutter-size);
