@@ -8,10 +8,10 @@
   if (window.guard && !guard.isNavigatorSupported) { return; }
 
   require.config({
-    baseUrl: '../lib',
+    baseUrl: '../',
     paths: {
-      hlf: '../src/js',
-      test: '../tests/js',
+      hlf: 'src/js',
+      test: 'tests/js',
     }
   });
 

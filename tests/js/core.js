@@ -9,11 +9,11 @@
   'use strict';
 
   require.config({
-    baseUrl: '../lib',
+    baseUrl: '../',
     paths: {
-      hlf: '../src/js',
-      test: '../tests/js',
-    },
+      hlf: 'src/js',
+      test: 'tests/js',
+    }
   });
 
   define(['hlf/core', 'test/base'], function(hlf, base) {
