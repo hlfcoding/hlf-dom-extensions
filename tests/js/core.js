@@ -78,24 +78,25 @@
         this.someElement = document.createElement('div');
         this.someElement.setAttribute('data-se', '{ "someOption": "bar" }');
         document.getElementById('qunit-fixture').appendChild(this.someElement);
-        this.someOtherElement = document.createElement('div');
-        this.someOtherElement.classList.add('foo');
-        this.someElement.appendChild(this.someOtherElement);
+        let someOtherElement = document.createElement('div');
+        someOtherElement.classList.add('foo');
+        this.someElement.appendChild(someOtherElement);
       },
     });
 
     function assertExtensionBase(module, extension, assert) {
-      let someExtension = extension(module.someElement);
+      let { namespace, someElement } = module;
+      let someExtension = extension(someElement);
       let instance = someExtension();
       assert.ok(instance._didInit, 'Instance had initializer called.');
       ['attrName', 'className', 'eventName']
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
             `Instance has generated API addition ${methodName}.`);
-          assert.ok(typeof module.namespace[methodName] === 'function',
+          assert.ok(typeof namespace[methodName] === 'function',
             `Namespace has generated API addition ${methodName}.`);
         });
-      Object.keys(module.namespace.defaults)
+      Object.keys(namespace.defaults)
         .forEach((propertyName) => {
           assert.ok(propertyName in instance,
             `Instance has option ${propertyName} merged in as property.`);
