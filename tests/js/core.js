@@ -33,7 +33,7 @@
       static init() {
         const perform = this.prototype.perform;
         this.prototype.perform = function(action) {
-          this.lastAction = action;
+          this._lastAction = action;
           return perform.call(this, action);
         };
       }
@@ -43,13 +43,13 @@
           this.handleSomeEvent.bind(this);
       }
       init() {
-        this.didInit = true;
+        this._didInit = true;
       }
       handleSomeEvent(event) {
-        this.someEventDetail = event.detail;
+        this._someEventDetail = event.detail;
       }
       performSomeAction(payload) {
-        this.someActionPayload = payload;
+        this._someActionPayload = payload;
       }
     }
 
@@ -87,7 +87,7 @@
     function assertExtensionBase(module, extension, assert) {
       let someExtension = extension(module.someElement);
       let instance = someExtension();
-      assert.ok(instance.didInit, 'Instance had initializer called.');
+      assert.ok(instance._didInit, 'Instance had initializer called.');
       ['attrName', 'className', 'eventName']
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
@@ -108,12 +108,12 @@
         'Instance has auto-selected sub elements based on selectors option.');
       const data = { key: 'value' };
       instance.dispatchCustomEvent('someevent', data);
-      assert.equal(instance.someEventDetail, data,
+      assert.equal(instance._someEventDetail, data,
         'Instance has auto-added listeners based on eventListeners.');
       someExtension('someAction', data);
-      assert.equal(instance.someActionPayload, data,
+      assert.equal(instance._someActionPayload, data,
         'Extension function can perform action, using default perform.');
-      assert.equal(instance.lastAction.name, 'someAction',
+      assert.equal(instance._lastAction.name, 'someAction',
         'Extension class had initializer called.');
       return instance;
     }
