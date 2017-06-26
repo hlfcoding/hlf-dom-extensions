@@ -67,6 +67,7 @@
 
     let tests = [];
     const { createVisualTest, placeholderText } = base;
+    const { className, eventName } = hlf.mediaGrid;
     tests.push(createVisualTest({
       label: 'by default',
       template(vars) {
@@ -118,13 +119,13 @@
       className: 'default-call',
       vars: { placeholderText },
       beforeTest(testElement) {
-        testElement.addEventListener('hlfmgready', (_) => {
+        testElement.addEventListener(eventName('ready'), (_) => {
           createVisualTest.setupAppendButton({
             testElement,
             listSelector: '.test-body',
             itemSelector: 'article:last-of-type',
             onAppend(newElement) {
-              newElement.classList.add('js-mg-raw');
+              newElement.classList.add(className('raw'));
             },
           });
         });
