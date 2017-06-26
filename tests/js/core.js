@@ -92,6 +92,8 @@
         .forEach((methodName) => {
           assert.ok(typeof instance[methodName] === 'function',
             `Instance has generated API addition ${methodName}.`);
+          assert.ok(typeof module.namespace[methodName] === 'function',
+            `Namespace has generated API addition ${methodName}.`);
         });
       Object.keys(module.namespace.defaults)
         .forEach((propertyName) => {

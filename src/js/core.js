@@ -309,7 +309,7 @@
       });
     }
     if (groups.indexOf('naming') !== -1) {
-      Object.assign(methods, {
+      const naming = {
         attrName(name = '') {
           if (name.length) {
             name = `-${name}`;
@@ -325,7 +325,9 @@
         eventName(name) {
           return `${namespace.toString('event')}${name}`;
         },
-      });
+      };
+      Object.assign(methods, naming);
+      Object.assign(namespace, naming);
       if (groups.indexOf('css') !== -1) {
         Object.assign(methods, {
           cssVariable(name) {
