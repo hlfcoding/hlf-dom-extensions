@@ -82,7 +82,7 @@
 `
         );
         const title = placeholderText.title.toUpperCase();
-        let html = '<div class="test-body mg-theme-folio">';
+        let html = '<div class="test-body mg-bleed mg-theme-folio">';
         let i = 12;
         do {
           html += (

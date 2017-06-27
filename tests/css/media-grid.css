@@ -24,8 +24,6 @@ to match the media-grid gutter.
 }
 
 .js-mg.test-body {
-  margin-left: 0;
-  margin-right: 0;
   margin-top: 1rem;
   max-width: calc((var(--mg-item-width) + var(--mg-gutter-size)) * 6);
 }
