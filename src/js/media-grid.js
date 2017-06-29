@@ -74,11 +74,6 @@
   //
   class MediaGrid {
     constructor(element, options) {
-      [ '_onItemClick', '_onItemExpand', '_onItemMouseEnter',
-        '_onItemMouseLeave', '_onMouseLeave', '_onWindowResize',
-      ].forEach((name) => {
-        this[name] = this[name].bind(this);
-      });
       this.eventListeners = { mouseleave: this._onMouseLeave };
       this.eventListeners[this.eventName('expand')] = this._onItemExpand;
     }
@@ -95,14 +90,14 @@
       if (!this.itemElements) {
         this.itemElements = this._selectItemElements();
       }
-      Array.from(this.itemElements).forEach(this._addItemEventListeners.bind(this));
+      Array.from(this.itemElements).forEach(this._addItemEventListeners);
       window.addEventListener('resize', this._onWindowResize);
       this.sampleItemElement = this.itemElements[0];
       this.expandDuration = 1000 * parseFloat(
         getComputedStyle(this.sampleItemElement).transitionDuration
       );
       this.expandedItemElement = null;
-      this.itemsObserver = new MutationObserver(this._onItemsMutation.bind(this));
+      this.itemsObserver = new MutationObserver(this._onItemsMutation);
       this.itemsObserver.connect = () => {
         this.itemsObserver.observe(this.element, { childList: true });
       };
@@ -228,8 +223,8 @@
         .filter(m => !!m.addedNodes.length)
         .forEach((mutation) => {
           Array.from(mutation.addedNodes)
-            .filter(this._isItemElement.bind(this))
-            .forEach(this._addItemEventListeners.bind(this));
+            .filter(this._isItemElement)
+            .forEach(this._addItemEventListeners);
         });
       this.itemsObserver.connect();
     }
@@ -342,7 +337,7 @@
     _reLayoutItems() {
       if (this.expandedItemElement) {
         this.toggleItemExpansion(
-          this.expandedItemElement, false, this._reLayoutItems.bind(this)
+          this.expandedItemElement, false, this._reLayoutItems
         );
         return;
       }
@@ -417,6 +412,7 @@
     name: 'mediaGrid',
     namespace: hlf.mediaGrid,
     apiClass: MediaGrid,
+    autoBind: true,
     autoListen: true,
     baseMethodGroups: ['css', 'event', 'selection'],
     compactOptions: true,

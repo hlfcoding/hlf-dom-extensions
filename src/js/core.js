@@ -66,7 +66,7 @@
   function createExtension(args) {
     const { name, namespace } = args;
 
-    const { apiClass, autoListen, autoSelect } = args;
+    const { apiClass, autoBind, autoListen, autoSelect } = args;
     let groups = args.baseMethodGroups || [];
     groups.push('action', 'naming');
     if (autoListen) {
@@ -202,8 +202,22 @@
             instance.classNames = finalOptions.classNames;
           }
         }
+        if (autoBind) {
+          Object.getOwnPropertyNames(apiClass.prototype)
+            .filter(name => (
+              typeof instance[name] === 'function' && name !== 'constructor'
+            ))
+            .forEach((name) => {
+              instance[name] = instance[name].bind(instance);
+            });
+        }
         if (autoListen && instance.addEventListeners && instance.eventListeners) {
-          instance.addEventListeners(instance.eventListeners);
+          const { eventListeners } = instance;
+          Object.getOwnPropertyNames(eventListeners)
+            .forEach((name) => {
+              eventListeners[name] = eventListeners[name].bind(instance);
+            });
+          instance.addEventListeners(eventListeners);
         }
         if (autoSelect && instance.selectToProperties) {
           instance.selectToProperties();

@@ -39,14 +39,21 @@
       }
       constructor(element, options, contextElement) {
         this.eventListeners = {};
-        this.eventListeners[this.eventName('someevent')] =
-          this.handleSomeEvent.bind(this);
+        this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
       }
       init() {
         this._didInit = true;
+        this.addEventListeners((() => {
+          let listeners = {};
+          listeners[this.eventName('someotherevent')] = this._onSomeOtherEvent;
+          return listeners;
+        })());
       }
-      handleSomeEvent(event) {
+      _onSomeEvent(event) {
         this._someEventDetail = event.detail;
+      }
+      _onSomeOtherEvent(event) {
+        this._someOtherEventDetail = event.detail;
       }
       performSomeAction(payload) {
         this._someActionPayload = payload;
@@ -71,6 +78,7 @@
           name: 'someExtension',
           namespace: this.namespace,
           apiClass: SomeExtension,
+          autoBind: true,
           autoListen: true,
           autoSelect: true,
           compactOptions: true,
@@ -110,7 +118,10 @@
       const data = { key: 'value' };
       instance.dispatchCustomEvent('someevent', data);
       assert.equal(instance._someEventDetail, data,
-        'Instance has auto-added listeners based on eventListeners.');
+        'Instance has auto-added auto-bound listeners based on eventListeners.');
+      instance.dispatchCustomEvent('someotherevent', data);
+      assert.equal(instance._someOtherEventDetail, data,
+        'Instance has added auto-bound methods (listeners) via helper.');
       someExtension('someAction', data);
       assert.equal(instance._someActionPayload, data,
         'Extension function can perform action, using default perform.');
