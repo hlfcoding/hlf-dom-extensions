@@ -253,7 +253,8 @@
           (instance = extension._getInstance(source))
         ) {
           return instance;
-        } else if ((instances = Array.from(source).map(extension._getInstance)) &&
+        } else if ((instances = Array.from(source).map(extension._getInstance)
+          .filter(i => i != null)) &&
           instances.length
         ) {
           return instances;
