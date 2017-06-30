@@ -106,9 +106,10 @@ define(function() {
     containerElement.appendChild(testElement);
     return testElement;
   }
-  renderVisualTest.defaults = {
-    template: ({ className, docsUrl, footerHtml, html, label }) => {
-      return (
+  Object.assign(renderVisualTest, {
+    defaults: {
+      template: ({ className, docsUrl, footerHtml, html, label }) => {
+        return (
 `<section class="${className} visual-test">
   <header>
     <span class="label">${label}</span>
@@ -117,9 +118,19 @@ define(function() {
   ${html}
   <footer>${footerHtml}</footer>
 </section>`
-      );
+        );
+      },
+    },
+  });
+
+  function runVisualTests(tests) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('readystatechange', runVisualTests.bind(null, tests));
+      return;
     }
-  };
+    tests.forEach(test => test());
+  }
+
   const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed " +
     "do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim " +
     "ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip " +
@@ -133,5 +144,5 @@ define(function() {
     title: loremIpsum.slice(0, 26)
   };
 
-  return { createVisualTest, placeholderText, renderVisualTest };
+  return { createVisualTest, placeholderText, renderVisualTest, runVisualTests };
 });

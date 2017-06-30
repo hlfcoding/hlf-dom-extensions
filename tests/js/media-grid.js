@@ -66,7 +66,7 @@
     // ---
 
     let tests = [];
-    const { createVisualTest, placeholderText } = base;
+    const { createVisualTest, placeholderText, runVisualTests } = base;
     const { className, eventName } = hlf.mediaGrid;
     tests.push(createVisualTest({
       label: 'by default',
@@ -131,15 +131,7 @@
         });
       },
     }));
-    function run() {
-      tests.forEach(test => test());
-      tests = [];
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('readystatechange', run);
-    } else {
-      run();
-    }
+    runVisualTests(tests);
   });
 
 }());
