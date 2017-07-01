@@ -50,13 +50,11 @@
       this.debugLog(type, x.current, y.current, Date.now() % 100000);
     }
     _onMouseLeave(event) {
-      let { timer } = this;
-      if (timer.cleared) { return; }
-      this.debugLog('teardown');
-      clearTimeout(timer.timeout);
-      clearTimeout(this.trackTimeout);
+      if (this.intentional) {
+        this.debugLog('teardown');
+        this._dispatchHoverEvent(false, event);
+      }
       this._setDefaultState();
-      this._dispatchHoverEvent(false, event);
     }
     _onMouseMove(event) {
       if (this.trackTimeout != null) { return; }
@@ -69,37 +67,39 @@
       }, 16);
     }
     _onMouseOver(event) {
-      let { timer } = this;
-      if (!timer.cleared && timer.timeout != null) { return; }
+      if (this.intentional) { return; }
+      if (event.target !== this.element) { return; }
+      if (this.timeout != null) { return; }
       this.debugLog('setup');
-      timer.timeout = setTimeout(() => {
+      this.timeout = setTimeout(() => {
         this._setState(event);
         if (this.intentional) {
           this._dispatchHoverEvent(true, event);
         }
       }, this.interval);
-      timer.cleared = false;
     }
     _setDefaultState() {
       this.debugLog('reset');
-      this.intentional = true;
+      this.intentional = false;
       this.mouse = {
         x: { current: 0, previous: 0 },
         y: { current: 0, previous: 0 },
       };
-      this.timer = { cleared: true, timeout: null };
+      clearTimeout(this.timeout);
+      clearTimeout(this.trackTimeout);
+      this.timeout = null;
       this.trackTimeout = null;
     }
     _setState(event) {
       this.debugLog('update');
-      let { mouse: { x, y }, timer } = this;
+      let { mouse: { x, y } } = this;
       this.intentional = (
         Math.abs(x.previous - x.current) + Math.abs(y.previous - y.current) >
         this.sensitivity
       );
       x.previous = event.pageX;
       y.previous = event.pageY;
-      timer.cleared = true;
+      this.timeout = null;
     }
   }
   return hlf.createExtension({
