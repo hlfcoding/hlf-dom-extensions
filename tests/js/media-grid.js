@@ -21,11 +21,13 @@
       module('hlf.mediaGrid', {
         beforeEach() {
           let element = document.createElement('div');
-          element.innerHTML = '<div>' +
-            '<div class="js-mg-item"></div>' +
-            '<div class="js-mg-item"></div>' +
-            '<div class="js-mg-item"></div>' +
-            '</div>';
+          element.innerHTML = (
+`<div>
+  <div class="js-mg-item"></div>
+  <div class="js-mg-item"></div>
+  <div class="js-mg-item"></div>
+</div>`
+          );
           document.getElementById('qunit-fixture').appendChild(element);
           this.instance = mediaGrid(element)();
         },
@@ -73,13 +75,11 @@
       template(vars) {
         const { placeholderText } = vars;
         const tagsHTML = (
-`
-<ul class="mg-tags">
+`<ul class="mg-tags">
   <li><a href="#">foo</a></li>
   <li><a href="#">bar</a></li>
   <li><a href="#">baz</a></li>
-</ul>
-`
+</ul>`
         );
         const title = placeholderText.title.toUpperCase();
         let html = '<div class="test-body mg-bleed mg-theme-folio">';
