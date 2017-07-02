@@ -108,15 +108,10 @@
       }
     }
     deinit() {
-      this.removeEventListeners(this.eventListeners);
-      Array.from(this.itemElements).forEach((itemElement) => {
-        this.removeEventListeners({
-          'click': this._onItemClick,
-          'mouseenter': this._onItemMouseEnter,
-          'mouseleave': this._onItemMouseLeave,
-        }, itemElement);
-      });
+      Array.from(this.itemElements).forEach(
+        this._toggleItemEventListeners.bind(this, false));
       window.removeEventListener('resize', this._onWindowResize);
+      this.itemsObserver.disconnect();
     }
     performLoad() {
       this._updateMetrics();
