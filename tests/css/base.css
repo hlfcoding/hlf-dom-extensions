@@ -150,6 +150,7 @@ dt {
   text-align: right
 }
 dd {
+  font-weight: bold;
   flex-grow: 1;
   margin-left: 0.5em;
 }
