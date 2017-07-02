@@ -35,17 +35,27 @@
         );
       },
       test(testElement) {
-        let boxElement = testElement.querySelector('.box');
-        hoverIntent(boxElement);
-        let enterCounter = boxElement.querySelector('.enter-counter');
-        let leaveCounter = boxElement.querySelector('.leave-counter');
-        boxElement.addEventListener(eventName('enter'), (event) => {
-          enterCounter.textContent = parseInt(enterCounter.textContent) + 1;
-          leaveCounter.textContent = 0;
-        });
-        boxElement.addEventListener(eventName('leave'), (event) => {
-          enterCounter.textContent = 0;
-          leaveCounter.textContent = parseInt(leaveCounter.textContent) + 1;
+        function setUpCounters(element, {
+          enterCounter, leaveCounter, enterEvent, leaveEvent,
+        }) {
+          enterCounter = element.querySelector(enterCounter);
+          leaveCounter = element.querySelector(leaveCounter);
+          element.addEventListener(enterEvent, (event) => {
+            enterCounter.textContent = parseInt(enterCounter.textContent) + 1;
+            leaveCounter.textContent = 0;
+          });
+          element.addEventListener(leaveEvent, (event) => {
+            enterCounter.textContent = 0;
+            leaveCounter.textContent = parseInt(leaveCounter.textContent) + 1;
+          });
+        }
+        let element = testElement.querySelector('.box');
+        hoverIntent(element);
+        setUpCounters(element, {
+          enterCounter: '.enter-counter',
+          leaveCounter: '.leave-counter',
+          enterEvent: eventName('enter'),
+          leaveEvent: eventName('leave'),
         });
       },
       anchorName: 'default',
