@@ -30,6 +30,8 @@
   <dl>
     <dt>enter count:</dt><dd class="enter-counter">0</dd>
     <dt>leave count:</dt><dd class="leave-counter">0</dd>
+    <dt>raw-enter count:</dt><dd class="raw-enter-counter">0</dd>
+    <dt>raw-leave count:</dt><dd class="raw-leave-counter">0</dd>
   </dl>
 </div>`
         );
@@ -56,6 +58,12 @@
           leaveCounter: '.leave-counter',
           enterEvent: eventName('enter'),
           leaveEvent: eventName('leave'),
+        });
+        setUpCounters(element, {
+          enterCounter: '.raw-enter-counter',
+          leaveCounter: '.raw-leave-counter',
+          enterEvent: 'mouseover',
+          leaveEvent: 'mouseleave',
         });
       },
       anchorName: 'default',
