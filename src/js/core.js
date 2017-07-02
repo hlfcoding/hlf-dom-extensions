@@ -433,6 +433,9 @@
 
   Object.assign(hlf, { createExtension });
 
-  return hlf;
+  if (hlf.debug && typeof window === 'object') {
+    Object.assign(window, { hlf });
+  }
 
+  return hlf;
 });
