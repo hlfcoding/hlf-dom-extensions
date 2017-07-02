@@ -90,7 +90,8 @@
       if (!this.itemElements) {
         this.itemElements = this._selectItemElements();
       }
-      Array.from(this.itemElements).forEach(this._addItemEventListeners);
+      Array.from(this.itemElements).forEach(
+        this._toggleItemEventListeners.bind(this, true));
       window.addEventListener('resize', this._onWindowResize);
       this.sampleItemElement = this.itemElements[0];
       this.expandDuration = 1000 * parseFloat(
@@ -224,7 +225,7 @@
         .forEach((mutation) => {
           Array.from(mutation.addedNodes)
             .filter(this._isItemElement)
-            .forEach(this._addItemEventListeners);
+            .forEach(this._toggleItemEventListeners.bind(this, true));
         });
       this.itemsObserver.connect();
     }
@@ -239,13 +240,6 @@
       this._updateMetrics(false);
       this._reLayoutItems();
     }
-    _addItemEventListeners(itemElement) {
-      this.addEventListeners({
-        'click': this._onItemClick,
-        'mouseenter': this._onItemMouseEnter,
-        'mouseleave': this._onItemMouseLeave,
-      }, itemElement);
-    }
     _isItemElement(node) {
       return (node instanceof HTMLElement &&
         node.classList.contains(this.className('item')));
@@ -254,6 +248,13 @@
       return this.element.querySelectorAll(
         `.${this.className('item')}:not(.${this.className('sample')})`
       );
+    }
+    _toggleItemEventListeners(on, itemElement) {
+      this.toggleEventListeners(on, {
+        'click': this._onItemClick,
+        'mouseenter': this._onItemMouseEnter,
+        'mouseleave': this._onItemMouseLeave,
+      }, itemElement);
     }
     //
     // These are layout helpers for changing offset for an `itemElement`.
