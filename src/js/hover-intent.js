@@ -37,7 +37,7 @@
       this._setDefaultState();
     }
     deinit() {
-      // TODO
+      this._setDefaultState();
     }
     _dispatchHoverEvent(on, mouseEvent) {
       const { mouse: { x, y } } = this;

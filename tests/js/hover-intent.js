@@ -36,6 +36,23 @@
 </div>`
         );
       },
+      footerHtml: (
+`<label for="default-enabled">
+  <input type="checkbox" id="default-enabled" checked />
+  enabled
+</label>`
+      ),
+      beforeTest(testElement) {
+        const inputElement = document.getElementById('default-enabled');
+        inputElement.addEventListener('change', (_) => {
+          let element = testElement.querySelector('.box');
+          if (inputElement.checked) {
+            hoverIntent(element);
+          } else {
+            hoverIntent(element, 'remove');
+          }
+        });
+      },
       test(testElement) {
         function setUpCounters(element, {
           enterCounter, leaveCounter, enterEvent, leaveEvent,
