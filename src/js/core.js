@@ -378,6 +378,9 @@
               target.removeEventListener(type, handler, options);
             }
           },
+          toggleEventListeners(on, infos, target) {
+            this[`${on ? 'add' : 'remove'}EventListeners`](infos, target);
+          },
           createCustomEvent(type, detail) {
             let initArgs = { detail };
             initArgs.bubbles = true;
