@@ -202,6 +202,15 @@
             instance.classNames = finalOptions.classNames;
           }
         }
+        let cleanupTasks = [];
+        Object.assign(instance, {
+          destructor() {
+            cleanupTasks.forEach(task => task(this));
+            if (this.deinit) {
+              this.deinit();
+            }
+          }
+        });
         if (autoBind) {
           Object.getOwnPropertyNames(apiClass.prototype)
             .filter(name => (
@@ -218,6 +227,9 @@
               eventListeners[name] = eventListeners[name].bind(instance);
             });
           instance.addEventListeners(eventListeners);
+          cleanupTasks.push(() => {
+            instance.removeEventListeners(eventListeners);
+          });
         }
         if (autoSelect && instance.selectToProperties) {
           instance.selectToProperties();
@@ -319,7 +331,7 @@
         },
         performRemove() {
           namespace.extension._deleteInstance(this.element);
-          this.deinit();
+          this.destructor();
         },
       });
     }
