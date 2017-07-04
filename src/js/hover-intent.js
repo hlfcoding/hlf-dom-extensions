@@ -17,6 +17,34 @@
     attach(hlf);
   }
 })(this, function(hlf) {
+  //
+  // Namespace
+  // ---------
+  //
+  // It takes some more boilerplate to write the extension. Any of this additional
+  // support API is put into a extension specific namespace under `hlf`, which in
+  // this case is __hlf.hoverIntent__.
+  //
+  // - __debug__ toggles debug logging for all instances of an extension.
+  // - __toString__ helps to namespace when registering any DOM names.
+  // - __attrName__, __className__, __eventName__ helpers are all attached to
+  //   the namespace on extension creation, along with the __extension__ itself.
+  //
+  // The extension's __defaults__ are available as reference. Also note that _the
+  // extension instance gets extended with the options_.
+  //
+  // - __interval__ is the millis to wait before deciding intent. `300` is the
+  //   default to reduce more thrashing.
+  //
+  // - __sensitivity__ is the pixel threshold for mouse travel between polling
+  //   intervals. With the minimum sensitivity threshold of 1, the mouse must
+  //   not move between intervals. With higher values yield more false positives.
+  //   `8` is the default to allow more flexibility.
+  //
+  // The events dispatched are the name-spaced `enter` and `leave` events. They
+  // try to match system mouse events where possible and include values for:
+  // `pageX`, `pageY`, `relatedTarget`.
+  //
   hlf.hoverIntent = {
     debug: true,
     defaults: {
