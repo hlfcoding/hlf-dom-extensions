@@ -45,7 +45,7 @@
   // - __sensitivity__ is the pixel threshold for mouse travel between polling
   //   intervals. With the minimum sensitivity threshold of 1, the mouse must
   //   not move between intervals. With higher values yield more false positives.
-  //   `8` is the default to allow more flexibility.
+  //   `6` is the default.
   //
   // The events dispatched are the name-spaced `enter` and `leave` events. They
   // try to match system mouse events where possible and include values for:
@@ -55,7 +55,7 @@
     debug: true,
     defaults: {
       interval: 300,
-      sensitivity: 8,
+      sensitivity: 6,
     },
     toString(context) {
       switch (context) {
@@ -153,9 +153,12 @@
     _setState(event) {
       this.debugLog('update');
       let { mouse: { x, y } } = this;
+      const { abs, pow, sqrt } = Math;
       this.intentional = (
-        Math.abs(x.previous - x.current) + Math.abs(y.previous - y.current) >
-        this.sensitivity
+        abs(
+          sqrt(pow(x.previous, 2) + pow(y.previous, 2)) -
+          sqrt(pow(x.current, 2) + pow(y.current, 2))
+        ) > this.sensitivity
       );
       this.timeout = null;
     }
