@@ -128,6 +128,9 @@
       if (event.target !== this.element) { return; }
       if (this.timeout != null) { return; }
       this.debugLog('setup');
+      let { mouse: { x, y } } = this;
+      x.previous = event.pageX;
+      y.previous = event.pageY;
       this.timeout = setTimeout(() => {
         this._setState(event);
         if (this.intentional) {
@@ -154,8 +157,6 @@
         Math.abs(x.previous - x.current) + Math.abs(y.previous - y.current) >
         this.sensitivity
       );
-      x.previous = event.pageX;
-      y.previous = event.pageY;
       this.timeout = null;
     }
   }
