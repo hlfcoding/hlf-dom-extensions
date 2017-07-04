@@ -35,6 +35,8 @@
   //
   // - __debug__ toggles debug logging for all instances of an extension.
   // - __toString__ helps to namespace when registering any DOM names.
+  // - __attrName__, __className__, __eventName__ helpers are all attached to
+  //   the namespace on extension creation, along with the __extension__ itself.
   //
   // The extension's __defaults__ are available as reference. Also note that _the
   // extension instance gets extended with the options_.
@@ -346,7 +348,8 @@
       this._layoutItems();
     }
     //
-    // TODO
+    // ___toggleNeighborItemsRecessed__ toggles the `-recessed` class on items
+    // per the occlusion-causing expansion of the item at `index`.
     //
     _toggleNeighborItemsRecessed(index, recessed) {
       const { expandedScale, rowSize } = this.metrics;
