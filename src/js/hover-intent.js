@@ -1,7 +1,13 @@
 //
 // HLF Hover Intent Extension
 // ==========================
+// [Tests](../../tests/js/hover-intent.html)
 //
+// The `hoverIntent` extension normalizes DOM events associated with mouse enter
+// and leave interaction. It prevents the 'thrashing' of attached behaviors (ex:
+// non-cancel-able animations) when matching mouse input arrives at frequencies
+// past the threshold. It is heavily inspired by Brian Cherne's jQuery plugin of
+// the same name (github.com/briancherne/jquery-hoverIntent).
 (function(root, attach) {
   if (typeof define === 'function' && define.amd) {
     define(['hlf/core'], attach);
