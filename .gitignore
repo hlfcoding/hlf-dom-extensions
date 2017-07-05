@@ -5,4 +5,5 @@ node_modules
 !/tests/**/base.js
 !/tests/**/hover-intent.js
 !/tests/**/media-grid.js
+!/tests/**/tip.js
 /.grunt
