@@ -172,7 +172,6 @@
     apiClass: HoverIntent,
     autoBind: true,
     autoListen: true,
-    baseMethodGroups: ['event'],
     compactOptions: true,
   });
 });

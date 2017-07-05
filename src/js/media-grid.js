@@ -413,7 +413,7 @@
     apiClass: MediaGrid,
     autoBind: true,
     autoListen: true,
-    baseMethodGroups: ['css', 'event', 'selection'],
+    baseMethodGroups: ['css', 'selection'],
     compactOptions: true,
   });
 });
