@@ -127,12 +127,16 @@
       }
 
       options = Object.assign({}, namespace.defaults, options);
-      if (subject instanceof HTMLElement) {
+      if (finalSubject === contextElement) {
         extension._buildInstance(subject, options, contextElement);
       } else {
-        subject.forEach((element) => {
-          extension._buildInstance(element, options, contextElement);
-        });
+        if (finalSubject instanceof HTMLElement) {
+          extension._buildInstance(finalSubject, options);
+        } else {
+          finalSubject.forEach((element) => {
+            extension._buildInstance(element, options);
+          });
+        }
       }
 
       return extension.bind(null, subject);
@@ -176,19 +180,28 @@
       //
       // 9. Lastly, store the instance id on `rootElement`.
       //
-      _buildInstance(element, options, contextElement) {
+      _buildInstance(subject, options, contextElement) {
+        let element, elements;
+        if (subject instanceof HTMLElement) {
+          element = subject;
+        } else {
+          elements = subject;
+        }
         let attrOptions;
-        if (element.hasAttribute(attrName())) {
+        let rootElement = asSharedInstance ? contextElement : element;
+        if (rootElement.hasAttribute(attrName())) {
           try {
             attrOptions = JSON.parse(element.getAttribute(attrName()));
           } catch (error) {}
         }
         let finalOptions = Object.assign({}, options, attrOptions);
-        let rootElement = asSharedInstance ? contextElement : element;
-        let instance = new apiClass(element, finalOptions, contextElement);
-        instance.element = element;
-        if (contextElement) {
+        let instance = new apiClass(element || elements, finalOptions, contextElement);
+        instance.rootElement = rootElement;
+        if (element) {
+          instance.element = element;
+        } else {
           instance.contextElement = contextElement;
+          instance.elements = elements;
         }
         if (compactOptions) {
           Object.assign(instance, finalOptions);
@@ -329,7 +342,7 @@
           this[methodName](payload);
         },
         performRemove() {
-          namespace.extension._deleteInstance(this.element);
+          namespace.extension._deleteInstance(this.rootElement);
           this.destructor();
         },
       });
@@ -357,7 +370,7 @@
       if (groups.indexOf('css') !== -1) {
         Object.assign(methods, {
           cssVariable(name) {
-            return getComputedStyle(this.element)
+            return getComputedStyle(this.rootElement)
               .getPropertyValue(`--${namespace.toString('class')}-${name}`);
           }
         });
@@ -372,7 +385,7 @@
         };
         Object.assign(methods, {
           addEventListeners(infos, target) {
-            target = target || this.element;
+            target = target || this.rootElement;
             normalizeInfos(infos);
             for (const type in infos) {
               if (!infos.hasOwnProperty(type)) { continue; }
@@ -381,7 +394,7 @@
             }
           },
           removeEventListeners(infos, target) {
-            target = target || this.element;
+            target = target || this.rootElement;
             normalizeInfos(infos);
             for (const type in infos) {
               if (!infos.hasOwnProperty(type)) { continue; }
@@ -398,29 +411,29 @@
             return new CustomEvent(this.eventName(type), initArgs);
           },
           dispatchCustomEvent(type, detail = {}) {
-            return this.element.dispatchEvent(this.createCustomEvent(type, detail));
+            return this.rootElement.dispatchEvent(this.createCustomEvent(type, detail));
           },
         });
       }
       if (groups.indexOf('selection') !== -1) {
         Object.assign(methods, {
           selectByClass(name) {
-            return this.element.querySelector(`.${this.className(name)}`);
+            return this.rootElement.querySelector(`.${this.className(name)}`);
           },
           selectAllByClass(name) {
-            return this.element.querySelectorAll(`.${this.className(name)}`);
+            return this.rootElement.querySelectorAll(`.${this.className(name)}`);
           },
           selectToProperties() {
-            if (!this.element || !this.selectors) {
+            if (!this.rootElement || !this.selectors) {
               throw 'Missing requirements.';
             }
             for (const name in this.selectors) {
               if (!this.selectors.hasOwnProperty(name)) { continue; }
               const selector = this.selectors[name];
               if (name.substr(-1) === 's') {
-                this[name] = this.element.querySelectorAll(selector);
+                this[name] = this.rootElement.querySelectorAll(selector);
               } else {
-                this[name] = this.element.querySelector(selector);
+                this[name] = this.rootElement.querySelector(selector);
               }
             }
           },

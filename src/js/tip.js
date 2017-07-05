@@ -46,7 +46,7 @@
     },
   };
   class Tip {
-    constructor(element, options, contextElement) {
+    constructor(elements, options, contextElement) {
     }
     init() {
     }
