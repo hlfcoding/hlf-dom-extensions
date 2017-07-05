@@ -110,15 +110,14 @@
     function extension(subject, ...args) {
       let { action, options, contextElement } = extension._parseArguments(args);
       contextElement = contextElement || document.body;
+      let finalSubject = asSharedInstance ? contextElement : subject;
 
       if (action) {
-        let target = asSharedInstance ? contextElement : subject;
-        extension._dispatchAction(action, target);
+        extension._dispatchAction(action, finalSubject);
         return;
 
       } else if (!options) {
-        let source = asSharedInstance ? contextElement : subject;
-        let result = extension._getInstanceOrInstances(source);
+        let result = extension._getInstanceOrInstances(finalSubject);
         if (result) {
           return result;
         }
