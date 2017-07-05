@@ -72,8 +72,7 @@
     const { className, eventName } = hlf.mediaGrid;
     tests.push(createVisualTest({
       label: 'by default',
-      template(vars) {
-        const { placeholderText } = vars;
+      template({ placeholderText }) {
         const tagsHTML = (
 `<ul class="mg-tags">
   <li><a href="#">foo</a></li>

@@ -20,7 +20,7 @@
     // ---
 
     let tests = [];
-    const { createVisualTest, placeholderText, runVisualTests } = base;
+    const { createVisualTest, runVisualTests } = base;
     const { eventName } = hlf.hoverIntent;
     tests.push(createVisualTest({
       label: 'by default',
