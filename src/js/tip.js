@@ -10,42 +10,15 @@
   hlf.tip = {
     debug: true,
     defaults: {
-      animations: {
-        base: {
-          delay: 0,
-          duration: 200,
-          enabled: true,
-        },
-        hide: {
-          delay: 200,
-        },
-        resize: {
-          delay: 300,
-          easing: 'ease-in-out',
-        },
-        show: {
-          delay: 200,
-        },
-      },
-      animator: {
-        hide(element, options) {
-
-        },
-        show(element, options) {
-
-        },
-      },
       autoDirection: true,
       cursorHeight: 12,
       defaultDirection: ['bottom', 'right'],
       doDispatchEvents: true,
       doFollow: true,
       doStem: true,
-      snap: {
-        toTrigger: true,
-        toXAxis: false,
-        toYAxis: false,
-      },
+      snapToTrigger: true,
+      snapToXAxis: false,
+      snapToYAxis: false,
       tipTemplate({ containerClass }) {
         let stemHtml = '';
         if (this.doStem) {
