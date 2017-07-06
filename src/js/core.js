@@ -290,9 +290,13 @@
         if (typeof first === 'string') {
           action = { name: first, payload: second };
         } else {
-          options = first;
-          if (second) {
-            contextElement = second;
+          if (first instanceof HTMLElement) {
+            contextElement = first;
+          } else {
+            options = first;
+            if (second) {
+              contextElement = second;
+            }
           }
         }
         return { action, options, contextElement };
