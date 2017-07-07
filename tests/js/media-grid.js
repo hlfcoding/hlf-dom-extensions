@@ -37,7 +37,7 @@
         let { style } = instance.element;
         style.boxSizing = 'border-box';
         style.padding = '10px';
-        Array.from(instance.itemElements).forEach((itemElement) => {
+        instance.itemElements.forEach((itemElement) => {
           let { style } = itemElement;
           style.borderWidth = '1px';
           style.boxSizing = 'border-box';

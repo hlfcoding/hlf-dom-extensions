@@ -90,10 +90,9 @@
     //
     init() {
       if (!this.itemElements) {
-        this.itemElements = this._selectItemElements();
+        this._selectItemElements();
       }
-      Array.from(this.itemElements).forEach(
-        this._toggleItemEventListeners.bind(this, true));
+      this.itemElements.forEach(this._toggleItemEventListeners.bind(this, true));
       window.addEventListener('resize', this._onWindowResize);
       this.sampleItemElement = this.itemElements[0];
       this.expandDuration = 1000 * parseFloat(
@@ -110,8 +109,7 @@
       }
     }
     deinit() {
-      Array.from(this.itemElements).forEach(
-        this._toggleItemEventListeners.bind(this, false));
+      this.itemElements.forEach(this._toggleItemEventListeners.bind(this, false));
       window.removeEventListener('resize', this._onWindowResize);
       this.itemsObserver.disconnect();
     }
@@ -137,7 +135,7 @@
       if (typeof expanded === 'undefined') {
         expanded = !itemElement.classList.contains(this.className('expanded'));
       }
-      let index = Array.from(this.itemElements).indexOf(itemElement);
+      let index = this.itemElements.indexOf(itemElement);
       if (expanded) {
         if (this.expandedItemElement) {
           this.toggleItemExpansion(this.expandedItemElement, false);
@@ -182,7 +180,7 @@
     //
     toggleItemFocus(itemElement, focused, delay) {
       if (focused) {
-        Array.from(this.itemElements).forEach((itemElement) => {
+        this.itemElements.forEach((itemElement) => {
           itemElement.classList.remove(this.className('focused'));
         });
       }
@@ -213,7 +211,7 @@
       this.toggleExpandedItemFocus(event.currentTarget, false);
     }
     _onItemsMutation(mutations) {
-      this.itemElements = this._selectItemElements();
+      this._selectItemElements();
       this.itemsObserver.disconnect();
       this._updateMetrics(false);
       this._reLayoutItems();
@@ -242,9 +240,9 @@
         node.classList.contains(this.className('item')));
     }
     _selectItemElements() {
-      return this.element.querySelectorAll(
+      this.itemElements = Array.from(this.element.querySelectorAll(
         `.${this.className('item')}:not(.${this.className('sample')})`
-      );
+      ));
     }
     _toggleItemEventListeners(on, itemElement) {
       this.toggleEventListeners(on, {
@@ -339,7 +337,7 @@
         );
         return;
       }
-      Array.from(this.itemElements).forEach((itemElement) => {
+      this.itemElements.forEach((itemElement) => {
         let { style } = itemElement;
         style.bottom = style.left = style.right = style.top = 'auto';
         style.position = itemElement.getAttribute(this.attrName('original-position'));
