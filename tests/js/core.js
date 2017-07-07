@@ -43,11 +43,13 @@
       }
       init() {
         this._didInit = true;
-        this.addEventListeners((() => {
-          let listeners = {};
-          listeners[this.eventName('someotherevent')] = this._onSomeOtherEvent;
-          return listeners;
-        })());
+        if (this.addEventListeners) {
+          this.addEventListeners((() => {
+            let listeners = {};
+            listeners[this.eventName('someotherevent')] = this._onSomeOtherEvent;
+            return listeners;
+          })());
+        }
       }
       _onSomeEvent(event) {
         this._someEventDetail = event.detail;
@@ -62,7 +64,7 @@
 
     // ---
 
-    module('extension core', {
+    module('old extension core', {
       beforeEach() {
         this.namespace = {
           debug: false,
@@ -97,13 +99,6 @@
       let someExtension = extension(someElement);
       let instance = someExtension();
       assert.ok(instance._didInit, 'Instance had initializer called.');
-      ['attrName', 'className', 'eventName']
-        .forEach((methodName) => {
-          assert.ok(typeof instance[methodName] === 'function',
-            `Instance has generated API addition ${methodName}.`);
-          assert.ok(typeof namespace[methodName] === 'function',
-            `Namespace has generated API addition ${methodName}.`);
-        });
       Object.keys(namespace.defaults)
         .forEach((propertyName) => {
           assert.ok(propertyName in instance,
@@ -152,6 +147,46 @@
         'Extension stores singleton with context element.');
     });
     */
+
+    module('extension core', {
+      beforeEach() {
+        Object.assign(this, {
+          createTestExtension({ createOptions, defaults } = {}) {
+            createOptions = Object.assign({}, {
+              name: 'someExtension',
+              namespace: {
+                debug: false,
+                toString() { return 'se'; },
+                defaults: Object.assign({}, defaults),
+              },
+              apiClass: SomeExtension,
+            }, createOptions);
+            return {
+              extension: hlf.createExtension(createOptions),
+              namespace: createOptions.namespace,
+            };
+          },
+          someElement: document.createElement('div'),
+        });
+        document.getElementById('qunit-fixture').appendChild(this.someElement);
+      },
+    });
+
+    test('naming methods', function(assert) {
+      const methodNames = ['attrName', 'className', 'eventName'];
+      let { extension, namespace } = this.createTestExtension();
+      let instance = extension(this.someElement)();
+
+      methodNames.forEach(methodName => assert.ok(
+        typeof instance[methodName] === 'function',
+        `Instance has generated API addition ${methodName}.`
+      ));
+
+      methodNames.forEach(methodName => assert.ok(
+        typeof namespace[methodName] === 'function',
+        `Namespace has generated API addition ${methodName}.`
+      ));
+    });
 
     // ---
 
