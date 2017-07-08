@@ -99,11 +99,6 @@
       let someExtension = extension(someElement);
       let instance = someExtension();
       assert.ok(instance._didInit, 'Instance had initializer called.');
-      Object.keys(namespace.defaults)
-        .forEach((propertyName) => {
-          assert.ok(propertyName in instance,
-            `Instance has option ${propertyName} merged in as property.`);
-        });
       assert.equal(instance.someOption, 'bar',
         'Extension allows custom options via element data attribute.');
       assert.ok(instance.someOtherElement instanceof HTMLElement,
@@ -186,6 +181,20 @@
         typeof namespace[methodName] === 'function',
         `Namespace has generated API addition ${methodName}.`
       ));
+    });
+
+    test('compactOptions option', function(assert) {
+      let { extension } = this.createTestExtension({
+        createOptions: { compactOptions: true },
+        defaults: { someOption: 'foo' },
+      });
+      let instance = extension(this.someElement, {
+        someOtherOption: 'bar',
+      })();
+      assert.equal(instance.someOption, 'foo',
+        'Instance has default option merged in as property.');
+      assert.equal(instance.someOtherOption, 'bar',
+        'Instance has custom option merged in as property.');
     });
 
     // ---
