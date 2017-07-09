@@ -30,11 +30,7 @@
     });
 
     class SomeExtension {
-      static init() {
-        this._didInit = true;
-      }
       init() {
-        this._didInit = true;
         if (this.addEventListeners) {
           this.addEventListeners((() => {
             let listeners = {};
@@ -75,25 +71,18 @@
       let { namespace, someElement } = module;
       let someExtension = extension(someElement);
       let instance = someExtension();
-      assert.ok(instance._didInit, 'Instance had initializer called.');
       assert.equal(instance.someOption, 'bar',
         'Extension allows custom options via element data attribute.');
       const data = { key: 'value' };
       instance.dispatchCustomEvent('someotherevent', data);
       assert.equal(instance._someOtherEventDetail, data,
         'Instance has added auto-bound methods (listeners) via helper.');
-      assert.ok(SomeExtension._didInit,
-        'Extension class had initializer called.');
       return instance;
     }
 
     test('.createExtension with apiClass, additions', function(assert) {
       let extension = hlf.createExtension(this.createOptions());
       let instance = assertExtensionBase(this, extension, assert);
-      assert.ok(instance.element.classList.contains('js-se'),
-        'Extension stores the element as property and gives it the main class.');
-      assert.ok(instance instanceof SomeExtension,
-        'Extension returns instance upon re-invocation without any parameters.');
     });
 
     // TODO: borked.
@@ -125,13 +114,14 @@
             this.someElement.appendChild(someElement);
           },
           createTestExtension({ classAdditions, createOptions, defaults } = {}) {
-            const { methods, onNew } = classAdditions || {};
+            const { methods, onNew, staticMethods } = classAdditions || {};
             class SomeExtension {
               constructor(element, options, contextElement) {
                 if (onNew) { onNew.apply(this, arguments); }
               }
             }
             Object.assign(SomeExtension.prototype, methods);
+            Object.assign(SomeExtension, staticMethods);
             createOptions = Object.assign({}, {
               name: 'someExtension',
               namespace: {
@@ -151,6 +141,28 @@
         });
         document.getElementById('qunit-fixture').appendChild(this.someElement);
       },
+    });
+
+    test('initializers', function(assert) {
+      let { extension, namespace } = this.createTestExtension({
+        classAdditions: {
+          methods: { init() { this._didInit = true; } },
+          staticMethods: { init() { this._didInit = true; } },
+        },
+      });
+      let instance = extension(this.someElement)();
+      assert.ok(instance instanceof namespace.apiClass,
+        'Extension returns instance upon re-invocation without any parameters.');
+      assert.ok(instance._didInit,
+        'Instance had initializer called.');
+      assert.ok(namespace.apiClass._didInit,
+        'Extension class had initializer called.');
+      assert.equal(instance.element, this.someElement,
+        'Extension stores the element as property.');
+      assert.equal(instance.rootElement, instance.element,
+        'Extension sets the element as root element.');
+      assert.ok(instance.element.classList.contains('js-se'),
+        'Extension gives the element the main class.');
     });
 
     test('naming methods', function(assert) {
