@@ -69,12 +69,7 @@
         this.namespace = {
           debug: false,
           toString() { return 'se'; },
-          defaults: {
-            someOption: 'foo',
-            someOptionGroup: { someOption: 'bar' },
-            selectors: { someOtherElement: '.foo', someOtherElements: '.foo' },
-            classNames: { someOtherElement: 'foo' },
-          },
+          defaults: {},
         };
         this.createOptions = (testedOptions) => (Object.assign({}, {
           name: 'someExtension',
@@ -82,15 +77,11 @@
           apiClass: SomeExtension,
           autoBind: true,
           autoListen: true,
-          autoSelect: true,
           compactOptions: true,
         }, testedOptions));
         this.someElement = document.createElement('div');
         this.someElement.setAttribute('data-se', '{ "someOption": "bar" }');
         document.getElementById('qunit-fixture').appendChild(this.someElement);
-        let someOtherElement = document.createElement('div');
-        someOtherElement.classList.add('foo');
-        this.someElement.appendChild(someOtherElement);
       },
     });
 
@@ -101,10 +92,6 @@
       assert.ok(instance._didInit, 'Instance had initializer called.');
       assert.equal(instance.someOption, 'bar',
         'Extension allows custom options via element data attribute.');
-      assert.ok(instance.someOtherElement instanceof HTMLElement,
-        'Instance has auto-selected sub elements based on selectors option.');
-      assert.ok(instance.someOtherElements instanceof NodeList,
-        'Instance has auto-selected sub elements based on selectors option.');
       const data = { key: 'value' };
       instance.dispatchCustomEvent('someevent', data);
       assert.equal(instance._someEventDetail, data,
@@ -152,6 +139,11 @@
               `Instance has generated API addition ${methodName}.`
             ));
           },
+          createSomeChildElement() {
+            let someElement = document.createElement('div');
+            someElement.classList.add('foo');
+            this.someElement.appendChild(someElement);
+          },
           createTestExtension({ createOptions, defaults } = {}) {
             createOptions = Object.assign({}, {
               name: 'someExtension',
@@ -196,6 +188,21 @@
         'Instance has default option merged in as property.');
       assert.equal(instance.someOtherOption, 'bar',
         'Instance has custom option merged in as property.');
+    });
+
+    test('autoSelect option', function(assert) {
+      let { extension } = this.createTestExtension({
+        createOptions: { autoSelect: true },
+        defaults: { selectors: { someElement: '.foo', someElements: '.foo' } },
+      });
+      this.createSomeChildElement();
+      let instance = extension(this.someElement)();
+      assert.ok(instance.someElement instanceof HTMLElement,
+        'Instance has auto-selected sub element based on selectors option.');
+      assert.ok(instance.someElements instanceof NodeList,
+        'Instance has auto-selected sub elements based on selectors option.');
+      this.assertInstanceMethods(instance,
+        'selectByClass', 'selectAllByClass', 'selectToProperties');
     });
 
     // ---
