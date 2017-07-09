@@ -144,8 +144,14 @@
     */
 
     module('extension core', {
-      beforeEach() {
+      beforeEach(assert) {
         Object.assign(this, {
+          assertInstanceMethods(instance, ...methodNames) {
+            methodNames.forEach(methodName => assert.ok(
+              typeof instance[methodName] === 'function',
+              `Instance has generated API addition ${methodName}.`
+            ));
+          },
           createTestExtension({ createOptions, defaults } = {}) {
             createOptions = Object.assign({}, {
               name: 'someExtension',
@@ -171,12 +177,7 @@
       const methodNames = ['attrName', 'className', 'eventName'];
       let { extension, namespace } = this.createTestExtension();
       let instance = extension(this.someElement)();
-
-      methodNames.forEach(methodName => assert.ok(
-        typeof instance[methodName] === 'function',
-        `Instance has generated API addition ${methodName}.`
-      ));
-
+      this.assertInstanceMethods(instance, ...methodNames);
       methodNames.forEach(methodName => assert.ok(
         typeof namespace[methodName] === 'function',
         `Namespace has generated API addition ${methodName}.`
