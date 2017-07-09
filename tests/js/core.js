@@ -188,6 +188,22 @@
         'Instance has custom option merged in as property.');
     });
 
+    test('autoBind option', function(assert) {
+      let { extension } = this.createTestExtension({
+        classAdditions: { methods: {
+          _onSomeEvent() {
+            this.someContext = this;
+          }
+        }},
+        createOptions: { autoBind: true },
+      });
+      let instance = extension(this.someElement)();
+      let { _onSomeEvent } = instance;
+      _onSomeEvent();
+      assert.equal(instance.someContext, instance,
+        'Instance has auto-bound methods.');
+    });
+
     test('autoListen option', function(assert) {
       let { extension } = this.createTestExtension({
         classAdditions: {
