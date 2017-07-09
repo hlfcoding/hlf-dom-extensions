@@ -31,11 +31,7 @@
 
     class SomeExtension {
       static init() {
-        const perform = this.prototype.perform;
-        this.prototype.perform = function(action) {
-          this._lastAction = action;
-          return perform.call(this, action);
-        };
+        this._didInit = true;
       }
       init() {
         this._didInit = true;
@@ -49,9 +45,6 @@
       }
       _onSomeOtherEvent(event) {
         this._someOtherEventDetail = event.detail;
-      }
-      performSomeAction(payload) {
-        this._someActionPayload = payload;
       }
     }
 
@@ -89,10 +82,7 @@
       instance.dispatchCustomEvent('someotherevent', data);
       assert.equal(instance._someOtherEventDetail, data,
         'Instance has added auto-bound methods (listeners) via helper.');
-      someExtension('someAction', data);
-      assert.equal(instance._someActionPayload, data,
-        'Extension function can perform action, using default perform.');
-      assert.equal(instance._lastAction.name, 'someAction',
+      assert.ok(SomeExtension._didInit,
         'Extension class had initializer called.');
       return instance;
     }
@@ -172,6 +162,21 @@
         typeof namespace[methodName] === 'function',
         `Namespace has generated API addition ${methodName}.`
       ));
+    });
+
+    test('action methods', function(assert) {
+      let { extension } = this.createTestExtension({
+        classAdditions: { methods: {
+          performSomeAction(payload) {
+            this._someActionPayload = payload;
+          },
+        }},
+      });
+      let someExtension = extension(this.someElement);
+      let instance = someExtension();
+      someExtension('someAction', this.someData);
+      assert.equal(instance._someActionPayload, this.someData,
+        'Extension function can perform action, using default perform.');
     });
 
     test('compactOptions option', function(assert) {
