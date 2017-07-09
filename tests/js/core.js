@@ -144,7 +144,14 @@
             someElement.classList.add('foo');
             this.someElement.appendChild(someElement);
           },
-          createTestExtension({ createOptions, defaults } = {}) {
+          createTestExtension({ classAdditions, createOptions, defaults } = {}) {
+            const { methods, onNew } = classAdditions || {};
+            class SomeExtension {
+              constructor(element, options, contextElement) {
+                if (onNew) { onNew.apply(this, arguments); }
+              }
+            }
+            Object.assign(SomeExtension.prototype, methods);
             createOptions = Object.assign({}, {
               name: 'someExtension',
               namespace: {
