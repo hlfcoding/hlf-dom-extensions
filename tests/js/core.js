@@ -37,10 +37,6 @@
           return perform.call(this, action);
         };
       }
-      constructor(element, options, contextElement) {
-        this.eventListeners = {};
-        this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
-      }
       init() {
         this._didInit = true;
         if (this.addEventListeners) {
@@ -50,9 +46,6 @@
             return listeners;
           })());
         }
-      }
-      _onSomeEvent(event) {
-        this._someEventDetail = event.detail;
       }
       _onSomeOtherEvent(event) {
         this._someOtherEventDetail = event.detail;
@@ -93,9 +86,6 @@
       assert.equal(instance.someOption, 'bar',
         'Extension allows custom options via element data attribute.');
       const data = { key: 'value' };
-      instance.dispatchCustomEvent('someevent', data);
-      assert.equal(instance._someEventDetail, data,
-        'Instance has auto-added auto-bound listeners based on eventListeners.');
       instance.dispatchCustomEvent('someotherevent', data);
       assert.equal(instance._someOtherEventDetail, data,
         'Instance has added auto-bound methods (listeners) via helper.');
@@ -166,6 +156,7 @@
               namespace: createOptions.namespace,
             };
           },
+          someData: { key: 'value' },
           someElement: document.createElement('div'),
         });
         document.getElementById('qunit-fixture').appendChild(this.someElement);
@@ -195,6 +186,30 @@
         'Instance has default option merged in as property.');
       assert.equal(instance.someOtherOption, 'bar',
         'Instance has custom option merged in as property.');
+    });
+
+    test('autoListen option', function(assert) {
+      let { extension } = this.createTestExtension({
+        classAdditions: {
+          onNew() {
+            this.eventListeners = {};
+            this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
+          },
+          methods: {
+            _onSomeEvent(event) {
+              this._someEventDetail = event.detail;
+            },
+          },
+        },
+        createOptions: { autoListen: true },
+      });
+      let instance = extension(this.someElement)();
+      this.assertInstanceMethods(instance,
+        'addEventListeners', 'removeEventListeners', 'toggleEventListeners',
+        'createCustomEvent', 'dispatchCustomEvent');
+      instance.dispatchCustomEvent('someevent', this.someData);
+      assert.equal(instance._someEventDetail, this.someData,
+        'Instance has auto-added auto-bound listeners based on eventListeners.');
     });
 
     test('autoSelect option', function(assert) {
