@@ -31,20 +31,6 @@
 
     // ---
 
-    // TODO: borked.
-    /*
-    test('.createExtension with apiClass, additions, asSharedInstance', function(assert) {
-      let createOptions = Object.assign(this.createOptions(), { asSharedInstance: true });
-      let extension = hlf.createExtension(createOptions);
-      let instance = assertExtensionBase(this, extension, assert);
-      assert.ok(instance.contextElement.classList.contains('js-se'),
-        'Extension stores the context element as property and gives it the main class.');
-      assert.strictEqual(instance.id,
-        parseInt(document.body.getAttribute('data-se-instance-id')),
-        'Extension stores singleton with context element.');
-    });
-    */
-
     module('extension core', {
       beforeEach(assert) {
         Object.assign(this, {
@@ -146,6 +132,25 @@
       someExtension('someAction', this.someData);
       assert.equal(instance._someActionPayload, this.someData,
         'Extension function can perform action, using default perform.');
+    });
+
+    test('asSharedInstance option', function(assert) {
+      let { extension } = this.createTestExtension({
+        createOptions: { asSharedInstance: true },
+      });
+      this.createSomeChildElement();
+      let instance = extension(this.someElement.children, this.someElement)();
+      assert.equal(instance.elements, this.someElement.children,
+        'Extension stores the elements as property.');
+      assert.equal(instance.contextElement, this.someElement,
+        'Extension stores the context element as property.');
+      assert.equal(instance.rootElement, instance.contextElement,
+        'Extension sets the context element as root element.');
+      assert.ok(instance.contextElement.classList.contains('js-se'),
+        'Extension gives the context element the main class.');
+      assert.equal(instance.id,
+        parseInt(this.someElement.getAttribute('data-se-instance-id')),
+        'Extension stores singleton with context element.');
     });
 
     test('compactOptions option', function(assert) {
