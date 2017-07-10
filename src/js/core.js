@@ -117,7 +117,7 @@
         return;
 
       } else if (!options) {
-        let result = extension._getInstanceOrInstances(finalSubject);
+        let result = extension._getInstanceOrInstances(subject);
         if (result) {
           return result;
         }
@@ -139,7 +139,7 @@
         }
       }
 
-      return extension.bind(null, subject);
+      return extension.bind(null, finalSubject);
     }
 
     Object.assign(extension, {
