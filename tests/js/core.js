@@ -97,6 +97,19 @@
         'Extension gives the element the main class.');
     });
 
+    test('compacted options', function(assert) {
+      let { extension, namespace } = this.createTestExtension({
+        defaults: { classNames: {}, selectors: {} },
+      });
+      let instance = extension(this.someElement)();
+      assert.deepEqual(instance.options, namespace.defaults,
+        'Extension stores the final options as property.');
+      assert.equal(instance.classNames, namespace.defaults.classNames,
+        'Extension stores the classNames option as property.');
+      assert.equal(instance.selectors, namespace.defaults.selectors,
+        'Extension stores the selectors option as property.');
+    });
+
     test('custom options', function(assert) {
       let { extension } = this.createTestExtension({
         createOptions: { compactOptions: true },
