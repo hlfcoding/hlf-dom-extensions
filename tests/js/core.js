@@ -162,9 +162,9 @@
         someOtherOption: 'bar',
       })();
       assert.equal(instance.someOption, 'foo',
-        'Instance has default option merged in as property.');
+        'Instance has default options merged in as properties.');
       assert.equal(instance.someOtherOption, 'bar',
-        'Instance has custom option merged in as property.');
+        'Instance has custom options merged in as properties.');
     });
 
     test('autoBind option', function(assert) {
