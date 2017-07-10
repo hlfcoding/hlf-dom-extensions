@@ -29,58 +29,7 @@
       assert.ok(hlf.createExtension, 'Method should exist.');
     });
 
-    class SomeExtension {
-      init() {
-        if (this.addEventListeners) {
-          this.addEventListeners((() => {
-            let listeners = {};
-            listeners[this.eventName('someotherevent')] = this._onSomeOtherEvent;
-            return listeners;
-          })());
-        }
-      }
-      _onSomeOtherEvent(event) {
-        this._someOtherEventDetail = event.detail;
-      }
-    }
-
     // ---
-
-    module('old extension core', {
-      beforeEach() {
-        this.namespace = {
-          debug: false,
-          toString() { return 'se'; },
-          defaults: {},
-        };
-        this.createOptions = (testedOptions) => (Object.assign({}, {
-          name: 'someExtension',
-          namespace: this.namespace,
-          apiClass: SomeExtension,
-          autoBind: true,
-          autoListen: true,
-          compactOptions: true,
-        }, testedOptions));
-        this.someElement = document.createElement('div');
-        document.getElementById('qunit-fixture').appendChild(this.someElement);
-      },
-    });
-
-    function assertExtensionBase(module, extension, assert) {
-      let { namespace, someElement } = module;
-      let someExtension = extension(someElement);
-      let instance = someExtension();
-      const data = { key: 'value' };
-      instance.dispatchCustomEvent('someotherevent', data);
-      assert.equal(instance._someOtherEventDetail, data,
-        'Instance has added auto-bound methods (listeners) via helper.');
-      return instance;
-    }
-
-    test('.createExtension with apiClass, additions', function(assert) {
-      let extension = hlf.createExtension(this.createOptions());
-      let instance = assertExtensionBase(this, extension, assert);
-    });
 
     // TODO: borked.
     /*
