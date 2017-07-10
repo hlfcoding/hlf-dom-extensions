@@ -205,8 +205,8 @@
         }
         if (compactOptions) {
           Object.assign(instance, finalOptions);
-          delete instance.options;
         } else {
+          instance.options = finalOptions;
           if (finalOptions.selectors) {
             instance.selectors = finalOptions.selectors;
           }
