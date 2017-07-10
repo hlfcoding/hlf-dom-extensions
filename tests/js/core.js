@@ -62,7 +62,6 @@
           compactOptions: true,
         }, testedOptions));
         this.someElement = document.createElement('div');
-        this.someElement.setAttribute('data-se', '{ "someOption": "bar" }');
         document.getElementById('qunit-fixture').appendChild(this.someElement);
       },
     });
@@ -71,8 +70,6 @@
       let { namespace, someElement } = module;
       let someExtension = extension(someElement);
       let instance = someExtension();
-      assert.equal(instance.someOption, 'bar',
-        'Extension allows custom options via element data attribute.');
       const data = { key: 'value' };
       instance.dispatchCustomEvent('someotherevent', data);
       assert.equal(instance._someOtherEventDetail, data,
@@ -163,6 +160,17 @@
         'Extension sets the element as root element.');
       assert.ok(instance.element.classList.contains('js-se'),
         'Extension gives the element the main class.');
+    });
+
+    test('custom options', function(assert) {
+      let { extension } = this.createTestExtension({
+        createOptions: { compactOptions: true },
+      });
+      const options = { someOption: 'bar' };
+      this.someElement.setAttribute('data-se', JSON.stringify(options));
+      let instance = extension(this.someElement)();
+      assert.equal(instance.someOption, options.someOption,
+        'Extension allows custom options via element data attribute.');
     });
 
     test('naming methods', function(assert) {
