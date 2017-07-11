@@ -73,6 +73,11 @@
         });
         document.getElementById('qunit-fixture').appendChild(this.someElement);
       },
+      afterEach() {
+        if (this.extension) {
+          this.extension._instances = {};
+        }
+      },
     });
 
     test('initializers', function(assert) {

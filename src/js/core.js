@@ -143,7 +143,7 @@
     }
 
     Object.assign(extension, {
-      baseMethods,
+      _instances: instances,
       //
       // ___buildInstance__ is a subroutine that's part of `createExtension`,
       // which has more details on its required input.
