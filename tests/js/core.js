@@ -75,7 +75,7 @@
       },
       afterEach() {
         if (this.extension) {
-          this.extension._instances = {};
+          this.extension._deleteInstances();
         }
       },
     });

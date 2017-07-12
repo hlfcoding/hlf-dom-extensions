@@ -143,7 +143,6 @@
     }
 
     Object.assign(extension, {
-      _instances: instances,
       //
       // ___buildInstance__ is a subroutine that's part of `createExtension`,
       // which has more details on its required input.
@@ -258,6 +257,12 @@
       _deleteInstance(element) {
         const id = element.getAttribute(attrName('instance-id'));
         delete instances[id];
+      },
+      _deleteInstances() {
+        for (const id in instances) {
+          if (!instances.hasOwnProperty(id)) { continue; }
+          delete instances[id];
+        }
       },
       _dispatchAction(action, target) {
         if (target instanceof HTMLElement) {
