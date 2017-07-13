@@ -88,6 +88,9 @@
     const { asSharedInstance, compactOptions } = args;
     let idCounter = 0;
     let instances = {};
+
+    const { defaults } = namespace;
+    let optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
     //
     // The __extension__ function handles two variations of input. An action
     // `name` and `payload` can be passed in to trigger the action route. The
@@ -126,7 +129,7 @@
         instances = {};
       }
 
-      options = Object.assign({}, namespace.defaults, options);
+      options = Object.assign({}, defaults, options);
       if (finalSubject === contextElement) {
         extension._buildInstance(subject, options, contextElement);
       } else {
@@ -206,12 +209,9 @@
           Object.assign(instance, finalOptions);
         } else {
           instance.options = finalOptions;
-          if (finalOptions.selectors) {
-            instance.selectors = finalOptions.selectors;
-          }
-          if (finalOptions.classNames) {
-            instance.classNames = finalOptions.classNames;
-          }
+          optionGroupNames.forEach((name) => {
+            instance[name] = finalOptions[name];
+          });
         }
         let cleanupTasks = [];
         Object.assign(instance, {
