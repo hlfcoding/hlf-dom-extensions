@@ -109,9 +109,9 @@
       let instance = this.extension(this.someElement)();
       assert.deepEqual(instance.options, this.namespace.defaults,
         'Extension stores the final options as property.');
-      assert.equal(instance.classNames, this.namespace.defaults.classNames,
+      assert.deepEqual(instance.classNames, this.namespace.defaults.classNames,
         'Extension stores the classNames option as property.');
-      assert.equal(instance.selectors, this.namespace.defaults.selectors,
+      assert.deepEqual(instance.selectors, this.namespace.defaults.selectors,
         'Extension stores the selectors option as property.');
     });
 
