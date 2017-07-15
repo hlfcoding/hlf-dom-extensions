@@ -102,6 +102,32 @@
         'Extension gives the element the main class.');
     });
 
+    test('de-initializers', function(assert) {
+      let didDeinit = false;
+      let didReceiveEvent = false;
+      this.createTestExtension({
+        classAdditions: {
+          onNew() {
+            this.eventListeners = {};
+            this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
+          },
+          methods: {
+            deinit() { didDeinit = true; },
+            _onSomeEvent(event) { didReceiveEvent = true; },
+          },
+        },
+        createOptions: { autoListen: true },
+      });
+      let someExtension = this.extension(this.someElement);
+      someExtension('remove');
+      assert.ok(didDeinit, 'Extension calls custom deinit, if any.');
+      assert.notOk(this.extension._getInstance(this.someElement),
+        'Extension de-registers and frees instance.');
+      this.someElement.dispatchEvent(new CustomEvent('sesomeevent'));
+      assert.notOk(didReceiveEvent,
+        'Extension automatically removes listeners from autoListen.');
+    });
+
     test('compacted options', function(assert) {
       this.createTestExtension({
         defaults: { classNames: {}, selectors: {} },

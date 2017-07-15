@@ -259,6 +259,7 @@
       },
       _deleteInstance(element) {
         const id = element.getAttribute(attrName('instance-id'));
+        element.removeAttribute(attrName('instance-id'));
         delete instances[id];
       },
       _deleteInstances() {
