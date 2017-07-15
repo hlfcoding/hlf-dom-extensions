@@ -114,7 +114,7 @@
       this.itemsObserver.disconnect();
     }
     performLoad() {
-      this._updateMetrics();
+      this._updateMetrics({ hard: true });
       this._layoutItems();
       this.itemsObserver.connect();
       this.element.classList.add(this.className('ready'));
@@ -213,7 +213,7 @@
     _onItemsMutation(mutations) {
       this._selectItemElements();
       this.itemsObserver.disconnect();
-      this._updateMetrics(false);
+      this._updateMetrics();
       this._reLayoutItems();
       mutations
         .filter(m => !!m.addedNodes.length)
@@ -232,7 +232,7 @@
       const now = Date.now();
       if (this._ran && now < this._ran + this.resizeDelay) { return; }
       this._ran = now;
-      this._updateMetrics(false);
+      this._updateMetrics();
       this._reLayoutItems();
     }
     _isItemElement(node) {
@@ -374,7 +374,7 @@
     // such, this method isn't idempotent and expects to be followed by a call
     // to `_layoutItems`.
     //
-    _updateMetrics(hard = true) {
+    _updateMetrics({ hard } = { hard: false }) {
       if (hard) {
         const { itemElement, expandedItemElement } = this._getMetricSamples();
         this.metrics = {

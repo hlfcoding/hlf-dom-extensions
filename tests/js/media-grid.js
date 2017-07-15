@@ -48,14 +48,14 @@
         style = instance.element.parentElement.style;
         style.width = '610px';
         let metrics;
-        instance._updateMetrics(true);
+        instance._updateMetrics({ hard: true });
         metrics = instance.metrics;
         assert.strictEqual(metrics.gutter, 10, 'It bases gutter on item margin sizes.');
         assert.strictEqual(metrics.itemWidth, 200, "It uses the item's 'outerWidth' as width.");
         assert.strictEqual(metrics.rowSize, 2, 'It bases row size on item and wrap sizes.');
         assert.strictEqual(metrics.colSize, 2, 'It bases column size on row size.');
         style.width = '620px';
-        instance._updateMetrics(true);
+        instance._updateMetrics({ hard: true });
         metrics = instance.metrics;
         assert.strictEqual(metrics.rowSize, 3, 'It bases row size on item and wrap sizes.');
         assert.strictEqual(instance.selectAllByClass('samples').length, 1,
