@@ -94,9 +94,9 @@
         'Instance had initializer called.');
       assert.ok(this.namespace.apiClass._didInit,
         'Extension class had initializer called.');
-      assert.equal(instance.element, this.someElement,
+      assert.strictEqual(instance.element, this.someElement,
         'Extension stores the element as property.');
-      assert.equal(instance.rootElement, instance.element,
+      assert.strictEqual(instance.rootElement, instance.element,
         'Extension sets the element as root element.');
       assert.ok(instance.element.classList.contains('js-se'),
         'Extension gives the element the main class.');
@@ -186,9 +186,9 @@
       let instance = this.extension(this.someElement.children, this.someElement)();
       assert.equal(instance.elements, this.someElement.children,
         'Extension stores the elements as property.');
-      assert.equal(instance.contextElement, this.someElement,
+      assert.strictEqual(instance.contextElement, this.someElement,
         'Extension stores the context element as property.');
-      assert.equal(instance.rootElement, instance.contextElement,
+      assert.strictEqual(instance.rootElement, instance.contextElement,
         'Extension sets the context element as root element.');
       assert.ok(instance.contextElement.classList.contains('js-se'),
         'Extension gives the context element the main class.');
@@ -223,7 +223,7 @@
       let instance = this.extension(this.someElement)();
       let { _onSomeEvent } = instance;
       _onSomeEvent();
-      assert.equal(instance.someContext, instance,
+      assert.strictEqual(instance.someContext, instance,
         'Instance has auto-bound methods.');
     });
 
