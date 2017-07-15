@@ -211,10 +211,8 @@
       this.toggleExpandedItemFocus(event.currentTarget, false);
     }
     _onItemsMutation(mutations) {
-      this._selectItemElements();
       this.itemsObserver.disconnect();
-      this._updateMetrics();
-      this._reLayoutItems();
+      this._reLayoutItems({ hard: true });
       mutations
         .filter(m => !!m.addedNodes.length)
         .forEach((mutation) => {
@@ -232,7 +230,6 @@
       const now = Date.now();
       if (this._ran && now < this._ran + this.resizeDelay) { return; }
       this._ran = now;
-      this._updateMetrics();
       this._reLayoutItems();
     }
     _isItemElement(node) {
@@ -330,13 +327,17 @@
     // first resetting each item's to its `original-position`. It can run after a
     // custom `delay`.
     //
-    _reLayoutItems() {
+    _reLayoutItems({ hard } = { hard: false }) {
       if (this.expandedItemElement) {
-        this.toggleItemExpansion(
-          this.expandedItemElement, false, this._reLayoutItems
-        );
+        this.toggleItemExpansion(this.expandedItemElement, false, () => {
+          this._reLayoutItems({ hard });
+        });
         return;
       }
+      if (hard) {
+        this._selectItemElements();
+      }
+      this._updateMetrics();
       this.itemElements.forEach((itemElement) => {
         let { style } = itemElement;
         style.bottom = style.left = style.right = style.top = 'auto';
