@@ -178,7 +178,7 @@
     // `itemElement` to `focused` and the `-dimmed` class on the root element
     // after any given `delay`.
     //
-    toggleItemFocus(itemElement, focused, delay) {
+    toggleItemFocus(itemElement, focused, delay = 0) {
       if (focused) {
         this.itemElements.forEach((itemElement) => {
           itemElement.classList.remove(this.className('focused'));
@@ -224,7 +224,7 @@
     }
     _onMouseLeave(_) {
       if (!this.expandedItemElement) { return; }
-      this.toggleItemFocus(this.expandedItemElement, false, 0);
+      this.toggleItemFocus(this.expandedItemElement, false);
     }
     _onWindowResize(_) {
       const now = Date.now();
