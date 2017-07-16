@@ -172,6 +172,7 @@
       // 5. If the `autoListen` flag is toggled, add and call the `addEventListeners`
       //    method (ie. via `selection` mixin), to set up element event listening
       //    before initialization. The `eventListeners` property must be set.
+      //    Cleanup is automatic.
       //
       // 6. If the `autoSelect` flag is toggled, add and call the `select` method
       //    (ie. via `selection` mixin), to set up element references before
@@ -331,15 +332,18 @@
   // - Add the __debugLog__ method and attach functionality instead of a no-op
   //   only if namespace `debug` is on.
   //
-  // - __action__, allows performing actions by calling action methods.
+  // - __action__, allows performing actions by calling action methods. The
+  //   default implementation checks for a method of the name of the action
+  //   prefixed by `perform`. This mixin allows extensions to support the
+  //   `remove` action by default via `performRemove`.
   //
   // - __naming__, allows namespacing an `attrName`, `className`, or `eventName`.
   //
-  // - __event__, sugar around mass-listening to `element` events and
-  //   dispatching custom `element` events.
+  // - __event__, sugar around mass-listening to `rootElement` events and
+  //   dispatching custom `rootElement` events.
   //
-  // - __selection__, sugar around selecting `element` descendants and selecting
-  //   to properties based on `selectors`.
+  // - __selection__, sugar around selecting `rootElement` descendants and
+  //   selecting to properties based on `selectors`.
   //
   function createExtensionBaseMethods(namespace, groups) {
     let methods = {};
