@@ -252,12 +252,14 @@
     // These are layout helpers for changing offset for an `itemElement`.
     //
     _adjustItemToBottomEdge(itemElement) {
-      itemElement.style.top = 'auto';
-      itemElement.style.bottom = '0px';
+      let { style } = itemElement;
+      style.top = 'auto';
+      style.bottom = '0px';
     }
     _adjustItemToRightEdge(itemElement) {
-      itemElement.style.left = 'auto';
-      itemElement.style.right = '0px';
+      let { style } = itemElement;
+      style.left = 'auto';
+      style.right = '0px';
     }
     //
     // ___getMetricSamples__ returns cloned `itemElement` and `expandedItemElement`
