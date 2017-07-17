@@ -61,12 +61,14 @@
       this._toggleContextMutationObserver(true);
       this._toggleElementEventListeners(true);
       this._updateTriggerElements();
+      this._toggleTriggerElementEventListeners(true);
       window.addEventListener('resize', this._onWindowResize);
     }
     deinit() {
       this.element.parentNode.removeChild(this.element);
       this._toggleContextMutationObserver(false);
       this._toggleElementEventListeners(false);
+      this._toggleTriggerElementEventListeners(false);
       window.removeEventListener('resize', this._onWindowResize);
     }
     performSleep({ triggerElement, event }) {
@@ -189,6 +191,8 @@
     }
     _toggleElementPositionTransition(toggled) {
       this.element.style.transition = toggled ? 'transform 0.1s linear' : '';
+    }
+    _toggleTriggerElementEventListeners(on) {
     }
     _updateMetrics() {
       let { viewportElement } = this;
