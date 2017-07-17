@@ -87,6 +87,18 @@
       }());
       triggerElement.dispatchEvent(this.createCustomEvent(eventName));
     }
+    _getElementSize(triggerElement) {
+    }
+    _getTriggerOffset(triggerElement) {
+      if (getComputedStyle(triggerElement).position === 'fixed') {
+        let { left, top } = triggerElement.getBoundingClientRect();
+        return { left, top };
+      } else {
+        return {
+          left: triggerElement.offsetLeft, top: triggerElement.offsetTop
+        };
+      }
+    }
     _onContextMutation(mutations) {
       let triggerElements = [];
       mutations
@@ -200,8 +212,66 @@
       }
     }
     _updateTriggerAnchoring(triggerElement) {
+      let offset = this._getTriggerOffset(triggerElement);
+      let height = triggerElement.offsetHeight;
+      let width = triggerElement.offsetWidth;
+      let tip = this._getElementSize(triggerElement);
+      this.debugLog({ offset, height, width, tip });
+      let newDirection = this.defaultDirection.map((d) => {
+        if (!this._bounds) {
+          this._updateMetrics();
+        }
+        const bounds = this._bounds;
+        let edge, fits;
+        if (d === 'bottom') {
+          fits = (edge = offset.top + height + tip.height) && bounds.bottom > edge;
+        } else if (d === 'right') {
+          fits = (edge = offset.left + tip.width) && bounds.right > edge;
+        } else if (d === 'top') {
+          fits = (edge = offset.top - tip.height) && bounds.top < edge;
+        } else if (d === 'left') {
+          fits = (edge = offset.left - tips.width) && bounds.left < edge;
+        } else {
+          fits = true;
+        }
+        this.debugLog('check-direction-component', { d, edge });
+        if (!fits) {
+          if (d === 'bottom') { return 'top'; }
+          if (d === 'right') { return 'left'; }
+          if (d === 'top') { return 'bottom'; }
+          if (d === 'left') { return 'right'; }
+        }
+        return d;
+      });
+      triggerElement.setAttribute(this.attrName('direction'), newDirection.join(' '));
     }
     _updateTriggerContent(triggerElement) {
+      const { triggerContent } = this;
+      let content, contentAttribute;
+      let shouldRemoveAttribute = true;
+      if (triggerContent) {
+        if (typeof triggerContent === 'function') {
+          content = triggerContent(triggerElement);
+        } else {
+          contentAttribute = triggerContent;
+        }
+      } else {
+        if (triggerElement.hasAttribute('title')) {
+          contentAttribute = 'title';
+        } else if (triggerElement.hasAttribute('alt')) {
+          contentAttribute = 'alt';
+          shouldRemoveAttribute = false;
+        }
+      }
+      if (contentAttribute) {
+        content = triggerElement.getAttribute(contentAttribute);
+        if (shouldRemoveAttribute) {
+          triggerElement.removeAttribute(contentAttribute);
+        }
+      }
+      if (content) {
+        triggerElement.setAttribute(this.attrName('content'), content);
+      }
     }
     _updateTriggerElements(triggerElements) {
       if (!triggerElements) {
