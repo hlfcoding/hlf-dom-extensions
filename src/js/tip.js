@@ -87,7 +87,28 @@
       }());
       triggerElement.dispatchEvent(this.createCustomEvent(eventName));
     }
-    _getElementSize(triggerElement) {
+    _getElementSize(triggerElement, contentOnly = false) {
+      let size = {
+        height: triggerElement.getAttribute(this.attrName('height')),
+        width: triggerElement.getAttribute(this.attrName('width')),
+      };
+      let contentElement = this.selectByClass('content', this.element);
+      if (!size.height || !size.width) {
+        contentElement.textContent = triggerElement.getAttribute(this.attrName('content'));
+        this._withStealthRender(() => {
+          triggerElement.setAttribute(this.attrName('height')
+            (size.height = this.element.offsetHeight));
+          triggerElement.setAttribute(this.attrName('width')
+            (size.width = this.element.offsetWidth));
+        });
+      }
+      if (contentOnly) {
+        const { paddingTop, paddingLeft, paddingBottom, paddingRight } =
+          getComputedStyle(contentElement);
+        size.height -= parseFloat(paddingTop) + parseFloat(paddingBottom);
+        size.width -= parseFloat(paddingLeft) + parseFloat(paddingRight);
+      }
+      return size;
     }
     _getTriggerOffset(triggerElement) {
       if (getComputedStyle(triggerElement).position === 'fixed') {
@@ -282,6 +303,18 @@
         this._updateTriggerContent(triggerElement);
         this._updateTriggerAnchoring(triggerElement);
       });
+    }
+    _withStealthRender(fn) {
+      if (getComputedStyle(this.element).display === 'none') {
+        return fn();
+      }
+      let { style } = this.element;
+      style.display = 'block';
+      style.visibility = 'hidden';
+      let result = fn();
+      style.display = 'none';
+      style.visibility = 'visible';
+      return result;
     }
   }
   return hlf.createExtension({
