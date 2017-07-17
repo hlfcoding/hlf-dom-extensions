@@ -158,6 +158,22 @@
       this.element.style.transition = toggled ? 'transform 0.1s linear' : '';
     }
     _updateMetrics() {
+      let { viewportElement } = this;
+      let innerHeight, innerWidth;
+      if (viewportElement == document.body) {
+        innerHeight = window.innerHeight;
+        innerWidth = window.innerWidth;
+      } else {
+        innerHeight = viewportElement.clientHeight;
+        innerWidth = viewportElement.clientWidth;
+      }
+      const { paddingLeft, paddingTop } = getComputedStyle(this.viewportElement);
+      this._bounds = {
+        top: parseFloat(paddingTop),
+        left: parseFloat(paddingLeft),
+        bottom: innerHeight,
+        right: innerWidth,
+      };
     }
     _updateState(name) {
       let state = this._state;
@@ -183,7 +199,19 @@
         state.sleepCountdown = null;
       }
     }
+    _updateTriggerAnchoring(triggerElement) {
+    }
+    _updateTriggerContent(triggerElement) {
+    }
     _updateTriggerElements(triggerElements) {
+      if (!triggerElements) {
+        triggerElements = this.triggerElements;
+      }
+      triggerElements.forEach((triggerElement) => {
+        triggerElement.classList.add(this.className('trigger'));
+        this._updateTriggerContent(triggerElement);
+        this._updateTriggerAnchoring(triggerElement);
+      });
     }
   }
   return hlf.createExtension({
