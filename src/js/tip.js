@@ -72,8 +72,46 @@
       window.removeEventListener('resize', this._onWindowResize);
     }
     performSleep({ triggerElement, event }) {
+      if (this._state === 'asleep' || this._state === 'sleeping') {
+        return;
+      }
+      this._updateState('sleeping', { event });
+      this.setTimeout('_sleepCountdown', 200, () => {
+        this._toggleElement(false, 200, () => {
+          this._updateState('asleep', { event });
+        });
+      });
     }
     performWake({ triggerElement, event }) {
+      this._updateCurrentTriggerElement(triggerElement);
+      if (this._state === 'awake') {
+        this.debugLog('quick update');
+        this._updateElementPosition(triggerElement, event);
+        return;
+      }
+      if (event) {
+        this.debugLog(event.type);
+      }
+      if (this._state === 'awake' || this._state === 'waking') {
+        return;
+      }
+      const wake = (duration) => {
+        if (duration == null) {
+          duration = 200;
+        }
+        this._updateElementPosition(triggerElement, event);
+        this._toggleElement(true, duration, () => {
+          this._updateState('awake', { event });
+        });
+      };
+      if (this._state === 'sleeping') {
+        this.debugLog('clear sleep');
+        this.setTimeout('_sleepCountdown', null);
+        wake(0);
+      } else if (event && event.type === hlf.hoverIntent.eventName('enter')) {
+        this._updateState('waking', { event });
+        this.setTimeout('_wakeCountdown', 200, wake);
+      }
     }
     _dispatchStateEvent() {
       if (!this.doDispatchEvents) { return; }
@@ -183,6 +221,8 @@
         this._contextObserver.disconnect();
       }
     }
+    _toggleElement(visible, duration, completion) {
+    }
     _toggleElementEventListeners(on) {
       this.toggleEventListeners(on, {
         'mouseenter': this._onElementMouseEnter,
@@ -193,6 +233,10 @@
       this.element.style.transition = toggled ? 'transform 0.1s linear' : '';
     }
     _toggleTriggerElementEventListeners(on) {
+    }
+    _updateElementPosition(triggerElement, mouseEvent) {
+    }
+    _updateCurrentTriggerElement(triggerElement) {
     }
     _updateMetrics() {
       let { viewportElement } = this;
