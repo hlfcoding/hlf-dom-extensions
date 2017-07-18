@@ -212,7 +212,7 @@
     }
     _onItemsMutation(mutations) {
       this.itemsObserver.disconnect();
-      this._reLayoutItems({ hard: true });
+      this._reLayoutItems();
       mutations
         .filter(m => !!m.addedNodes.length)
         .forEach((mutation) => {
@@ -326,19 +326,16 @@
     }
     //
     // ___reLayoutItems__ wraps `_layoutItems` to be its idempotent version by
-    // first resetting each item's to its `original-position`. It can run after a
-    // custom `delay`.
+    // first resetting each item's to its `original-position`.
     //
-    _reLayoutItems({ hard } = { hard: false }) {
+    _reLayoutItems() {
       if (this.expandedItemElement) {
         this.toggleItemExpansion(this.expandedItemElement, false, () => {
-          this._reLayoutItems({ hard });
+          this._reLayoutItems();
         });
         return;
       }
-      if (hard) {
-        this._selectItemElements();
-      }
+      this._selectItemElements();
       this._updateMetrics();
       this.itemElements.forEach((itemElement) => {
         let { style } = itemElement;
