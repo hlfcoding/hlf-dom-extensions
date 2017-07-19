@@ -99,9 +99,9 @@
         getComputedStyle(this.sampleItemElement).transitionDuration
       );
       this.expandedItemElement = null;
-      this.itemsObserver = new MutationObserver(this._onItemsMutation);
-      this.itemsObserver.connect = () => {
-        this.itemsObserver.observe(this.element, { childList: true });
+      this._itemsObserver = new MutationObserver(this._onItemsMutation);
+      this._itemsObserver.connect = () => {
+        this._itemsObserver.observe(this.element, { childList: true });
       };
       this.metrics = {};
       if (this.autoLoad) {
@@ -111,12 +111,12 @@
     deinit() {
       this.itemElements.forEach(this._toggleItemEventListeners.bind(this, false));
       window.removeEventListener('resize', this._onWindowResize);
-      this.itemsObserver.disconnect();
+      this._itemsObserver.disconnect();
     }
     performLoad() {
       this._updateMetrics({ hard: true });
       this._layoutItems();
-      this.itemsObserver.connect();
+      this._itemsObserver.connect();
       this.element.classList.add(this.className('ready'));
       this.dispatchCustomEvent('ready');
     }
@@ -211,7 +211,7 @@
       this.toggleExpandedItemFocus(event.currentTarget, false);
     }
     _onItemsMutation(mutations) {
-      this.itemsObserver.disconnect();
+      this._itemsObserver.disconnect();
       this._reLayoutItems();
       mutations
         .filter(m => !!m.addedNodes.length)
@@ -220,7 +220,7 @@
             .filter(this._isItemElement)
             .forEach(this._toggleItemEventListeners.bind(this, true));
         });
-      this.itemsObserver.connect();
+      this._itemsObserver.connect();
     }
     _onMouseLeave(_) {
       if (!this.expandedItemElement) { return; }
