@@ -211,15 +211,17 @@
       this.toggleExpandedItemFocus(event.currentTarget, false);
     }
     _onItemsMutation(mutations) {
-      this._itemsObserver.disconnect();
-      this._reLayoutItems();
-      mutations
+      let addedItemElements = mutations
         .filter(m => !!m.addedNodes.length)
-        .forEach((mutation) => {
-          Array.from(mutation.addedNodes)
-            .filter(this._isItemElement)
-            .forEach(this._toggleItemEventListeners.bind(this, true));
-        });
+        .reduce((allElements, m) => {
+          let elements = Array.from(m.addedNodes).filter(this._isItemElement);
+          return allElements.concat(elements);
+        }, []);
+      addedItemElements.forEach(this._toggleItemEventListeners.bind(this, true));
+      this._itemsObserver.disconnect();
+      this._reLayoutItems(() => {
+        addedItemElements[0].scrollIntoView();
+      });
       this._itemsObserver.connect();
     }
     _onMouseLeave(_) {
@@ -328,10 +330,10 @@
     // ___reLayoutItems__ wraps `_layoutItems` to be its idempotent version by
     // first resetting each item's to its `original-position`.
     //
-    _reLayoutItems() {
+    _reLayoutItems(completion) {
       if (this.expandedItemElement) {
         this.toggleItemExpansion(this.expandedItemElement, false, () => {
-          this._reLayoutItems();
+          this._reLayoutItems(completion);
         });
         return;
       }
@@ -344,6 +346,9 @@
         itemElement.classList.remove(this.className('raw'));
       });
       this._layoutItems();
+      if (completion) {
+        completion();
+      }
     }
     //
     // ___toggleNeighborItemsRecessed__ toggles the `-recessed` class on items
