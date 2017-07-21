@@ -245,6 +245,18 @@
           cleanupTasks.push(() => {
             instance.removeEventListeners(eventListeners);
           });
+          if (instance._onWindowResize && instance.resizeDelay) {
+            let ran, { _onWindowResize } = instance;
+            instance._onWindowResize = function(event) {
+              if (ran && Date.now() < ran + this.resizeDelay) { return; }
+              ran = Date.now();
+              _onWindowResize(event);
+            };
+            window.addEventListener('resize', instance._onWindowResize);
+            cleanupTasks.push(() => {
+              window.removeEventListener('resize', instance._onWindowResize);
+            });
+          }
         }
         if (autoSelect && instance.selectToProperties) {
           instance.selectToProperties();

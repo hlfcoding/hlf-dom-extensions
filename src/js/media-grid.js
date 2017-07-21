@@ -93,7 +93,6 @@
         this._selectItemElements();
       }
       this.itemElements.forEach(this._toggleItemEventListeners.bind(this, true));
-      window.addEventListener('resize', this._onWindowResize);
       this.sampleItemElement = this.itemElements[0];
       this.expandDuration = 1000 * parseFloat(
         getComputedStyle(this.sampleItemElement).transitionDuration
@@ -110,7 +109,6 @@
     }
     deinit() {
       this.itemElements.forEach(this._toggleItemEventListeners.bind(this, false));
-      window.removeEventListener('resize', this._onWindowResize);
       this._itemsObserver.disconnect();
     }
     performLoad() {
@@ -229,9 +227,6 @@
       this.toggleItemFocus(this.expandedItemElement, false);
     }
     _onWindowResize(_) {
-      const now = Date.now();
-      if (this._ran && now < this._ran + this.resizeDelay) { return; }
-      this._ran = now;
       this._reLayoutItems();
     }
     _isItemElement(node) {
