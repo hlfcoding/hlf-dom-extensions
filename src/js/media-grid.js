@@ -76,6 +76,7 @@
   //
   class MediaGrid {
     constructor(element, options) {
+      // autoListen
       this.eventListeners = { mouseleave: this._onMouseLeave };
       this.eventListeners[this.eventName('expand')] = this._onItemExpand;
     }
@@ -226,7 +227,7 @@
       if (!this.expandedItemElement) { return; }
       this.toggleItemFocus(this.expandedItemElement, false);
     }
-    _onWindowResize(_) {
+    _onWindowResize(_) { // autoListen
       this._reLayoutItems();
     }
     _isItemElement(node) {

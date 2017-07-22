@@ -68,7 +68,7 @@
 
     const { apiClass, autoBind, autoListen, autoSelect } = args;
     let groups = args.baseMethodGroups || [];
-    groups.push('action', 'naming');
+    groups.push('action', 'naming', 'timeout');
     if (autoListen) {
       groups.push('event');
     }
@@ -250,8 +250,8 @@
             instance._onWindowResize = function(event) {
               if (ran && Date.now() < ran + this.resizeDelay) { return; }
               ran = Date.now();
-              _onWindowResize(event);
-            };
+              _onWindowResize.call(instance, event);
+            }.bind(instance);
             window.addEventListener('resize', instance._onWindowResize);
             cleanupTasks.push(() => {
               window.removeEventListener('resize', instance._onWindowResize);
@@ -396,6 +396,41 @@
       };
       Object.assign(methods, naming);
       Object.assign(namespace, naming);
+    }
+    if (groups.indexOf('timeout') !== -1) {
+      Object.assign(methods, {
+        setElementTimeout(element, name, duration, callback) {
+          name = this.attrName(name);
+          if (element.getAttribute(name)) {
+            clearTimeout(element.getAttribute(name));
+          }
+          let timeout = null;
+          if (duration && callback) {
+            timeout = setTimeout(() => {
+              callback();
+              element.removeAttribute(name);
+            }, duration);
+          }
+          if (timeout) {
+            element.setAttribute(name, timeout);
+          } else {
+            element.removeAttribute(name);
+          }
+        },
+        setTimeout(name, duration, callback) {
+          if (this[name]) {
+            clearTimeout(this[name]);
+          }
+          let timeout = null;
+          if (duration && callback) {
+            timeout = setTimeout(() => {
+              callback();
+              this[name] = null;
+            }, duration);
+          }
+          this[name] = timeout;
+        },
+      });
     }
     if (groups.indexOf('css') !== -1) {
       Object.assign(methods, {
