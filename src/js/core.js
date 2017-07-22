@@ -396,78 +396,78 @@
       };
       Object.assign(methods, naming);
       Object.assign(namespace, naming);
-      if (groups.indexOf('css') !== -1) {
-        Object.assign(methods, {
-          cssVariable(name) {
-            return getComputedStyle(this.rootElement)
-              .getPropertyValue(`--${namespace.toString('class')}-${name}`);
-          }
-        });
-      }
-      if (groups.indexOf('event') !== -1) {
-        let normalizeInfos = function(infos) {
+    }
+    if (groups.indexOf('css') !== -1) {
+      Object.assign(methods, {
+        cssVariable(name) {
+          return getComputedStyle(this.rootElement)
+          .getPropertyValue(`--${namespace.toString('class')}-${name}`);
+        }
+      });
+    }
+    if (groups.indexOf('event') !== -1) {
+      let normalizeInfos = function(infos) {
+        for (const type in infos) {
+          if (!infos.hasOwnProperty(type)) { continue; }
+          if (typeof infos[type] !== 'function') { continue; }
+          infos[type] = [infos[type]];
+        }
+      };
+      Object.assign(methods, {
+        addEventListeners(infos, target) {
+          target = target || this.rootElement;
+          normalizeInfos(infos);
           for (const type in infos) {
             if (!infos.hasOwnProperty(type)) { continue; }
-            if (typeof infos[type] !== 'function') { continue; }
-            infos[type] = [infos[type]];
+            const [handler, options] = infos[type];
+            target.addEventListener(type, handler, options);
           }
-        };
-        Object.assign(methods, {
-          addEventListeners(infos, target) {
-            target = target || this.rootElement;
-            normalizeInfos(infos);
-            for (const type in infos) {
-              if (!infos.hasOwnProperty(type)) { continue; }
-              const [handler, options] = infos[type];
-              target.addEventListener(type, handler, options);
+        },
+        removeEventListeners(infos, target) {
+          target = target || this.rootElement;
+          normalizeInfos(infos);
+          for (const type in infos) {
+            if (!infos.hasOwnProperty(type)) { continue; }
+            const [handler, options] = infos[type];
+            target.removeEventListener(type, handler, options);
+          }
+        },
+        toggleEventListeners(on, infos, target) {
+          this[`${on ? 'add' : 'remove'}EventListeners`](infos, target);
+        },
+        createCustomEvent(type, detail) {
+          let initArgs = { detail };
+          initArgs.bubbles = true;
+          return new CustomEvent(this.eventName(type), initArgs);
+        },
+        dispatchCustomEvent(type, detail = {}) {
+          return this.rootElement.dispatchEvent(this.createCustomEvent(type, detail));
+        },
+      });
+    }
+    if (groups.indexOf('selection') !== -1) {
+      Object.assign(methods, {
+        selectByClass(name) {
+          return this.rootElement.querySelector(`.${this.className(name)}`);
+        },
+        selectAllByClass(name) {
+          return this.rootElement.querySelectorAll(`.${this.className(name)}`);
+        },
+        selectToProperties() {
+          if (!this.rootElement || !this.selectors) {
+            throw 'Missing requirements.';
+          }
+          for (const name in this.selectors) {
+            if (!this.selectors.hasOwnProperty(name)) { continue; }
+            const selector = this.selectors[name];
+            if (name.substr(-1) === 's') {
+              this[name] = this.rootElement.querySelectorAll(selector);
+            } else {
+              this[name] = this.rootElement.querySelector(selector);
             }
-          },
-          removeEventListeners(infos, target) {
-            target = target || this.rootElement;
-            normalizeInfos(infos);
-            for (const type in infos) {
-              if (!infos.hasOwnProperty(type)) { continue; }
-              const [handler, options] = infos[type];
-              target.removeEventListener(type, handler, options);
-            }
-          },
-          toggleEventListeners(on, infos, target) {
-            this[`${on ? 'add' : 'remove'}EventListeners`](infos, target);
-          },
-          createCustomEvent(type, detail) {
-            let initArgs = { detail };
-            initArgs.bubbles = true;
-            return new CustomEvent(this.eventName(type), initArgs);
-          },
-          dispatchCustomEvent(type, detail = {}) {
-            return this.rootElement.dispatchEvent(this.createCustomEvent(type, detail));
-          },
-        });
-      }
-      if (groups.indexOf('selection') !== -1) {
-        Object.assign(methods, {
-          selectByClass(name) {
-            return this.rootElement.querySelector(`.${this.className(name)}`);
-          },
-          selectAllByClass(name) {
-            return this.rootElement.querySelectorAll(`.${this.className(name)}`);
-          },
-          selectToProperties() {
-            if (!this.rootElement || !this.selectors) {
-              throw 'Missing requirements.';
-            }
-            for (const name in this.selectors) {
-              if (!this.selectors.hasOwnProperty(name)) { continue; }
-              const selector = this.selectors[name];
-              if (name.substr(-1) === 's') {
-                this[name] = this.rootElement.querySelectorAll(selector);
-              } else {
-                this[name] = this.rootElement.querySelector(selector);
-              }
-            }
-          },
-        });
-      }
+          }
+        },
+      });
     }
     return methods;
   }
