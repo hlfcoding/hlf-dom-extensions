@@ -114,29 +114,28 @@
       this._setDefaultState();
     }
     _onMouseMove(event) {
-      if (this.trackTimeout != null) { return; }
-      this.trackTimeout = setTimeout(() => {
+      if (this._trackTimeout) { return; }
+      this.setTimeout('_trackTimeout', 16, () => {
         this.debugLog('track');
         let { mouse: { x, y } } = this;
         x.current = event.pageX;
         y.current = event.pageY;
-        this.trackTimeout = null;
-      }, 16);
+      });
     }
     _onMouseOver(event) {
       if (this.intentional) { return; }
       if (event.target !== this.element) { return; }
-      if (this.timeout != null) { return; }
+      if (this._timeout) { return; }
       this.debugLog('setup');
       let { mouse: { x, y } } = this;
       x.previous = event.pageX;
       y.previous = event.pageY;
-      this.timeout = setTimeout(() => {
+      this.setTimeout('_timeout', this.interval, () => {
         this._setState(event);
         if (this.intentional) {
           this._dispatchHoverEvent(true, event);
         }
-      }, this.interval);
+      });
     }
     _setDefaultState() {
       this.debugLog('reset');
@@ -145,10 +144,8 @@
         x: { current: 0, previous: 0 },
         y: { current: 0, previous: 0 },
       };
-      clearTimeout(this.timeout);
-      clearTimeout(this.trackTimeout);
-      this.timeout = null;
-      this.trackTimeout = null;
+      this.setTimeout('_timeout', null);
+      this.setTimeout('_trackTimeout', null);
     }
     _setState(event) {
       this.debugLog('update');
@@ -160,7 +157,6 @@
           sqrt(pow(x.current, 2) + pow(y.current, 2))
         ) > this.sensitivity
       );
-      this.timeout = null;
     }
   }
   //
