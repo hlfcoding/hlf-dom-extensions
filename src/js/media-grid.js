@@ -148,15 +148,12 @@
       }
       this._toggleNeighborItemsRecessed(index, expanded);
       itemElement.classList.add(this.className('transitioning'));
-      clearTimeout(itemElement.getAttribute(this.attrName('expand-timeout')));
-      itemElement.setAttribute(this.attrName('expand-timeout'),
-        setTimeout(() => {
-          itemElement.classList.remove(this.className('transitioning'));
-          if (completion) {
-            completion();
-          }
-        }, this.expandDuration)
-      );
+      this.setElementTimeout(itemElement, 'expand-timeout', this.expandDuration, () => {
+        itemElement.classList.remove(this.className('transitioning'));
+        if (completion) {
+          completion();
+        }
+      });
 
       itemElement.classList.toggle(this.className('expanded'), expanded);
       this.expandedItemElement = expanded ? itemElement : null;
@@ -184,10 +181,9 @@
         });
       }
       itemElement.classList.toggle(this.className('focused'), focused);
-      clearTimeout(this._dimTimeout);
-      this._dimTimeout = setTimeout(() => {
+      this.setTimeout('_dimTimeout', delay, () => {
         this.element.classList.toggle(this.className('dimmed'), focused);
-      }, delay);
+      });
     }
     //
     // § __Internal__
