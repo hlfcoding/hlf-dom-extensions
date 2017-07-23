@@ -434,6 +434,10 @@
     }
     if (groups.indexOf('css') !== -1) {
       Object.assign(methods, {
+        cssDuration(name, element) {
+          if (!element) { element = this.rootElement; }
+          return 1000 * parseFloat(getComputedStyle(element)[name]);
+        },
         cssVariable(name, element) {
           if (!element) { element = this.rootElement; }
           return getComputedStyle(element)

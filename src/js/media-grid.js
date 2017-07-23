@@ -95,9 +95,7 @@
       }
       this.itemElements.forEach(this._toggleItemEventListeners.bind(this, true));
       this.sampleItemElement = this.itemElements[0];
-      this.expandDuration = 1000 * parseFloat(
-        getComputedStyle(this.sampleItemElement).transitionDuration
-      );
+      this.expandDuration = this.cssDuration('transitionDuration', this.sampleItemElement);
       this.expandedItemElement = null;
       this._itemsObserver = new MutationObserver(this._onItemsMutation);
       this._itemsObserver.connect = () => {
