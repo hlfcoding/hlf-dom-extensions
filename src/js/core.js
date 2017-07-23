@@ -113,10 +113,9 @@
     function extension(subject, ...args) {
       let { action, options, contextElement } = extension._parseArguments(args);
       contextElement = contextElement || document.body;
-      let finalSubject = asSharedInstance ? contextElement : subject;
 
       if (action) {
-        extension._dispatchAction(action, finalSubject);
+        extension._dispatchAction(action, subject);
         return;
 
       } else if (!options) {
@@ -129,6 +128,7 @@
         instances = {};
       }
 
+      let finalSubject = asSharedInstance ? contextElement : subject;
       options = Object.assign({}, defaults, options);
       optionGroupNames.forEach((name) => {
         options[name] = Object.assign({}, defaults[name], options[name]);
