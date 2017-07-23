@@ -110,10 +110,12 @@
           onNew() {
             this.eventListeners = {};
             this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
+            this.resizeDelay = 100;
           },
           methods: {
             deinit() { didDeinit = true; },
             _onSomeEvent(event) { didReceiveEvent = true; },
+            _onWindowResize(event) { didReceiveEvent = true; },
           },
         },
         createOptions: { autoListen: true },
@@ -124,6 +126,7 @@
       assert.notOk(this.extension._getInstance(this.someElement),
         'Extension de-registers and frees instance.');
       this.someElement.dispatchEvent(new CustomEvent('sesomeevent'));
+      window.dispatchEvent(new Event('resize'));
       assert.notOk(didReceiveEvent,
         'Extension automatically removes listeners from autoListen.');
     });
@@ -233,10 +236,15 @@
           onNew() {
             this.eventListeners = {};
             this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
+            this.resizeDelay = 100;
+            this._resizeCount = 0;
           },
           methods: {
             _onSomeEvent(event) {
               this._someEventDetail = event.detail;
+            },
+            _onWindowResize(event) {
+              this._resizeCount += 1;
             },
           },
         },
@@ -249,6 +257,10 @@
       instance.dispatchCustomEvent('someevent', this.someData);
       assert.equal(instance._someEventDetail, this.someData,
         'Instance has auto-added auto-bound listeners based on eventListeners.');
+      window.dispatchEvent(new Event('resize'));
+      window.dispatchEvent(new Event('resize'));
+      assert.equal(instance._resizeCount, 1,
+        'Instance has auto-bound and throttled _onWindowResize listener.');
     });
 
     test('autoSelect option', function(assert) {
