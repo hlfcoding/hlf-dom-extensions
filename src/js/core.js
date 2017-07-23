@@ -434,9 +434,10 @@
     }
     if (groups.indexOf('css') !== -1) {
       Object.assign(methods, {
-        cssVariable(name) {
-          return getComputedStyle(this.rootElement)
-          .getPropertyValue(`--${namespace.toString('class')}-${name}`);
+        cssVariable(name, element) {
+          if (!element) { element = this.rootElement; }
+          return getComputedStyle(element)
+            .getPropertyValue(`--${namespace.toString('class')}-${name}`);
         }
       });
     }
