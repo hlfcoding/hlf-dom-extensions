@@ -70,10 +70,14 @@
           },
           someData: { key: 'value' },
           someElement: document.createElement('div'),
+          someExtension: null,
         });
         document.getElementById('qunit-fixture').appendChild(this.someElement);
       },
       afterEach() {
+        if (this.someExtension) {
+          this.someExtension('remove');
+        }
         if (this.extension) {
           this.extension._deleteInstances();
         }
@@ -87,7 +91,8 @@
           staticMethods: { init() { this._didInit = true; } },
         },
       });
-      let instance = this.extension(this.someElement)();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
       assert.ok(instance instanceof this.namespace.apiClass,
         'Extension returns instance upon re-invocation without any parameters.');
       assert.ok(instance._didInit,
@@ -120,8 +125,8 @@
         },
         createOptions: { autoListen: true },
       });
-      let someExtension = this.extension(this.someElement);
-      someExtension('remove');
+      this.someExtension = this.extension(this.someElement);
+      this.someExtension('remove');
       assert.ok(didDeinit, 'Extension calls custom deinit, if any.');
       assert.notOk(this.extension._getInstance(this.someElement),
         'Extension de-registers and frees instance.');
@@ -129,13 +134,15 @@
       window.dispatchEvent(new Event('resize'));
       assert.notOk(didReceiveEvent,
         'Extension automatically removes listeners from autoListen.');
+      this.someExtension = null;
     });
 
     test('compacted options', function(assert) {
       this.createTestExtension({
         defaults: { classNames: {}, selectors: {} },
       });
-      let instance = this.extension(this.someElement)();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
       assert.deepEqual(instance.options, this.namespace.defaults,
         'Extension stores the final options as property.');
       assert.deepEqual(instance.classNames, this.namespace.defaults.classNames,
@@ -150,7 +157,8 @@
       });
       const options = { someOption: 'bar' };
       this.someElement.setAttribute('data-se', JSON.stringify(options));
-      let instance = this.extension(this.someElement)();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
       assert.equal(instance.someOption, options.someOption,
         'Extension allows custom options via element data attribute.');
     });
@@ -158,7 +166,8 @@
     test('naming methods', function(assert) {
       const methodNames = ['attrName', 'className', 'eventName'];
       this.createTestExtension();
-      let instance = this.extension(this.someElement)();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
       this.assertInstanceMethods(instance, ...methodNames);
       methodNames.forEach(methodName => assert.ok(
         typeof this.namespace[methodName] === 'function',
@@ -174,9 +183,9 @@
           },
         }},
       });
-      let someExtension = this.extension(this.someElement);
-      let instance = someExtension();
-      someExtension('someAction', this.someData);
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
+      this.someExtension('someAction', this.someData);
       assert.equal(instance._someActionPayload, this.someData,
         'Extension function can perform action, using default perform.');
     });
@@ -186,7 +195,8 @@
         createOptions: { asSharedInstance: true },
       });
       this.createSomeChildElement();
-      let instance = this.extension(this.someElement.children, this.someElement)();
+      this.someExtension = this.extension(this.someElement.children, this.someElement);
+      let instance = this.someExtension();
       assert.equal(instance.elements, this.someElement.children,
         'Extension stores the elements as property.');
       assert.strictEqual(instance.contextElement, this.someElement,
@@ -205,9 +215,10 @@
         createOptions: { compactOptions: true },
         defaults: { someOption: 'foo' },
       });
-      let instance = this.extension(this.someElement, {
+      this.someExtension = this.extension(this.someElement, {
         someOtherOption: 'bar',
-      })();
+      });
+      let instance = this.someExtension();
       assert.equal(instance.someOption, 'foo',
         'Instance has default options merged in as properties.');
       assert.equal(instance.someOtherOption, 'bar',
@@ -223,7 +234,8 @@
         }},
         createOptions: { autoBind: true },
       });
-      let instance = this.extension(this.someElement)();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
       let { _onSomeEvent } = instance;
       _onSomeEvent();
       assert.strictEqual(instance.someContext, instance,
@@ -250,7 +262,8 @@
         },
         createOptions: { autoListen: true },
       });
-      let instance = this.extension(this.someElement)();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
       this.assertInstanceMethods(instance,
         'addEventListeners', 'removeEventListeners', 'toggleEventListeners',
         'createCustomEvent', 'dispatchCustomEvent');
@@ -269,7 +282,8 @@
         defaults: { selectors: { someElement: '.foo', someElements: '.foo' } },
       });
       this.createSomeChildElement();
-      let instance = this.extension(this.someElement)();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
       assert.ok(instance.someElement instanceof HTMLElement,
         'Instance has auto-selected sub element based on selectors option.');
       assert.ok(instance.someElements instanceof NodeList,
