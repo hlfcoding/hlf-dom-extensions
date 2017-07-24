@@ -215,6 +215,20 @@
       assert.ok(instance._someTimeout,
         'setTimeout stores timeout as property value per name.');
 
+      let elementTimeoutCleared = true;
+      instance.setElementTimeout(this.someElement, 'some-timeout-to-clear', duration,
+        () => { elementTimeoutCleared = false; });
+      instance.setElementTimeout(this.someElement, 'some-timeout-to-clear', null);
+      assert.notOk(this.someElement.hasAttribute('data-se-some-timeout-to-clear'),
+        'setElementTimeout clears timeout if value is null.');
+
+      let timeoutCleared = true;
+      instance.setTimeout('_someTimeoutToClear', duration,
+        () => { timeoutCleared = false; });
+      instance.setTimeout('_someTimeoutToClear', null);
+      assert.notOk(instance._someTimeoutToClear,
+        'setTimeout clears timeout if value is null.');
+
       setTimeout(() => {
 
         assert.ok(elementTimeoutCompleted, 'setElementTimeout calls callback.');
@@ -224,6 +238,11 @@
         assert.ok(timeoutCompleted, 'setTimeout calls callback.');
         assert.notOk(instance._someTimeout,
           'setTimeout removes property value upon completion.');
+
+        assert.ok(elementTimeoutCleared,
+          'setElementTimeout clears timeout if value is null.');
+        assert.ok(timeoutCleared,
+          'setTimeout clears timeout if value is null.');
 
         done();
       }, duration + 50);
