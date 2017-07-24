@@ -263,6 +263,13 @@
       childElement.style.setProperty('--se-some-size', '2px');
       assert.equal(instance.cssVariable('some-size', childElement), '2px',
         'cssVariable returns variable value on given element if any.');
+
+      this.someElement.style.setProperty('transition-duration', '0.1s');
+      assert.equal(instance.cssDuration('transition-duration'), 100,
+        'cssDuration returns converted duration on root element by default.');
+      childElement.style.setProperty('transition-duration', '0.2s');
+      assert.equal(instance.cssDuration('transition-duration', childElement), 200,
+        'cssDuration returns converted duration on given element if any.');
     });
 
     test('asSharedInstance option', function(assert) {
