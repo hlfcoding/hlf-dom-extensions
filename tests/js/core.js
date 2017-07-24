@@ -44,6 +44,7 @@
             let someElement = document.createElement('div');
             someElement.classList.add('foo');
             this.someElement.appendChild(someElement);
+            return someElement;
           },
           createTestExtension({ classAdditions, createOptions, defaults } = {}) {
             const { methods, onNew, staticMethods } = classAdditions || {};
@@ -246,6 +247,22 @@
 
         done();
       }, duration + 50);
+    });
+
+    test('css methods', function(assert) {
+      this.createTestExtension({
+        createOptions: { baseMethodGroups: ['css'] },
+      });
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
+      let childElement = this.createSomeChildElement();
+
+      this.someElement.style.setProperty('--se-some-size', '1px');
+      assert.equal(instance.cssVariable('some-size'), '1px',
+        'cssVariable returns variable value on root element by default.');
+      childElement.style.setProperty('--se-some-size', '2px');
+      assert.equal(instance.cssVariable('some-size', childElement), '2px',
+        'cssVariable returns variable value on given element if any.');
     });
 
     test('asSharedInstance option', function(assert) {
