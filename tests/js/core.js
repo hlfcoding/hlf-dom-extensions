@@ -163,18 +163,6 @@
         'Extension allows custom options via element data attribute.');
     });
 
-    test('naming methods', function(assert) {
-      const methodNames = ['attrName', 'className', 'eventName'];
-      this.createTestExtension();
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      this.assertInstanceMethods(instance, ...methodNames);
-      methodNames.forEach(methodName => assert.ok(
-        typeof this.namespace[methodName] === 'function',
-        `Namespace has generated API addition ${methodName}.`
-      ));
-    });
-
     test('action methods', function(assert) {
       this.createTestExtension({
         classAdditions: { methods: {
@@ -188,6 +176,18 @@
       this.someExtension('someAction', this.someData);
       assert.equal(instance._someActionPayload, this.someData,
         'Extension function can perform action, using default perform.');
+    });
+
+    test('naming methods', function(assert) {
+      const methodNames = ['attrName', 'className', 'eventName'];
+      this.createTestExtension();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
+      this.assertInstanceMethods(instance, ...methodNames);
+      methodNames.forEach(methodName => assert.ok(
+        typeof this.namespace[methodName] === 'function',
+        `Namespace has generated API addition ${methodName}.`
+      ));
     });
 
     test('asSharedInstance option', function(assert) {
