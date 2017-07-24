@@ -196,6 +196,39 @@
         'eventName namespaces event names correctly.');
     });
 
+    test('timeout methods', function(assert) {
+      this.createTestExtension();
+      this.someExtension = this.extension(this.someElement);
+      let instance = this.someExtension();
+      let done = assert.async();
+      const duration = 50;
+
+      let elementTimeoutCompleted = false;
+      instance.setElementTimeout(this.someElement, 'some-timeout', duration,
+        () => { elementTimeoutCompleted = true; });
+      assert.ok(this.someElement.hasAttribute('data-se-some-timeout'),
+        'setElementTimeout stores timeout as element data attribute per name.');
+
+      let timeoutCompleted = false;
+      instance.setTimeout('_someTimeout', duration,
+        () => { timeoutCompleted = true; });
+      assert.ok(instance._someTimeout,
+        'setTimeout stores timeout as property value per name.');
+
+      setTimeout(() => {
+
+        assert.ok(elementTimeoutCompleted, 'setElementTimeout calls callback.');
+        assert.notOk(this.someElement.hasAttribute('data-se-some-timeout'),
+          'setElementTimeout removes element data attribute upon completion.');
+
+        assert.ok(timeoutCompleted, 'setTimeout calls callback.');
+        assert.notOk(instance._someTimeout,
+          'setTimeout removes property value upon completion.');
+
+        done();
+      }, duration + 50);
+    });
+
     test('asSharedInstance option', function(assert) {
       this.createTestExtension({
         createOptions: { asSharedInstance: true },
