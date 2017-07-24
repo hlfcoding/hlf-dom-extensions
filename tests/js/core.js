@@ -188,6 +188,12 @@
         typeof this.namespace[methodName] === 'function',
         `Namespace has generated API addition ${methodName}.`
       ));
+      assert.equal(instance.attrName('some-attribute'), 'data-se-some-attribute',
+        'attrName namespaces attribute names correctly.');
+      assert.equal(instance.className('some-class'), 'js-se-some-class',
+        'className namespaces class names correctly.');
+      assert.equal(instance.eventName('someevent'), 'sesomeevent',
+        'eventName namespaces event names correctly.');
     });
 
     test('asSharedInstance option', function(assert) {
