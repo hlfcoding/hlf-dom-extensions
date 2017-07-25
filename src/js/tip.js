@@ -15,6 +15,7 @@
       doDispatchEvents: true,
       doFollow: true,
       doStem: true,
+      resizeDelay: 300,
       snapToTrigger: true,
       snapToXAxis: false,
       snapToYAxis: false,
@@ -49,9 +50,9 @@
       this._bounds = null;
       this._state = {
         name: null,
-        sleepCountdown: null,
-        wakeCountdown: null,
       };
+      this._sleepCountdown = null;
+      this._wakeCountdown = null;
     }
     init() {
       this.element = document.createElement('div');
@@ -62,14 +63,12 @@
       this._toggleElementEventListeners(true);
       this._updateTriggerElements();
       this._toggleTriggerElementEventListeners(true);
-      window.addEventListener('resize', this._onWindowResize);
     }
     deinit() {
       this.element.parentNode.removeChild(this.element);
       this._toggleContextMutationObserver(false);
       this._toggleElementEventListeners(false);
       this._toggleTriggerElementEventListeners(false);
-      window.removeEventListener('resize', this._onWindowResize);
     }
     performSleep({ triggerElement, event }) {
       if (this._state === 'asleep' || this._state === 'sleeping') {
@@ -186,10 +185,6 @@
       this.performSleep({ triggerElement, event });
     }
     _onWindowResize(event) {
-      const delay = 300;
-      const now = Date.now();
-      if (this._ran && now < this._ran + delay) { return; }
-      this._ran = now;
       this._updateMetrics();
     }
     _renderElement() {
@@ -273,11 +268,9 @@
           this._toggleElementPositionTransition(false);
         }, 0);
       } else if (state.name === 'sleeping') {
-        clearTimeout(state.wakeCountdown);
-        state.wakeCountdown = null;
+        this.setTimeout('_wakeCountdown', null);
       } else if (state.name === 'waking') {
-        clearTimeout(state.sleepCountdown);
-        state.sleepCountdown = null;
+        this.setTimeout('_sleepCountdown', null);
       }
     }
     _updateTriggerAnchoring(triggerElement) {
