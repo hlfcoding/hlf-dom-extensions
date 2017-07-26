@@ -130,7 +130,10 @@
     //
     toggleItemExpansion(itemElement, expanded, completion) {
       if (typeof expanded === 'undefined') {
-        expanded = !itemElement.classList.contains(this.className('expanded'));
+        expanded = !(
+          itemElement.classList.contains(this.className('expanded')) ||
+          itemElement.classList.contains(this.className('expanding'))
+        );
       }
       let index = this.itemElements.indexOf(itemElement);
       if (expanded) {
@@ -145,15 +148,22 @@
         }
       }
       this._toggleNeighborItemsRecessed(index, expanded);
-      itemElement.classList.add(this.className('transitioning'));
+      itemElement.classList.remove(
+        this.className('expanding'), this.className('contracting')
+      );
+      let classNames = [
+        this.className('transitioning'),
+        this.className(expanded ? 'expanding' : 'contracting')
+      ];
+      itemElement.classList.add(...classNames);
       this.setElementTimeout(itemElement, 'expand-timeout', this.expandDuration, () => {
-        itemElement.classList.remove(this.className('transitioning'));
+        itemElement.classList.remove(...classNames);
+        itemElement.classList.toggle(this.className('expanded'), expanded);
         if (completion) {
           completion();
         }
       });
 
-      itemElement.classList.toggle(this.className('expanded'), expanded);
       this.expandedItemElement = expanded ? itemElement : null;
 
       itemElement.dispatchEvent(this.createCustomEvent('expand', { expanded }));

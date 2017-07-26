@@ -89,7 +89,6 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
   color: var(--mg-item-stroke-color);
   flex-basis: var(--mg-item-width);
   flex-shrink: 0;
-  height: var(--mg-item-height);
   margin-bottom: var(--mg-gutter-size);
   margin-right: var(--mg-gutter-size);
   overflow: hidden;
@@ -101,7 +100,38 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
     transform var(--mg-item-transition),
     width var(--mg-item-transition),
     opacity var(--mg-fade-duration) ease-in-out;
+}
+.js-mg-item.js-mg-contracting,
+.js-mg-item:not(.js-mg-expanding) {
+  height: var(--mg-item-height);
   width: var(--mg-item-width);
+}
+.js-mg-item.js-mg-expanding,
+.js-mg-item.js-mg-expanded:not(.js-mg-contracting) {
+  height: calc(var(--mg-item-height) * var(--mg-item-expanded-scale) + var(--mg-gutter-size));
+  width: calc(var(--mg-item-width) * var(--mg-item-expanded-scale) + var(--mg-gutter-size));
+}
+.js-mg-item.js-mg-transitioning,
+.js-mg-item.js-mg-expanded:not(.js-mg-transitioning) {
+  z-index: 10;
+}
+.js-mg-item.js-mg-transitioning.js-mg-focused,
+.js-mg-item.js-mg-expanded:not(.js-mg-transitioning).js-mg-focused {
+  z-index: 11;
+}
+.js-mg-dimmed > .js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded) {
+  opacity: 0.3;
+}
+.js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded):hover {
+  background: var(--mg-item-stroke-color);
+  color: var(--mg-item-fill-color);
+}
+.js-mg-item.js-mg-recessed {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.js-mg-item.js-mg-raw {
+  display: none;
 }
 .js-mg-item > .mg-preview,
 .js-mg-item > .mg-detail {
@@ -116,47 +146,26 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
 .js-mg-item > .mg-detail > img:first-child {
   width: 100%;
 }
-.js-mg-item.js-mg-expanded:not(.js-mg-transitioning) > .mg-detail,
-.js-mg-item:not(.js-mg-transitioning) > .mg-preview {
+.js-mg-item.js-mg-expanded:not(.js-mg-contracting) > .mg-detail,
+.js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded) > .mg-preview {
   display: block;
 }
-.js-mg-item.js-mg-expanded:not(.js-mg-transitioning) > .mg-preview,
-.js-mg-item:not(.js-mg-transitioning) > .mg-detail {
+.js-mg-item.js-mg-expanded:not(.js-mg-contracting) > .mg-preview,
+.js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded) > .mg-detail {
   display: none;
+  opacity: 0;
 }
-.js-mg-item.js-mg-expanded > .mg-detail,
-.js-mg-item > .mg-preview {
+.js-mg-item.js-mg-transitioning > .mg-preview,
+.js-mg-item.js-mg-transitioning > .mg-detail {
+  display: block;
+}
+.js-mg-item.js-mg-contracting > .mg-detail,
+.js-mg-item.js-mg-expanding > .mg-preview {
+  opacity: 0;
+}
+.js-mg-item.js-mg-contracting > .mg-preview,
+.js-mg-item.js-mg-expanding > .mg-detail {
   opacity: 1;
-}
-.js-mg-item.js-mg-expanded > .mg-preview,
-.js-mg-item > .mg-detail {
-  opacity: 0;
-}
-.js-mg-item:not(.js-mg-expanded):not(.js-mg-transitioning):hover {
-  background: var(--mg-item-stroke-color);
-  color: var(--mg-item-fill-color);
-}
-.js-mg-item.js-mg-transitioning,
-.js-mg-item.js-mg-expanded {
-  z-index: 10;
-}
-.js-mg-item.js-mg-transitioning.js-mg-focused,
-.js-mg-item.js-mg-expanded.js-mg-focused {
-  z-index: 11;
-}
-.js-mg-item.js-mg-expanded {
-  height: calc(var(--mg-item-height) * var(--mg-item-expanded-scale) + var(--mg-gutter-size));
-  width: calc(var(--mg-item-width) * var(--mg-item-expanded-scale) + var(--mg-gutter-size));
-}
-.js-mg-dimmed > .js-mg-item:not(.js-mg-expanded):not(.js-mg-transitioning) {
-  opacity: 0.3;
-}
-.js-mg-item.js-mg-recessed {
-  opacity: 0;
-  transform: scale(0.9);
-}
-.js-mg-item.js-mg-raw {
-  display: none;
 }
 
 .mg-theme-folio {
@@ -174,8 +183,8 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
 }
 .mg-theme-folio .js-mg-item p {
   transition:
-    opacity 0.2s ease-out,
-    transform 0.2s ease-in-out 0.1s;
+    opacity var(--mg-fade-duration) ease-out,
+    transform var(--mg-fade-duration) ease-in-out;
 }
 .mg-theme-folio .js-mg-item.js-mg-transitioning p {
   transform: translateY(20%);
@@ -198,13 +207,16 @@ Its element's DOM can look like (especially if using `mg-theme-folio`):
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings {
+.mg-theme-folio .js-mg-item.js-mg-transitioning .mg-headings,
+.mg-theme-folio .js-mg-item.js-mg-expanded:not(.js-mg-transitioning) .mg-headings {
   display: flex;
 }
-.mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings > .mg-title {
+.mg-theme-folio .js-mg-item.js-mg-transitioning .mg-headings > .mg-title,
+.mg-theme-folio .js-mg-item.js-mg-expanded:not(.js-mg-transitioning) .mg-headings > .mg-title {
   flex-grow: 1;
 }
-.mg-theme-folio .js-mg-item.js-mg-expanded .mg-headings > .mg-date {
+.mg-theme-folio .js-mg-item.js-mg-transitioning .mg-headings > .mg-date,
+.mg-theme-folio .js-mg-item.js-mg-expanded:not(.js-mg-transitioning) .mg-headings > .mg-date {
   margin-left: 1em;
   white-space: nowrap;
 }
