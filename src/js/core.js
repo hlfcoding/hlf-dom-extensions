@@ -400,6 +400,9 @@
         eventName(name) {
           return `${namespace.toString('event')}${name}`;
         },
+        varName(name) {
+          return `--${namespace.toString('var')}-${name}`;
+        },
       };
       Object.assign(methods, naming);
       Object.assign(namespace, naming);
@@ -447,8 +450,7 @@
         },
         cssVariable(name, element) {
           if (!element) { element = this.rootElement; }
-          return getComputedStyle(element)
-            .getPropertyValue(`--${namespace.toString('class')}-${name}`);
+          return getComputedStyle(element).getPropertyValue(this.varName(name));
         }
       });
     }

@@ -180,7 +180,7 @@
     });
 
     test('naming methods', function(assert) {
-      const methodNames = ['attrName', 'className', 'eventName'];
+      const methodNames = ['attrName', 'className', 'eventName', 'varName'];
       this.createTestExtension();
       this.someExtension = this.extension(this.someElement);
       let instance = this.someExtension();
@@ -195,6 +195,8 @@
         'className namespaces class names correctly.');
       assert.equal(instance.eventName('someevent'), 'sesomeevent',
         'eventName namespaces event names correctly.');
+      assert.equal(instance.varName('some-var'), '--se-some-var',
+        'varName namespaces CSS var names correctly.');
     });
 
     test('timeout methods', function(assert) {

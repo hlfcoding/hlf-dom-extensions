@@ -61,6 +61,7 @@
         case 'event': return 'hlfmg';
         case 'data': return 'hlf-mg';
         case 'class': return 'mg';
+        case 'var': return 'mg';
         default: return 'hlf-mg';
       }
     },
