@@ -496,11 +496,13 @@
     }
     if (groups.indexOf('selection') !== -1) {
       Object.assign(methods, {
-        selectByClass(name) {
-          return this.rootElement.querySelector(`.${this.className(name)}`);
+        selectByClass(name, element) {
+          if (!element) { element = this.rootElement; }
+          return element.querySelector(`.${this.className(name)}`);
         },
-        selectAllByClass(name) {
-          return this.rootElement.querySelectorAll(`.${this.className(name)}`);
+        selectAllByClass(name, element) {
+          if (!element) { element = this.rootElement; }
+          return element.querySelectorAll(`.${this.className(name)}`);
         },
         selectToProperties() {
           if (!this.rootElement || !this.selectors) {
