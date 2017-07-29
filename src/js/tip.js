@@ -117,7 +117,7 @@
       let triggerElement = this._currentTriggerElement;
       if (!triggerElement) { return; }
       let eventName = (() => {
-        switch (this._state.name) {
+        switch (this._state) {
           case 'asleep': return 'hidden';
           case 'awake': return 'shown';
           case 'sleeping': return 'hide';
@@ -251,25 +251,24 @@
         right: innerWidth,
       };
     }
-    _updateState(name) {
-      let state = this._state;
-      if (name === state.name) { return; }
-      state.name = name;
-      this.debugLog(name);
+    _updateState(state) {
+      if (state === this._state) { return; }
+      this._state = state;
+      this.debugLog(state);
 
       this._dispatchStateEvent();
-      if (state.name === 'asleep' || state.name === 'awake') {
+      if (this._state === 'asleep' || this._state === 'awake') {
         if (this._currentTriggerElement) {
           this._currentTriggerElement.setAttribute(
-            this.attrName('has-tip-focus'), state.name === 'awake'
+            this.attrName('has-tip-focus'), this._state === 'awake'
           );
         }
         setTimeout(() => {
           this._toggleElementPositionTransition(false);
         }, 0);
-      } else if (state.name === 'sleeping') {
+      } else if (this._state === 'sleeping') {
         this.setTimeout('_wakeCountdown', null);
-      } else if (state.name === 'waking') {
+      } else if (this._state === 'waking') {
         this.setTimeout('_sleepCountdown', null);
       }
     }
