@@ -148,6 +148,18 @@
       }
       return size;
     }
+    _getStemSize() {
+      let size = this.element.getAttribute(this.attrName('stem-size'));
+      if (size != null) { return size; }
+
+      let stemElement = this.selectByClass('stem', this.element);
+      return this._withStealthRender(() => {
+        let margin = getComputedStyle(stemElement).margin.replace(/0px/g, '');
+        size = Math.abs(parseInt(margin));
+        this.element.setAttribute(this.attrName('stem-size'), size);
+        return size;
+      });
+    }
     _getTriggerOffset(triggerElement) {
       if (getComputedStyle(triggerElement).position === 'fixed') {
         let { left, top } = triggerElement.getBoundingClientRect();
