@@ -170,6 +170,18 @@
         };
       }
     }
+    _isTriggerDirection(directionComponent, triggerElement) {
+      if (this.element.classList.contains(this.className(directionComponent))) {
+        return true;
+      }
+      if (
+        (!triggerElement || !triggerElement.hasAttribute(this.attrName('direction'))) &&
+        this.defaultDirection.indexOf(directionComponent) !== -1
+      ) {
+        return true;
+      }
+      return false;
+    }
     _onContextMutation(mutations) {
       let triggerElements = [];
       mutations
