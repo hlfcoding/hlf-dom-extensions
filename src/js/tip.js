@@ -131,9 +131,8 @@
         height: triggerElement.getAttribute(this.attrName('height')),
         width: triggerElement.getAttribute(this.attrName('width')),
       };
-      let contentElement = this.selectByClass('content', this.element);
       if (!size.height || !size.width) {
-        contentElement.textContent = triggerElement.getAttribute(this.attrName('content'));
+        this._updateElementContent(triggerElement);
         this._withStealthRender(() => {
           triggerElement.setAttribute(this.attrName('height')
             (size.height = this.element.offsetHeight));
@@ -143,7 +142,7 @@
       }
       if (contentOnly) {
         const { paddingTop, paddingLeft, paddingBottom, paddingRight } =
-          getComputedStyle(contentElement);
+          getComputedStyle(this._contentElement);
         size.height -= parseFloat(paddingTop) + parseFloat(paddingBottom);
         size.width -= parseFloat(paddingLeft) + parseFloat(paddingRight);
       }
@@ -196,8 +195,8 @@
         containerClass: `${this.className('tip')} ${this.className('follow')} ${directionClass}`,
       });
 
-      let contentElement = this.element.querySelector(this.className('content'));
-      contentElement.style.transition = 'width 0.3s ease-in-out, height 0.3s ease-in-out';
+      this._contentElement = this.selectByClass('content', this.element);
+      this._contentElement.style.transition = 'width 0.3s ease-in-out, height 0.3s ease-in-out';
 
       this.viewportElement.insertBefore(this.element, this.viewportElement.firstChild);
     }
@@ -228,6 +227,10 @@
       this.element.style.transition = toggled ? 'transform 0.1s linear' : '';
     }
     _toggleTriggerElementEventListeners(on) {
+    }
+    _updateElementContent(triggerElement) {
+      const content = triggerElement.getAttribute(this.attrName('content'));
+      this._contentElement.textContent = content;
     }
     _updateElementPosition(triggerElement, mouseEvent) {
     }
