@@ -123,7 +123,7 @@
           case 'sleeping': return 'hide';
           case 'waking': return 'show';
         }
-      }());
+      })();
       triggerElement.dispatchEvent(this.createCustomEvent(eventName));
     }
     _getElementSize(triggerElement, { contentOnly } = {}) {
