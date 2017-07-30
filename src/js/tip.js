@@ -4,7 +4,7 @@
   } else if (typeof exports === 'object') {
     module.exports = attach(require('hlf/core'), require('hlf/hover-intent'));
   } else {
-    attach(hlf);
+    attach(hlf, hlf.hoverIntent.extension);
   }
 })(this, function(hlf, hoverIntent) {
   hlf.tip = {
