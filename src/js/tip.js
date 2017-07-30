@@ -126,7 +126,7 @@
       }());
       triggerElement.dispatchEvent(this.createCustomEvent(eventName));
     }
-    _getElementSize(triggerElement, contentOnly = false) {
+    _getElementSize(triggerElement, { contentOnly } = {}) {
       let size = {
         height: triggerElement.getAttribute(this.attrName('height')),
         width: triggerElement.getAttribute(this.attrName('width')),
@@ -235,6 +235,23 @@
     _updateElementPosition(triggerElement, mouseEvent) {
     }
     _updateCurrentTriggerElement(triggerElement) {
+      if (triggerElement == this._currentTriggerElement) { return; }
+
+      this._updateElementContent(triggerElement);
+      let contentSize = this._getElementSize(triggerElement, { contentOnly: true });
+      this._contentElement.style.height = contentSize.height;
+      this._contentElement.style.width = contentSize.width + 1; // Give some buffer.
+
+      let compoundDirection = triggerElement.hasAttribute(this.attrName('direction')) ?
+        triggerElement.getAttribute(this.attrName('direction')).split(' ') :
+        this.defaultDirection;
+      this.debugLog('update direction class', compoundDirection);
+      let directionsClassNames = ['top', 'bottom', 'right', 'left'].map(this.className);
+      this.element.classList.remove(...directionsClassNames);
+      let directionClassNames = compoundDirection.map(this.className);
+      this.element.classList.add(...directionClassNames);
+
+      this._currentTriggerElement = triggerElement;
     }
     _updateMetrics() {
       let { viewportElement } = this;
