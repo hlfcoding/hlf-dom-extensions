@@ -193,7 +193,7 @@
           );
         });
       this._updateTriggerElements(triggerElements);
-      this.triggerElements = this.triggerElements.concat(triggerElements);
+      this.elements = this.elements.concat(triggerElements);
     }
     _onElementMouseEnter(event) {
       this.debugLog('enter tip');
@@ -393,7 +393,7 @@
     }
     _updateTriggerElements(triggerElements) {
       if (!triggerElements) {
-        triggerElements = this.triggerElements;
+        triggerElements = this.elements;
       }
       triggerElements.forEach((triggerElement) => {
         triggerElement.classList.add(this.className('trigger'));
