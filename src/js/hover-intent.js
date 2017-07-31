@@ -124,7 +124,7 @@
     }
     _onMouseOver(event) {
       if (this.intentional) { return; }
-      if (event.target !== this.element) { return; }
+      if (event.target !== this.rootElement) { return; }
       if (this._timeout) { return; }
       this.debugLog('setup');
       let { mouse: { x, y } } = this;
