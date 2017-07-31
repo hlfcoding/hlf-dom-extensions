@@ -134,9 +134,9 @@
       if (!size.height || !size.width) {
         this._updateElementContent(triggerElement);
         this._withStealthRender(() => {
-          triggerElement.setAttribute(this.attrName('height')
+          triggerElement.setAttribute(this.attrName('height'),
             (size.height = this.element.offsetHeight));
-          triggerElement.setAttribute(this.attrName('width')
+          triggerElement.setAttribute(this.attrName('width'),
             (size.width = this.element.offsetWidth));
         });
       }
