@@ -1,4 +1,15 @@
+//
+// HLF Tip Extension
+// =================
+// [Styles](../css/tip.html) | [Tests](../../tests/js/tip.html)
+//
 (function(root, attach) {
+  //
+  // § __UMD__
+  // - When AMD, register the attacher as an anonymous module.
+  // - When Node or Browserify, set module exports to the attach result.
+  // - When browser globals (root is window), Just run the attach function.
+  //
   if (typeof define === 'function' && define.amd) {
     define(['hlf/core', 'hlf/hover-intent'], attach);
   } else if (typeof exports === 'object') {
@@ -7,6 +18,10 @@
     attach(hlf, hlf.hoverIntent.extension);
   }
 })(this, function(hlf, hoverIntent) {
+  //
+  // Namespace
+  // ---------
+  //
   hlf.tip = {
     debug: true,
     defaults: {
@@ -45,6 +60,10 @@
       }
     },
   };
+  //
+  // Tip
+  // ---
+  //
   class Tip {
     constructor(elements, options, contextElement) {
       this._bounds = null;
@@ -70,6 +89,9 @@
       this._toggleElementEventListeners(false);
       this._toggleTriggerElementEventListeners(false);
     }
+    //
+    // § __Public__
+    //
     performSleep({ triggerElement, event }) {
       if (this._state === 'asleep' || this._state === 'sleeping') {
         return;
@@ -112,6 +134,9 @@
         this.setTimeout('_wakeCountdown', 200, wake);
       }
     }
+    //
+    // § __Internal__
+    //
     _dispatchStateEvent() {
       if (!this.doDispatchEvents) { return; }
       let triggerElement = this._currentTriggerElement;
@@ -414,6 +439,9 @@
       return result;
     }
   }
+  //
+  // § __Attaching__
+  //
   return hlf.createExtension({
     name: 'tip',
     namespace: hlf.tip,
