@@ -19,8 +19,8 @@
         return (
 `<p>
   <a class="trigger" title="link details" href="javascript:">tooltip trigger</a> &middot;
-  <a class="trigger" title="${placeholderText.short} %>" href="javascript:">tooltip trigger</a> &middot;
-  <a class="trigger" title="${placeholderText.long} %>" href="javascript:">tooltip trigger</a>
+  <a class="trigger" title="${placeholderText.short}" href="javascript:">tooltip trigger</a> &middot;
+  <a class="trigger" title="${placeholderText.long}" href="javascript:">tooltip trigger</a>
 </p>`
         );
       },
