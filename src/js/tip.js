@@ -74,6 +74,10 @@
       this._wakeCountdown = null;
     }
     init() {
+      if (!this.snapToTrigger) {
+        this.snapToTrigger = this.snapToXAxis || this.snapToYAxis;
+        this._offsetStart = null;
+      }
       this.element = document.createElement('div');
       this._updateState('asleep');
       this._currentTriggerElement = null;
@@ -248,6 +252,16 @@
       this._contentElement.style.transition = 'width 0.3s ease-in-out, height 0.3s ease-in-out';
 
       this.viewportElement.insertBefore(this.element, this.viewportElement.firstChild);
+
+      if (this.snapToTrigger) {
+        let snapClassNames = ['snap-trigger'];
+        if (this.snapToXAxis) {
+          snapClassNames.push('snap-x-side');
+        } else if (this.snapToYAxis) {
+          snapClassNames.push('snap-y-side');
+        }
+        this.element.classList.add(...(snapClassNames.map(this.className)));
+      }
     }
     _toggleContextMutationObserver(on) {
       if (!this._contextObserver) {
