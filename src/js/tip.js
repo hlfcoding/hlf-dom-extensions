@@ -277,25 +277,6 @@
     }
     _toggleTriggerElementEventListeners(on) {
     }
-    _updateElementContent(triggerElement) {
-      const content = triggerElement.getAttribute(this.attrName('content'));
-      this._contentElement.textContent = content;
-    }
-    _updateElementPosition(triggerElement, mouseEvent) {
-      let offset = { top: mouseEvent.pageX, left: mouseEvent.pageY };
-      if (this._isTriggerDirection('top', triggerElement)) {
-        offset.top -= this.element.offsetHeight + this._getStemSize();
-      } else if (this._isTriggerDirection('bottom', triggerElement)) {
-        offset.top -= this.cursorHeight + this._getStemSize();
-      }
-      if (this._isTriggerDirection('left', triggerElement)) {
-        offset.left -= this.element.offsetWidth;
-        if (this.element.offsetWidth > triggerElement.offsetWidth) {
-          offset.left += triggerElement.offsetWidth;
-        }
-      }
-      this.element.style.transform = `translate(${offset.left}px, ${offset.top}px)`;
-    }
     _updateCurrentTriggerElement(triggerElement) {
       if (triggerElement == this._currentTriggerElement) { return; }
 
@@ -314,6 +295,25 @@
       this.element.classList.add(...directionClassNames);
 
       this._currentTriggerElement = triggerElement;
+    }
+    _updateElementContent(triggerElement) {
+      const content = triggerElement.getAttribute(this.attrName('content'));
+      this._contentElement.textContent = content;
+    }
+    _updateElementPosition(triggerElement, mouseEvent) {
+      let offset = { top: mouseEvent.pageX, left: mouseEvent.pageY };
+      if (this._isTriggerDirection('top', triggerElement)) {
+        offset.top -= this.element.offsetHeight + this._getStemSize();
+      } else if (this._isTriggerDirection('bottom', triggerElement)) {
+        offset.top -= this.cursorHeight + this._getStemSize();
+      }
+      if (this._isTriggerDirection('left', triggerElement)) {
+        offset.left -= this.element.offsetWidth;
+        if (this.element.offsetWidth > triggerElement.offsetWidth) {
+          offset.left += triggerElement.offsetWidth;
+        }
+      }
+      this.element.style.transform = `translate(${offset.left}px, ${offset.top}px)`;
     }
     _updateMetrics() {
       let { viewportElement } = this;
