@@ -67,9 +67,7 @@
   class Tip {
     constructor(elements, options, contextElement) {
       this._bounds = null;
-      this._state = {
-        name: null,
-      };
+      this._state = null;
       this._sleepCountdown = null;
       this._wakeCountdown = null;
     }
