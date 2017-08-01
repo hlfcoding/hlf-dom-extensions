@@ -313,11 +313,41 @@
       this._contentElement.textContent = content;
     }
     _updateElementPosition(triggerElement, mouseEvent) {
+      let cursorHeight = this.snapToTrigger ? 0 : this.cursorHeight;
       let offset = { top: mouseEvent.pageX, left: mouseEvent.pageY };
+
+      if (this.snapToTrigger) {
+        this.debugLog(offset);
+        // Note vertical directions already account for stem-size.
+        if (this.snapToXAxis) {
+          if (this._isTriggerDirection('bottom', triggerElement)) {
+            offset.top += triggerElement.offsetHeight;
+          }
+          if (!this.snapToYAxis) {
+            // Note arbitrary buffer offset.
+            offset.left -= this.element.offsetWidth / 2;
+          }
+        }
+        if (this.snapToYAxis) {
+          if (this._isTriggerDirection('right', triggerElement)) {
+            offset.left += triggerElement.offsetWidth + this._getStemSize();
+          } else if (this._isTriggerDirection('left', triggerElement)) {
+            offset.left -= this._getStemSize();
+          }
+          if (!this.snapToXAxis) {
+            offset.top -= this.element.offsetHeight / 2 - this._getStemSize();
+          }
+        }
+        let toTriggerOnly = !this.snapToXAxis && !this.snapToYAxis;
+        if (toTriggerOnly && this._isTriggerDirection('bottom', triggerElement)) {
+          offset.top += triggerElement.offsetHeight;
+        }
+      }
+
       if (this._isTriggerDirection('top', triggerElement)) {
         offset.top -= this.element.offsetHeight + this._getStemSize();
       } else if (this._isTriggerDirection('bottom', triggerElement)) {
-        offset.top -= this.cursorHeight + this._getStemSize();
+        offset.top -= cursorHeight + this._getStemSize();
       }
       if (this._isTriggerDirection('left', triggerElement)) {
         offset.left -= this.element.offsetWidth;
