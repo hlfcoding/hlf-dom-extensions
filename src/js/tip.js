@@ -356,6 +356,10 @@
         }
       }
       this.element.style.transform = `translate(${offset.left}px, ${offset.top}px)`;
+
+      if (this.snapToTrigger) {
+        element.style.visibility = 'hidden';
+      }
     }
     _updateMetrics() {
       let { viewportElement } = this;
@@ -375,7 +379,7 @@
         right: innerWidth,
       };
     }
-    _updateState(state) {
+    _updateState(state, { event } = {}) {
       if (state === this._state) { return; }
       this._state = state;
       this.debugLog(state);
@@ -390,6 +394,10 @@
         setTimeout(() => {
           this._toggleElementPositionTransition(false);
         }, 0);
+        if (this.snapToTrigger && this._state === 'awake') {
+          this.element.style.visibility = 'visible';
+          this._offsetStart = { left: event.pageX, top: event.pageY };
+        }
       } else if (this._state === 'sleeping') {
         this.setTimeout('_wakeCountdown', null);
       } else if (this._state === 'waking') {
