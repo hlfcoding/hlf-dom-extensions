@@ -80,7 +80,7 @@
   // a `leave` event will too during `_onMouseLeave`.
   //
   class HoverIntent {
-    constructor(element, options) {
+    constructor(elementOrElements, options, contextElement) {
       this.eventListeners = {
         'mouseleave': this._onMouseLeave,
         'mousemove': this._onMouseMove,
@@ -102,12 +102,15 @@
       this.dispatchCustomEvent(type, {
         pageX: x.current,
         pageY: y.current,
-        relatedTarget: mouseEvent.relatedTarget,
+        relatedTarget: mouseEvent.target,
       });
       this.debugLog(type, x.current, y.current, Date.now() % 100000);
     }
     _onMouseLeave(event) {
       if (this.intentional) {
+        if (this.contextElement) {
+          if (Array.from(this.elements).indexOf(event.target) === -1) { return; }
+        }
         this.debugLog('teardown');
         this._dispatchHoverEvent(false, event);
       }
@@ -124,7 +127,11 @@
     }
     _onMouseOver(event) {
       if (this.intentional) { return; }
-      if (event.target !== this.rootElement) { return; }
+      if (this.contextElement) {
+        if (Array.from(this.elements).indexOf(event.target) === -1) { return; }
+      } else {
+        if (event.target !== this.rootElement) { return; }
+      }
       if (this._timeout) { return; }
       this.debugLog('setup');
       let { mouse: { x, y } } = this;
