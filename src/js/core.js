@@ -85,7 +85,7 @@
     }
     const { attrName } = baseMethods;
 
-    const { asSharedInstance, compactOptions } = args;
+    const { compactOptions } = args;
     let idCounter = 0;
     let instances = {};
 
@@ -103,7 +103,7 @@
     // if there is a extension instance and no arguments are provided we assume
     // the call is to access the instance, not reset it.
     //
-    // Otherwise if the instance exists, it is returned. __asSharedInstance__
+    // Otherwise if the instance exists, it is returned. __contextElement__
     // will decide what the extension instance's main element will be. The idea
     // is several elements all share the same extension instance.
     //
@@ -112,7 +112,6 @@
     //
     function extension(subject, ...args) {
       let { action, options, contextElement } = extension._parseArguments(args);
-      contextElement = contextElement || document.body;
 
       if (action) {
         extension._dispatchAction(action, subject);
@@ -128,7 +127,7 @@
         instances = {};
       }
 
-      let finalSubject = asSharedInstance ? contextElement : subject;
+      let finalSubject = contextElement || subject;
       options = Object.assign({}, defaults, options);
       optionGroupNames.forEach((name) => {
         options[name] = Object.assign({}, defaults[name], options[name]);
@@ -196,7 +195,7 @@
           elements = subject;
         }
         let attrOptions;
-        let rootElement = asSharedInstance ? contextElement : element;
+        let rootElement = contextElement || element;
         if (rootElement.hasAttribute(attrName())) {
           try {
             attrOptions = JSON.parse(element.getAttribute(attrName()));

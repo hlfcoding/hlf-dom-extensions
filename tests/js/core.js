@@ -274,11 +274,9 @@
         'cssDuration returns converted duration on given element if any.');
     });
 
-    test('asSharedInstance option', function(assert) {
-      this.createTestExtension({
-        createOptions: { asSharedInstance: true },
-      });
+    test('as shared instance', function(assert) {
       this.createSomeChildElement();
+      this.createTestExtension();
       this.someExtension = this.extension(this.someElement.children, this.someElement);
       let instance = this.someExtension();
       assert.equal(instance.elements, this.someElement.children,
