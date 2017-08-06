@@ -24,10 +24,10 @@
     const { eventName } = hlf.hoverIntent;
 
     class Counters {
-      setUp(element, countersInfo) {
+      setUp(testElement, element, countersInfo) {
         Object.keys(countersInfo).map(key => countersInfo[key]).forEach((info) => {
           const { selector, eventName } = info;
-          let counterElement = element.querySelector(selector);
+          let counterElement = testElement.querySelector(selector);
           element.addEventListener(eventName, (event) => {
             counterElement.textContent = parseInt(counterElement.textContent) + 1;
           });
@@ -72,20 +72,47 @@
         });
       },
       test(testElement, { counters }) {
-        let contextElement = testElement.querySelector('.box');
-        let element = contextElement.querySelector('dl');
-        hoverIntent(element, contextElement);
-        counters.setUp(contextElement, {
+        let element = testElement.querySelector('.box');
+        hoverIntent(element);
+        counters.setUp(testElement, element, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },
-        });
-        counters.setUp(element, {
           rawEnter: { selector: '.raw-enter-counter', eventName: 'mouseover' },
           rawLeave: { selector: '.raw-leave-counter', eventName: 'mouseleave' },
         });
       },
       anchorName: 'default',
       className: 'default-call',
+      vars: {
+        counters: new Counters(),
+      },
+    }));
+    tests.push(createVisualTest({
+      label: 'as shared instance',
+      template({ counters }) {
+        return (
+`<ul class="list">
+  <li class="item">trigger</li>
+  <li class="item">trigger</li>
+  <li class="item">trigger</li>
+</ul>
+<div class="box">
+  ${counters.template()}
+</div>`
+        );
+      },
+      test(testElement, { counters }) {
+        let contextElement = testElement.querySelector('.list');
+        hoverIntent(contextElement.querySelector('.item'), contextElement);
+        counters.setUp(testElement, contextElement, {
+          enter: { selector: '.enter-counter', eventName: eventName('enter') },
+          leave: { selector: '.leave-counter', eventName: eventName('leave') },
+          rawEnter: { selector: '.raw-enter-counter', eventName: 'mouseover' },
+          rawLeave: { selector: '.raw-leave-counter', eventName: 'mouseleave' },
+        });
+      },
+      anchorName: 'as-shared-instance',
+      className: 'as-shared-instance-call',
       vars: {
         counters: new Counters(),
       },
