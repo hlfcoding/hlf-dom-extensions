@@ -118,6 +118,7 @@
     }
     _onMouseMove(event) {
       if (this._trackTimeout) { return; }
+      if (!this.intentional) { return; }
       this.setTimeout('_trackTimeout', 16, () => {
         this.debugLog('track');
         let { mouse: { x, y } } = this;
