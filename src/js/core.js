@@ -277,10 +277,9 @@
         delete instances[id];
       },
       _deleteInstances() {
-        for (const id in instances) {
-          if (!instances.hasOwnProperty(id)) { continue; }
+        Object.keys(instances).forEach((id) => {
           delete instances[id];
-        }
+        });
       },
       _dispatchAction(action, target) {
         if (target instanceof HTMLElement) {
@@ -455,30 +454,27 @@
     }
     if (groups.indexOf('event') !== -1) {
       let normalizeInfos = function(infos) {
-        for (const type in infos) {
-          if (!infos.hasOwnProperty(type)) { continue; }
-          if (typeof infos[type] !== 'function') { continue; }
+        Object.keys(infos).forEach((type) => {
+          if (typeof infos[type] !== 'function') { return; }
           infos[type] = [infos[type]];
-        }
+        });
       };
       Object.assign(methods, {
         addEventListeners(infos, target) {
           target = target || this.rootElement;
           normalizeInfos(infos);
-          for (const type in infos) {
-            if (!infos.hasOwnProperty(type)) { continue; }
+          Object.keys(infos).forEach((type) => {
             const [handler, options] = infos[type];
             target.addEventListener(type, handler, options);
-          }
+          });
         },
         removeEventListeners(infos, target) {
           target = target || this.rootElement;
           normalizeInfos(infos);
-          for (const type in infos) {
-            if (!infos.hasOwnProperty(type)) { continue; }
+          Object.keys(infos).forEach((type) => {
             const [handler, options] = infos[type];
             target.removeEventListener(type, handler, options);
-          }
+          });
         },
         toggleEventListeners(on, infos, target) {
           this[`${on ? 'add' : 'remove'}EventListeners`](infos, target);
@@ -507,15 +503,14 @@
           if (!this.rootElement || !this.selectors) {
             throw 'Missing requirements.';
           }
-          for (const name in this.selectors) {
-            if (!this.selectors.hasOwnProperty(name)) { continue; }
+          Object.keys(this.selectors).forEach((name) => {
             const selector = this.selectors[name];
             if (name.substr(-1) === 's') {
               this[name] = this.rootElement.querySelectorAll(selector);
             } else {
               this[name] = this.rootElement.querySelector(selector);
             }
-          }
+          });
         },
       });
     }
