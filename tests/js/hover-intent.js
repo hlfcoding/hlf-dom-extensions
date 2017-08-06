@@ -68,9 +68,10 @@
             leaveCounter.textContent = parseInt(leaveCounter.textContent) + 1;
           });
         }
-        let element = testElement.querySelector('.box');
-        hoverIntent(element);
-        setUpCounters(element, {
+        let contextElement = testElement.querySelector('.box');
+        let element = contextElement.querySelector('dl');
+        hoverIntent(element, contextElement);
+        setUpCounters(contextElement, {
           enterCounter: '.enter-counter',
           leaveCounter: '.leave-counter',
           enterEvent: eventName('enter'),
