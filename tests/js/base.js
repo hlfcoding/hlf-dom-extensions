@@ -71,9 +71,9 @@ define(function() {
         testElement.classList.add('visual-test-fragment');
       }
       if (beforeTest) {
-        beforeTest(testElement);
+        beforeTest(testElement, vars);
       }
-      test(testElement);
+      test(testElement, vars);
     };
   }
   Object.assign(createVisualTest, {
