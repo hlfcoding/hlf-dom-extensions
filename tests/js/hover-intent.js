@@ -61,10 +61,8 @@
           leaveCounter = element.querySelector(leaveCounter);
           element.addEventListener(enterEvent, (event) => {
             enterCounter.textContent = parseInt(enterCounter.textContent) + 1;
-            leaveCounter.textContent = 0;
           });
           element.addEventListener(leaveEvent, (event) => {
-            enterCounter.textContent = 0;
             leaveCounter.textContent = parseInt(leaveCounter.textContent) + 1;
           });
         }
