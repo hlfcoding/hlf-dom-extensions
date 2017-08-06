@@ -22,17 +22,35 @@
     let tests = [];
     const { createVisualTest, runVisualTests } = base;
     const { eventName } = hlf.hoverIntent;
-    tests.push(createVisualTest({
-      label: 'by default',
-      template(vars) {
+
+    class Counters {
+      setUp(element, countersInfo) {
+        Object.keys(countersInfo).map(key => countersInfo[key]).forEach((info) => {
+          const { selector, eventName } = info;
+          let counterElement = element.querySelector(selector);
+          element.addEventListener(eventName, (event) => {
+            counterElement.textContent = parseInt(counterElement.textContent) + 1;
+          });
+        });
+      }
+      template() {
         return (
-`<div class="box">
-  <dl>
+  `<dl>
     <dt>enter count:</dt><dd class="enter-counter">0</dd>
     <dt>leave count:</dt><dd class="leave-counter">0</dd>
     <dt>raw-enter count:</dt><dd class="raw-enter-counter">0</dd>
     <dt>raw-leave count:</dt><dd class="raw-leave-counter">0</dd>
-  </dl>
+  </dl>`
+        );
+      }
+    }
+
+    tests.push(createVisualTest({
+      label: 'by default',
+      template({ counters }) {
+        return (
+`<div class="box">
+  ${counters.template()}
 </div>`
         );
       },
@@ -53,38 +71,24 @@
           }
         });
       },
-      test(testElement) {
-        function setUpCounters(element, {
-          enterCounter, leaveCounter, enterEvent, leaveEvent,
-        }) {
-          enterCounter = element.querySelector(enterCounter);
-          leaveCounter = element.querySelector(leaveCounter);
-          element.addEventListener(enterEvent, (event) => {
-            enterCounter.textContent = parseInt(enterCounter.textContent) + 1;
-          });
-          element.addEventListener(leaveEvent, (event) => {
-            leaveCounter.textContent = parseInt(leaveCounter.textContent) + 1;
-          });
-        }
+      test(testElement, { counters }) {
         let contextElement = testElement.querySelector('.box');
         let element = contextElement.querySelector('dl');
         hoverIntent(element, contextElement);
-        setUpCounters(contextElement, {
-          enterCounter: '.enter-counter',
-          leaveCounter: '.leave-counter',
-          enterEvent: eventName('enter'),
-          leaveEvent: eventName('leave'),
+        counters.setUp(contextElement, {
+          enter: { selector: '.enter-counter', eventName: eventName('enter') },
+          leave: { selector: '.leave-counter', eventName: eventName('leave') },
         });
-        setUpCounters(element, {
-          enterCounter: '.raw-enter-counter',
-          leaveCounter: '.raw-leave-counter',
-          enterEvent: 'mouseover',
-          leaveEvent: 'mouseleave',
+        counters.setUp(element, {
+          rawEnter: { selector: '.raw-enter-counter', eventName: 'mouseover' },
+          rawLeave: { selector: '.raw-leave-counter', eventName: 'mouseleave' },
         });
       },
       anchorName: 'default',
       className: 'default-call',
-      vars: {},
+      vars: {
+        counters: new Counters(),
+      },
     }));
     runVisualTests(tests);
   });
