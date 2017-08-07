@@ -287,14 +287,14 @@ other
 .list > a:first-child,
 .list li.no-a:first-child,
 .list li:not(.no-a):first-child > a,
-.list-item-first {
+.list .item:first-child {
   border-top-left-radius: var(--radius-size);
   border-top-right-radius: var(--radius-size);
 }
 .list > a:last-child,
 .list li.no-a:last-child,
 .list li:not(.no-a):last-child > a,
-.list-item-last {
+.list .item:last-child {
   border-bottom-left-radius: var(--radius-size);
   border-bottom-right-radius: var(--radius-size);
   border-bottom-width: var(--line-size);
