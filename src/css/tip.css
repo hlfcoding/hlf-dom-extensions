@@ -35,7 +35,14 @@ Example of the variations of classes on the tip element:
   display: none;
   position: absolute;
 
+  opacity: 0;
+  transition: opacity 0.2s 0.2s;
+
   z-index: var(--tip-z-index);
+}
+
+.js-tip-visible {
+  opacity: 1;
 }
 
 .js-tip-inner {

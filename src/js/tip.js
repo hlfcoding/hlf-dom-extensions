@@ -286,6 +286,11 @@
       }
     }
     _toggleElement(visible, duration, completion) {
+      if (this._toggleAnimation) { return; }
+      const delay = this.cssDuration('transition-delay', this.element);
+      this.element.classList.toggle(this.className('visible'), visible);
+      this.element.style.transitionDuration = `${duration / 1000}s`;
+      this.setTimeout('_toggleAnimation', delay + duration, completion);
     }
     _toggleElementEventListeners(on) {
       this.toggleEventListeners(on, {
