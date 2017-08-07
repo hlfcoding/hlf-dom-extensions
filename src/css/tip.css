@@ -9,21 +9,21 @@ borders, shadows.
 
 The required DOM structure looks like:
 ```html
-<div class="js-tip">
-  <div class="js-tip-inner">
-    <div class="js-tip-stem"></div>
-    <div class="js-tip-content">...</div>
+<div class="js-tips-tip">
+  <div class="js-tips-inner">
+    <div class="js-tips-stem"></div>
+    <div class="js-tips-content">...</div>
   </div>
 </div>
 ```
 
 Example of the variations of classes on the tip element:
 ```html
-<div class="js-tip js-snap-tip js-tip-follow js-tip-bottom js-tip-right js-snap-tip-trigger js-snap-tip-x-side">
+<div class="js-tips js-snap-tip js-tips-follow js-tips-bottom js-tips-right js-tips-snap-trigger js-tips-snap-x-side">
 ```
 */
 
-.js-tip {
+.js-tips-tip {
   --tip-em: 12px;
   --tip-fill-color: #666;
   --tip-text-color: #fff;
@@ -41,25 +41,26 @@ Example of the variations of classes on the tip element:
   z-index: var(--tip-z-index);
 }
 
-.js-tip-visible {
+.js-tips-visible {
+  display: block;
   opacity: 1;
 }
 
-.js-tip-inner {
+.js-tips-inner {
   position: relative;
 
   max-width: var(--tip-max-width);
 }
 
-.js-tip-stem {
+.js-tips-stem {
   background: none;
   border: 0 solid transparent; /* Initial value. */
   height: 0; /* Initial value. */
   position: absolute;
   width: 0; /* Initial value. */
 }
-.js-tip.js-tip-left .js-tip-stem,
-.js-tip.js-tip-left.js-snap-tip-y-side .js-tip-stem {
+.js-tips-tip.js-tips-left .js-tips-stem,
+.js-tips-tip.js-tips-left.js-tips-snap-y-side .js-tips-stem {
   border-left-width: var(--stem-size);
   left: auto;
   margin-bottom: auto; /* Reset. */
@@ -70,8 +71,8 @@ Example of the variations of classes on the tip element:
   border-color: transparent;
   border-left-color: var(--tip-fill-color);
 }
-.js-tip.js-tip-right .js-tip-stem,
-.js-tip.js-tip-right.js-snap-tip-y-side .js-tip-stem {
+.js-tips-tip.js-tips-right .js-tips-stem,
+.js-tips-tip.js-tips-right.js-tips-snap-y-side .js-tips-stem {
   border-right-width: var(--stem-size);
   left: 0;
   margin-bottom: auto; /* Reset. */
@@ -82,8 +83,8 @@ Example of the variations of classes on the tip element:
   border-color: transparent;
   border-right-color: var(--tip-fill-color);
 }
-.js-tip.js-tip-bottom .js-tip-stem,
-.js-tip.js-tip-bottom.js-snap-tip-x-side .js-tip-stem {
+.js-tips-tip.js-tips-bottom .js-tips-stem,
+.js-tips-tip.js-tips-bottom.js-tips-snap-x-side .js-tips-stem {
   border-bottom-width: var(--stem-size);
   bottom: auto;
   margin-left: auto; /* Reset. */
@@ -94,8 +95,8 @@ Example of the variations of classes on the tip element:
   border-color: transparent;
   border-bottom-color: var(--tip-fill-color);
 }
-.js-tip.js-tip-top .js-tip-stem,
-.js-tip.js-tip-top.js-snap-tip-x-side .js-tip-stem {
+.js-tips-tip.js-tips-top .js-tips-stem,
+.js-tips-tip.js-tips-top.js-tips-snap-x-side .js-tips-stem {
   border-top-width: var(--stem-size);
   bottom: 0;
   margin-bottom: calc(var(--stem-size) * -1); /* Positioning. */
@@ -106,14 +107,14 @@ Example of the variations of classes on the tip element:
   border-color: transparent;
   border-top-color: var(--tip-fill-color);
 }
-.js-tip.js-snap-tip-x-side > .js-tip-inner > .js-tip-stem { /* Add specifity. */
+.js-tips-tip.js-tips-snap-x-side > .js-tips-inner > .js-tips-stem { /* Add specifity. */
   border-left-width: var(--stem-size-wide-half);
   border-right-width: var(--stem-size-wide-half);
   left: 50%;
   margin-left: calc(var(--stem-size-wide-half) * -1);
   margin-right: auto;
 }
-.js-tip.js-snap-tip-y-side > .js-tip-inner > .js-tip-stem { /* Add specifity. */
+.js-tips-tip.js-tips-snap-y-side > .js-tips-inner > .js-tips-stem { /* Add specifity. */
   border-top-width: var(--stem-size-wide-half);
   border-bottom-width: var(--stem-size-wide-half);
   margin-bottom: auto;
@@ -121,7 +122,7 @@ Example of the variations of classes on the tip element:
   top: 50%;
 }
 
-.js-tip-content {
+.js-tips-content {
   overflow: hidden;
   position: relative;
 
