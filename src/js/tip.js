@@ -99,8 +99,8 @@
         return;
       }
       this._updateState('sleeping', { event });
-      this.setTimeout('_sleepCountdown', 200, () => {
-        this._toggleElement(false, 200, () => {
+      this.setTimeout('_sleepCountdown', this._getElementTransitionDuration, () => {
+        this._toggleElement(false, null, () => {
           this._updateState('asleep', { event });
         });
       });
@@ -119,9 +119,6 @@
         return;
       }
       const wake = (duration) => {
-        if (duration == null) {
-          duration = 200;
-        }
         this._updateElementPosition(triggerElement, event);
         this._toggleElement(true, duration, () => {
           this._updateState('awake', { event });
@@ -133,7 +130,7 @@
         wake(0);
       } else if (event && event.type === hlf.hoverIntent.eventName('enter')) {
         this._updateState('waking', { event });
-        this.setTimeout('_wakeCountdown', 200, wake);
+        this.setTimeout('_wakeCountdown', this._getElementTransitionDuration(), wake);
       }
     }
     //
@@ -174,6 +171,9 @@
         size.width -= parseFloat(paddingLeft) + parseFloat(paddingRight);
       }
       return size;
+    }
+    _getElementTransitionDuration() {
+      return this.cssDuration('transition-duration', this.element);
     }
     _getStemSize() {
       let size = this.element.getAttribute(this.attrName('stem-size'));
@@ -288,8 +288,13 @@
     _toggleElement(visible, duration, completion) {
       if (this._toggleAnimation) { return; }
       const delay = this.cssDuration('transition-delay', this.element);
+      if (duration == null) {
+        this.element.style.transitionDuration = duration;
+        duration = this.cssDuration('transition-duration', this.element);
+      } else {
+        this.element.style.transitionDuration = `${duration / 1000}s`;
+      }
       this.element.classList.toggle(this.className('visible'), visible);
-      this.element.style.transitionDuration = `${duration / 1000}s`;
       this.setTimeout('_toggleAnimation', delay + duration, completion);
     }
     _toggleElementEventListeners(on) {
