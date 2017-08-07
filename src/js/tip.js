@@ -235,10 +235,13 @@
       this.performSleep({ triggerElement, event });
     }
     _onTriggerElementMouseEnter(event) {
+      this.performWake({ triggerElement: event.relatedTarget, event });
     }
     _onTriggerElementMouseLeave(event) {
+      this.performSleep({ triggerElement: event.relatedTarget, event });
     }
     _onTriggerElementMouseMove(event) {
+      this.performWake({ triggerElement: event.relatedTarget, event });
     }
     _onWindowResize(event) {
       this._updateMetrics();
@@ -420,6 +423,9 @@
         }
       } else if (this._state === 'sleeping') {
         this.setTimeout('_wakeCountdown', null);
+        if (this.snapToTrigger) {
+          this._offsetStart = null;
+        }
       } else if (this._state === 'waking') {
         this.setTimeout('_sleepCountdown', null);
       }
