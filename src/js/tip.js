@@ -234,6 +234,12 @@
       if (!triggerElement) { return; }
       this.performSleep({ triggerElement, event });
     }
+    _onTriggerElementMouseEnter(event) {
+    }
+    _onTriggerElementMouseLeave(event) {
+    }
+    _onTriggerElementMouseMove(event) {
+    }
     _onWindowResize(event) {
       this._updateMetrics();
     }
@@ -288,6 +294,20 @@
       this.element.style.transition = toggled ? 'transform 0.1s linear' : '';
     }
     _toggleTriggerElementEventListeners(on) {
+      if (this.hoverIntent || !on) {
+        this.hoverIntent('remove');
+      }
+      if (on) {
+        this.hoverIntent = hoverIntent(this.elements, this.contextElement);
+      }
+      const { eventName } = hlf.hoverIntent;
+      let listeners = {};
+      listeners[eventName('enter')] = this._onTriggerElementMouseEnter;
+      listeners[eventName('leave')] = this._onTriggerElementMouseLeave;
+      if (this.doFollow) {
+        listeners[eventName('track')] = this._onTriggerElementMouseMove;
+      }
+      this.toggleEventListeners(on, listeners, this.contextElement);
     }
     _updateCurrentTriggerElement(triggerElement) {
       if (triggerElement == this._currentTriggerElement) { return; }
