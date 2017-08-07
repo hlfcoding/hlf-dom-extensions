@@ -124,6 +124,11 @@
         let { mouse: { x, y } } = this;
         x.current = event.pageX;
         y.current = event.pageY;
+        this.dispatchCustomEvent('track', {
+          pageX: event.pageX,
+          pageY: event.pageY,
+          relatedTarget: event.relatedTarget,
+        });
       });
     }
     _onMouseOver(event) {
