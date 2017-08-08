@@ -103,7 +103,7 @@
       },
       test(testElement, { counters }) {
         let contextElement = testElement.querySelector('.list');
-        hoverIntent(contextElement.querySelector('.item'), contextElement);
+        hoverIntent(contextElement.querySelectorAll('.item'), contextElement);
         counters.setUp(testElement, contextElement, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },
