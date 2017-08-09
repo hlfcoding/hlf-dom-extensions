@@ -82,8 +82,8 @@
   class HoverIntent {
     constructor(elementOrElements, options, contextElement) {
       this.eventListeners = {
-        'mouseleave': this._onMouseLeave,
         'mousemove': this._onMouseMove,
+        'mouseout': this._onMouseOut,
         'mouseover': this._onMouseOver,
       };
     }
@@ -96,6 +96,18 @@
     //
     // § __Internal__
     //
+    _checkEventElement(event) {
+      const { relatedTarget, target, type } = event;
+      if (type === 'mouseout' && target.contains(relatedTarget)) {
+        return false;
+      }
+      if (this.contextElement) {
+        if (Array.from(this.elements).indexOf(target) === -1) { return false; }
+      } else {
+        if (target !== this.rootElement) { return false; }
+      }
+      return true;
+    }
     _dispatchHoverEvent(on, mouseEvent) {
       const { mouse: { x, y } } = this;
       let type = on ? 'enter' : 'leave';
@@ -105,16 +117,6 @@
         relatedTarget: mouseEvent.target,
       });
       this.debugLog(type, x.current, y.current, Date.now() % 100000);
-    }
-    _onMouseLeave(event) {
-      if (this.intentional) {
-        if (this.contextElement) {
-          if (Array.from(this.elements).indexOf(event.target) === -1) { return; }
-        }
-        this.debugLog('teardown');
-        this._dispatchHoverEvent(false, event);
-      }
-      this._setDefaultState();
     }
     _onMouseMove(event) {
       if (this._trackTimeout) { return; }
@@ -127,18 +129,22 @@
         this.dispatchCustomEvent('track', {
           pageX: event.pageX,
           pageY: event.pageY,
-          relatedTarget: event.relatedTarget,
+          relatedTarget: event.target,
         });
       });
     }
+    _onMouseOut(event) {
+      if (!this._checkEventElement(event)) { return; }
+      if (this.intentional) {
+        this._dispatchHoverEvent(false, event);
+      }
+      this.debugLog('teardown');
+      this._setDefaultState();
+    }
     _onMouseOver(event) {
       if (this.intentional) { return; }
-      if (this.contextElement) {
-        if (Array.from(this.elements).indexOf(event.target) === -1) { return; }
-      } else {
-        if (event.target !== this.rootElement) { return; }
-      }
       if (this._timeout) { return; }
+      if (!this._checkEventElement(event)) { return; }
       this.debugLog('setup');
       let { mouse: { x, y } } = this;
       x.previous = event.pageX;
