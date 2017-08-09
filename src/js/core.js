@@ -364,9 +364,21 @@
   //
   function createExtensionBaseMethods(namespace, groups) {
     let methods = {};
-    methods.debugLog = (!namespace.debug ? function(){} :
-      hlf.debugLog.bind(null, namespace.toString('log'))
-    );
+    Object.assign(methods, !namespace.debug ? {
+      debugLog() {},
+      debugLogGroup(on) {},
+    } : {
+      debugLog(...args) {
+        hlf.debugLog(namespace.toString('log'), ...args);
+      },
+      debugLogGroup(on = true) {
+        if (on) {
+          console.group();
+        } else {
+          console.groupEnd();
+        }
+      },
+    });
     if (groups.indexOf('action') !== -1) {
       Object.assign(methods, {
         perform(action) {
