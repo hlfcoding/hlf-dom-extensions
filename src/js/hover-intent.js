@@ -103,34 +103,36 @@
       }
       if (this.contextElement) {
         if (Array.from(this.elements).indexOf(target) === -1) { return false; }
+        // this.debugLog(target, relatedTarget);
       } else {
         if (target !== this.rootElement) { return false; }
       }
       return true;
     }
-    _dispatchHoverEvent(on, mouseEvent) {
+    _dispatchHoverEvent(on, event) {
       const { mouse: { x, y } } = this;
       let type = on ? 'enter' : 'leave';
       this.dispatchCustomEvent(type, {
         pageX: x.current,
         pageY: y.current,
-        relatedTarget: mouseEvent.target,
+        relatedTarget: event.relatedTarget,
+        target: event.target,
       });
       this.debugLog(type, x.current, y.current, Date.now() % 100000);
+    }
+    _dispatchTrackEvent(event) {
+      this.dispatchCustomEvent('track', {
+        pageX: event.pageX,
+        pageY: event.pageY,
+        target: event.target,
+      });
     }
     _onMouseMove(event) {
       if (this._trackTimeout) { return; }
       if (!this.intentional) { return; }
       this.setTimeout('_trackTimeout', 16, () => {
-        this.debugLog('track');
-        let { mouse: { x, y } } = this;
-        x.current = event.pageX;
-        y.current = event.pageY;
-        this.dispatchCustomEvent('track', {
-          pageX: event.pageX,
-          pageY: event.pageY,
-          relatedTarget: event.target,
-        });
+        this._setState(event);
+        this._dispatchTrackEvent(event);
       });
     }
     _onMouseOut(event) {
@@ -138,23 +140,26 @@
       if (this.intentional) {
         this._dispatchHoverEvent(false, event);
       }
-      this.debugLog('teardown');
       this._setDefaultState();
+      this.debugLogGroup(false);
     }
     _onMouseOver(event) {
       if (this.intentional) { return; }
       if (this._timeout) { return; }
       if (!this._checkEventElement(event)) { return; }
-      this.debugLog('setup');
-      let { mouse: { x, y } } = this;
-      x.previous = event.pageX;
-      y.previous = event.pageY;
+      this.debugLogGroup();
+      this._setBufferState(event);
       this.setTimeout('_timeout', this.interval, () => {
         this._setState(event);
         if (this.intentional) {
           this._dispatchHoverEvent(true, event);
         }
       });
+    }
+    _setBufferState(event) {
+      let { mouse: { x, y } } = this;
+      x.previous = event.pageX;
+      y.previous = event.pageY;
     }
     _setDefaultState() {
       this.debugLog('reset');
@@ -167,7 +172,14 @@
       this.setTimeout('_trackTimeout', null);
     }
     _setState(event) {
-      this.debugLog('update');
+      if (event.type === 'mousemove') {
+        this.debugLog('track');
+        let { mouse: { x, y } } = this;
+        x.current = event.pageX;
+        y.current = event.pageY;
+        return;
+      }
+      this.debugLog('check');
       let { mouse: { x, y } } = this;
       const { abs, pow, sqrt } = Math;
       this.intentional = (
