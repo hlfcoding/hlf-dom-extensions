@@ -203,6 +203,7 @@
         }
         let finalOptions = Object.assign({}, options, attrOptions);
         let instance = new apiClass(element || elements, finalOptions, contextElement);
+        extension._setInstance(rootElement, instance);
         instance.rootElement = rootElement;
         if (element) {
           instance.element = element;
@@ -268,7 +269,6 @@
         if (instance.init) {
           instance.init();
         }
-        extension._setInstance(rootElement, instance);
         return instance;
       },
       _deleteInstance(element) {
@@ -364,18 +364,33 @@
   //
   function createExtensionBaseMethods(namespace, groups) {
     let methods = {};
+    function debugPrefixes(instance) {
+      return [
+        namespace.toString('log'),
+        instance.rootElement.getAttribute(instance.attrName('instance-id')),
+      ];
+    }
     Object.assign(methods, !namespace.debug ? {
       debugLog() {},
-      debugLogGroup(on) {},
+      debugLogGroup() {},
     } : {
       debugLog(...args) {
-        hlf.debugLog(namespace.toString('log'), ...args);
+        if (!this._hasDebugLogGroup) {
+          args.unshift(...debugPrefixes(this));
+        }
+        hlf.debugLog(...args);
       },
-      debugLogGroup(on = true) {
-        if (on) {
-          console.group();
-        } else {
+      debugLogGroup(arg) {
+        if (arg === false) {
           console.groupEnd();
+          this._hasDebugLogGroup = false;
+        } else {
+          let args = debugPrefixes(this);
+          if (arg) {
+            args.push(arg);
+          }
+          console.group(...args);
+          this._hasDebugLogGroup = true;
         }
       },
     });
