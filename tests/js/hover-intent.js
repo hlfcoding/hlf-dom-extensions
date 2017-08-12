@@ -38,8 +38,9 @@
   `<dl>
     <dt>enter count:</dt><dd class="enter-counter">0</dd>
     <dt>leave count:</dt><dd class="leave-counter">0</dd>
-    <dt>raw-enter count:</dt><dd class="raw-enter-counter">0</dd>
-    <dt>raw-leave count:</dt><dd class="raw-leave-counter">0</dd>
+    <dt><code>mouseover</code> count:</dt><dd class="mouseover-counter">0</dd>
+    <dt><code>mouseleave</code> count:</dt><dd class="mouseleave-counter">0</dd>
+    <dt><code>mouseout</code> count:</dt><dd class="mouseout-counter">0</dd>
   </dl>`
         );
       }
@@ -77,8 +78,9 @@
         counters.setUp(testElement, element, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },
-          rawEnter: { selector: '.raw-enter-counter', eventName: 'mouseover' },
-          rawLeave: { selector: '.raw-leave-counter', eventName: 'mouseleave' },
+          mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
+          mouseleave: { selector: '.mouseleave-counter', eventName: 'mouseleave' },
+          mouseout: { selector: '.mouseout-counter', eventName: 'mouseout' },
         });
       },
       anchorName: 'default',
@@ -107,8 +109,9 @@
         counters.setUp(testElement, contextElement, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },
-          rawEnter: { selector: '.raw-enter-counter', eventName: 'mouseover' },
-          rawLeave: { selector: '.raw-leave-counter', eventName: 'mouseleave' },
+          mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
+          mouseleave: { selector: '.mouseleave-counter', eventName: 'mouseleave' },
+          mouseout: { selector: '.mouseout-counter', eventName: 'mouseout' },
         });
       },
       anchorName: 'as-shared-instance',

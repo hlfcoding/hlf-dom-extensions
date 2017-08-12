@@ -140,19 +140,22 @@ p {
 }
 dl {
   display: flex;
+  justify-content: space-between;
 }
 dl:only-child {
   margin-bottom: 0;
   margin-top: 0;
 }
 dt {
-  flex-basis: 8em;
-  text-align: right
+  margin-left: 1rem;
+  text-align: right;
+  white-space: nowrap;
 }
 dd {
+  flex-basis: 3em;
   font-weight: bold;
-  flex-grow: 1;
-  margin-left: 0.5em;
+  margin-left: 0.5rem;
+  margin-right: 1rem;
 }
 /* non-edge tests container */
 #main {
