@@ -90,10 +90,10 @@
       };
     }
     init() {
-      this._setDefaultState();
+      this._resetState();
     }
     deinit() {
-      this._setDefaultState();
+      this._resetState();
     }
     //
     // § __Internal__
@@ -133,7 +133,7 @@
       if (this._trackTimeout) { return; }
       if (!this.intentional) { return; }
       this.setTimeout('_trackTimeout', 16, () => {
-        this._setState(event);
+        this._updateState(event);
         this._dispatchTrackEvent(event);
       });
     }
@@ -142,7 +142,7 @@
       if (this.intentional) {
         this._dispatchHoverEvent(false, event);
       }
-      this._setDefaultState();
+      this._resetState();
       this.debugLogGroup(false);
     }
     _onMouseOver(event) {
@@ -150,20 +150,15 @@
       if (this._timeout) { return; }
       if (!this._checkEventElement(event)) { return; }
       this.debugLogGroup();
-      this._setBufferState(event);
+      this._updateState(event);
       this.setTimeout('_timeout', this.interval, () => {
-        this._setState(event);
+        this._updateState(event);
         if (this.intentional) {
           this._dispatchHoverEvent(true, event);
         }
       });
     }
-    _setBufferState(event) {
-      let { mouse: { x, y } } = this;
-      x.previous = event.pageX;
-      y.previous = event.pageY;
-    }
-    _setDefaultState() {
+    _resetState() {
       this.debugLog('reset');
       this.intentional = false;
       this.mouse = {
@@ -173,7 +168,7 @@
       this.setTimeout('_timeout', null);
       this.setTimeout('_trackTimeout', null);
     }
-    _setState(event) {
+    _updateState(event) {
       if (event.type === 'mousemove') {
         this.debugLog('track');
         let { mouse: { x, y } } = this;
@@ -181,8 +176,13 @@
         y.current = event.pageY;
         return;
       }
-      this.debugLog('check');
       let { mouse: { x, y } } = this;
+      if (!this._timeout) {
+        x.previous = event.pageX;
+        y.previous = event.pageY;
+        return;
+      }
+      this.debugLog('check');
       const { abs, pow, sqrt } = Math;
       this.intentional = (
         abs(
