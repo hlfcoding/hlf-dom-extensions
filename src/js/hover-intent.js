@@ -71,13 +71,15 @@
   //
   // To summarize the implementation, the `_onMouseOver` handler is the start of
   // the intent 'life-cycle', with state being the default. It records the mouse
-  // coordinates, sets up a delayed intent check, and guards against unneeded
-  // checking. Meanwhile, about every frame, the `_onMouseMove` handler tracks
-  // the current mouse coordinates. If the `_onMouseLeave` handler runs before
-  // the delayed check, the check and subsequent behavior get canceled as state
-  // resets to default. Otherwise, if the check of the stored mouse coordinates
-  // against `sensitivity` passes, an `enter` event gets dispatched, ensuring
-  // a `leave` event will too during `_onMouseLeave`.
+  // coordinates, sets up a delayed intent check. All event handlers guard
+  // against unneeded checking, with `_onMouseOut` and `_onMouseOver` also using
+  // `_checkEventElement` as a filter. Meanwhile, about every frame, the
+  // `_onMouseMove` handler tracks the current mouse coordinates. If the
+  // `_onMouseOut` handler runs before the delayed check, the check and
+  // subsequent behavior get canceled as state resets to default. Otherwise, if
+  // the check of the stored mouse coordinates against `sensitivity` passes, an
+  // `enter` event gets dispatched, ensuring a `leave` event will too during
+  // `_onMouseOut`.
   //
   class HoverIntent {
     constructor(elementOrElements, options, contextElement) {
