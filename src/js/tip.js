@@ -34,17 +34,15 @@
       snapToTrigger: true,
       snapToXAxis: false,
       snapToYAxis: false,
-      template({ containerClass }) {
+      template() {
         let stemHtml = '';
         if (this.doStem) {
           stemHtml = `<div class="${this.className('stem')}"></div>`;
         }
         return (
-`<div class="${containerClass}">
-  <div class="${this.className('inner')}">
-    ${stemHtml}
-    <div class="${this.className('content')}"></div>
-  </div>
+`<div class="${this.className('inner')}">
+  ${stemHtml}
+  <div class="${this.className('content')}"></div>
 </div>`
         );
       },
@@ -251,9 +249,9 @@
       let directionClass = this.defaultDirection.reduce(
         (memo, component) => { return `${memo} ${this.className(component)}`; },
       '').trim();
-      this.element.innerHTML = this.template({
-        containerClass: `${this.className('tip')} ${this.className('follow')} ${directionClass}`,
-      });
+      this.element.classList.add(this.className('tip'), this.className('follow'));
+      this.element.className += ` ${directionClass}`;
+      this.element.innerHTML = this.template();
 
       this._contentElement = this.selectByClass('content', this.element);
       this._contentElement.style.transition = 'width 0.3s ease-in-out, height 0.3s ease-in-out';
