@@ -246,12 +246,11 @@
     }
     _renderElement() {
       if (this.element.innerHTML.length) { return; }
-      let directionClass = this.defaultDirection.reduce(
-        (memo, component) => { return `${memo} ${this.className(component)}`; },
-      '').trim();
-      this.element.classList.add(this.className('tip'), this.className('follow'));
-      this.element.className += ` ${directionClass}`;
       this.element.innerHTML = this.template();
+      this.element.classList.add(
+        this.className('tip'), this.className('follow'),
+        ...(this.defaultDirection.map(this.className))
+      );
 
       this._contentElement = this.selectByClass('content', this.element);
       this._contentElement.style.transition = 'width 0.3s ease-in-out, height 0.3s ease-in-out';
