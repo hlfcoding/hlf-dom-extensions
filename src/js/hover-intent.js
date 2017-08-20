@@ -114,20 +114,18 @@
     _dispatchHoverEvent(on, event) {
       const { mouse: { x, y } } = this;
       let type = on ? 'enter' : 'leave';
-      this.dispatchCustomEvent(type, {
+      event.target.dispatchEvent(this.createCustomEvent(type, {
         pageX: x.current,
         pageY: y.current,
         relatedTarget: event.relatedTarget,
-        target: event.target,
-      });
+      }));
       this.debugLog(type, x.current, y.current, Date.now() % 100000);
     }
     _dispatchTrackEvent(event) {
-      this.dispatchCustomEvent('track', {
+      event.target.dispatchEvent(this.createCustomEvent('track', {
         pageX: event.pageX,
         pageY: event.pageY,
-        target: event.target,
-      });
+      }));
     }
     _onMouseMove(event) {
       if (this._trackTimeout) { return; }
