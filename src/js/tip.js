@@ -342,9 +342,9 @@
       const content = triggerElement.getAttribute(this.attrName('content'));
       this._contentElement.textContent = content;
     }
-    _updateElementPosition(triggerElement, mouseEvent) {
+    _updateElementPosition(triggerElement, event) {
       let cursorHeight = this.snapToTrigger ? 0 : this.cursorHeight;
-      let offset = { top: mouseEvent.detail.pageX, left: mouseEvent.detail.pageY };
+      let offset = { top: event.detail.pageX, left: event.detail.pageY };
 
       if (this.snapToTrigger) {
         this.debugLog(offset);
