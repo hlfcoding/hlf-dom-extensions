@@ -344,7 +344,7 @@
     }
     _updateElementPosition(triggerElement, mouseEvent) {
       let cursorHeight = this.snapToTrigger ? 0 : this.cursorHeight;
-      let offset = { top: mouseEvent.pageX, left: mouseEvent.pageY };
+      let offset = { top: mouseEvent.detail.pageX, left: mouseEvent.detail.pageY };
 
       if (this.snapToTrigger) {
         this.debugLog(offset);
@@ -426,7 +426,7 @@
         }, 0);
         if (this.snapToTrigger && this._state === 'awake') {
           this.element.style.visibility = 'visible';
-          this._offsetStart = { left: event.pageX, top: event.pageY };
+          this._offsetStart = { left: event.detail.pageX, top: event.detail.pageY };
         }
       } else if (this._state === 'sleeping') {
         this.setTimeout('_wakeCountdown', null);
