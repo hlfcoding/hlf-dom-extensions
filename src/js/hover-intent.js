@@ -113,13 +113,10 @@
     }
     _dispatchHoverEvent(on, event) {
       const { mouse: { x, y } } = this;
+      const { pageX, pageY, relatedTarget, target } = event;
       let type = on ? 'enter' : 'leave';
-      event.target.dispatchEvent(this.createCustomEvent(type, {
-        pageX: event.pageX,
-        pageY: event.pageY,
-        relatedTarget: event.relatedTarget,
-      }));
-      this.debugLog(type, event.pageX, event.pageY, Date.now() % 100000);
+      target.dispatchEvent(this.createCustomEvent(type, { pageX, pageY, relatedTarget }));
+      this.debugLog(type, pageX, pageY, Date.now() % 100000);
     }
     _dispatchTrackEvent(event) {
       event.target.dispatchEvent(this.createCustomEvent('track', {
