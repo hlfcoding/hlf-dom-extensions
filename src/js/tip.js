@@ -233,13 +233,13 @@
       this.performSleep({ triggerElement, event });
     }
     _onTriggerElementMouseEnter(event) {
-      this.performWake({ triggerElement: event.relatedTarget, event });
+      this.performWake({ triggerElement: event.target, event });
     }
     _onTriggerElementMouseLeave(event) {
-      this.performSleep({ triggerElement: event.relatedTarget, event });
+      this.performSleep({ triggerElement: event.target, event });
     }
     _onTriggerElementMouseMove(event) {
-      this.performWake({ triggerElement: event.relatedTarget, event });
+      this.performWake({ triggerElement: event.target, event });
     }
     _onWindowResize(event) {
       this._updateMetrics();
