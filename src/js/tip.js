@@ -344,7 +344,7 @@
     }
     _updateElementPosition(triggerElement, event) {
       let cursorHeight = this.snapToTrigger ? 0 : this.cursorHeight;
-      let offset = { top: event.detail.pageX, left: event.detail.pageY };
+      let offset = { left: event.detail.pageX, top: event.detail.pageY };
 
       if (this.snapToTrigger) {
         this.debugLog(offset);
