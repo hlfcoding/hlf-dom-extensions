@@ -388,7 +388,7 @@
       this.element.style.transform = `translate(${offset.left}px, ${offset.top}px)`;
 
       if (this.snapToTrigger) {
-        element.style.visibility = 'hidden';
+        this.element.style.visibility = 'hidden';
       }
     }
     _updateMetrics() {
