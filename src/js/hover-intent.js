@@ -115,11 +115,11 @@
       const { mouse: { x, y } } = this;
       let type = on ? 'enter' : 'leave';
       event.target.dispatchEvent(this.createCustomEvent(type, {
-        pageX: x.current,
-        pageY: y.current,
+        pageX: event.pageX,
+        pageY: event.pageY,
         relatedTarget: event.relatedTarget,
       }));
-      this.debugLog(type, x.current, y.current, Date.now() % 100000);
+      this.debugLog(type, event.pageX, event.pageY, Date.now() % 100000);
     }
     _dispatchTrackEvent(event) {
       event.target.dispatchEvent(this.createCustomEvent('track', {
