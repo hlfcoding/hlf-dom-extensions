@@ -31,7 +31,7 @@
       doFollow: true,
       doStem: true,
       resizeDelay: 300,
-      snapToTrigger: true,
+      snapToTrigger: false,
       snapToXAxis: false,
       snapToYAxis: false,
       template() {
