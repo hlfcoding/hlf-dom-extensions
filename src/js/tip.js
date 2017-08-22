@@ -175,7 +175,7 @@
     }
     _getStemSize() {
       let size = this.element.getAttribute(this.attrName('stem-size'));
-      if (size != null) { return size; }
+      if (size != null) { return parseInt(size); }
 
       let stemElement = this.selectByClass('stem', this.element);
       return this._withStealthRender(() => {
