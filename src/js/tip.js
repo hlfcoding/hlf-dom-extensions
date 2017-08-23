@@ -377,7 +377,7 @@
       if (this._isTriggerDirection('top', triggerElement)) {
         offset.top -= this.element.offsetHeight + this._getStemSize();
       } else if (this._isTriggerDirection('bottom', triggerElement)) {
-        offset.top -= cursorHeight + this._getStemSize();
+        offset.top += cursorHeight + this._getStemSize();
       }
       if (this._isTriggerDirection('left', triggerElement)) {
         offset.left -= this.element.offsetWidth;
