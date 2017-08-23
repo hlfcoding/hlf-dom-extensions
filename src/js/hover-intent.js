@@ -164,17 +164,18 @@
       this.setTimeout('_trackTimeout', null);
     }
     _updateState(event) {
+      const { pageX, pageY } = event;
       if (event.type === 'mousemove') {
-        this.debugLog('track');
+        this.debugLog('track', pageX, pageY);
         let { mouse: { x, y } } = this;
-        x.current = event.pageX;
-        y.current = event.pageY;
+        x.current = pageX;
+        y.current = pageY;
         return;
       }
       let { mouse: { x, y } } = this;
       if (!this._timeout) {
-        x.previous = event.pageX;
-        y.previous = event.pageY;
+        x.previous = pageX;
+        y.previous = pageY;
         return;
       }
       this.debugLog('check');
