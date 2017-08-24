@@ -33,7 +33,9 @@ Example of the variations of classes on the tip element:
   --tip-z-index: 9999;
 
   display: none;
+  left: 0;
   position: absolute;
+  top: 0;
 
   opacity: 0;
   transition: opacity 0.2s 0.2s;
