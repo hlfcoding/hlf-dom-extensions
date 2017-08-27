@@ -31,6 +31,7 @@
       doFollow: true,
       doStem: true,
       resizeDelay: 300,
+      toggleDelay: 700,
       snapToTrigger: false,
       snapToXAxis: false,
       snapToYAxis: false,
@@ -54,6 +55,7 @@
         case 'event': return 'hlftip';
         case 'data': return 'hlf-tip';
         case 'class': return 'tips';
+        case 'var': return 'tip';
         default: return 'hlf-tip';
       }
     },
@@ -66,8 +68,6 @@
     constructor(elements, options, contextElement) {
       this._bounds = null;
       this._state = null;
-      this._sleepCountdown = null;
-      this._wakeCountdown = null;
     }
     init() {
       if (!this.snapToTrigger) {
@@ -97,8 +97,8 @@
         return;
       }
       this._updateState('sleeping', { event });
-      this.setTimeout('_sleepCountdown', this._getElementTransitionDuration, () => {
-        this._toggleElement(false, null, () => {
+      this.setTimeout('_sleepCountdown', this.toggleDelay, () => {
+        this._toggleElement(false, () => {
           this._updateState('asleep', { event });
         });
       });
@@ -112,20 +112,18 @@
         this._updateElementPosition(triggerElement, event);
         return;
       }
-      const wake = (duration) => {
-        this._updateElementPosition(triggerElement, event);
-        this._toggleElement(true, duration, () => {
+      let animated = this._state !== 'sleeping';
+      if (!animated) {
+        this.debugLog('staying awake');
+      }
+      this._updateState('waking', { event });
+      this._updateElementPosition(triggerElement, event);
+      let delay = !animated ? 0 : this.toggleDelay;
+      this.setTimeout('_wakeCountdown', delay, () => {
+        this._toggleElement(true, () => {
           this._updateState('awake', { event });
         });
-      };
-      if (this._state === 'sleeping') {
-        this.debugLog('clear sleep');
-        this.setTimeout('_sleepCountdown', null);
-        wake(0);
-      } else if (event) {
-        this._updateState('waking', { event });
-        this.setTimeout('_wakeCountdown', this._getElementTransitionDuration(), wake);
-      }
+      });
     }
     //
     // § __Internal__
@@ -165,9 +163,6 @@
         size.width -= parseFloat(paddingLeft) + parseFloat(paddingRight);
       }
       return size;
-    }
-    _getElementTransitionDuration() {
-      return this.cssDuration('transition-duration', this.element);
     }
     _getStemSize() {
       let size = this.element.getAttribute(this.attrName('stem-size'));
@@ -278,21 +273,15 @@
         this._contextObserver.disconnect();
       }
     }
-    _toggleElement(visible, duration, completion) {
+    _toggleElement(visible, completion) {
       if (this._toggleAnimation) { return; }
-      const delay = this.cssDuration('transition-delay', this.element);
+      const duration = this.cssVariableDuration('toggle-duration', this.element);
       let { classList, style } = this.element;
-      if (duration == null) {
-        style.transitionDuration = duration;
-        duration = this.cssDuration('transition-duration', this.element);
-      } else {
-        style.transitionDuration = `${duration / 1000}s`;
-      }
       classList.toggle(this.className('visible'), visible);
       if (visible) {
         classList.remove(this.className('hidden'));
       }
-      this.setTimeout('_toggleAnimation', delay + duration, () => {
+      this.setTimeout('_toggleAnimation', duration, () => {
         if (!visible) {
           classList.add(this.className('hidden'));
           style.transform = 'none';

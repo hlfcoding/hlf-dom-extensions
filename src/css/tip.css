@@ -30,6 +30,7 @@ Example of the variations of classes on the tip element:
   --stem-size: var(--tip-em);
   --stem-size-wide-half: calc(var(--tip-em) * 1.5 / 2);
   --tip-max-width: calc(var(--tip-em) * 18);
+  --tip-toggle-duration: 0.2s;
   --tip-z-index: 9999;
 
   left: 0;
@@ -37,7 +38,9 @@ Example of the variations of classes on the tip element:
   top: 0;
 
   opacity: 0;
-  transition: opacity 0.2s 0.2s;
+  transition-duration: var(--tip-toggle-duration);
+  transition-property: opacity;
+  transition-timing-function: ease;
 
   z-index: var(--tip-z-index);
 }
