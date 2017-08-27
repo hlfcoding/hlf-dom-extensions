@@ -125,7 +125,7 @@
         this.debugLog('clear sleep');
         this.setTimeout('_sleepCountdown', null);
         wake(0);
-      } else if (event && event.type === hlf.hoverIntent.eventName('enter')) {
+      } else if (event) {
         this._updateState('waking', { event });
         this.setTimeout('_wakeCountdown', this._getElementTransitionDuration(), wake);
       }
