@@ -285,13 +285,14 @@
     _toggleElement(visible, duration, completion) {
       if (this._toggleAnimation) { return; }
       const delay = this.cssDuration('transition-delay', this.element);
+      let { classList, style } = this.element;
       if (duration == null) {
-        this.element.style.transitionDuration = duration;
+        style.transitionDuration = duration;
         duration = this.cssDuration('transition-duration', this.element);
       } else {
-        this.element.style.transitionDuration = `${duration / 1000}s`;
+        style.transitionDuration = `${duration / 1000}s`;
       }
-      this.element.classList.toggle(this.className('visible'), visible);
+      classList.toggle(this.className('visible'), visible);
       this.setTimeout('_toggleAnimation', delay + duration, completion);
     }
     _toggleElementEventListeners(on) {
