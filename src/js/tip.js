@@ -295,9 +295,6 @@
         'mouseleave': this._onElementMouseLeave,
       }, this.element);
     }
-    _toggleElementPositionTransition(toggled) {
-      this.element.style.transition = toggled ? 'transform 0.1s linear' : '';
-    }
     _toggleTriggerElementEventListeners(on) {
       if (this.hoverIntent || !on) {
         this.hoverIntent('remove');
@@ -416,9 +413,6 @@
             this.attrName('has-tip-focus'), this._state === 'awake'
           );
         }
-        setTimeout(() => {
-          this._toggleElementPositionTransition(false);
-        }, 0);
         if (this.snapToTrigger && this._state === 'awake') {
           this.element.style.visibility = 'visible';
           this._offsetStart = { left: event.detail.pageX, top: event.detail.pageY };
