@@ -32,7 +32,6 @@ Example of the variations of classes on the tip element:
   --tip-max-width: calc(var(--tip-em) * 18);
   --tip-z-index: 9999;
 
-  display: none;
   left: 0;
   position: absolute;
   top: 0;
@@ -43,9 +42,14 @@ Example of the variations of classes on the tip element:
   z-index: var(--tip-z-index);
 }
 
+.js-tips-hidden {
+  display: none;
+}
+
 .js-tips-visible {
-  display: block;
   opacity: 1;
+
+  display: block;
 }
 
 .js-tips-inner {

@@ -248,7 +248,7 @@
       if (this.element.innerHTML.length) { return; }
       this.element.innerHTML = this.template();
       this.element.classList.add(
-        this.className('tip'), this.className('follow'),
+        this.className('tip'), this.className('follow'), this.className('hidden'),
         ...(this.defaultDirection.map(this.className))
       );
 
@@ -293,7 +293,16 @@
         style.transitionDuration = `${duration / 1000}s`;
       }
       classList.toggle(this.className('visible'), visible);
-      this.setTimeout('_toggleAnimation', delay + duration, completion);
+      if (visible) {
+        classList.remove(this.className('hidden'));
+      }
+      this.setTimeout('_toggleAnimation', delay + duration, () => {
+        if (!visible) {
+          classList.add(this.className('hidden'));
+          style.transform = 'none';
+        }
+        completion();
+      });
     }
     _toggleElementEventListeners(on) {
       this.toggleEventListeners(on, {
@@ -511,14 +520,16 @@
       });
     }
     _withStealthRender(fn) {
-      if (getComputedStyle(this.element).display === 'none') {
+      if (getComputedStyle(this.element).display !== 'none') {
         return fn();
       }
-      let { style } = this.element;
-      style.display = 'block';
+      let { classList, style } = this.element;
+      classList.add(this.className('visible'));
+      classList.remove(this.className('hidden'));
       style.visibility = 'hidden';
       let result = fn();
-      style.display = 'none';
+      classList.remove(this.className('visible'));
+      classList.add(this.className('hidden'));
       style.visibility = 'visible';
       return result;
     }
