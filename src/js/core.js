@@ -476,7 +476,12 @@
         cssVariable(name, element) {
           if (!element) { element = this.rootElement; }
           return getComputedStyle(element).getPropertyValue(this.varName(name));
-        }
+        },
+        swapClasses(nameFrom, nameTo, element) {
+          if (!element) { element = this.rootElement; }
+          element.classList.remove(this.className(nameFrom));
+          element.classList.add(this.className(nameTo));
+        },
       });
     }
     if (groups.indexOf('event') !== -1) {

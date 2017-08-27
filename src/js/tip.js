@@ -523,14 +523,11 @@
       if (getComputedStyle(this.element).display !== 'none') {
         return fn();
       }
-      let { classList, style } = this.element;
-      classList.add(this.className('visible'));
-      classList.remove(this.className('hidden'));
-      style.visibility = 'hidden';
+      this.swapClasses('hidden', 'visible', this.element);
+      this.element.style.visibility = 'hidden';
       let result = fn();
-      classList.remove(this.className('visible'));
-      classList.add(this.className('hidden'));
-      style.visibility = 'visible';
+      this.swapClasses('visible', 'hidden', this.element);
+      this.element.style.visibility = 'visible';
       return result;
     }
   }
