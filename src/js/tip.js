@@ -105,14 +105,11 @@
     }
     performWake({ triggerElement, event }) {
       this._updateCurrentTriggerElement(triggerElement);
-      if (this._state === 'awake') {
+      if (this._state === 'awake' || this._state === 'waking') {
         if (!hlf.hoverIntent.debug) {
           this.debugLog('quick update');
         }
         this._updateElementPosition(triggerElement, event);
-        return;
-      }
-      if (this._state === 'awake' || this._state === 'waking') {
         return;
       }
       const wake = (duration) => {
