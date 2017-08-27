@@ -319,14 +319,19 @@
       this._contentElement.style.height = `${contentSize.height}px`;
       this._contentElement.style.width = `${contentSize.width + 1}px`; // Give some buffer.
 
+      let { classList } = this.element;
       let compoundDirection = triggerElement.hasAttribute(this.attrName('direction')) ?
         triggerElement.getAttribute(this.attrName('direction')).split(' ') :
         this.defaultDirection;
-      this.debugLog('update direction class', compoundDirection);
-      let directionsClassNames = ['top', 'bottom', 'right', 'left'].map(this.className);
-      this.element.classList.remove(...directionsClassNames);
       let directionClassNames = compoundDirection.map(this.className);
-      this.element.classList.add(...directionClassNames);
+      if (directionClassNames.reduce((memo, className) => {
+        return memo && classList.contains(className);
+      }, true)) {
+        return;
+      }
+      this.debugLog('update direction class', compoundDirection);
+      classList.remove(...(['top', 'bottom', 'right', 'left'].map(this.className)));
+      classList.add(...directionClassNames);
 
       this._currentTriggerElement = triggerElement;
     }
