@@ -477,6 +477,9 @@
           if (!element) { element = this.rootElement; }
           return getComputedStyle(element).getPropertyValue(this.varName(name));
         },
+        cssVariableDuration(name, element) {
+          return 1000 * parseFloat(this.cssVariable(name, element));
+        },
         swapClasses(nameFrom, nameTo, element) {
           if (!element) { element = this.rootElement; }
           element.classList.remove(this.className(nameFrom));
