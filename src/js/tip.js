@@ -316,8 +316,8 @@
 
       this._updateElementContent(triggerElement);
       let contentSize = this._getElementSize(triggerElement, { contentOnly: true });
-      this._contentElement.style.height = contentSize.height;
-      this._contentElement.style.width = contentSize.width + 1; // Give some buffer.
+      this._contentElement.style.height = `${contentSize.height}px`;
+      this._contentElement.style.width = `${contentSize.width + 1}px`; // Give some buffer.
 
       let compoundDirection = triggerElement.hasAttribute(this.attrName('direction')) ?
         triggerElement.getAttribute(this.attrName('direction')).split(' ') :
