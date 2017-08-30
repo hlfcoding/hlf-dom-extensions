@@ -55,7 +55,7 @@
     debug: true,
     defaults: {
       interval: 300,
-      sensitivity: 6,
+      sensitivity: 2,
     },
     toString(context) {
       switch (context) {
@@ -115,7 +115,11 @@
       const { mouse: { x, y } } = this;
       const { pageX, pageY, relatedTarget, target } = event;
       let type = on ? 'enter' : 'leave';
-      target.dispatchEvent(this.createCustomEvent(type, { pageX, pageY, relatedTarget }));
+      target.dispatchEvent(this.createCustomEvent(type, {
+        pageX: (x.current == null) ? pageX : x.current,
+        pageY: (y.current == null) ? pageY : y.current,
+        relatedTarget
+      }));
       this.debugLog(type, pageX, pageY, Date.now() % 100000);
     }
     _dispatchTrackEvent(event) {
@@ -125,10 +129,10 @@
       }));
     }
     _onMouseMove(event) {
-      if (this._trackTimeout) { return; }
+      this._updateState(event);
       if (!this.intentional) { return; }
-      this.setTimeout('_trackTimeout', 16, () => {
-        this._updateState(event);
+      requestAnimationFrame((_) => {
+        this.debugLog('track', event.pageX, event.pageY);
         this._dispatchTrackEvent(event);
       });
     }
@@ -157,8 +161,8 @@
       this.debugLog('reset');
       this.intentional = false;
       this.mouse = {
-        x: { current: 0, previous: 0 },
-        y: { current: 0, previous: 0 },
+        x: { current: null, previous: null },
+        y: { current: null, previous: null },
       };
       this.setTimeout('_timeout', null);
       this.setTimeout('_trackTimeout', null);
@@ -166,7 +170,6 @@
     _updateState(event) {
       const { pageX, pageY } = event;
       if (event.type === 'mousemove') {
-        this.debugLog('track', pageX, pageY);
         let { mouse: { x, y } } = this;
         x.current = pageX;
         y.current = pageY;
@@ -180,7 +183,7 @@
       }
       this.debugLog('check');
       const { abs, pow, sqrt } = Math;
-      this.intentional = (
+      this.intentional = (x.current == null || y.current == null) || (
         abs(
           sqrt(pow(x.previous, 2) + pow(y.previous, 2)) -
           sqrt(pow(x.current, 2) + pow(y.current, 2))
