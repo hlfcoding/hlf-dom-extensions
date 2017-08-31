@@ -181,14 +181,16 @@
         y.previous = pageY;
         return;
       }
-      this.debugLog('check');
       const { abs, pow, sqrt } = Math;
-      this.intentional = (x.current == null || y.current == null) || (
-        abs(
-          sqrt(pow(x.previous, 2) + pow(y.previous, 2)) -
-          sqrt(pow(x.current, 2) + pow(y.current, 2))
-        ) > this.sensitivity
-      );
+      let dMove;
+      this.intentional = x.current == null || y.current == null;
+      if (!this.intentional) {
+        dMove = sqrt(
+          pow(x.current - x.previous, 2) + pow(y.current - y.previous, 2)
+        );
+        this.intentional = dMove > this.sensitivity;
+      }
+      this.debugLog('checked', dMove);
     }
   }
   //
