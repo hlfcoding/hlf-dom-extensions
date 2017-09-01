@@ -142,4 +142,8 @@ Example of the variations of classes on the tip element:
 
   background-color: var(--tip-fill-color);
   color: var(--tip-text-color);
+
+  transition-duration: var(--tip-toggle-duration);
+  transition-property: height width;
+  transition-timing-function: ease-in-out;
 }

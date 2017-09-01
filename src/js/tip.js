@@ -244,7 +244,6 @@
       );
 
       this._contentElement = this.selectByClass('content', this.element);
-      this._contentElement.style.transition = 'width 0.3s ease-in-out, height 0.3s ease-in-out';
 
       this.viewportElement.insertBefore(this.element, this.viewportElement.firstChild);
 
