@@ -30,7 +30,6 @@
       hasFollowing: true,
       hasListeners: false,
       hasStem: true,
-      resizeDelay: 300,
       toggleDelay: 700,
       snapToTrigger: false,
       snapToXAxis: false,
