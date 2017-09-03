@@ -27,8 +27,8 @@
     defaults: {
       cursorHeight: 12,
       defaultDirection: ['bottom', 'right'],
-      doDispatchEvents: true,
-      doFollow: true,
+      hasFollowing: true,
+      hasListeners: true,
       hasStem: true,
       resizeDelay: 300,
       toggleDelay: 700,
@@ -129,7 +129,7 @@
     // § __Internal__
     //
     _dispatchStateEvent() {
-      if (!this.doDispatchEvents) { return; }
+      if (!this.hasListeners) { return; }
       let triggerElement = this._currentTriggerElement;
       if (!triggerElement) { return; }
       let eventName = (() => {
@@ -313,7 +313,7 @@
       let listeners = {};
       listeners[eventName('enter')] = this._onTriggerElementMouseEnter;
       listeners[eventName('leave')] = this._onTriggerElementMouseLeave;
-      if (this.doFollow) {
+      if (this.hasFollowing) {
         listeners[eventName('track')] = this._onTriggerElementMouseMove;
       }
       this.toggleEventListeners(on, listeners, this.contextElement);
