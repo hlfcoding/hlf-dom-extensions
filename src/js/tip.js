@@ -28,7 +28,7 @@
       cursorHeight: 12,
       defaultDirection: ['bottom', 'right'],
       hasFollowing: true,
-      hasListeners: true,
+      hasListeners: false,
       hasStem: true,
       resizeDelay: 300,
       toggleDelay: 700,
@@ -128,20 +128,6 @@
     //
     // § __Internal__
     //
-    _dispatchStateEvent() {
-      if (!this.hasListeners) { return; }
-      let triggerElement = this._currentTriggerElement;
-      if (!triggerElement) { return; }
-      let eventName = (() => {
-        switch (this._state) {
-          case 'asleep': return 'hidden';
-          case 'awake': return 'shown';
-          case 'sleeping': return 'hide';
-          case 'waking': return 'show';
-        }
-      })();
-      triggerElement.dispatchEvent(this.createCustomEvent(eventName));
-    }
     _getElementSize(triggerElement, { contentOnly } = {}) {
       let size = {
         height: triggerElement.getAttribute(this.attrName('height')),
@@ -418,7 +404,12 @@
       this._state = state;
       this.debugLog(state);
 
-      this._dispatchStateEvent();
+      if (this.hasListeners && this._currentTriggerElement) {
+        this._currentTriggerElement.dispatchEvent(
+          this.createCustomEvent(this._state)
+        );
+      }
+
       if (this._state === 'asleep' || this._state === 'awake') {
         if (this._currentTriggerElement) {
           this._currentTriggerElement.setAttribute(
