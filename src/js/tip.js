@@ -29,17 +29,14 @@
       defaultDirection: ['bottom', 'right'],
       doDispatchEvents: true,
       doFollow: true,
-      doStem: true,
+      hasStem: true,
       resizeDelay: 300,
       toggleDelay: 700,
       snapToTrigger: false,
       snapToXAxis: false,
       snapToYAxis: false,
       template() {
-        let stemHtml = '';
-        if (this.doStem) {
-          stemHtml = `<div class="${this.className('stem')}"></div>`;
-        }
+        let stemHtml = this.hasStem ? `<div class="${this.className('stem')}"></div>` : '';
         return (
 `<div class="${this.className('inner')}">
   ${stemHtml}
@@ -172,12 +169,16 @@
       if (size != null) { return parseInt(size); }
 
       let stemElement = this.selectByClass('stem', this.element);
-      return this._withStealthRender(() => {
-        let margin = getComputedStyle(stemElement).margin.replace(/0px/g, '');
-        size = Math.abs(parseInt(margin));
-        this.element.setAttribute(this.attrName('stem-size'), size);
-        return size;
-      });
+      if (!stemElement) {
+        size = 0;
+      } else {
+        this._withStealthRender(() => {
+          let margin = getComputedStyle(stemElement).margin.replace(/0px/g, '');
+          size = Math.abs(parseInt(margin));
+        });
+      }
+      this.element.setAttribute(this.attrName('stem-size'), size);
+      return size;
     }
     _getTriggerOffset(triggerElement) {
       if (getComputedStyle(triggerElement).position === 'fixed') {
