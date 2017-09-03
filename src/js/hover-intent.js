@@ -166,7 +166,6 @@
         y: { current: null, previous: null },
       };
       this.setTimeout('_timeout', null);
-      this.setTimeout('_trackTimeout', null);
     }
     _updateState(event) {
       const { pageX, pageY } = event;
