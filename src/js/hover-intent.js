@@ -130,9 +130,10 @@
     }
     _onMouseMove(event) {
       this._updateState(event);
-      if (!this.intentional) { return; }
       requestAnimationFrame((_) => {
-        this.debugLog('track', event.pageX, event.pageY);
+        if (this.intentional) {
+          this.debugLog('track', event.pageX, event.pageY);
+        }
         this._dispatchTrackEvent(event);
       });
     }

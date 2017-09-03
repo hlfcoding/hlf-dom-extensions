@@ -38,9 +38,7 @@ Example of the variations of classes on the tip element:
   top: 0;
 
   opacity: 0;
-  transition-duration: var(--tip-toggle-duration), 0.1s;
-  transition-property: opacity, transform;
-  transition-timing-function: ease, linear;
+  transition: opacity var(--tip-toggle-duration);
 
   z-index: var(--tip-z-index);
 }

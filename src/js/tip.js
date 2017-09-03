@@ -105,7 +105,10 @@
     }
     performWake({ triggerElement, event }) {
       this._updateCurrentTriggerElement(triggerElement);
-      if (this._state === 'awake' || this._state === 'waking') {
+      if (
+        this._state === 'awake' || this._state === 'waking' ||
+        event.type == hlf.hoverIntent.eventName('track')
+      ) {
         if (!hlf.hoverIntent.debug) {
           this.debugLog('quick update');
         }
@@ -230,7 +233,11 @@
       this.performSleep({ triggerElement: event.target, event });
     }
     _onTriggerElementMouseMove(event) {
-      this.performWake({ triggerElement: event.target, event });
+      let triggerElement = event.target;
+      if (!triggerElement.classList.contains(this.className('trigger'))) {
+        triggerElement = this._currentTriggerElement;
+      }
+      this.performWake({ triggerElement, event });
     }
     _onWindowResize(event) {
       this._updateMetrics();
