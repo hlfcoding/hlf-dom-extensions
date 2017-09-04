@@ -64,6 +64,7 @@
     constructor(elements, options, contextElement) {
       this._bounds = null;
       this._state = null;
+      this._stemSize = null;
     }
     init() {
       if (!this.snapToTrigger) {
@@ -154,8 +155,8 @@
       return size;
     }
     _getStemSize() {
-      let size = this.element.getAttribute(this.attrName('stem-size'));
-      if (size != null) { return parseInt(size); }
+      let size = this._stemSize;
+      if (size != null) { return size; }
 
       let stemElement = this.selectByClass('stem', this.element);
       if (!stemElement) {
@@ -166,7 +167,7 @@
           size = Math.abs(parseInt(margin));
         });
       }
-      this.element.setAttribute(this.attrName('stem-size'), size);
+      this._stemSize = size;
       return size;
     }
     _getTriggerOffset(triggerElement) {
