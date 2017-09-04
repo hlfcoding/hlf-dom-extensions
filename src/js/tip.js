@@ -88,8 +88,12 @@
     //
     // § __Public__
     //
+    get isAsleep() { return this._state === 'asleep'; }
+    get isSleeping() { return this._state === 'sleeping'; }
+    get isAwake() { return this._state === 'awake'; }
+    get isWaking() { return this._state === 'waking'; }
     performSleep({ triggerElement, event }) {
-      if (this._state === 'asleep' || this._state === 'sleeping') {
+      if (this.isAsleep || this.isSleeping) {
         return;
       }
       this._updateState('sleeping', { event });
@@ -102,7 +106,7 @@
     performWake({ triggerElement, event }) {
       this._updateCurrentTriggerElement(triggerElement);
       if (
-        this._state === 'awake' || this._state === 'waking' ||
+        this.isAwake || this.isWaking ||
         event.type == hlf.hoverIntent.eventName('track')
       ) {
         if (!hlf.hoverIntent.debug) {
@@ -111,7 +115,7 @@
         this._updateElementPosition(triggerElement, event);
         return;
       }
-      let animated = this._state !== 'sleeping';
+      let animated = !this.isSleeping;
       if (!animated) {
         this.debugLog('staying awake');
       }
@@ -409,22 +413,22 @@
         );
       }
 
-      if (this._state === 'asleep' || this._state === 'awake') {
+      if (this.isAsleep || this.isAwake) {
         if (this._currentTriggerElement) {
           this._currentTriggerElement.setAttribute(
-            this.attrName('has-tip-focus'), this._state === 'awake'
+            this.attrName('has-tip-focus'), this.isAwake
           );
         }
-        if (this.snapToTrigger && this._state === 'awake') {
+        if (this.snapToTrigger && this.isAwake) {
           this.element.style.visibility = 'visible';
           this._offsetStart = { left: event.detail.pageX, top: event.detail.pageY };
         }
-      } else if (this._state === 'sleeping') {
+      } else if (this.isSleeping) {
         this.setTimeout('_wakeCountdown', null);
         if (this.snapToTrigger) {
           this._offsetStart = null;
         }
-      } else if (this._state === 'waking') {
+      } else if (this.isWaking) {
         this.setTimeout('_sleepCountdown', null);
       }
     }
