@@ -440,7 +440,7 @@
             clearTimeout(element.getAttribute(name));
           }
           let timeout = null;
-          if (duration && callback) {
+          if (duration != null && callback) {
             timeout = setTimeout(() => {
               callback();
               element.removeAttribute(name);
@@ -457,7 +457,7 @@
             clearTimeout(this[name]);
           }
           let timeout = null;
-          if (duration && callback) {
+          if (duration != null && callback) {
             timeout = setTimeout(() => {
               callback();
               this[name] = null;
