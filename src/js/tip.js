@@ -320,14 +320,13 @@
         triggerElement.getAttribute(this.attrName('direction')).split(' ') :
         this.defaultDirection;
       let directionClassNames = compoundDirection.map(this.className);
-      if (directionClassNames.reduce((memo, className) => {
+      if (!directionClassNames.reduce((memo, className) => {
         return memo && classList.contains(className);
       }, true)) {
-        return;
+        this.debugLog('update direction class', compoundDirection);
+        classList.remove(...(['top', 'bottom', 'right', 'left'].map(this.className)));
+        classList.add(...directionClassNames);
       }
-      this.debugLog('update direction class', compoundDirection);
-      classList.remove(...(['top', 'bottom', 'right', 'left'].map(this.className)));
-      classList.add(...directionClassNames);
 
       this._currentTriggerElement = triggerElement;
     }
