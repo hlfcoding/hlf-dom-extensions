@@ -63,6 +63,7 @@
   class Tip {
     constructor(elements, options, contextElement) {
       this._bounds = null;
+      this._currentTriggerElement = null;
       this._state = null;
       this._stemSize = null;
     }
@@ -73,7 +74,6 @@
       }
       this.element = document.createElement('div');
       this._updateState('asleep');
-      this._currentTriggerElement = null;
       this._renderElement();
       this._toggleContextMutationObserver(true);
       this._toggleElementEventListeners(true);
@@ -116,14 +116,13 @@
         this._updateElementPosition(triggerElement, event);
         return;
       }
-      let animated = !this.isSleeping;
-      if (!animated) {
+      let delayed = !this.isSleeping;
+      if (!delayed) {
         this.debugLog('staying awake');
       }
       this._updateState('waking', { event });
       this._updateElementPosition(triggerElement, event);
-      let delay = !animated ? 0 : this.toggleDelay;
-      this.setTimeout('_wakeCountdown', delay, () => {
+      this.setTimeout('_wakeCountdown', (!delayed ? 0 : this.toggleDelay), () => {
         this._toggleElement(true, () => {
           this._updateState('awake', { event });
         });
@@ -419,9 +418,11 @@
             this.attrName('has-tip-focus'), this.isAwake
           );
         }
-        if (this.snapToTrigger && this.isAwake) {
-          this.element.style.visibility = 'visible';
-          this._offsetStart = { left: event.detail.pageX, top: event.detail.pageY };
+        if (this.isAwake) {
+          if (this.snapToTrigger) {
+            this.element.style.visibility = 'visible';
+            this._offsetStart = { left: event.detail.pageX, top: event.detail.pageY };
+          }
         }
       } else if (this.isSleeping) {
         this.setTimeout('_wakeCountdown', null);
