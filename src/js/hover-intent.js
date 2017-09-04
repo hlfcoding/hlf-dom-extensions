@@ -181,7 +181,7 @@
         y.previous = pageY;
         return;
       }
-      const { abs, pow, sqrt } = Math;
+      const { pow, sqrt } = Math;
       let dMove;
       this.intentional = x.current == null || y.current == null;
       if (!this.intentional) {
