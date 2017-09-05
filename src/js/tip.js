@@ -107,20 +107,10 @@
     }
     performWake({ triggerElement, event }) {
       this._updateCurrentTriggerElement(triggerElement);
-      if (
-        this.isAwake || this.isWaking ||
-        event.type == hlf.hoverIntent.eventName('track')
-      ) {
-        if (!hlf.hoverIntent.debug) {
-          this.debugLog('quick update');
-        }
-        this._updateElementPosition(triggerElement, event);
-        return;
-      }
+      if (this.isAwake || this.isWaking) { return; }
+
       let delayed = !this.isSleeping;
-      if (!delayed) {
-        this.debugLog('staying awake');
-      }
+      if (!delayed) { this.debugLog('staying awake'); }
       this._updateState('waking', { event });
       this._updateElementPosition(triggerElement, event);
       this.setTimeout('_wakeCountdown', (!delayed ? 0 : this.toggleDelay), () => {
@@ -240,8 +230,12 @@
         } else if (!this.isSleeping) {
           this._isForceSleeping = false;
         }
+      } else {
+        this._updateCurrentTriggerElement(triggerElement);
       }
-      this.performWake({ triggerElement, event });
+      if (!this.isAsleep) {
+        this._updateElementPosition(triggerElement, event);
+      }
     }
     _onWindowResize(event) {
       this._updateMetrics();
