@@ -68,6 +68,7 @@
       this._sleepingPosition = null;
       this._state = null;
       this._stemSize = null;
+      this._toggleCountdown = null;
     }
     init() {
       if (!this.snapToTrigger) {
@@ -99,7 +100,7 @@
       if (!force && (this.isAsleep || this.isSleeping)) { return; }
 
       this._updateState('sleeping', { event });
-      this.setTimeout('_sleepCountdown', (force ? 0 : this.toggleDelay), () => {
+      this.setTimeout('_toggleCountdown', (force ? 0 : this.toggleDelay), () => {
         this._toggleElement(false, () => {
           this._updateState('asleep', { event });
         });
@@ -113,7 +114,7 @@
       if (!delayed) { this.debugLog('staying awake'); }
       this._updateState('waking', { event });
       this._updateElementPosition(triggerElement, event);
-      this.setTimeout('_wakeCountdown', (!delayed ? 0 : this.toggleDelay), () => {
+      this.setTimeout('_toggleCountdown', (!delayed ? 0 : this.toggleDelay), () => {
         this._toggleElement(true, () => {
           this._updateState('awake', { event });
         });
@@ -434,13 +435,11 @@
         }
       } else if (this.isSleeping) {
         this._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
-        this.setTimeout('_wakeCountdown', null);
         if (this.snapToTrigger) {
           this._offsetStart = null;
         }
       } else if (this.isWaking) {
         this._sleepingPosition = null;
-        this.setTimeout('_sleepCountdown', null);
       }
     }
     _updateTriggerAnchoring(triggerElement) {
