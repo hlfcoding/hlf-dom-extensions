@@ -30,6 +30,7 @@
       hasFollowing: true,
       hasListeners: false,
       hasStem: true,
+      maxLeaveDistanceToStay: 50,
       toggleDelay: 700,
       snapToTrigger: false,
       snapToXAxis: false,
@@ -64,6 +65,7 @@
     constructor(elements, options, contextElement) {
       this._bounds = null;
       this._currentTriggerElement = null;
+      this._sleepingPosition = null;
       this._state = null;
       this._stemSize = null;
     }
@@ -93,12 +95,11 @@
     get isSleeping() { return this._state === 'sleeping'; }
     get isAwake() { return this._state === 'awake'; }
     get isWaking() { return this._state === 'waking'; }
-    performSleep({ triggerElement, event }) {
-      if (this.isAsleep || this.isSleeping) {
-        return;
-      }
+    performSleep({ triggerElement, event, force }) {
+      if (!force && (this.isAsleep || this.isSleeping)) { return; }
+
       this._updateState('sleeping', { event });
-      this.setTimeout('_sleepCountdown', this.toggleDelay, () => {
+      this.setTimeout('_sleepCountdown', (force ? 0 : this.toggleDelay), () => {
         this._toggleElement(false, () => {
           this._updateState('asleep', { event });
         });
@@ -226,6 +227,19 @@
       let triggerElement = event.target;
       if (!triggerElement.classList.contains(this.className('trigger'))) {
         triggerElement = this._currentTriggerElement;
+        if (this.isSleeping && !this._isForceSleeping) {
+          const { abs, pow, sqrt } = Math;
+          const { x, y } = this._sleepingPosition;
+          const { pageX, pageY } = event.detail;
+          let distance = parseInt(sqrt(pow(pageX - x, 2) + pow(pageY - y, 2)));
+          this.debugLog('leave distance', distance);
+          if (distance > this.maxLeaveDistanceToStay) {
+            this._isForceSleeping = true;
+            this.performSleep({ triggerElement, event, force: true });
+          }
+        } else if (!this.isSleeping) {
+          this._isForceSleeping = false;
+        }
       }
       this.performWake({ triggerElement, event });
     }
@@ -425,11 +439,13 @@
           }
         }
       } else if (this.isSleeping) {
+        this._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
         this.setTimeout('_wakeCountdown', null);
         if (this.snapToTrigger) {
           this._offsetStart = null;
         }
       } else if (this.isWaking) {
+        this._sleepingPosition = null;
         this.setTimeout('_sleepCountdown', null);
       }
     }
