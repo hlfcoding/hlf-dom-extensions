@@ -196,13 +196,13 @@
       this._updateTriggerElements(triggerElements);
       this.elements = this.elements.concat(triggerElements);
     }
-    _onElementMouseEnter(event) {
+    _onContentElementMouseEnter(event) {
       this.debugLog('enter tip');
       let triggerElement = this._currentTriggerElement;
       if (!triggerElement) { return; }
       this.performWake({ triggerElement, event });
     }
-    _onElementMouseLeave(event) {
+    _onContentElementMouseLeave(event) {
       this.debugLog('leave tip');
       let triggerElement = this._currentTriggerElement;
       if (!triggerElement) { return; }
@@ -299,9 +299,9 @@
     }
     _toggleElementEventListeners(on) {
       this.toggleEventListeners(on, {
-        'mouseenter': this._onElementMouseEnter,
-        'mouseleave': this._onElementMouseLeave,
-      }, this.element);
+        'mouseenter': this._onContentElementMouseEnter,
+        'mouseleave': this._onContentElementMouseLeave,
+      }, this._contentElement);
     }
     _toggleTriggerElementEventListeners(on) {
       if (this.hoverIntent || !on) {
