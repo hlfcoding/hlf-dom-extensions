@@ -218,19 +218,7 @@
       let triggerElement = event.target;
       if (!triggerElement.classList.contains(this.className('trigger'))) {
         triggerElement = this._currentTriggerElement;
-        if (this.isSleeping && !this._isForceSleeping) {
-          const { abs, pow, sqrt } = Math;
-          const { x, y } = this._sleepingPosition;
-          const { pageX, pageY } = event.detail;
-          let distance = parseInt(sqrt(pow(pageX - x, 2) + pow(pageY - y, 2)));
-          this.debugLog('leave distance', distance);
-          if (distance > this.maxLeaveDistanceToStay) {
-            this._isForceSleeping = true;
-            this.performSleep({ triggerElement, event, force: true });
-          }
-        } else if (!this.isSleeping) {
-          this._isForceSleeping = false;
-        }
+        this._sleepEarlyIfNeeded(triggerElement, event);
       } else {
         this._updateCurrentTriggerElement(triggerElement);
       }
@@ -261,6 +249,21 @@
           snapClassNames.push('snap-y-side');
         }
         this.element.classList.add(...(snapClassNames.map(this.className)));
+      }
+    }
+    _sleepEarlyIfNeeded(triggerElement, event) {
+      if (this.isSleeping && !this._isForceSleeping) {
+        const { abs, pow, sqrt } = Math;
+        const { x, y } = this._sleepingPosition;
+        const { pageX, pageY } = event.detail;
+        let distance = parseInt(sqrt(pow(pageX - x, 2) + pow(pageY - y, 2)));
+        this.debugLog('leave distance', distance);
+        if (distance > this.maxLeaveDistanceToStay) {
+          this._isForceSleeping = true;
+          this.performSleep({ triggerElement, event, force: true });
+        }
+      } else if (!this.isSleeping) {
+        this._isForceSleeping = false;
       }
     }
     _toggleContextMutationObserver(on) {
