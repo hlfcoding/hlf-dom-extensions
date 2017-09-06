@@ -33,6 +33,46 @@
       className: 'default-call',
       vars: { placeholderText },
     }));
+    tests.push(createVisualTest({
+      label: 'snapping with a list',
+      template({ itemCount, placeholderText }) {
+        let itemsHtml = '';
+        [...Array(itemCount)].forEach((_, i) => {
+          itemsHtml += (
+`<li>
+  <a class="trigger" title="This is list item ${i + 1} in detail." href="javascript:">
+    tooltip trigger
+  </a>
+</li>`
+          );
+        });
+        return (
+`<ul class="list">
+  ${itemsHtml}
+</ul>`
+        );
+      },
+      footerHtml: `<button name="list-append">load more</button>`,
+      beforeTest(testElement, vars) {
+        createVisualTest.setupAppendButton({
+          testElement,
+          listSelector: '.list',
+          onAppend(newElement) {
+            vars.itemCount += 1;
+            let triggerElement = newElement.querySelector('[title]');
+            triggerElement.title = triggerElement.title.replace(/\d/, vars.itemCount + 1);
+          },
+        });
+      },
+      test(testElement) {
+        let triggerElements = testElement.querySelectorAll('[title]');
+        tip(triggerElements, { snapToYAxis: true }, testElement);
+        let instance = tip(testElement);
+      },
+      anchorName: 'snapping-vertically',
+      className: 'list-call',
+      vars: { itemCount: 3, placeholderText },
+    }));
     runVisualTests(tests);
   });
 
