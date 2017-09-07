@@ -73,7 +73,6 @@
     init() {
       if (!this.snapToTrigger) {
         this.snapToTrigger = this.snapToXAxis || this.snapToYAxis;
-        this._offsetStart = null;
       }
       this.element = document.createElement('div');
       this._updateState('asleep');
@@ -433,14 +432,10 @@
         if (this.isAwake) {
           if (this.snapToTrigger) {
             this.element.style.visibility = 'visible';
-            this._offsetStart = { left: event.detail.pageX, top: event.detail.pageY };
           }
         }
       } else if (this.isSleeping) {
         this._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
-        if (this.snapToTrigger) {
-          this._offsetStart = null;
-        }
       } else if (this.isWaking) {
         this._sleepingPosition = null;
       }
