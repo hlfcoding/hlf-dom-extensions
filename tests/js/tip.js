@@ -13,6 +13,7 @@
   define(['hlf/core', 'test/base', 'hlf/tip'], function(hlf, base, tip) {
     let tests = [];
     const { createVisualTest, placeholderText, runVisualTests } = base;
+
     tests.push(createVisualTest({
       label: 'by default',
       template({ placeholderText }) {
@@ -33,6 +34,7 @@
       className: 'default-call',
       vars: { placeholderText },
     }));
+
     tests.push(createVisualTest({
       label: 'snapping with a list',
       template({ itemCount, placeholderText }) {
@@ -73,6 +75,7 @@
       className: 'list-call',
       vars: { itemCount: 3, placeholderText },
     }));
+
     runVisualTests(tests);
   });
 
