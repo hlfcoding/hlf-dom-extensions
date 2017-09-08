@@ -112,11 +112,11 @@
       let delayed = !this.isSleeping;
       if (!delayed) { this.debugLog('staying awake'); }
       this._updateState('waking', { event });
-      this._updateElementPosition(triggerElement, event);
       this.setTimeout('_toggleCountdown', (!delayed ? 0 : this.toggleDelay), () => {
         this._toggleElement(true, () => {
           this._updateState('awake', { event });
         });
+        this._updateElementPosition(triggerElement, event);
       });
     }
     //
@@ -353,6 +353,7 @@
         this.debugLog(offset);
         // Note vertical directions already account for stem-size.
         if (this.snapToXAxis) {
+          offset.top = triggerElement.offsetTop;
           if (this._isTriggerDirection('bottom', triggerElement)) {
             offset.top += triggerElement.offsetHeight;
           }
@@ -362,13 +363,14 @@
           }
         }
         if (this.snapToYAxis) {
+          offset.left = triggerElement.offsetLeft;
           if (this._isTriggerDirection('right', triggerElement)) {
             offset.left += triggerElement.offsetWidth + this._getStemSize();
           } else if (this._isTriggerDirection('left', triggerElement)) {
             offset.left -= this._getStemSize();
           }
           if (!this.snapToXAxis) {
-            offset.top -= this.element.offsetHeight / 2 - this._getStemSize();
+            offset.top -= this.element.offsetHeight / 2;
           }
         }
         let toTriggerOnly = !this.snapToXAxis && !this.snapToYAxis;
