@@ -77,6 +77,34 @@
       vars: { itemCount: 3, placeholderText },
     }));
 
+    tests.push(createVisualTest({
+      label: 'snapping with a bar',
+      template({ itemCount, placeholderText }) {
+        let itemsHtml = '';
+        [...Array(itemCount)].forEach((_, i) => {
+          itemsHtml += (
+`<a class="trigger" title="This is bar item ${i + 1} in detail." href="javascript:">tooltip trigger</a>`
+          );
+        });
+        return (
+`<nav class="bar">
+  ${itemsHtml}
+</nav>`
+        );
+      },
+      test(testElement) {
+        let triggerElements = testElement.querySelectorAll('[title]');
+        tip(triggerElements, {
+          maxLeaveDistanceToStay: 0,
+          snapToXAxis: true,
+        }, testElement);
+        let instance = tip(testElement);
+      },
+      anchorName: 'snapping-horizontally',
+      className: 'bar-call',
+      vars: { itemCount: 3, placeholderText },
+    }));
+
     runVisualTests(tests);
   });
 
