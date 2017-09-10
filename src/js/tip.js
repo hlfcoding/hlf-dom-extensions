@@ -63,6 +63,7 @@
   //
   class Tip {
     constructor(elements, options, contextElement) {
+      this.hoverIntent = null;
       this._bounds = null;
       this._currentTriggerElement = null;
       this._sleepingPosition = null;
@@ -305,6 +306,7 @@
     _toggleTriggerElementEventListeners(on) {
       if (this.hoverIntent || !on) {
         this.hoverIntent('remove');
+        this.hoverIntent = null;
       }
       if (on) {
         this.hoverIntent = hoverIntent(this.elements, this.contextElement);
