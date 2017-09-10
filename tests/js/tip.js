@@ -132,6 +132,30 @@
       vars: { itemCount: 24 },
     }));
 
+    tests.push(createVisualTest({
+      label: 'snapping to corners',
+      template({ placeholderText }) {
+        return (
+`<a class="trigger top right" title="${placeholderText.short}" href="javascript:">
+  top right corner
+</a>
+<a class="affixed trigger bottom left" title="${placeholderText.short}" href="javascript:">
+  bottom left corner
+</a>
+<a class="affixed trigger bottom right" title="${placeholderText.short}" href="javascript:">
+  bottom right corner
+</a>`
+        );
+      },
+      test(fragmentElements) {
+        tip(fragmentElements, { snapToTrigger: true });
+      },
+      anchorName: 'corner-cases',
+      asFragments: true,
+      className: 'edge-call',
+      vars: { placeholderText },
+    }));
+
     runVisualTests(tests);
   });
 
