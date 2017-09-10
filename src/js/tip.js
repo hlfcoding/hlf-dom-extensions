@@ -118,7 +118,9 @@
         this._toggleElement(true, () => {
           this._updateState('awake', { event });
         });
-        this._updateElementPosition(triggerElement, event);
+        if (event.target !== this._contentElement) {
+          this._updateElementPosition(triggerElement, event);
+        }
       });
     }
     //
