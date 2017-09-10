@@ -391,10 +391,6 @@
         }
       }
       this.element.style.transform = `translate(${offset.left}px, ${offset.top}px)`;
-
-      if (this.snapToTrigger) {
-        this.element.style.visibility = 'hidden';
-      }
     }
     _updateMetrics() {
       let { viewportElement } = this;
@@ -430,11 +426,6 @@
           this._currentTriggerElement.setAttribute(
             this.attrName('has-tip-focus'), this.isAwake
           );
-        }
-        if (this.isAwake) {
-          if (this.snapToTrigger) {
-            this.element.style.visibility = 'visible';
-          }
         }
       } else if (this.isSleeping) {
         this._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
