@@ -63,6 +63,7 @@
   //
   class Tip {
     constructor(elements, options, contextElement) {
+      this.elementHoverIntent = null;
       this.hoverIntent = null;
       this._bounds = null;
       this._currentTriggerElement = null;
@@ -298,10 +299,18 @@
       });
     }
     _toggleElementEventListeners(on) {
-      this.toggleEventListeners(on, {
-        'mouseenter': this._onContentElementMouseEnter,
-        'mouseleave': this._onContentElementMouseLeave,
-      }, this._contentElement);
+      if (this.elementHoverIntent || !on) {
+        this.elementHoverIntent('remove');
+        this.elementHoverIntent = null;
+      }
+      if (on) {
+        this.elementHoverIntent = hoverIntent(this._contentElement);
+      }
+      const { eventName } = hlf.hoverIntent;
+      let listeners = {};
+      listeners[eventName('enter')] = this._onContentElementMouseEnter;
+      listeners[eventName('leave')] = this._onContentElementMouseLeave;
+      this.toggleEventListeners(on, listeners, this._contentElement);
     }
     _toggleTriggerElementEventListeners(on) {
       if (this.hoverIntent || !on) {
