@@ -148,7 +148,7 @@
         );
       },
       test(fragmentElements) {
-        tip(fragmentElements, { snapToTrigger: true });
+        tip(fragmentElements, { snapToTrigger: true }, document.body);
       },
       anchorName: 'corner-cases',
       asFragments: true,
