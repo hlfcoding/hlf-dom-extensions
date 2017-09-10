@@ -42,9 +42,7 @@
         [...Array(itemCount)].forEach((_, i) => {
           itemsHtml += (
 `<li>
-  <a class="trigger" title="This is list item ${i + 1} in detail." href="javascript:">
-    tooltip trigger
-  </a>
+  <a class="trigger" title="This is list item ${i + 1} in detail." href="javascript:">tooltip trigger</a>
 </li>`
           );
         });
@@ -68,7 +66,10 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, { snapToYAxis: true }, testElement);
+        tip(triggerElements, {
+          maxLeaveDistanceToStay: 0,
+          snapToYAxis: true,
+        }, testElement);
         let instance = tip(testElement);
       },
       anchorName: 'snapping-vertically',
