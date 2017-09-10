@@ -105,6 +105,33 @@
       vars: { itemCount: 3, placeholderText },
     }));
 
+    tests.push(createVisualTest({
+      label: 'snapping with a grid',
+      template({ itemCount }) {
+        let itemsHtml = '';
+        [...Array(itemCount)].forEach((_, i) => {
+          itemsHtml += (
+`<li>
+  <img src="resources/avatar.png" alt="This is avatar ${i + 1} in detail.">
+</li>`
+          );
+        });
+        return (
+`<ul class="grid">
+  ${itemsHtml}
+</ul>`
+        );
+      },
+      test(testElement) {
+        let triggerElements = testElement.querySelectorAll('[alt]');
+        tip(triggerElements, { snapToXAxis: true }, testElement);
+        let instance = tip(testElement);
+      },
+      anchorName: 'a-model-use-case',
+      className: 'grid-call',
+      vars: { itemCount: 24 },
+    }));
+
     runVisualTests(tests);
   });
 
