@@ -59,8 +59,7 @@ panel-skin
 .list .item,
 .list .bar > a,
 .list li.no-a,
-.list li:not(.no-a) > a,
-.edge-call > .visual-test-fragment {
+.list li:not(.no-a) > a {
   background-clip: padding-box;
   background-color: var(--fill-color);
   border: var(--line-size) solid var(--line-color);
@@ -81,8 +80,7 @@ panel-skin
 .list .item:hover,
 .list .bar > a:hover,
 .list li.no-a:hover,
-.list li:not(.no-a) > a:hover,
-.edge-call > .visual-test-fragment:hover {
+.list li:not(.no-a) > a:hover {
   background-color: #fff;
 }
 
@@ -238,36 +236,23 @@ section.visual-test footer:not(:empty) > button {
 /*
 alternative test container styles
 */
-.edge-call > .visual-test-fragment,
 .edge {
   position: absolute;
 }
-.edge-call > .visual-test-fragment.affixed,
 .edge.affixed {
   position: fixed;
 }
-.edge-call > .visual-test-fragment.top,
 .edge.top {
   top: 1rem;
 }
-.edge-call > .visual-test-fragment.right,
 .edge.right {
   right: 1rem;
 }
-.edge-call > .visual-test-fragment.bottom,
 .edge.bottom {
   bottom: 1rem;
 }
-.edge-call > .visual-test-fragment.left,
 .edge.left {
   left: 1rem;
-}
-.edge-call:not(body) {
-  position: relative;
-}
-.edge-call > .visual-test-fragment {
-  border-radius: var(--radius-size);
-  padding: 1rem;
 }
 
 /*
