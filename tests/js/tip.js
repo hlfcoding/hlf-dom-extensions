@@ -136,23 +136,26 @@
       label: 'snapping to corners',
       template({ placeholderText }) {
         return (
-`<a class="trigger top right" title="${placeholderText.short}" href="javascript:">
-  top right corner
-</a>
-<a class="affixed trigger bottom left" title="${placeholderText.short}" href="javascript:">
-  bottom left corner
-</a>
-<a class="affixed trigger bottom right" title="${placeholderText.short}" href="javascript:">
-  bottom right corner
-</a>`
+`<div class="box" style="height:6em">
+  <a class="trigger edge top right" title="${placeholderText.short}" href="javascript:">
+    top right corner
+  </a>
+  <a class="trigger edge bottom left" title="${placeholderText.short}" href="javascript:">
+    bottom left corner
+  </a>
+  <a class="trigger edge bottom right" title="${placeholderText.short}" href="javascript:">
+    bottom right corner
+  </a>
+</div>`
         );
       },
-      test(fragmentElements) {
-        tip(fragmentElements, { snapToTrigger: true }, document.body);
+      test(testElement) {
+        let triggerElements = testElement.querySelectorAll('[title]');
+        tip(triggerElements, { snapToTrigger: true }, testElement);
+        let instance = tip(testElement);
       },
       anchorName: 'corner-cases',
-      asFragments: true,
-      className: 'edge-call',
+      className: 'corners-call',
       vars: { placeholderText },
     }));
 

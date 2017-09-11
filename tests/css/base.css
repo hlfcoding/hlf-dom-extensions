@@ -262,6 +262,7 @@ other
   border-radius: var(--radius-size);
   margin: 1rem 0;
   padding: 1rem;
+  position: relative;
 }
 .list > a,
 .list .item,

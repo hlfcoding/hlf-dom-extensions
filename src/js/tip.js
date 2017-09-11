@@ -270,7 +270,6 @@
       }
     }
     _toggleContextMutationObserver(on) {
-      if (this.contextElement === document.body) { return; }
       if (!this._contextObserver) {
         this._contextObserver = new MutationObserver(this._onContextMutation);
         this._contextObserver.connect = () => {
