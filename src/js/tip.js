@@ -168,9 +168,14 @@
       return size;
     }
     _getTriggerOffset(triggerElement) {
-      if (getComputedStyle(triggerElement).position === 'fixed') {
-        let { left, top } = triggerElement.getBoundingClientRect();
-        return { left, top };
+      const { position } = getComputedStyle(triggerElement);
+      if (position === 'fixed' || position === 'absolute') {
+        const triggerRect = triggerElement.getBoundingClientRect();
+        const viewportRect = this.viewportElement.getBoundingClientRect();
+        return {
+          left: triggerRect.left - viewportRect.left,
+          top: triggerRect.top - viewportRect.top,
+        };
       } else {
         return {
           left: triggerElement.offsetLeft, top: triggerElement.offsetTop
