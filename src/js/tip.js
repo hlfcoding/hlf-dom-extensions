@@ -76,6 +76,9 @@
       if (!this.snapToTrigger) {
         this.snapToTrigger = this.snapToXAxis || this.snapToYAxis;
       }
+      if (this.snapToXAxis && this.snapToYAxis) {
+        this.snapToYAxis = false;
+      }
       this.element = document.createElement('div');
       this._updateState('asleep');
       this._renderElement();
@@ -370,10 +373,7 @@
           if (this._isTriggerDirection('bottom', triggerElement)) {
             offset.top += triggerElement.offsetHeight;
           }
-          if (!this.snapToYAxis) {
-            // Note arbitrary buffer offset.
-            offset.left -= this.element.offsetWidth / 2;
-          }
+          offset.left -= this.element.offsetWidth / 2;
         }
         if (this.snapToYAxis) {
           offset.left = triggerElement.offsetLeft;
@@ -382,9 +382,7 @@
           } else if (this._isTriggerDirection('left', triggerElement)) {
             offset.left -= this._getStemSize();
           }
-          if (!this.snapToXAxis) {
-            offset.top -= this.element.offsetHeight / 2;
-          }
+          offset.top -= this.element.offsetHeight / 2;
         }
         let toTriggerOnly = !this.snapToXAxis && !this.snapToYAxis;
         if (toTriggerOnly && this._isTriggerDirection('bottom', triggerElement)) {
