@@ -65,7 +65,6 @@
     constructor(elements, options, contextElement) {
       this.elementHoverIntent = null;
       this.hoverIntent = null;
-      this._bounds = null;
       this._currentTriggerElement = null;
       this._sleepingPosition = null;
       this._state = null;
@@ -84,8 +83,8 @@
       this._renderElement();
       this._toggleContextMutationObserver(true);
       this._toggleElementEventListeners(true);
-      this._updateTriggerElements();
       this._toggleTriggerElementEventListeners(true);
+      setTimeout(this._updateTriggerElements, 0);
     }
     deinit() {
       this.element.parentNode.removeChild(this.element);
@@ -236,9 +235,6 @@
       if (!this.isAsleep) {
         this._updateElementPosition(triggerElement, event);
       }
-    }
-    _onWindowResize(event) {
-      this._updateMetrics();
     }
     _renderElement() {
       if (this.element.innerHTML.length) { return; }
@@ -408,24 +404,6 @@
       }
       this.element.style.transform = `translate(${offset.left}px, ${offset.top}px)`;
     }
-    _updateMetrics() {
-      let { viewportElement } = this;
-      let innerHeight, innerWidth;
-      if (viewportElement == document.body) {
-        innerHeight = window.innerHeight;
-        innerWidth = window.innerWidth;
-      } else {
-        innerHeight = viewportElement.clientHeight;
-        innerWidth = viewportElement.clientWidth;
-      }
-      const { paddingLeft, paddingTop } = getComputedStyle(this.viewportElement);
-      this._bounds = {
-        top: parseFloat(paddingTop),
-        left: parseFloat(paddingLeft),
-        bottom: innerHeight,
-        right: innerWidth,
-      };
-    }
     _updateState(state, { event } = {}) {
       if (state === this._state) { return; }
       this._state = state;
@@ -455,20 +433,17 @@
       let width = triggerElement.offsetWidth;
       let tip = this._getElementSize(triggerElement);
       this.debugLog({ offset, height, width, tip });
+      const viewportRect = this.viewportElement.getBoundingClientRect();
       let newDirection = this.defaultDirection.map((d) => {
-        if (!this._bounds) {
-          this._updateMetrics();
-        }
-        const bounds = this._bounds;
         let edge, fits;
         if (d === 'bottom') {
-          fits = (edge = offset.top + height + tip.height) && bounds.bottom > edge;
+          fits = (edge = offset.top + height + tip.height) && edge <= viewportRect.height;
         } else if (d === 'right') {
-          fits = (edge = offset.left + tip.width) && bounds.right > edge;
+          fits = (edge = offset.left + tip.width) && edge <= viewportRect.width;
         } else if (d === 'top') {
-          fits = (edge = offset.top - tip.height) && bounds.top < edge;
+          fits = (edge = offset.top - tip.height) && edge >= 0;
         } else if (d === 'left') {
-          fits = (edge = offset.left - tips.width) && bounds.left < edge;
+          fits = (edge = offset.left - tips.width) && edge >= 0;
         } else {
           fits = true;
         }
