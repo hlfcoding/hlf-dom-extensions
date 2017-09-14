@@ -367,27 +367,29 @@
       let offset = { left: event.detail.pageX, top: event.detail.pageY };
 
       if (this.snapToTrigger) {
+        let triggerOffset = this._getTriggerOffset(triggerElement);
+        let toTriggerOnly = !this.snapToXAxis && !this.snapToYAxis;
         this.debugLog(offset);
         // Note vertical directions already account for stem-size.
-        if (this.snapToXAxis) {
-          offset.top = triggerElement.offsetTop;
+        if (this.snapToXAxis || toTriggerOnly) {
+          offset.top = triggerOffset.top;
           if (this._isTriggerDirection('bottom', triggerElement)) {
             offset.top += triggerElement.offsetHeight;
           }
-          offset.left -= this.element.offsetWidth / 2;
-        }
-        if (this.snapToYAxis) {
-          offset.left = triggerElement.offsetLeft;
-          if (this._isTriggerDirection('right', triggerElement)) {
-            offset.left += triggerElement.offsetWidth + this._getStemSize();
-          } else if (this._isTriggerDirection('left', triggerElement)) {
-            offset.left -= this._getStemSize();
+          if (!toTriggerOnly) {
+            offset.left -= this.element.offsetWidth / 2;
           }
-          offset.top -= this.element.offsetHeight / 2;
         }
-        let toTriggerOnly = !this.snapToXAxis && !this.snapToYAxis;
-        if (toTriggerOnly && this._isTriggerDirection('bottom', triggerElement)) {
-          offset.top += triggerElement.offsetHeight;
+        if (this.snapToYAxis || toTriggerOnly) {
+          offset.left = triggerOffset.left;
+          if (!toTriggerOnly) {
+            if (this._isTriggerDirection('right', triggerElement)) {
+              offset.left += triggerElement.offsetWidth + this._getStemSize();
+            } else if (this._isTriggerDirection('left', triggerElement)) {
+              offset.left -= this._getStemSize();
+            }
+            offset.top -= this.element.offsetHeight / 2;
+          }
         }
       }
 
