@@ -369,7 +369,6 @@
       if (this.snapToTrigger) {
         let triggerOffset = this._getTriggerOffset(triggerElement);
         let toTriggerOnly = !this.snapToXAxis && !this.snapToYAxis;
-        this.debugLog(offset);
         // Note vertical directions already account for stem-size.
         if (this.snapToXAxis || toTriggerOnly) {
           offset.top = triggerOffset.top;
