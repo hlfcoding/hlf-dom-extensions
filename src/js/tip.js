@@ -422,6 +422,9 @@
             this.attrName('has-tip-focus'), this.isAwake
           );
         }
+        if (this.hoverIntent) {
+          this.hoverIntent('configure', { interval: this.isAwake ? 100 : 'default' });
+        }
       } else if (this.isSleeping) {
         this._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
       } else if (this.isWaking) {
