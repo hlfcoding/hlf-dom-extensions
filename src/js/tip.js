@@ -30,7 +30,6 @@
       hasFollowing: true,
       hasListeners: false,
       hasStem: true,
-      maxLeaveDistanceToStay: 50,
       toggleDelay: 700,
       snapToTrigger: false,
       snapToXAxis: false,
@@ -99,11 +98,11 @@
     get isSleeping() { return this._state === 'sleeping'; }
     get isAwake() { return this._state === 'awake'; }
     get isWaking() { return this._state === 'waking'; }
-    performSleep({ triggerElement, event, force }) {
-      if (!force && (this.isAsleep || this.isSleeping)) { return; }
+    performSleep({ triggerElement, event }) {
+      if (this.isAsleep || this.isSleeping) { return; }
 
       this._updateState('sleeping', { event });
-      this.setTimeout('_toggleCountdown', (force ? 0 : this.toggleDelay), () => {
+      this.setTimeout('_toggleCountdown', this.toggleDelay, () => {
         this._toggleElement(false, () => {
           this._updateState('asleep', { event });
         });
@@ -226,11 +225,10 @@
     }
     _onTriggerElementMouseMove(event) {
       let triggerElement = event.target;
-      if (!triggerElement.classList.contains(this.className('trigger'))) {
-        triggerElement = this._currentTriggerElement;
-        this._sleepEarlyIfNeeded(triggerElement, event);
-      } else {
+      if (triggerElement.classList.contains(this.className('trigger'))) {
         this._updateCurrentTriggerElement(triggerElement);
+      } else {
+        triggerElement = this._currentTriggerElement;
       }
       if (!this.isAsleep) {
         this._updateElementPosition(triggerElement, event);
@@ -256,21 +254,6 @@
           snapClassNames.push('snap-y-side');
         }
         this.element.classList.add(...(snapClassNames.map(this.className)));
-      }
-    }
-    _sleepEarlyIfNeeded(triggerElement, event) {
-      if (this.isSleeping && !this._isForceSleeping) {
-        const { abs, pow, sqrt } = Math;
-        const { x, y } = this._sleepingPosition;
-        const { pageX, pageY } = event.detail;
-        let distance = parseInt(sqrt(pow(pageX - x, 2) + pow(pageY - y, 2)));
-        this.debugLog('leave distance', distance);
-        if (distance > this.maxLeaveDistanceToStay) {
-          this._isForceSleeping = true;
-          this.performSleep({ triggerElement, event, force: true });
-        }
-      } else if (!this.isSleeping) {
-        this._isForceSleeping = false;
       }
     }
     _toggleContextMutationObserver(on) {

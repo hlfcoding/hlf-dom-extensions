@@ -66,10 +66,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, {
-          maxLeaveDistanceToStay: 0,
-          snapToYAxis: true,
-        }, testElement);
+        tip(triggerElements, { snapToYAxis: true }, testElement);
         let instance = tip(testElement);
       },
       anchorName: 'snapping-vertically',
@@ -94,10 +91,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, {
-          maxLeaveDistanceToStay: 0,
-          snapToXAxis: true,
-        }, testElement);
+        tip(triggerElements, { snapToXAxis: true }, testElement);
         let instance = tip(testElement);
       },
       anchorName: 'snapping-horizontally',
