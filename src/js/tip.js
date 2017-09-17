@@ -224,15 +224,19 @@
       this.performSleep({ triggerElement: event.target, event });
     }
     _onTriggerElementMouseMove(event) {
-      let triggerElement = event.target;
-      if (triggerElement.classList.contains(this.className('trigger'))) {
-        this._updateCurrentTriggerElement(triggerElement);
-      } else {
-        triggerElement = this._currentTriggerElement;
+      const { target } = event;
+      if (target.classList.contains(this.className('trigger'))) {
+        this._updateCurrentTriggerElement(target);
       }
-      if (!this.isAsleep) {
-        this._updateElementPosition(triggerElement, event);
+      if (
+        this.isAsleep || !this._currentTriggerElement || (
+          target !== this._currentTriggerElement &&
+          target !== this._currentTriggerElement.parentElement
+        )
+      ) {
+        return;
       }
+      this._updateElementPosition(this._currentTriggerElement, event);
     }
     _renderElement() {
       if (this.element.innerHTML.length) { return; }
@@ -370,7 +374,7 @@
             } else if (this._isTriggerDirection('left', triggerElement)) {
               offset.left -= this._getStemSize();
             }
-            offset.top -= this.element.offsetHeight / 2;
+            offset.top -= this.element.offsetHeight / 2 + this._getStemSize();
           }
         }
       }
