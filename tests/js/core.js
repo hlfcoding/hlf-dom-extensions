@@ -128,7 +128,8 @@
       });
       this.someExtension = this.extension(this.someElement);
       this.someExtension('remove');
-      assert.ok(didDeinit, 'Extension calls custom deinit, if any.');
+      assert.ok(didDeinit,
+        'Extension performs "remove" action, calls custom deinit, if any.');
       assert.notOk(this.extension._getInstance(this.someElement),
         'Extension de-registers and frees instance.');
       this.someElement.dispatchEvent(new CustomEvent('sesomeevent'));
@@ -150,6 +151,13 @@
         'Extension stores the classNames option as property.');
       assert.deepEqual(instance.selectors, this.namespace.defaults.selectors,
         'Extension stores the selectors option as property.');
+      const selectors = { someElement: '.foo' };
+      this.someExtension('configure', { selectors });
+      assert.deepEqual(instance.selectors, selectors,
+        'Extension performs "configure" action, compacts new options.');
+      this.someExtension('configure', { selectors: 'default' });
+      assert.deepEqual(instance.selectors, {},
+        'Extension performs "configure" action, restores default options.');
     });
 
     test('custom options', function(assert) {

@@ -402,6 +402,12 @@
           if (!this[methodName]) { return; }
           this[methodName](payload);
         },
+        performConfigure(properties) {
+          Object.keys(properties)
+            .filter(name => properties[name] === 'default')
+            .forEach(name => properties[name] = namespace.defaults[name]);
+          Object.assign(this, properties);
+        },
         performRemove() {
           namespace.extension._deleteInstance(this.rootElement);
           this.destructor();
