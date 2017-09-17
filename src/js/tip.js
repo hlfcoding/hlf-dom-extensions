@@ -407,6 +407,10 @@
     }
     _updateState(state, { event } = {}) {
       if (state === this._state) { return; }
+      if (this._state) {
+        if (state === 'asleep' && !this.isAsleep) { return; }
+        if (state === 'awake' && !this.isWaking) { return; }
+      }
       this._state = state;
       this.debugLog(state);
 
