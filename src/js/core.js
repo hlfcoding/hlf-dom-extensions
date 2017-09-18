@@ -408,6 +408,11 @@
           this[methodName](payload);
         },
         performConfigure(properties) {
+          Object.keys(properties).forEach((name) => {
+            if (name in this || (this.options && name in this.options)) { return; }
+            delete properties[name];
+            throw 'Not an existing option.';
+          });
           Object.keys(properties)
             .filter(name => properties[name] === 'default')
             .forEach(name => properties[name] = namespace.defaults[name]);
