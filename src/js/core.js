@@ -127,11 +127,12 @@
         instances = {};
       }
 
-      let finalSubject = contextElement || subject;
       options = Object.assign({}, defaults, options);
       optionGroupNames.forEach((name) => {
         options[name] = Object.assign({}, defaults[name], options[name]);
       });
+
+      let finalSubject = contextElement || subject;
       if (finalSubject === contextElement) {
         extension._buildInstance(subject, options, contextElement);
       } else {
