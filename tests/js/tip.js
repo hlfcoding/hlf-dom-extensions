@@ -60,7 +60,7 @@
           onAppend(newElement) {
             vars.itemCount += 1;
             let triggerElement = newElement.querySelector('[title]');
-            triggerElement.title = triggerElement.title.replace(/\d/, vars.itemCount + 1);
+            triggerElement.title = triggerElement.title.replace(/\d/, vars.itemCount);
           },
         });
       },
