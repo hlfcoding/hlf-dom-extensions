@@ -285,10 +285,13 @@
     test('as shared instance', function(assert) {
       this.createSomeChildElement();
       this.createTestExtension();
-      this.someExtension = this.extension(this.someElement.children, this.someElement);
+      let subject = (contextElement) => (contextElement.querySelectorAll('.foo'));
+      this.someExtension = this.extension(subject, this.someElement);
       let instance = this.someExtension();
-      assert.deepEqual(instance.elements, Array.from(this.someElement.children),
+      assert.deepEqual(instance.elements, Array.from(subject()),
         'Extension stores the elements as property.');
+      assert.deepEqual(instance.options.querySelector(), subject(),
+        'Extension stores custom query-selector subject as option.');
       assert.strictEqual(instance.contextElement, this.someElement,
         'Extension stores the context element as property.');
       assert.strictEqual(instance.rootElement, instance.contextElement,

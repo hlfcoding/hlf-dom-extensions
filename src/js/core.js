@@ -131,6 +131,10 @@
       optionGroupNames.forEach((name) => {
         options[name] = Object.assign({}, defaults[name], options[name]);
       });
+      if (typeof subject === 'function') {
+        Object.assign(options, { querySelector: subject });
+        subject = subject(contextElement);
+      }
 
       let finalSubject = contextElement || subject;
       if (finalSubject === contextElement) {
