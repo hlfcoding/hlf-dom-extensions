@@ -207,6 +207,7 @@
       });
       this._updateTriggerElements(newTriggerElements);
       this.elements = this.elements.concat(newTriggerElements);
+      this.hoverIntent().elements = this.elements;
     }
     _onContentElementMouseEnter(event) {
       this.debugLog('enter tip');
