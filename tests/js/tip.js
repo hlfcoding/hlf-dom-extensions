@@ -65,7 +65,7 @@
         });
       },
       test(testElement) {
-        let triggerElements = testElement.querySelectorAll('[title]');
+        let triggerElements = (contextElement) => (contextElement.querySelectorAll('[title]'));
         tip(triggerElements, { snapToYAxis: true }, testElement);
         let instance = tip(testElement);
       },

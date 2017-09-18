@@ -193,17 +193,20 @@
       return false;
     }
     _onContextMutation(mutations) {
-      let triggerElements = [];
-      mutations
-        // TODO: Limited.
-        .filter(m => m.target.classList.contains(this.className('content')))
-        .forEach((mutation) => {
-          triggerElements = triggerElements.concat(
-            Array.from(mutation.addedNodes).querySelectorAll('[title],[alt]')
-          );
-        });
-      this._updateTriggerElements(triggerElements);
-      this.elements = this.elements.concat(triggerElements);
+      let newTriggerElements = [];
+      const allTriggerElements = Array.from(this.querySelector(this.contextElement));
+      mutations.forEach((mutation) => {
+        let triggerElements = Array.from(mutation.addedNodes)
+          .filter(n => n instanceof HTMLElement)
+          .map((n) => {
+            let result = this.querySelector(n);
+            return result.length ? result[0] : n;
+          })
+          .filter(n => allTriggerElements.indexOf(n) !== -1);
+        newTriggerElements = newTriggerElements.concat(triggerElements);
+      });
+      this._updateTriggerElements(newTriggerElements);
+      this.elements = this.elements.concat(newTriggerElements);
     }
     _onContentElementMouseEnter(event) {
       this.debugLog('enter tip');
