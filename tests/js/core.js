@@ -287,7 +287,7 @@
       this.createTestExtension();
       this.someExtension = this.extension(this.someElement.children, this.someElement);
       let instance = this.someExtension();
-      assert.equal(instance.elements, this.someElement.children,
+      assert.deepEqual(instance.elements, Array.from(this.someElement.children),
         'Extension stores the elements as property.');
       assert.strictEqual(instance.contextElement, this.someElement,
         'Extension stores the context element as property.');

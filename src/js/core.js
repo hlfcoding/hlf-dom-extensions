@@ -192,7 +192,7 @@
         if (subject instanceof HTMLElement) {
           element = subject;
         } else {
-          elements = subject;
+          elements = Array.from(subject);
         }
         let attrOptions;
         let rootElement = contextElement || element;
