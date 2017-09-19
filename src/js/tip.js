@@ -267,14 +267,10 @@
     _toggleContextMutationObserver(on) {
       if (!this._contextObserver) {
         this._contextObserver = new MutationObserver(this._onContextMutation);
-        this._contextObserver.connect = () => {
-          this._contextObserver.observe(this.contextElement,
-            { childList: true, subtree: true }
-          );
-        };
       }
       if (on) {
-        this._contextObserver.connect();
+        const options = { childList: true, subtree: true };
+        this._contextObserver.observe(this.contextElement, options);
       } else {
         this._contextObserver.disconnect();
       }
