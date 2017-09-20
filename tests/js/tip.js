@@ -66,7 +66,7 @@
       },
       test(testElement) {
         let triggerElements = (contextElement) => (contextElement.querySelectorAll('[title]'));
-        tip(triggerElements, { snapToYAxis: true }, testElement);
+        tip(triggerElements, { snapTo: 'y' }, testElement);
         let instance = tip(testElement);
       },
       anchorName: 'snapping-vertically',
@@ -91,7 +91,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, { snapToXAxis: true }, testElement);
+        tip(triggerElements, { snapTo: 'x' }, testElement);
         let instance = tip(testElement);
       },
       anchorName: 'snapping-horizontally',
@@ -118,7 +118,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[alt]');
-        tip(triggerElements, { snapToXAxis: true }, testElement);
+        tip(triggerElements, { snapTo: 'x' }, testElement);
         let instance = tip(testElement);
       },
       anchorName: 'a-model-use-case',
@@ -145,7 +145,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, { snapToTrigger: true }, testElement);
+        tip(triggerElements, { snapTo: 'trigger' }, testElement);
         let instance = tip(testElement);
       },
       anchorName: 'corner-cases',

@@ -31,9 +31,7 @@
       hasListeners: false,
       hasStem: true,
       toggleDelay: 700,
-      snapToTrigger: false,
-      snapToXAxis: false,
-      snapToYAxis: false,
+      snapTo: null,
       template() {
         let stemHtml = this.hasStem ? `<div class="${this.className('stem')}"></div>` : '';
         return (
@@ -71,12 +69,6 @@
       this._toggleCountdown = null;
     }
     init() {
-      if (!this.snapToTrigger) {
-        this.snapToTrigger = this.snapToXAxis || this.snapToYAxis;
-      }
-      if (this.snapToXAxis && this.snapToYAxis) {
-        this.snapToYAxis = false;
-      }
       this.element = document.createElement('div');
       this._updateState('asleep');
       this._renderElement();
@@ -98,6 +90,9 @@
     get isSleeping() { return this._state === 'sleeping'; }
     get isAwake() { return this._state === 'awake'; }
     get isWaking() { return this._state === 'waking'; }
+    get snapToTrigger() { return this.snapTo === 'trigger'; }
+    get snapToXAxis() { return this.snapTo === 'x'; }
+    get snapToYAxis() { return this.snapTo === 'y'; }
     performSleep({ triggerElement, event }) {
       if (this.isAsleep || this.isSleeping) { return; }
 
@@ -254,14 +249,12 @@
 
       this.viewportElement.insertBefore(this.element, this.viewportElement.firstChild);
 
-      if (this.snapToTrigger) {
-        let snapClassNames = ['snap-trigger'];
-        if (this.snapToXAxis) {
-          snapClassNames.push('snap-x-side');
-        } else if (this.snapToYAxis) {
-          snapClassNames.push('snap-y-side');
-        }
-        this.element.classList.add(...(snapClassNames.map(this.className)));
+      if (this.snapTo) {
+        this.element.classList.add(this.className((() => {
+          if (this.snapToTrigger) { return 'snap-trigger'; }
+          else if (this.snapToXAxis) { return 'snap-x-side'; }
+          else if (this.snapToYAxis) { return 'snap-y-side'; }
+        })()));
       }
     }
     _toggleContextMutationObserver(on) {
@@ -350,25 +343,24 @@
       this._contentElement.textContent = content;
     }
     _updateElementPosition(triggerElement, event) {
-      let cursorHeight = this.snapToTrigger ? 0 : this.cursorHeight;
+      let cursorHeight = this.snapTo ? 0 : this.cursorHeight;
       let offset = { left: event.detail.pageX, top: event.detail.pageY };
 
-      if (this.snapToTrigger) {
+      if (this.snapTo) {
         let triggerOffset = this._getTriggerOffset(triggerElement);
-        let toTriggerOnly = !this.snapToXAxis && !this.snapToYAxis;
         // Note vertical directions already account for stem-size.
-        if (this.snapToXAxis || toTriggerOnly) {
+        if (this.snapToXAxis || this.snapToTrigger) {
           offset.top = triggerOffset.top;
           if (this._isTriggerDirection('bottom', triggerElement)) {
             offset.top += triggerElement.offsetHeight;
           }
-          if (!toTriggerOnly) {
+          if (!this.snapToTrigger) {
             offset.left -= this.element.offsetWidth / 2;
           }
         }
-        if (this.snapToYAxis || toTriggerOnly) {
+        if (this.snapToYAxis || this.snapToTrigger) {
           offset.left = triggerOffset.left;
-          if (!toTriggerOnly) {
+          if (!this.snapToTrigger) {
             if (this._isTriggerDirection('right', triggerElement)) {
               offset.left += triggerElement.offsetWidth + this._getStemSize();
             } else if (this._isTriggerDirection('left', triggerElement)) {
