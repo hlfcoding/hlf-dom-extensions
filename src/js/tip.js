@@ -447,12 +447,12 @@
     }
     _updateTriggerContent(triggerElement) {
       const { triggerContent } = this;
-      let content, contentAttribute;
+      let contentAttribute;
       let shouldRemoveAttribute = true;
       if (triggerContent) {
         if (typeof triggerContent === 'function') {
           content = triggerContent(triggerElement);
-        } else {
+        } else if (triggerElement.hasAttribute(triggerContent)) {
           contentAttribute = triggerContent;
         }
       } else {
@@ -463,15 +463,14 @@
           shouldRemoveAttribute = false;
         }
       }
-      if (contentAttribute) {
-        content = triggerElement.getAttribute(contentAttribute);
-        if (shouldRemoveAttribute) {
-          triggerElement.removeAttribute(contentAttribute);
-        }
+      if (!contentAttribute) {
+        return console.error('Unsupported trigger.');
       }
-      if (content) {
-        triggerElement.setAttribute(this.attrName('content'), content);
+      let content = triggerElement.getAttribute(contentAttribute);
+      if (shouldRemoveAttribute) {
+        triggerElement.removeAttribute(contentAttribute);
       }
+      triggerElement.setAttribute(this.attrName('content'), content);
     }
     _updateTriggerElements(triggerElements) {
       if (!triggerElements) {
