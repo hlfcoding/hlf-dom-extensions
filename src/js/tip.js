@@ -447,28 +447,26 @@
     }
     _updateTriggerContent(triggerElement) {
       const { triggerContent } = this;
-      let contentAttribute;
-      let shouldRemoveAttribute = true;
-      if (triggerContent) {
-        if (typeof triggerContent === 'function') {
-          content = triggerContent(triggerElement);
-        } else if (triggerElement.hasAttribute(triggerContent)) {
-          contentAttribute = triggerContent;
-        }
+      let content;
+      if (typeof triggerContent === 'function') {
+        content = triggerContent(triggerElement);
       } else {
-        if (triggerElement.hasAttribute('title')) {
+        let contentAttribute;
+        let shouldRemoveAttribute = true;
+        if (triggerElement.hasAttribute(triggerContent)) {
+          contentAttribute = triggerContent;
+        } else if (triggerElement.hasAttribute('title')) {
           contentAttribute = 'title';
         } else if (triggerElement.hasAttribute('alt')) {
           contentAttribute = 'alt';
           shouldRemoveAttribute = false;
+        } else {
+          return console.error('Unsupported trigger.');
         }
-      }
-      if (!contentAttribute) {
-        return console.error('Unsupported trigger.');
-      }
-      let content = triggerElement.getAttribute(contentAttribute);
-      if (shouldRemoveAttribute) {
-        triggerElement.removeAttribute(contentAttribute);
+        content = triggerElement.getAttribute(contentAttribute);
+        if (shouldRemoveAttribute) {
+          triggerElement.removeAttribute(contentAttribute);
+        }
       }
       triggerElement.setAttribute(this.attrName('content'), content);
     }
