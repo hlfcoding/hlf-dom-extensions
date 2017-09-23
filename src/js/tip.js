@@ -22,6 +22,53 @@
   // Namespace
   // ---------
   //
+  // It takes some more boilerplate to write the extension. Any of this additional
+  // support API is put into a extension specific namespace under `hlf`, which in
+  // this case is __hlf.tip__.
+  //
+  // - __debug__ toggles debug logging for all instances of an extension.
+  // - __toString__ helps to namespace when registering any DOM names.
+  // - __attrName__, __className__, __eventName__, __varName__ helpers are all
+  //   attached to the namespace on extension creation, along with the __extension__
+  //   itself.
+  //
+  // The extension's __defaults__ are available as reference. Also note that _the
+  // extension instance gets extended with the options_.
+  //
+  // - __cursorHeight__ is the browser's cursor height. We need to know this to
+  //   properly offset the tip to avoid cases of cursor-tip-stem overlap.
+  //
+  // - __defaultDirection__ is used as a tie-breaker when selecting the best
+  //   direction. Note that the direction data structure must be an array of
+  //   `components`, and conventionally with top/bottom first.
+  //
+  // - __hasListeners__ can allow events __hlftipawake__ and __hlftipwaking__,
+  //   __hlftipasleep__ and __hlftipsleeping__ to be triggered from the trigger
+  //   elements. This is off by default to improve performance.
+  //
+  // - __hasStem__ can be turned off to omit rendering the stem and accounting
+  //   for it during layout.
+  //
+  // - __snapTo__ when set allows the tip to first snap to or along the trigger
+  //   before mouse tracking. Not set by default. Values are __x__, __y__, __trigger__.
+  //
+  // - __template__ should return interpolated HTML when given the additional
+  //   container class list. Its context is the extension instance.
+  //
+  // - __toggleDelay__ delays the tip's waking or sleeping under normal cases.
+  //   It defaults to 0.7 seconds.
+  //
+  // - __triggerContent__ can be the name of the trigger element's attribute or a
+  //   function that provides custom content when given the trigger element.
+  //
+  // - __viewportElement__ is the element in which the tip must fit. It is _not_ the
+  //   context element, which stores the tip instance and by convention contains
+  //   the triggers.
+  //
+  // - Note: the majority of presentation state logic is in the extension
+  //   stylesheet. We update the presentation state by using namespaced
+  //   __classNames__ generated in a closure.
+  //
   hlf.tip = {
     debug: true,
     toString(context) {
