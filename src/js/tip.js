@@ -27,7 +27,6 @@
     defaults: {
       cursorHeight: 12,
       defaultDirection: ['bottom', 'right'],
-      hasFollowing: true,
       hasListeners: false,
       hasStem: true,
       toggleDelay: 700,
@@ -310,9 +309,7 @@
       let listeners = {};
       listeners[eventName('enter')] = this._onTriggerElementMouseEnter;
       listeners[eventName('leave')] = this._onTriggerElementMouseLeave;
-      if (this.hasFollowing) {
-        listeners[eventName('track')] = this._onTriggerElementMouseMove;
-      }
+      listeners[eventName('track')] = this._onTriggerElementMouseMove;
       this.toggleEventListeners(on, listeners, this.contextElement);
     }
     _updateCurrentTriggerElement(triggerElement) {
