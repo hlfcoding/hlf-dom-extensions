@@ -35,8 +35,9 @@
   //
   // - __debug__ toggles debug logging for all instances of an extension.
   // - __toString__ helps to namespace when registering any DOM names.
-  // - __attrName__, __className__, __eventName__ helpers are all attached to
-  //   the namespace on extension creation, along with the __extension__ itself.
+  // - __attrName__, __className__, __eventName__, __varName__ helpers are all
+  //   attached to the namespace on extension creation, along with the __extension__
+  //   itself.
   //
   // The extension's __defaults__ are available as reference. Also note that _the
   // extension instance gets extended with the options_.
@@ -50,9 +51,9 @@
   //   doing a re-layout. `100` is the default to balance responsiveness and
   //   performance.
   //
-  // - Note: for these extensions, the majority of presentation state logic is
-  //   in the extension stylesheet. We update the presentation state by using
-  //   namespaced __classNames__ generated in a closure.
+  // - Note: the majority of presentation state logic is in the extension
+  //   stylesheet. We update the presentation state by using namespaced
+  //   __classNames__ generated in a closure.
   //
   hlf.mediaGrid = {
     debug: false,

@@ -24,12 +24,20 @@
   //
   hlf.tip = {
     debug: true,
+    toString(context) {
+      switch (context) {
+        case 'event': return 'hlftip';
+        case 'data': return 'hlf-tip';
+        case 'class': return 'tips';
+        case 'var': return 'tip';
+        default: return 'hlf-tip';
+      }
+    },
     defaults: {
       cursorHeight: 12,
       defaultDirection: ['bottom', 'right'],
       hasListeners: false,
       hasStem: true,
-      toggleDelay: 700,
       snapTo: null,
       template() {
         let stemHtml = this.hasStem ? `<div class="${this.className('stem')}"></div>` : '';
@@ -40,17 +48,9 @@
 </div>`
         );
       },
+      toggleDelay: 700,
       triggerContent: null,
       viewportElement: document.body,
-    },
-    toString(context) {
-      switch (context) {
-        case 'event': return 'hlftip';
-        case 'data': return 'hlf-tip';
-        case 'class': return 'tips';
-        case 'var': return 'tip';
-        default: return 'hlf-tip';
-      }
     },
   };
   //
