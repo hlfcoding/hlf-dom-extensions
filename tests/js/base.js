@@ -61,7 +61,7 @@ define(function() {
       if (beforeTest) {
         beforeTest.bind(delegate)(testElement);
       }
-      setTimeout((() => completion(testElement)), 0);
+      setTimeout(() => completion(testElement));
     }, test.bind(delegate)];
   }
   Object.assign(createVisualTest, {
