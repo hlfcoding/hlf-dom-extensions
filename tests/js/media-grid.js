@@ -112,11 +112,8 @@
       footerHtml: '<button name="list-append">load more</button>',
       test(testElement) {
         let extension = mediaGrid(testElement.querySelector('.test-body'));
-        let imageElements = Array.from(testElement.querySelectorAll('.mg-preview img'));
-        return Promise.all(imageElements.map((element) => new Promise((resolve, reject) => {
-          element.addEventListener('load', resolve);
-          element.addEventListener('error', reject);
-        }))).then(() => extension('load'));
+        let instance = extension();
+        return instance.createPreviewImagesPromise().then(() => extension('load'));
       },
       anchorName: 'default',
       className: 'default-call',

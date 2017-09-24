@@ -125,6 +125,24 @@
     // You are welcome to call these methods from your own code, though currently
     // there is no intended use case for that.
     //
+    createPreviewImagesPromise() {
+      const selector = `.${this.className('preview')} img`;
+      const imageElements = Array.from(this.element.querySelectorAll(selector));
+      let teardownTasks = [];
+      return Promise.all(imageElements.map((element) => new Promise((resolve, reject) => {
+        element.addEventListener('load', resolve);
+        element.addEventListener('error', reject);
+        teardownTasks.push(() => {
+          element.removeEventListener('load', resolve);
+          element.removeEventListener('error', reject);
+        });
+      }))).then(() => {
+        teardownTasks.forEach(task => task());
+      }).catch(() => {
+        teardownTasks.forEach(task => task());
+      });
+    }
+    //
     // __toggleItemExpansion__ basically toggles the `-expanded` class on the
     // given `itemElement` to `expanded` and triggers the `expand` event. To allow
     // styling or scripting during the transition, it adds the `-transitioning`
