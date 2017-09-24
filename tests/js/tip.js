@@ -27,8 +27,8 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, testElement);
-        let instance = tip(testElement);
+        let extension = tip(triggerElements, testElement);
+        let instance = extension(testElement);
       },
       anchorName: 'default',
       className: 'default-call',
@@ -66,8 +66,8 @@
       },
       test(testElement) {
         let triggerElements = (contextElement) => (contextElement.querySelectorAll('[title]'));
-        tip(triggerElements, { snapTo: 'y' }, testElement);
-        let instance = tip(testElement);
+        let extension = tip(triggerElements, { snapTo: 'y' }, testElement);
+        let instance = extension(testElement);
       },
       anchorName: 'snapping-vertically',
       className: 'list-call',
@@ -91,8 +91,8 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, { snapTo: 'x' }, testElement);
-        let instance = tip(testElement);
+        let extension = tip(triggerElements, { snapTo: 'x' }, testElement);
+        let instance = extension(testElement);
       },
       anchorName: 'snapping-horizontally',
       className: 'bar-call',
@@ -118,8 +118,8 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[alt]');
-        tip(triggerElements, { snapTo: 'x' }, testElement);
-        let instance = tip(testElement);
+        let extension = tip(triggerElements, { snapTo: 'x' }, testElement);
+        let instance = extension(testElement);
       },
       anchorName: 'a-model-use-case',
       className: 'grid-call',
@@ -145,8 +145,8 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        tip(triggerElements, { snapTo: 'trigger' }, testElement);
-        let instance = tip(testElement);
+        let extension = tip(triggerElements, { snapTo: 'trigger' }, testElement);
+        let instance = extension(testElement);
       },
       anchorName: 'corner-cases',
       className: 'corners-call',
