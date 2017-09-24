@@ -104,7 +104,7 @@
         this._itemsObserver.observe(this.element, { childList: true });
       };
       this.metrics = {};
-      if (this.autoLoad) {
+      if (this.autoReady) {
         this.performLoad();
       }
     }
