@@ -58,10 +58,17 @@ define(function() {
       let testElement = renderVisualTest(containerElement, {
         className, docsUrl, footerHtml, html, label
       });
+      let { style } = testElement.querySelector('.test-container');
+      style.visibility = 'hidden';
+      function finish() { style.visibility = 'visible'; }
       if (beforeTest) {
         beforeTest.bind(delegate)(testElement);
       }
-      setTimeout(() => completion(testElement));
+      setTimeout(() => {
+        let promise = completion(testElement);
+        if (promise) { promise.then(finish); }
+        else { finish(); }
+      });
     }, test.bind(delegate)];
   }
   Object.assign(createVisualTest, {
@@ -99,7 +106,9 @@ define(function() {
     <span class="label">${label}</span>
     <a data-rel="docs" href="${docsUrl}">docs</a>
   </header>
-  ${html}
+  <div class="test-container">
+    ${html}
+  </div>
   <footer>${footerHtml}</footer>
 </section>`
         );

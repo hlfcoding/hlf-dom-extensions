@@ -112,7 +112,12 @@
       footerHtml: '<button name="list-append">load more</button>',
       test(testElement) {
         let extension = mediaGrid(testElement.querySelector('.test-body'));
-        setTimeout((() => extension('load')), 500);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            extension('load');
+            resolve();
+          }, 500);
+        });
       },
       anchorName: 'default',
       className: 'default-call',
