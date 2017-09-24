@@ -53,7 +53,8 @@
         );
       },
       footerHtml: `<button name="list-append">load more</button>`,
-      beforeTest(testElement, vars) {
+      beforeTest(testElement) {
+        const { vars } = this;
         createVisualTest.setupAppendButton({
           testElement,
           listSelector: '.list',

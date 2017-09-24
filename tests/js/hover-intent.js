@@ -72,10 +72,11 @@
           }
         });
       },
-      test(testElement, { counters }) {
+      test(testElement) {
+        const { vars } = this;
         let element = testElement.querySelector('.box');
         hoverIntent(element);
-        counters.setUp(testElement, element, {
+        vars.counters.setUp(testElement, element, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },
           mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
@@ -103,10 +104,11 @@
 </div>`
         );
       },
-      test(testElement, { counters }) {
+      test(testElement) {
+        const { vars } = this;
         let contextElement = testElement.querySelector('.list');
         hoverIntent(contextElement.querySelectorAll('.item'), contextElement);
-        counters.setUp(testElement, contextElement, {
+        vars.counters.setUp(testElement, contextElement, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },
           mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },

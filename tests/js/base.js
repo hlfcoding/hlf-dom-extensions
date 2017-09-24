@@ -59,9 +59,9 @@ define(function() {
         className, docsUrl, footerHtml, html, label
       });
       if (beforeTest) {
-        beforeTest.bind(delegate)(testElement, vars);
+        beforeTest.bind(delegate)(testElement);
       }
-      test.bind(delegate)(testElement, vars);
+      test.bind(delegate)(testElement);
     };
   }
   Object.assign(createVisualTest, {
