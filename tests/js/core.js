@@ -288,9 +288,9 @@
       let subject = (contextElement) => (contextElement.querySelectorAll('.foo'));
       this.someExtension = this.extension(subject, this.someElement);
       let instance = this.someExtension();
-      assert.deepEqual(instance.elements, Array.from(subject()),
+      assert.deepEqual(instance.elements, Array.from(subject(this.someElement)),
         'Extension stores the elements as property.');
-      assert.deepEqual(instance.options.querySelector(), subject(),
+      assert.deepEqual(instance.options.querySelector(this.someElement), subject(this.someElement),
         'Extension stores custom query-selector subject as option.');
       assert.strictEqual(instance.contextElement, this.someElement,
         'Extension stores the context element as property.');

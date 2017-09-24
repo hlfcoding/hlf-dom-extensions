@@ -117,7 +117,7 @@
         extension._dispatchAction(action, subject);
         return;
 
-      } else if (!options) {
+      } else if (!options && typeof subject !== 'function') {
         let result = extension._getInstanceOrInstances(subject);
         if (result) {
           return result;
