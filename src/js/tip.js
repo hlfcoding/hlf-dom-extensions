@@ -121,7 +121,7 @@
       this._toggleContextMutationObserver(true);
       this._toggleElementEventListeners(true);
       this._toggleTriggerElementEventListeners(true);
-      setTimeout(this._updateTriggerElements, 0);
+      this._updateTriggerElements();
     }
     deinit() {
       this.element.parentNode.removeChild(this.element);

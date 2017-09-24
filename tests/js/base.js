@@ -53,7 +53,7 @@ define(function() {
     let docsUrl = document.querySelector('body > header [data-rel=docs]').href;
     docsUrl += `#${anchorName}`;
     let containerElement = document.getElementById('main');
-    return function() {
+    return [function setUp(completion) {
       let html = template.bind(delegate)(vars);
       let testElement = renderVisualTest(containerElement, {
         className, docsUrl, footerHtml, html, label
@@ -61,8 +61,8 @@ define(function() {
       if (beforeTest) {
         beforeTest.bind(delegate)(testElement);
       }
-      test.bind(delegate)(testElement);
-    };
+      setTimeout((() => completion(testElement)), 0);
+    }, test.bind(delegate)];
   }
   Object.assign(createVisualTest, {
     setupAppendButton({ testElement, listSelector, onAppend }) {
@@ -112,7 +112,7 @@ define(function() {
       document.addEventListener('readystatechange', runVisualTests.bind(null, tests));
       return;
     }
-    tests.forEach(test => test());
+    tests.forEach(([setUp, test]) => setUp(test));
   }
 
   const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed " +
