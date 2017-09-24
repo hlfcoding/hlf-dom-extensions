@@ -43,24 +43,25 @@ define(function() {
   // button for appending an item to a list, and should be included as part of
   // `footerHtml`.
   //
-  function createVisualTest({
-    anchorName, beforeTest, className, label, template, test,
-    footerHtml, vars
-  }) {
+  function createVisualTest(delegate) {
+    let {
+      anchorName, beforeTest, className, label, template, test,
+      footerHtml, vars
+    } = delegate;
     footerHtml = footerHtml || '';
     vars = vars || {};
     let docsUrl = document.querySelector('body > header [data-rel=docs]').href;
     docsUrl += `#${anchorName}`;
     let containerElement = document.getElementById('main');
     return function() {
-      let html = template(vars);
+      let html = template.bind(delegate)(vars);
       let testElement = renderVisualTest(containerElement, {
         className, docsUrl, footerHtml, html, label
       });
       if (beforeTest) {
-        beforeTest(testElement, vars);
+        beforeTest.bind(delegate)(testElement, vars);
       }
-      test(testElement, vars);
+      test.bind(delegate)(testElement, vars);
     };
   }
   Object.assign(createVisualTest, {
