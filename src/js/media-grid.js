@@ -138,7 +138,7 @@
         });
       }))).then(() => {
         teardownTasks.forEach(task => task());
-      }).catch(() => {
+      }, () => {
         teardownTasks.forEach(task => task());
       });
     }

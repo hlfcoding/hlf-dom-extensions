@@ -113,7 +113,8 @@
       test(testElement) {
         let extension = mediaGrid(testElement.querySelector('.test-body'));
         let instance = extension();
-        return instance.createPreviewImagesPromise().then(() => extension('load'));
+        let load = extension.bind(null, 'load');
+        return instance.createPreviewImagesPromise().then(load, load);
       },
       anchorName: 'default',
       className: 'default-call',
