@@ -79,8 +79,10 @@ Short examples:
 ```
 
 ```js
-var mg = $('.tiles').mediaGrid().mediaGrid();
-setTimeout(function() { mg.trigger('ready'); }, 500); // Better to use imagesLoaded.
+let extension = hlf.mediaGrid.extension(document.querySelector('.tiles'));
+let instance = extension();
+let load = extension.bind(null, 'load');
+instance.createPreviewImagesPromise().then(load, load);
 ```
 
 See [Media Grid's unit tests][] and [Media Grid's visual tests][] for more
