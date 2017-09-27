@@ -66,6 +66,10 @@
   function createExtension(args) {
     const { name, namespace } = args;
 
+    const { defaults } = namespace;
+    let optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
+    Object.assign(namespace, { optionGroupNames });
+
     const { apiClass, autoBind, autoListen, autoSelect } = args;
     let groups = args.baseMethodGroups || [];
     groups.push('action', 'naming', 'timeout');
@@ -88,9 +92,6 @@
     const { compactOptions } = args;
     let idCounter = 0;
     let instances = {};
-
-    const { defaults } = namespace;
-    let optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
     //
     // The __extension__ function handles two variations of input. An action
     // `name` and `payload` can be passed in to trigger the action route. The
@@ -413,10 +414,16 @@
             delete properties[name];
             throw 'Not an existing option.';
           });
-          Object.keys(properties)
-            .filter(name => properties[name] === 'default')
-            .forEach(name => properties[name] = namespace.defaults[name]);
-          Object.assign(this, properties);
+          let optionsStore = this.options || this;
+          Object.keys(properties).filter(name => properties[name] === 'default').forEach((name) => {
+            properties[name] = namespace.defaults[name];
+            delete optionsStore[name];
+          });
+          namespace.optionGroupNames.forEach((name) => {
+            optionsStore[name] = Object.assign({}, optionsStore[name], properties[name]);
+            delete properties[name];
+          });
+          Object.assign(optionsStore, properties);
         },
         performRemove() {
           namespace.extension._deleteInstance(this.rootElement);
@@ -551,11 +558,12 @@
           return element.querySelectorAll(`.${this.className(name)}`);
         },
         selectToProperties() {
-          if (!this.rootElement || !this.selectors) {
+          const selectors = this.options ? this.options.selectors : this.selectors;
+          if (!this.rootElement || !selectors) {
             throw 'Missing requirements.';
           }
-          Object.keys(this.selectors).forEach((name) => {
-            const selector = this.selectors[name];
+          Object.keys(selectors).forEach((name) => {
+            const selector = selectors[name];
             if (name.substr(-1) === 's') {
               this[name] = this.rootElement.querySelectorAll(selector);
             } else {

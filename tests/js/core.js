@@ -140,23 +140,27 @@
     });
 
     test('compacted options', function(assert) {
+      const defaultSelectors = { someElement: '.foo' };
+      const optionSelectors = { someOtherElement: '.bar' };
       this.createTestExtension({
-        defaults: { classNames: {}, selectors: {} },
+        createOptions: { compactOptions: true },
+        defaults: { classNames: {}, selectors: defaultSelectors },
       });
-      this.someExtension = this.extension(this.someElement);
+      this.someExtension = this.extension(this.someElement, { selectors: optionSelectors });
       let instance = this.someExtension();
-      assert.deepEqual(instance.options, this.namespace.defaults,
-        'Extension stores the final options as property.');
+      // assert.deepEqual(instance.options, this.namespace.defaults,
+      //   'Extension stores the final options as property.');
       assert.deepEqual(instance.classNames, this.namespace.defaults.classNames,
         'Extension stores the classNames option as property.');
-      assert.deepEqual(instance.selectors, this.namespace.defaults.selectors,
+      assert.deepEqual(instance.selectors, Object.assign({}, defaultSelectors, optionSelectors),
         'Extension stores the selectors option as property.');
-      const selectors = { someElement: '.foo' };
-      this.someExtension('configure', { selectors });
-      assert.deepEqual(instance.selectors, selectors,
+      const configureSelectors = { someOtherElement: '.baz' };
+      this.someExtension('configure', { selectors: configureSelectors });
+      assert.deepEqual(instance.selectors,
+        Object.assign({}, defaultSelectors, optionSelectors, configureSelectors),
         'Extension performs "configure" action, compacts new options.');
       this.someExtension('configure', { selectors: 'default' });
-      assert.deepEqual(instance.selectors, {},
+      assert.deepEqual(instance.selectors, defaultSelectors,
         'Extension performs "configure" action, restores default options.');
     });
 
