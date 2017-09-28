@@ -221,9 +221,6 @@
           Object.assign(instance, finalOptions);
         } else {
           instance.options = finalOptions;
-          optionGroupNames.forEach((name) => {
-            instance[name] = finalOptions[name];
-          });
         }
         let cleanupTasks = [];
         Object.assign(instance, {

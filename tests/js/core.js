@@ -148,8 +148,8 @@
       });
       this.someExtension = this.extension(this.someElement, { selectors: optionSelectors });
       let instance = this.someExtension();
-      // assert.deepEqual(instance.options, this.namespace.defaults,
-      //   'Extension stores the final options as property.');
+      assert.notOk(instance.options,
+        'Extension no longer stores the final options as property.');
       assert.deepEqual(instance.classNames, this.namespace.defaults.classNames,
         'Extension stores the classNames option as property.');
       assert.deepEqual(instance.selectors, Object.assign({}, defaultSelectors, optionSelectors),
