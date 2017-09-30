@@ -17,7 +17,7 @@
     }
   });
 
-  define(['hlf/core', 'test/base'], function(hlf, base) {
+  define(['hlf/core', 'test/base'], function(HLF, base) {
     const { module, test } = QUnit;
 
     // ---
@@ -25,8 +25,8 @@
     module('other');
 
     test('exports', function(assert) {
-      assert.ok(hlf, 'Namespace should exist.');
-      assert.ok(hlf.createExtension, 'Method should exist.');
+      assert.ok(HLF, 'Namespace should exist.');
+      assert.ok(HLF.buildExtension, 'Method should exist.');
     });
 
     // ---
@@ -65,7 +65,7 @@
               apiClass: SomeExtension,
             }, createOptions);
             Object.assign(this, {
-              extension: hlf.createExtension(createOptions),
+              extension: HLF.createExtension(createOptions),
               namespace: createOptions.namespace,
             });
           },

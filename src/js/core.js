@@ -15,7 +15,7 @@
   } else if (typeof exports === 'object') {
     module.exports = namespace();
   } else {
-    window.hlf = namespace();
+    window.HLF = namespace();
   }
 })(this, function() {
   'use strict';
@@ -23,7 +23,7 @@
   // Namespace
   // ---------
   // It takes some more boilerplate and helpers to write DOM extensions. That
-  // code and set of conventions is here in the root namespace __hlf__. Child
+  // code and set of conventions is here in the root namespace __HLF__. Child
   // namespaces follow suit convention.
   //
   // - The __debug__ flag here toggles debug logging for everything in the library
@@ -36,12 +36,14 @@
   //   the `debug` flag. However, `debugLog` conventionally becomes a no-op if
   //   the `debug` flag is off.
   //
-  let hlf = {
+  let HLF = {
     debug: true,
     toString() { return 'hlf'; },
   };
-  hlf.debugLog = (hlf.debug === false) ? function(){} :
+  HLF.debugLog = (HLF.debug === false) ? function(){} :
     (console.log.bind ? console.log.bind(console) : console.log);
+  function buildExtension(args) {
+  }
   //
   // createExtension
   // ---------------
@@ -381,7 +383,7 @@
         if (!this._hasDebugLogGroup) {
           args.unshift(...debugPrefixes(this));
         }
-        hlf.debugLog(...args);
+        HLF.debugLog(...args);
       },
       debugLogGroup(arg) {
         if (arg === false) {
@@ -573,11 +575,11 @@
     return methods;
   }
 
-  Object.assign(hlf, { createExtension });
+  Object.assign(HLF, { buildExtension, createExtension });
 
-  if (hlf.debug && typeof window === 'object') {
-    Object.assign(window, { hlf });
+  if (HLF.debug && typeof window === 'object') {
+    Object.assign(window, { HLF });
   }
 
-  return hlf;
+  return HLF;
 });
