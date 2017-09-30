@@ -174,21 +174,6 @@
         'Extension allows custom options via element data attribute.');
     });
 
-    test('action methods', function(assert) {
-      this.createTestExtension({
-        classAdditions: { methods: {
-          performSomeAction(payload) {
-            this._someActionPayload = payload;
-          },
-        }},
-      });
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      this.someExtension('someAction', this.someData);
-      assert.equal(instance._someActionPayload, this.someData,
-        'Extension function can perform action, using default perform.');
-    });
-
     test('naming methods', function(assert) {
       const methodNames = ['attrName', 'className', 'eventName', 'varName'];
       this.createTestExtension();
