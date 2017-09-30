@@ -44,16 +44,19 @@
     (console.log.bind ? console.log.bind(console) : console.log);
 
   function buildExtension(extensionClass, options) {
-    const { autoBind, autoListen, autoSelect } = options;
+    const { defaults } = extensionClass;
+    const { autoBind, autoListen, autoSelect, compactOptions } = options;
     const namingMixin = _createNamingMixin(extensionClass.toPrefix);
+    const optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
 
     Object.assign(extensionClass, namingMixin, {
       extend(subject, options, context) {
         let { element, elements } = _parseSubject(subject);
-        options = Object.assign({}, options, extensionClass.defaults);
+        options = _assignOptions(options, defaults, optionGroupNames);
         let instance = new this(
           element || elements, Object.assign({}, options), context
         );
+        Object.assign(instance, compactOptions ? options : { options });
         Object.assign(instance, _createRemoveMixin(), {
           element, elements, contextElement: context,
           rootElement: (context || element),
@@ -74,7 +77,9 @@
       },
     });
 
-    Object.assign(extensionClass.prototype, namingMixin);
+    Object.assign(extensionClass.prototype,
+      namingMixin, _createOptionsMixin(defaults, optionGroupNames)
+    );
     if (autoListen) {
       Object.assign(extensionClass.prototype, _eventMixin);
     }
@@ -82,6 +87,12 @@
     if (extensionClass.init) {
       extensionClass.init();
     }
+  }
+
+  function _assignOptions(options, defaults, groupNames) {
+    options = Object.assign({}, defaults, options);
+    groupNames.forEach((g) => options[g] = Object.assign({}, defaults[g], options[g]));
+    return options;
   }
 
   function _bindMethods(properties, object) {
@@ -139,6 +150,28 @@
       },
       varName(name) {
         return `--${toPrefix('var')}-${name}`;
+      },
+    };
+  }
+
+  function _createOptionsMixin(defaults, groupNames) {
+    return {
+      configure(options) {
+        Object.keys(options).forEach((name) => {
+          if (name in this || (this.options && name in this.options)) { return; }
+          delete options[name];
+          throw 'Not an existing option.';
+        });
+        let store = this.options || this;
+        Object.keys(options).filter(name => options[name] === 'default').forEach((name) => {
+          options[name] = defaults[name];
+          delete store[name];
+        });
+        groupNames.forEach((name) => {
+          store[name] = Object.assign({}, store[name], options[name]);
+          delete options[name];
+        });
+        Object.assign(store, options);
       },
     };
   }
@@ -559,23 +592,7 @@
           if (!this[methodName]) { return; }
           this[methodName](payload);
         },
-        performConfigure(properties) {
-          Object.keys(properties).forEach((name) => {
-            if (name in this || (this.options && name in this.options)) { return; }
-            delete properties[name];
-            throw 'Not an existing option.';
-          });
-          let optionsStore = this.options || this;
-          Object.keys(properties).filter(name => properties[name] === 'default').forEach((name) => {
-            properties[name] = namespace.defaults[name];
-            delete optionsStore[name];
-          });
-          namespace.optionGroupNames.forEach((name) => {
-            optionsStore[name] = Object.assign({}, optionsStore[name], properties[name]);
-            delete properties[name];
-          });
-          Object.assign(optionsStore, properties);
-        },
+        performConfigure: _createOptionsMixin(namespace.defaults, namespace.optionGroupNames).configure,
         performRemove() {
           namespace.extension._deleteInstance(this.rootElement);
           this.destructor();
