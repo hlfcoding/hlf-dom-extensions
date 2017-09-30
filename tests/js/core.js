@@ -166,14 +166,11 @@
     });
 
     test('custom options', function(assert) {
-      this.createTestExtension({
-        createOptions: { compactOptions: true },
-      });
+      this.buildTestExtension(this.createTestExtensionClass(), { compactOptions: true });
       const options = { someOption: 'bar' };
       this.someElement.setAttribute('data-se', JSON.stringify(options));
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      assert.equal(instance.someOption, options.someOption,
+      this.someExtension = this.SomeExtension.extend(this.someElement);
+      assert.equal(this.someExtension.someOption, options.someOption,
         'Extension allows custom options via element data attribute.');
     });
 

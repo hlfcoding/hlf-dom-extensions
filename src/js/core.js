@@ -50,16 +50,18 @@
     const optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
 
     Object.assign(extensionClass, namingMixin, {
-      extend(subject, options, context) {
+      extend(subject, options = {}, context = null) {
         let { element, elements } = _parseSubject(subject);
-        options = _assignOptions(options, defaults, optionGroupNames);
+        let root = (context || element);
+        options = _assignOptions(options,
+          defaults, optionGroupNames, root.getAttribute(namingMixin.attrName())
+        );
         let instance = new this(
           element || elements, Object.assign({}, options), context
         );
         Object.assign(instance, compactOptions ? options : { options });
         Object.assign(instance, _createRemoveMixin(), {
-          element, elements, contextElement: context,
-          rootElement: (context || element),
+          element, elements, contextElement: context, rootElement: root,
         });
         if (autoBind) {
           _bindMethods(this.prototype, instance);
@@ -89,7 +91,10 @@
     }
   }
 
-  function _assignOptions(options, defaults, groupNames) {
+  function _assignOptions(options, defaults, groupNames, attribute) {
+    if (attribute) {
+      try { Object.assign(options, JSON.parse(attribute)); } catch (error) {}
+    }
     options = Object.assign({}, defaults, options);
     groupNames.forEach((g) => options[g] = Object.assign({}, defaults[g], options[g]));
     return options;
