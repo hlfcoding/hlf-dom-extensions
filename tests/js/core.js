@@ -193,37 +193,36 @@
         'varName namespaces CSS var names correctly.');
     });
 
-    test('timeout methods', function(assert) {
-      this.createTestExtension();
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
+    test('timing methods', function(assert) {
+      this.buildTestExtension(this.createTestExtensionClass());
+      this.someExtension = this.SomeExtension.extend(this.someElement);
       let done = assert.async();
       const duration = 50;
 
       let elementTimeoutCompleted = false;
-      instance.setElementTimeout(this.someElement, 'some-timeout', duration,
+      this.someExtension.setElementTimeout(this.someElement, 'some-timeout', duration,
         () => { elementTimeoutCompleted = true; });
       assert.ok(this.someElement.hasAttribute('data-se-some-timeout'),
         'setElementTimeout stores timeout as element data attribute per name.');
 
       let timeoutCompleted = false;
-      instance.setTimeout('_someTimeout', duration,
+      this.someExtension.setTimeout('_someTimeout', duration,
         () => { timeoutCompleted = true; });
-      assert.ok(instance._someTimeout,
+      assert.ok(this.someExtension._someTimeout,
         'setTimeout stores timeout as property value per name.');
 
       let elementTimeoutCleared = true;
-      instance.setElementTimeout(this.someElement, 'some-timeout-to-clear', duration,
+      this.someExtension.setElementTimeout(this.someElement, 'some-timeout-to-clear', duration,
         () => { elementTimeoutCleared = false; });
-      instance.setElementTimeout(this.someElement, 'some-timeout-to-clear', null);
+      this.someExtension.setElementTimeout(this.someElement, 'some-timeout-to-clear', null);
       assert.notOk(this.someElement.hasAttribute('data-se-some-timeout-to-clear'),
         'setElementTimeout clears timeout if value is null.');
 
       let timeoutCleared = true;
-      instance.setTimeout('_someTimeoutToClear', duration,
+      this.someExtension.setTimeout('_someTimeoutToClear', duration,
         () => { timeoutCleared = false; });
-      instance.setTimeout('_someTimeoutToClear', null);
-      assert.notOk(instance._someTimeoutToClear,
+      this.someExtension.setTimeout('_someTimeoutToClear', null);
+      assert.notOk(this.someExtension._someTimeoutToClear,
         'setTimeout clears timeout if value is null.');
 
       setTimeout(() => {
@@ -233,7 +232,7 @@
           'setElementTimeout removes element data attribute upon completion.');
 
         assert.ok(timeoutCompleted, 'setTimeout calls callback.');
-        assert.notOk(instance._someTimeout,
+        assert.notOk(this.someExtension._someTimeout,
           'setTimeout removes property value upon completion.');
 
         assert.ok(elementTimeoutCleared,

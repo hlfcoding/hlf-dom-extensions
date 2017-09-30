@@ -80,7 +80,7 @@
     });
 
     Object.assign(extensionClass.prototype,
-      namingMixin, _createOptionsMixin(defaults, optionGroupNames)
+      namingMixin, _createOptionsMixin(defaults, optionGroupNames), _timingMixin
     );
     if (autoListen) {
       Object.assign(extensionClass.prototype, _eventMixin);
@@ -192,6 +192,40 @@
       _cleanupTasks: [],
     };
   }
+
+  const _timingMixin = {
+    setElementTimeout(element, name, duration, callback) {
+      name = this.attrName(name);
+      if (element.getAttribute(name)) {
+        clearTimeout(element.getAttribute(name));
+      }
+      let timeout = null;
+      if (duration != null && callback) {
+        timeout = setTimeout(() => {
+          callback();
+          element.removeAttribute(name);
+        }, duration);
+      }
+      if (timeout) {
+        element.setAttribute(name, timeout);
+      } else {
+        element.removeAttribute(name);
+      }
+    },
+    setTimeout(name, duration, callback) {
+      if (this[name]) {
+        clearTimeout(this[name]);
+      }
+      let timeout = null;
+      if (duration != null && callback) {
+        timeout = setTimeout(() => {
+          callback();
+          this[name] = null;
+        }, duration);
+      }
+      this[name] = timeout;
+    },
+  };
 
   function _listen(instance) {
     if (!instance.addEventListeners || !instance.eventListeners) {
@@ -610,39 +644,7 @@
       Object.assign(namespace, naming);
     }
     if (groups.indexOf('timeout') !== -1) {
-      Object.assign(methods, {
-        setElementTimeout(element, name, duration, callback) {
-          name = this.attrName(name);
-          if (element.getAttribute(name)) {
-            clearTimeout(element.getAttribute(name));
-          }
-          let timeout = null;
-          if (duration != null && callback) {
-            timeout = setTimeout(() => {
-              callback();
-              element.removeAttribute(name);
-            }, duration);
-          }
-          if (timeout) {
-            element.setAttribute(name, timeout);
-          } else {
-            element.removeAttribute(name);
-          }
-        },
-        setTimeout(name, duration, callback) {
-          if (this[name]) {
-            clearTimeout(this[name]);
-          }
-          let timeout = null;
-          if (duration != null && callback) {
-            timeout = setTimeout(() => {
-              callback();
-              this[name] = null;
-            }, duration);
-          }
-          this[name] = timeout;
-        },
-      });
+      Object.assign(methods, _timingMixin);
     }
     if (groups.indexOf('css') !== -1) {
       Object.assign(methods, {
