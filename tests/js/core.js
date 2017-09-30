@@ -119,27 +119,22 @@
     test('de-initializers', function(assert) {
       let didDeinit = false;
       let didReceiveEvent = false;
-      this.createTestExtension({
-        classAdditions: {
-          onNew() {
-            this.eventListeners = {};
-            this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
-            this.resizeDelay = 100;
-          },
-          methods: {
-            deinit() { didDeinit = true; },
-            _onSomeEvent(event) { didReceiveEvent = true; },
-            _onWindowResize(event) { didReceiveEvent = true; },
-          },
+      this.buildTestExtension(this.createTestExtensionClass({
+        onNew() {
+          this.eventListeners = {};
+          this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
+          this.resizeDelay = 100;
         },
-        createOptions: { autoListen: true },
-      });
-      this.someExtension = this.extension(this.someElement);
-      this.someExtension('remove');
+        methods: {
+          deinit() { didDeinit = true; },
+          _onSomeEvent(event) { didReceiveEvent = true; },
+          _onWindowResize(event) { didReceiveEvent = true; },
+        },
+      }), { autoListen: true });
+      this.someExtension = this.SomeExtension.extend(this.someElement);
+      this.someExtension.remove();
       assert.ok(didDeinit,
         'Extension performs "remove" action, calls custom deinit, if any.');
-      assert.notOk(this.extension._getInstance(this.someElement),
-        'Extension de-registers and frees instance.');
       this.someElement.dispatchEvent(new CustomEvent('sesomeevent'));
       window.dispatchEvent(new Event('resize'));
       assert.notOk(didReceiveEvent,

@@ -44,19 +44,25 @@
     (console.log.bind ? console.log.bind(console) : console.log);
 
   function buildExtension(extensionClass, options) {
+    const { autoBind, autoListen, autoSelect } = options;
     const namingMixin = _createNamingMixin(extensionClass.toPrefix);
 
     Object.assign(extensionClass, namingMixin, {
       extend(subject, options, context) {
         let { element, elements } = _parseSubject(subject);
         options = Object.assign({}, options, extensionClass.defaults);
-        let instance = new extensionClass(
+        let instance = new this(
           element || elements, Object.assign({}, options), context
         );
-        Object.assign(instance, {
+        Object.assign(instance, _createRemoveMixin(), {
           element, elements, contextElement: context,
           rootElement: (context || element),
         });
+        if (autoBind) {
+          _bindMethods(this.prototype, instance);
+        }
+        if (autoListen) {
+          _listen(instance);
         }
         if (instance.className) {
           instance.rootElement.classList.add(instance.className());
@@ -69,11 +75,50 @@
     });
 
     Object.assign(extensionClass.prototype, namingMixin);
+    if (autoListen) {
+      Object.assign(extensionClass.prototype, _eventMixin);
+    }
 
     if (extensionClass.init) {
       extensionClass.init();
     }
   }
+
+  function _bindMethods(properties, object) {
+    Object.getOwnPropertyNames(properties)
+      .filter(name => typeof object[name] === 'function' && name !== 'constructor')
+      .forEach(name => object[name] = object[name].bind(object));
+  }
+
+  const _eventMixin = {
+    addEventListeners(info, target) {
+      target = target || this.rootElement;
+      _normalizeEventListenersInfo(info);
+      Object.keys(info).forEach((type) => {
+        const [handler, options] = info[type];
+        target.addEventListener(type, handler, options);
+      });
+    },
+    removeEventListeners(info, target) {
+      target = target || this.rootElement;
+      _normalizeEventListenersInfo(info);
+      Object.keys(info).forEach((type) => {
+        const [handler, options] = info[type];
+        target.removeEventListener(type, handler, options);
+      });
+    },
+    toggleEventListeners(on, info, target) {
+      this[`${on ? 'add' : 'remove'}EventListeners`](info, target);
+    },
+    createCustomEvent(type, detail) {
+      let initArgs = { detail };
+      initArgs.bubbles = true;
+      return new CustomEvent(this.eventName(type), initArgs);
+    },
+    dispatchCustomEvent(type, detail = {}) {
+      return this.rootElement.dispatchEvent(this.createCustomEvent(type, detail));
+    },
+  };
 
   function _createNamingMixin(toPrefix) {
     return {
@@ -96,6 +141,49 @@
         return `--${toPrefix('var')}-${name}`;
       },
     };
+  }
+
+  function _createRemoveMixin() {
+    return {
+      remove() {
+        this._cleanupTasks.forEach(task => task(this));
+        if (this.deinit) {
+          this.deinit();
+        }
+      },
+      _cleanupTasks: [],
+    };
+  }
+
+  function _listen(instance) {
+    if (!instance.addEventListeners || !instance.eventListeners) {
+      throw 'Missing requirements.';
+    }
+    const { eventListeners } = instance;
+    _bindMethods(eventListeners, instance);
+    instance.addEventListeners(eventListeners);
+    instance._cleanupTasks.push(() => {
+      instance.removeEventListeners(eventListeners);
+    });
+    if (instance._onWindowResize && instance.resizeDelay) {
+      let ran, { _onWindowResize } = instance;
+      instance._onWindowResize = function(event) {
+        if (ran && Date.now() < ran + this.resizeDelay) { return; }
+        ran = Date.now();
+        _onWindowResize.call(this, event);
+      }.bind(instance);
+      window.addEventListener('resize', instance._onWindowResize);
+      instance._cleanupTasks.push(() => {
+        window.removeEventListener('resize', instance._onWindowResize);
+      });
+    }
+  }
+
+  function _normalizeEventListenersInfo(info) {
+    Object.keys(info).forEach((type) => {
+      if (typeof info[type] !== 'function') { return; }
+      info[type] = [info[type]];
+    });
   }
 
   function _parseSubject(subject) {
@@ -555,41 +643,7 @@
       });
     }
     if (groups.indexOf('event') !== -1) {
-      let normalizeInfos = function(infos) {
-        Object.keys(infos).forEach((type) => {
-          if (typeof infos[type] !== 'function') { return; }
-          infos[type] = [infos[type]];
-        });
-      };
-      Object.assign(methods, {
-        addEventListeners(infos, target) {
-          target = target || this.rootElement;
-          normalizeInfos(infos);
-          Object.keys(infos).forEach((type) => {
-            const [handler, options] = infos[type];
-            target.addEventListener(type, handler, options);
-          });
-        },
-        removeEventListeners(infos, target) {
-          target = target || this.rootElement;
-          normalizeInfos(infos);
-          Object.keys(infos).forEach((type) => {
-            const [handler, options] = infos[type];
-            target.removeEventListener(type, handler, options);
-          });
-        },
-        toggleEventListeners(on, infos, target) {
-          this[`${on ? 'add' : 'remove'}EventListeners`](infos, target);
-        },
-        createCustomEvent(type, detail) {
-          let initArgs = { detail };
-          initArgs.bubbles = true;
-          return new CustomEvent(this.eventName(type), initArgs);
-        },
-        dispatchCustomEvent(type, detail = {}) {
-          return this.rootElement.dispatchEvent(this.createCustomEvent(type, detail));
-        },
-      });
+      Object.assign(methods, _eventMixin);
     }
     if (groups.indexOf('selection') !== -1) {
       Object.assign(methods, {
