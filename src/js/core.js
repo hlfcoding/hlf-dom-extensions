@@ -42,8 +42,72 @@
   };
   HLF.debugLog = (HLF.debug === false) ? function(){} :
     (console.log.bind ? console.log.bind(console) : console.log);
-  function buildExtension(args) {
+
+  function buildExtension(extensionClass, options) {
+    const namingMixin = _createNamingMixin(extensionClass.toPrefix);
+
+    Object.assign(extensionClass, namingMixin, {
+      extend(subject, options, context) {
+        let { element, elements } = _parseSubject(subject);
+        options = Object.assign({}, options, extensionClass.defaults);
+        let instance = new extensionClass(
+          element || elements, Object.assign({}, options), context
+        );
+        Object.assign(instance, {
+          element, elements, contextElement: context,
+          rootElement: (context || element),
+        });
+        }
+        if (instance.className) {
+          instance.rootElement.classList.add(instance.className());
+        }
+        if (instance.init) {
+          instance.init();
+        }
+        return instance;
+      },
+    });
+
+    Object.assign(extensionClass.prototype, namingMixin);
+
+    if (extensionClass.init) {
+      extensionClass.init();
+    }
   }
+
+  function _createNamingMixin(toPrefix) {
+    return {
+      attrName(name = '') {
+        if (name.length) {
+          name = `-${name}`;
+        }
+        return `data-${toPrefix('data')}${name}`;
+      },
+      className(name = '') {
+        if (name.length) {
+          name = `-${name}`;
+        }
+        return `js-${toPrefix('class')}${name}`;
+      },
+      eventName(name) {
+        return `${toPrefix('event')}${name}`;
+      },
+      varName(name) {
+        return `--${toPrefix('var')}-${name}`;
+      },
+    };
+  }
+
+  function _parseSubject(subject) {
+    let element, elements;
+    if (subject instanceof HTMLElement) {
+      element = subject;
+    } else {
+      elements = Array.from(subject);
+    }
+    return { element, elements };
+  }
+
   //
   // createExtension
   // ---------------
@@ -431,26 +495,7 @@
       });
     }
     if (groups.indexOf('naming') !== -1) {
-      const naming = {
-        attrName(name = '') {
-          if (name.length) {
-            name = `-${name}`;
-          }
-          return `data-${namespace.toString('data')}${name}`;
-        },
-        className(name = '') {
-          if (name.length) {
-            name = `-${name}`;
-          }
-          return `js-${namespace.toString('class')}${name}`;
-        },
-        eventName(name) {
-          return `${namespace.toString('event')}${name}`;
-        },
-        varName(name) {
-          return `--${namespace.toString('var')}-${name}`;
-        },
-      };
+      const naming = _createNamingMixin(namespace.toString);
       Object.assign(methods, naming);
       Object.assign(namespace, naming);
     }

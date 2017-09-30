@@ -40,21 +40,33 @@
               `Instance has generated API addition ${methodName}.`
             ));
           },
+          buildTestExtension(extensionClass, options, defaults) {
+            options = Object.assign({}, options);
+            HLF.buildExtension(extensionClass, options);
+            this.SomeExtension = extensionClass;
+          },
           createSomeChildElement() {
             let someElement = document.createElement('div');
             someElement.classList.add('foo');
             this.someElement.appendChild(someElement);
             return someElement;
           },
-          createTestExtension({ classAdditions, createOptions, defaults } = {}) {
-            const { methods, onNew, staticMethods } = classAdditions || {};
+          createTestExtensionClass(additions, defaults) {
+            const { methods, onNew, staticMethods } = additions || {};
             class SomeExtension {
               constructor(element, options, contextElement) {
                 if (onNew) { onNew.apply(this, arguments); }
               }
             }
             Object.assign(SomeExtension.prototype, methods);
-            Object.assign(SomeExtension, staticMethods);
+            Object.assign(SomeExtension, staticMethods, {
+              debug: false,
+              defaults: Object.assign({}, defaults),
+              toPrefix() { return 'se'; },
+            });
+            return SomeExtension;
+          },
+          createTestExtension({ classAdditions, createOptions, defaults } = {}) {
             createOptions = Object.assign({}, {
               name: 'someExtension',
               namespace: {
@@ -62,7 +74,7 @@
                 toString() { return 'se'; },
                 defaults: Object.assign({}, defaults),
               },
-              apiClass: SomeExtension,
+              apiClass: this.createTestExtensionClass(classAdditions, defaults),
             }, createOptions);
             Object.assign(this, {
               extension: HLF.createExtension(createOptions),
@@ -76,7 +88,7 @@
         document.getElementById('qunit-fixture').appendChild(this.someElement);
       },
       afterEach() {
-        if (this.someExtension) {
+        if (typeof this.someExtension === 'function') {
           this.someExtension('remove');
         }
         if (this.extension) {
@@ -86,25 +98,21 @@
     });
 
     test('initializers', function(assert) {
-      this.createTestExtension({
-        classAdditions: {
-          methods: { init() { this._didInit = true; } },
-          staticMethods: { init() { this._didInit = true; } },
-        },
-      });
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      assert.ok(instance instanceof this.namespace.apiClass,
-        'Extension returns instance upon re-invocation without any parameters.');
-      assert.ok(instance._didInit,
+      this.buildTestExtension(this.createTestExtensionClass({
+        methods: { init() { this._didInit = true; } },
+        staticMethods: { init() { this._didInit = true; } },
+      }));
+      this.someExtension = this.SomeExtension.extend(this.someElement);
+      const { someExtension, SomeExtension } = this;
+      assert.ok(someExtension._didInit,
         'Instance had initializer called.');
-      assert.ok(this.namespace.apiClass._didInit,
+      assert.ok(SomeExtension._didInit,
         'Extension class had initializer called.');
-      assert.strictEqual(instance.element, this.someElement,
+      assert.strictEqual(someExtension.element, this.someElement,
         'Extension stores the element as property.');
-      assert.strictEqual(instance.rootElement, instance.element,
+      assert.strictEqual(someExtension.rootElement, someExtension.element,
         'Extension sets the element as root element.');
-      assert.ok(instance.element.classList.contains('js-se'),
+      assert.ok(someExtension.element.classList.contains('js-se'),
         'Extension gives the element the main class.');
     });
 
