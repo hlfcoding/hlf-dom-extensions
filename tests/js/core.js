@@ -176,21 +176,20 @@
 
     test('naming methods', function(assert) {
       const methodNames = ['attrName', 'className', 'eventName', 'varName'];
-      this.createTestExtension();
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      this.assertInstanceMethods(instance, ...methodNames);
+      this.buildTestExtension(this.createTestExtensionClass());
+      this.someExtension = this.SomeExtension.extend(this.someElement);
+      this.assertInstanceMethods(this.someExtension, ...methodNames);
       methodNames.forEach(methodName => assert.ok(
-        typeof this.namespace[methodName] === 'function',
+        typeof this.SomeExtension[methodName] === 'function',
         `Namespace has generated API addition ${methodName}.`
       ));
-      assert.equal(instance.attrName('some-attribute'), 'data-se-some-attribute',
+      assert.equal(this.someExtension.attrName('some-attribute'), 'data-se-some-attribute',
         'attrName namespaces attribute names correctly.');
-      assert.equal(instance.className('some-class'), 'js-se-some-class',
+      assert.equal(this.someExtension.className('some-class'), 'js-se-some-class',
         'className namespaces class names correctly.');
-      assert.equal(instance.eventName('someevent'), 'sesomeevent',
+      assert.equal(this.someExtension.eventName('someevent'), 'sesomeevent',
         'eventName namespaces event names correctly.');
-      assert.equal(instance.varName('some-var'), '--se-some-var',
+      assert.equal(this.someExtension.varName('some-var'), '--se-some-var',
         'varName namespaces CSS var names correctly.');
     });
 
