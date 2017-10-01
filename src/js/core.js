@@ -148,6 +148,29 @@
     },
   };
 
+  _mixins.debug = (debug, toPrefix) => (debug ? {
+    debugLog(...args) {
+      if (!this._hasDebugLogGroup) {
+        args.unshift(toPrefix('log'));
+      }
+      HLF.debugLog(...args);
+    },
+    debugLogGroup(arg) {
+      if (arg === false) {
+        console.groupEnd();
+        this._hasDebugLogGroup = false;
+      } else {
+        let args = [toPrefix('log')];
+        if (arg) { args.push(arg); }
+        console.group(...args);
+        this._hasDebugLogGroup = true;
+      }
+    },
+  } : {
+    debugLog() {},
+    debugLogGroup() {},
+  });
+
   _mixins.event = {
     addEventListeners(info, target) {
       target = target || this.rootElement;
@@ -291,12 +314,12 @@
   };
 
   function _mix(extensionClass, options, optionGroupNames) {
-    const { defaults, toPrefix } = extensionClass;
+    const { debug, defaults, toPrefix } = extensionClass;
     Object.assign(extensionClass, _mixins.naming(toPrefix));
 
     let { autoListen, autoSelect, mixinNames: names } = options, flags = {};
     Object.keys(_mixins).forEach(n => flags[n] = false);
-    (names || []).concat('naming', 'options', 'remove', 'timing')
+    (names || []).concat('debug', 'naming', 'options', 'remove', 'timing')
       .forEach(n => flags[n] = true);
     if (autoListen) { flags.event = true; }
     if (autoSelect) { flags.selection = true; }
@@ -304,7 +327,8 @@
     Object.assign(extensionClass.prototype, ...names.map((name) => {
       let mixin = _mixins[name];
       if (typeof mixin === 'function') {
-        if (name === 'naming') { mixin = mixin(toPrefix); }
+        if (name === 'debug') { mixin = mixin(debug, toPrefix); }
+        else if (name === 'naming') { mixin = mixin(toPrefix); }
         else if (name === 'options') { mixin = mixin(defaults, optionGroupNames); }
         else { mixin = mixin(); }
       }
@@ -657,36 +681,7 @@
   //
   function createExtensionBaseMethods(namespace, groups) {
     let methods = {};
-    function debugPrefixes(instance) {
-      return [
-        namespace.toString('log'),
-        instance.rootElement.getAttribute(instance.attrName('instance-id')),
-      ];
-    }
-    Object.assign(methods, !namespace.debug ? {
-      debugLog() {},
-      debugLogGroup() {},
-    } : {
-      debugLog(...args) {
-        if (!this._hasDebugLogGroup) {
-          args.unshift(...debugPrefixes(this));
-        }
-        HLF.debugLog(...args);
-      },
-      debugLogGroup(arg) {
-        if (arg === false) {
-          console.groupEnd();
-          this._hasDebugLogGroup = false;
-        } else {
-          let args = debugPrefixes(this);
-          if (arg) {
-            args.push(arg);
-          }
-          console.group(...args);
-          this._hasDebugLogGroup = true;
-        }
-      },
-    });
+    Object.assign(methods, _mixins.debug(namespace.debug, namespace.toString));
     if (groups.indexOf('action') !== -1) {
       Object.assign(methods, {
         perform(action) {
