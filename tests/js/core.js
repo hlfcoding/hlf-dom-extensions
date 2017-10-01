@@ -332,18 +332,16 @@
     });
 
     test('autoSelect option', function(assert) {
-      this.createTestExtension({
-        createOptions: { autoSelect: true },
-        defaults: { selectors: { someElement: '.foo', someElements: '.foo' } },
-      });
+      this.buildTestExtension(this.createTestExtensionClass(
+        null, { selectors: { someElement: '.foo', someElements: '.foo' } }
+      ), { autoSelect: true });
       this.createSomeChildElement();
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      assert.ok(instance.someElement instanceof HTMLElement,
+      this.someExtension = this.SomeExtension.extend(this.someElement);
+      assert.ok(this.someExtension.someElement instanceof HTMLElement,
         'Instance has auto-selected sub element based on selectors option.');
-      assert.ok(instance.someElements instanceof NodeList,
+      assert.ok(this.someExtension.someElements instanceof NodeList,
         'Instance has auto-selected sub elements based on selectors option.');
-      this.assertInstanceMethods(instance,
+      this.assertInstanceMethods(this.someExtension,
         'selectByClass', 'selectAllByClass', 'selectToProperties');
     });
 

@@ -71,6 +71,9 @@
         if (autoListen) {
           _listen(instance);
         }
+        if (autoSelect) {
+          instance.selectToProperties();
+        }
         if (instance.init) {
           instance.init();
         }
@@ -228,6 +231,31 @@
     },
   };
 
+  _mixins.selection = {
+    selectByClass(name, element) {
+      if (!element) { element = this.rootElement; }
+      return element.querySelector(`.${this.className(name)}`);
+    },
+    selectAllByClass(name, element) {
+      if (!element) { element = this.rootElement; }
+      return element.querySelectorAll(`.${this.className(name)}`);
+    },
+    selectToProperties() {
+      const selectors = this.options ? this.options.selectors : this.selectors;
+      if (!this.rootElement || !selectors) {
+        throw 'Missing requirements.';
+      }
+      Object.keys(selectors).forEach((name) => {
+        const selector = selectors[name];
+        if (name.substr(-1) === 's') {
+          this[name] = this.rootElement.querySelectorAll(selector);
+        } else {
+          this[name] = this.rootElement.querySelector(selector);
+        }
+      });
+    },
+  };
+
   _mixins.timing = {
     setElementTimeout(element, name, duration, callback) {
       name = this.attrName(name);
@@ -271,6 +299,7 @@
     (names || []).concat('naming', 'options', 'remove', 'timing')
       .forEach(n => flags[n] = true);
     if (autoListen) { flags.event = true; }
+    if (autoSelect) { flags.selection = true; }
     names = Object.keys(flags).filter(n => flags[n]);
     Object.assign(extensionClass.prototype, ...names.map((name) => {
       let mixin = _mixins[name];
@@ -688,30 +717,7 @@
       Object.assign(methods, _mixins.event);
     }
     if (groups.indexOf('selection') !== -1) {
-      Object.assign(methods, {
-        selectByClass(name, element) {
-          if (!element) { element = this.rootElement; }
-          return element.querySelector(`.${this.className(name)}`);
-        },
-        selectAllByClass(name, element) {
-          if (!element) { element = this.rootElement; }
-          return element.querySelectorAll(`.${this.className(name)}`);
-        },
-        selectToProperties() {
-          const selectors = this.options ? this.options.selectors : this.selectors;
-          if (!this.rootElement || !selectors) {
-            throw 'Missing requirements.';
-          }
-          Object.keys(selectors).forEach((name) => {
-            const selector = selectors[name];
-            if (name.substr(-1) === 's') {
-              this[name] = this.rootElement.querySelectorAll(selector);
-            } else {
-              this[name] = this.rootElement.querySelector(selector);
-            }
-          });
-        },
-      });
+      Object.assign(methods, _mixins.selection);
     }
     return methods;
   }
