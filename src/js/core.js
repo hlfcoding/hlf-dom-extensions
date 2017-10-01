@@ -49,8 +49,9 @@
     const optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
 
     Object.assign(extensionClass, {
-      extend(subject, options = {}, context = null) {
-        let { element, elements } = _parseSubject(subject);
+      extend(subject, options = {}) {
+        let { element, elements } = _parseSubject(subject, options);
+        let { contextElement: context } = options;
         let root = (context || element);
         root.classList.add(this.className());
         options = _assignOptions(options,
@@ -289,10 +290,13 @@
     });
   }
 
-  function _parseSubject(subject) {
+  function _parseSubject(subject, options) {
     let element, elements;
     if (subject instanceof HTMLElement) {
       element = subject;
+    } else if (typeof subject === 'function') {
+      Object.assign(options, { querySelector: subject });
+      return _parseSubject(subject(options.contextElement), options);
     } else {
       elements = Array.from(subject);
     }

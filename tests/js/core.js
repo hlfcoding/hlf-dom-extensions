@@ -266,23 +266,19 @@
 
     test('as shared instance', function(assert) {
       this.createSomeChildElement();
-      this.createTestExtension();
+      this.buildTestExtension(this.createTestExtensionClass());
       let subject = (contextElement) => (contextElement.querySelectorAll('.foo'));
-      this.someExtension = this.extension(subject, this.someElement);
-      let instance = this.someExtension();
-      assert.deepEqual(instance.elements, Array.from(subject(this.someElement)),
+      this.someExtension = this.SomeExtension.extend(subject, { contextElement: this.someElement });
+      assert.deepEqual(this.someExtension.elements, Array.from(subject(this.someElement)),
         'Extension stores the elements as property.');
-      assert.deepEqual(instance.options.querySelector(this.someElement), subject(this.someElement),
+      assert.deepEqual(this.someExtension.options.querySelector(this.someElement), subject(this.someElement),
         'Extension stores custom query-selector subject as option.');
-      assert.strictEqual(instance.contextElement, this.someElement,
+      assert.strictEqual(this.someExtension.contextElement, this.someElement,
         'Extension stores the context element as property.');
-      assert.strictEqual(instance.rootElement, instance.contextElement,
+      assert.strictEqual(this.someExtension.rootElement, this.someExtension.contextElement,
         'Extension sets the context element as root element.');
-      assert.ok(instance.contextElement.classList.contains('js-se'),
+      assert.ok(this.someExtension.contextElement.classList.contains('js-se'),
         'Extension gives the context element the main class.');
-      assert.equal(instance.id,
-        parseInt(this.someElement.getAttribute('data-se-instance-id')),
-        'Extension stores singleton with context element.');
     });
 
     test('compactOptions option', function(assert) {
