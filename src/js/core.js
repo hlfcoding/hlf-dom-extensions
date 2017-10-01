@@ -66,7 +66,7 @@
           element, elements, contextElement: context, rootElement: root,
         });
         if (autoBind) {
-          _bindMethods(this.prototype, instance);
+          _bindMethods(instance, { properties: this.prototype });
         }
         if (autoListen) {
           _listen(instance);
@@ -94,10 +94,10 @@
     return options;
   }
 
-  function _bindMethods(properties, object) {
-    Object.getOwnPropertyNames(properties)
+  function _bindMethods(object, { context, properties }) {
+    Object.keys(properties || object)
       .filter(name => typeof object[name] === 'function' && name !== 'constructor')
-      .forEach(name => object[name] = object[name].bind(object));
+      .forEach(name => object[name] = object[name].bind(context || object));
   }
 
   function _listen(instance) {
@@ -105,7 +105,7 @@
       throw 'Missing requirements.';
     }
     const { eventListeners } = instance;
-    _bindMethods(eventListeners, instance);
+    _bindMethods(eventListeners, { context: instance });
     instance.addEventListeners(eventListeners);
     instance._cleanupTasks.push(() => {
       instance.removeEventListeners(eventListeners);

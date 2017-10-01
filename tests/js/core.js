@@ -306,36 +306,28 @@
     });
 
     test('autoListen option', function(assert) {
-      this.createTestExtension({
-        classAdditions: {
-          onNew() {
-            this.eventListeners = {};
-            this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
-            this.resizeDelay = 100;
-            this._resizeCount = 0;
-          },
-          methods: {
-            _onSomeEvent(event) {
-              this._someEventDetail = event.detail;
-            },
-            _onWindowResize(event) {
-              this._resizeCount += 1;
-            },
-          },
+      this.buildTestExtension(this.createTestExtensionClass({
+        onNew() {
+          this.eventListeners = {};
+          this.eventListeners[this.eventName('someevent')] = this._onSomeEvent;
+          this.resizeDelay = 100;
+          this._resizeCount = 0;
         },
-        createOptions: { autoListen: true },
-      });
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      this.assertInstanceMethods(instance,
+        methods: {
+          _onSomeEvent(event) { this._someEventDetail = event.detail; },
+          _onWindowResize(event) { this._resizeCount += 1; },
+        },
+      }), { autoListen: true });
+      this.someExtension = this.SomeExtension.extend(this.someElement);
+      this.assertInstanceMethods(this.someExtension,
         'addEventListeners', 'removeEventListeners', 'toggleEventListeners',
         'createCustomEvent', 'dispatchCustomEvent');
-      instance.dispatchCustomEvent('someevent', this.someData);
-      assert.equal(instance._someEventDetail, this.someData,
+      this.someExtension.dispatchCustomEvent('someevent', this.someData);
+      assert.equal(this.someExtension._someEventDetail, this.someData,
         'Instance has auto-added auto-bound listeners based on eventListeners.');
       window.dispatchEvent(new Event('resize'));
       window.dispatchEvent(new Event('resize'));
-      assert.equal(instance._resizeCount, 1,
+      assert.equal(this.someExtension._resizeCount, 1,
         'Instance has auto-bound and throttled _onWindowResize listener.');
     });
 
