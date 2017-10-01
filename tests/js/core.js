@@ -282,34 +282,26 @@
     });
 
     test('compactOptions option', function(assert) {
-      this.createTestExtension({
-        createOptions: { compactOptions: true },
-        defaults: { someOption: 'foo' },
-      });
-      this.someExtension = this.extension(this.someElement, {
-        someOtherOption: 'bar',
-      });
-      let instance = this.someExtension();
-      assert.equal(instance.someOption, 'foo',
+      this.buildTestExtension(this.createTestExtensionClass(
+        null, { someOption: 'foo' }
+      ), { compactOptions: true });
+      this.someExtension = this.SomeExtension.extend(this.someElement, { someOtherOption: 'bar' });
+      assert.equal(this.someExtension.someOption, 'foo',
         'Instance has default options merged in as properties.');
-      assert.equal(instance.someOtherOption, 'bar',
+      assert.equal(this.someExtension.someOtherOption, 'bar',
         'Instance has custom options merged in as properties.');
     });
 
     test('autoBind option', function(assert) {
-      this.createTestExtension({
-        classAdditions: { methods: {
-          _onSomeEvent() {
-            this.someContext = this;
-          }
-        }},
-        createOptions: { autoBind: true },
-      });
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
-      let { _onSomeEvent } = instance;
+      this.buildTestExtension(this.createTestExtensionClass({
+        methods: {
+          _onSomeEvent() { this.someContext = this; }
+        }
+      }), { autoBind: true });
+      this.someExtension = this.SomeExtension.extend(this.someElement);
+      let { _onSomeEvent } = this.someExtension;
       _onSomeEvent();
-      assert.strictEqual(instance.someContext, instance,
+      assert.strictEqual(this.someExtension.someContext, this.someExtension,
         'Instance has auto-bound methods.');
     });
 
