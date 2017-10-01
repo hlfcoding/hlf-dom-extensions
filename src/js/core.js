@@ -46,21 +46,22 @@
   function buildExtension(extensionClass, options) {
     const { defaults } = extensionClass;
     const { autoBind, autoListen, autoSelect, compactOptions } = options;
-    const namingMixin = _createNamingMixin(extensionClass.toPrefix);
     const optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
 
-    Object.assign(extensionClass, namingMixin, {
+    Object.assign(extensionClass, {
       extend(subject, options = {}, context = null) {
         let { element, elements } = _parseSubject(subject);
         let root = (context || element);
+        root.classList.add(this.className());
         options = _assignOptions(options,
-          defaults, optionGroupNames, root.getAttribute(namingMixin.attrName())
+          defaults, optionGroupNames, root.getAttribute(this.attrName())
         );
         let instance = new this(
           element || elements, Object.assign({}, options), context
         );
+        instance._setUpCleanupTasks();
         Object.assign(instance, compactOptions ? options : { options });
-        Object.assign(instance, _createRemoveMixin(), {
+        Object.assign(instance, {
           element, elements, contextElement: context, rootElement: root,
         });
         if (autoBind) {
@@ -69,9 +70,6 @@
         if (autoListen) {
           _listen(instance);
         }
-        if (instance.className) {
-          instance.rootElement.classList.add(instance.className());
-        }
         if (instance.init) {
           instance.init();
         }
@@ -79,12 +77,7 @@
       },
     });
 
-    Object.assign(extensionClass.prototype,
-      namingMixin, _createOptionsMixin(defaults, optionGroupNames), _timingMixin
-    );
-    if (autoListen) {
-      Object.assign(extensionClass.prototype, _eventMixin);
-    }
+    _mix(extensionClass, options, optionGroupNames);
 
     if (extensionClass.init) {
       extensionClass.init();
@@ -106,7 +99,33 @@
       .forEach(name => object[name] = object[name].bind(object));
   }
 
-  const _eventMixin = {
+  function _listen(instance) {
+    if (!instance.addEventListeners || !instance.eventListeners) {
+      throw 'Missing requirements.';
+    }
+    const { eventListeners } = instance;
+    _bindMethods(eventListeners, instance);
+    instance.addEventListeners(eventListeners);
+    instance._cleanupTasks.push(() => {
+      instance.removeEventListeners(eventListeners);
+    });
+    if (instance._onWindowResize && instance.resizeDelay) {
+      let ran, { _onWindowResize } = instance;
+      instance._onWindowResize = function(event) {
+        if (ran && Date.now() < ran + this.resizeDelay) { return; }
+        ran = Date.now();
+        _onWindowResize.call(this, event);
+      }.bind(instance);
+      window.addEventListener('resize', instance._onWindowResize);
+      instance._cleanupTasks.push(() => {
+        window.removeEventListener('resize', instance._onWindowResize);
+      });
+    }
+  }
+
+  const _mixins = {};
+
+  _mixins.event = {
     addEventListeners(info, target) {
       target = target || this.rootElement;
       _normalizeEventListenersInfo(info);
@@ -136,64 +155,60 @@
     },
   };
 
-  function _createNamingMixin(toPrefix) {
-    return {
-      attrName(name = '') {
-        if (name.length) {
-          name = `-${name}`;
-        }
-        return `data-${toPrefix('data')}${name}`;
-      },
-      className(name = '') {
-        if (name.length) {
-          name = `-${name}`;
-        }
-        return `js-${toPrefix('class')}${name}`;
-      },
-      eventName(name) {
-        return `${toPrefix('event')}${name}`;
-      },
-      varName(name) {
-        return `--${toPrefix('var')}-${name}`;
-      },
-    };
-  }
+  _mixins.naming = (toPrefix) => ({
+    attrName(name = '') {
+      if (name.length) {
+        name = `-${name}`;
+      }
+      return `data-${toPrefix('data')}${name}`;
+    },
+    className(name = '') {
+      if (name.length) {
+        name = `-${name}`;
+      }
+      return `js-${toPrefix('class')}${name}`;
+    },
+    eventName(name) {
+      return `${toPrefix('event')}${name}`;
+    },
+    varName(name) {
+      return `--${toPrefix('var')}-${name}`;
+    },
+  });
 
-  function _createOptionsMixin(defaults, groupNames) {
-    return {
-      configure(options) {
-        Object.keys(options).forEach((name) => {
-          if (name in this || (this.options && name in this.options)) { return; }
-          delete options[name];
-          throw 'Not an existing option.';
-        });
-        let store = this.options || this;
-        Object.keys(options).filter(name => options[name] === 'default').forEach((name) => {
-          options[name] = defaults[name];
-          delete store[name];
-        });
-        groupNames.forEach((name) => {
-          store[name] = Object.assign({}, store[name], options[name]);
-          delete options[name];
-        });
-        Object.assign(store, options);
-      },
-    };
-  }
+  _mixins.options = (defaults, groupNames) => ({
+    configure(options) {
+      Object.keys(options).forEach((name) => {
+        if (name in this || (this.options && name in this.options)) { return; }
+        delete options[name];
+        throw 'Not an existing option.';
+      });
+      let store = this.options || this;
+      Object.keys(options).filter(name => options[name] === 'default').forEach((name) => {
+        options[name] = defaults[name];
+        delete store[name];
+      });
+      groupNames.forEach((name) => {
+        store[name] = Object.assign({}, store[name], options[name]);
+        delete options[name];
+      });
+      Object.assign(store, options);
+    },
+  });
 
-  function _createRemoveMixin() {
-    return {
-      remove() {
-        this._cleanupTasks.forEach(task => task(this));
-        if (this.deinit) {
-          this.deinit();
-        }
-      },
-      _cleanupTasks: [],
-    };
-  }
+  _mixins.remove = {
+    remove() {
+      this._cleanupTasks.forEach(task => task(this));
+      if (this.deinit) {
+        this.deinit();
+      }
+    },
+    _setUpCleanupTasks() {
+      this._cleanupTasks = [];
+    },
+  };
 
-  const _timingMixin = {
+  _mixins.timing = {
     setElementTimeout(element, name, duration, callback) {
       name = this.attrName(name);
       if (element.getAttribute(name)) {
@@ -227,28 +242,25 @@
     },
   };
 
-  function _listen(instance) {
-    if (!instance.addEventListeners || !instance.eventListeners) {
-      throw 'Missing requirements.';
-    }
-    const { eventListeners } = instance;
-    _bindMethods(eventListeners, instance);
-    instance.addEventListeners(eventListeners);
-    instance._cleanupTasks.push(() => {
-      instance.removeEventListeners(eventListeners);
-    });
-    if (instance._onWindowResize && instance.resizeDelay) {
-      let ran, { _onWindowResize } = instance;
-      instance._onWindowResize = function(event) {
-        if (ran && Date.now() < ran + this.resizeDelay) { return; }
-        ran = Date.now();
-        _onWindowResize.call(this, event);
-      }.bind(instance);
-      window.addEventListener('resize', instance._onWindowResize);
-      instance._cleanupTasks.push(() => {
-        window.removeEventListener('resize', instance._onWindowResize);
-      });
-    }
+  function _mix(extensionClass, options, optionGroupNames) {
+    const { defaults, toPrefix } = extensionClass;
+    Object.assign(extensionClass, _mixins.naming(toPrefix));
+
+    let { autoListen, autoSelect, mixinNames: names } = options, flags = {};
+    Object.keys(_mixins).forEach(n => flags[n] = false);
+    (names || []).concat('naming', 'options', 'remove', 'timing')
+      .forEach(n => flags[n] = true);
+    if (autoListen) { flags.event = true; }
+    names = Object.keys(flags).filter(n => flags[n]);
+    Object.assign(extensionClass.prototype, ...names.map((name) => {
+      let mixin = _mixins[name];
+      if (typeof mixin === 'function') {
+        if (name === 'naming') { mixin = mixin(toPrefix); }
+        else if (name === 'options') { mixin = mixin(defaults, optionGroupNames); }
+        else { mixin = mixin(); }
+      }
+      return mixin;
+    }));
   }
 
   function _normalizeEventListenersInfo(info) {
@@ -631,7 +643,7 @@
           if (!this[methodName]) { return; }
           this[methodName](payload);
         },
-        performConfigure: _createOptionsMixin(namespace.defaults, namespace.optionGroupNames).configure,
+        performConfigure: _mixins.options(namespace.defaults, namespace.optionGroupNames).configure,
         performRemove() {
           namespace.extension._deleteInstance(this.rootElement);
           this.destructor();
@@ -639,12 +651,12 @@
       });
     }
     if (groups.indexOf('naming') !== -1) {
-      const naming = _createNamingMixin(namespace.toString);
+      const naming = _mixins.naming(namespace.toString);
       Object.assign(methods, naming);
       Object.assign(namespace, naming);
     }
     if (groups.indexOf('timeout') !== -1) {
-      Object.assign(methods, _timingMixin);
+      Object.assign(methods, _mixins.timing);
     }
     if (groups.indexOf('css') !== -1) {
       Object.assign(methods, {
@@ -667,7 +679,7 @@
       });
     }
     if (groups.indexOf('event') !== -1) {
-      Object.assign(methods, _eventMixin);
+      Object.assign(methods, _mixins.event);
     }
     if (groups.indexOf('selection') !== -1) {
       Object.assign(methods, {
