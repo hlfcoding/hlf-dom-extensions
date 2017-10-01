@@ -125,6 +125,25 @@
 
   const _mixins = {};
 
+  _mixins.css = {
+    cssDuration(name, element) {
+      if (!element) { element = this.rootElement; }
+      return 1000 * parseFloat(getComputedStyle(element)[name]);
+    },
+    cssVariable(name, element) {
+      if (!element) { element = this.rootElement; }
+      return getComputedStyle(element).getPropertyValue(this.varName(name));
+    },
+    cssVariableDuration(name, element) {
+      return 1000 * parseFloat(this.cssVariable(name, element));
+    },
+    swapClasses(nameFrom, nameTo, element) {
+      if (!element) { element = this.rootElement; }
+      element.classList.remove(this.className(nameFrom));
+      element.classList.add(this.className(nameTo));
+    },
+  };
+
   _mixins.event = {
     addEventListeners(info, target) {
       target = target || this.rootElement;
@@ -659,24 +678,7 @@
       Object.assign(methods, _mixins.timing);
     }
     if (groups.indexOf('css') !== -1) {
-      Object.assign(methods, {
-        cssDuration(name, element) {
-          if (!element) { element = this.rootElement; }
-          return 1000 * parseFloat(getComputedStyle(element)[name]);
-        },
-        cssVariable(name, element) {
-          if (!element) { element = this.rootElement; }
-          return getComputedStyle(element).getPropertyValue(this.varName(name));
-        },
-        cssVariableDuration(name, element) {
-          return 1000 * parseFloat(this.cssVariable(name, element));
-        },
-        swapClasses(nameFrom, nameTo, element) {
-          if (!element) { element = this.rootElement; }
-          element.classList.remove(this.className(nameFrom));
-          element.classList.add(this.className(nameTo));
-        },
-      });
+      Object.assign(methods, _mixins.css);
     }
     if (groups.indexOf('event') !== -1) {
       Object.assign(methods, _mixins.event);

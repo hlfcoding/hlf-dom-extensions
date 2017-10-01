@@ -245,25 +245,22 @@
     });
 
     test('css methods', function(assert) {
-      this.createTestExtension({
-        createOptions: { baseMethodGroups: ['css'] },
-      });
-      this.someExtension = this.extension(this.someElement);
-      let instance = this.someExtension();
+      this.buildTestExtension(this.createTestExtensionClass(), { mixinNames: ['css'] });
+      this.someExtension = this.SomeExtension.extend(this.someElement);
       let childElement = this.createSomeChildElement();
 
       this.someElement.style.setProperty('--se-some-size', '1px');
-      assert.equal(instance.cssVariable('some-size'), '1px',
+      assert.equal(this.someExtension.cssVariable('some-size'), '1px',
         'cssVariable returns variable value on root element by default.');
       childElement.style.setProperty('--se-some-size', '2px');
-      assert.equal(instance.cssVariable('some-size', childElement), '2px',
+      assert.equal(this.someExtension.cssVariable('some-size', childElement), '2px',
         'cssVariable returns variable value on given element if any.');
 
       this.someElement.style.setProperty('transition-duration', '0.1s');
-      assert.equal(instance.cssDuration('transition-duration'), 100,
+      assert.equal(this.someExtension.cssDuration('transition-duration'), 100,
         'cssDuration returns converted duration on root element by default.');
       childElement.style.setProperty('transition-duration', '0.2s');
-      assert.equal(instance.cssDuration('transition-duration', childElement), 200,
+      assert.equal(this.someExtension.cssDuration('transition-duration', childElement), 200,
         'cssDuration returns converted duration on given element if any.');
     });
 
