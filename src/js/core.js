@@ -38,7 +38,7 @@
   //
   let HLF = {
     debug: true,
-    toString() { return 'hlf'; },
+    toPrefix() { return 'hlf'; },
   };
   HLF.debugLog = (HLF.debug === false) ? function(){} :
     (console.log.bind ? console.log.bind(console) : console.log);
@@ -98,7 +98,7 @@
   }
 
   function _bindMethods(object, { context, properties }) {
-    Object.keys(properties || object)
+    Object.getOwnPropertyNames(properties || object)
       .filter(name => typeof object[name] === 'function' && name !== 'constructor')
       .forEach(name => object[name] = object[name].bind(context || object));
   }
