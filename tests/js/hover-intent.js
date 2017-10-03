@@ -15,13 +15,13 @@
     }
   });
 
-  define(['hlf/core', 'test/base', 'hlf/hover-intent'], function(hlf, base, hoverIntent) {
+  define(['test/base', 'hlf/hover-intent'], function(base, HoverIntent) {
 
     // ---
 
     let tests = [];
     const { createVisualTest, runVisualTests } = base;
-    const { eventName } = hlf.hoverIntent;
+    const { eventName } = HoverIntent;
 
     class Counters {
       setUp(testElement, element, countersInfo) {
@@ -66,16 +66,16 @@
         inputElement.addEventListener('change', (_) => {
           let element = testElement.querySelector('.box');
           if (inputElement.checked) {
-            hoverIntent(element);
+            this.hoverIntent = HoverIntent.extend(element);
           } else {
-            hoverIntent(element, 'remove');
+            this.hoverIntent.remove();
           }
         });
       },
       test(testElement) {
         const { vars } = this;
         let element = testElement.querySelector('.box');
-        hoverIntent(element);
+        this.hoverIntent = HoverIntent.extend(element);
         vars.counters.setUp(testElement, element, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },
@@ -107,7 +107,7 @@
       test(testElement) {
         const { vars } = this;
         let contextElement = testElement.querySelector('.list');
-        hoverIntent(contextElement.querySelectorAll('.item'), contextElement);
+        HoverIntent.extend(contextElement.querySelectorAll('.item'), { contextElement });
         vars.counters.setUp(testElement, contextElement, {
           enter: { selector: '.enter-counter', eventName: eventName('enter') },
           leave: { selector: '.leave-counter', eventName: eventName('leave') },

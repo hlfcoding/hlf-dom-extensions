@@ -20,9 +20,9 @@
   } else if (typeof exports === 'object') {
     module.exports = attach(require('hlf/core'));
   } else {
-    attach(hlf);
+    attach(HLF);
   }
-})(this, function(hlf) {
+})(this, function(HLF) {
   //
   // Namespace
   // ---------
@@ -51,20 +51,7 @@
   // try to match system mouse events where possible and include values for:
   // `pageX`, `pageY`, `relatedTarget`.
   //
-  hlf.hoverIntent = {
-    debug: true,
-    defaults: {
-      interval: 300,
-      sensitivity: 2,
-    },
-    toString(context) {
-      switch (context) {
-        case 'event': return 'hlfhi';
-        case 'data': return 'hlf-hi';
-        default: return 'hlf-hi';
-      }
-    },
-  };
+
   //
   // HoverIntent
   // -----------
@@ -82,6 +69,22 @@
   // `_onMouseOut`.
   //
   class HoverIntent {
+    static get debug() {
+      return true;
+    }
+    static get defaults() {
+      return {
+        interval: 300,
+        sensitivity: 2,
+      };
+    }
+    static toPrefix(context) {
+      switch (context) {
+        case 'event': return 'hlfhi';
+        case 'data': return 'hlf-hi';
+        default: return 'hlf-hi';
+      }
+    }
     constructor(elementOrElements, options, contextElement) {
       this.eventListeners = {
         'mousemove': this._onMouseMove,
@@ -196,12 +199,11 @@
   //
   // § __Attaching__
   //
-  return hlf.createExtension({
-    name: 'hoverIntent',
-    namespace: hlf.hoverIntent,
-    apiClass: HoverIntent,
+  HLF.buildExtension(HoverIntent, {
     autoBind: true,
     autoListen: true,
     compactOptions: true,
   });
+  Object.assign(HLF, { HoverIntent });
+  return HoverIntent;
 });
