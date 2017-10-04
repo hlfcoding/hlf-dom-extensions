@@ -10,7 +10,7 @@
     },
   });
 
-  define(['hlf/core', 'test/base', 'hlf/tip'], function(hlf, base, tip) {
+  define(['test/base', 'hlf/tip'], function(base, Tip) {
     let tests = [];
     const { createVisualTest, placeholderText, runVisualTests } = base;
 
@@ -27,8 +27,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        let extension = tip(triggerElements, testElement);
-        let instance = extension(testElement);
+        let tip = Tip.extend(triggerElements, { contextElement: testElement });
       },
       anchorName: 'default',
       className: 'default-call',
@@ -67,8 +66,7 @@
       },
       test(testElement) {
         let triggerElements = (contextElement) => (contextElement.querySelectorAll('[title]'));
-        let extension = tip(triggerElements, { snapTo: 'y' }, testElement);
-        let instance = extension(testElement);
+        let tip = Tip.extend(triggerElements, { contextElement: testElement, snapTo: 'y' });
       },
       anchorName: 'snapping-vertically',
       className: 'list-call',
@@ -92,8 +90,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        let extension = tip(triggerElements, { snapTo: 'x' }, testElement);
-        let instance = extension(testElement);
+        let tip = Tip.extend(triggerElements, { contextElement: testElement, snapTo: 'x' });
       },
       anchorName: 'snapping-horizontally',
       className: 'bar-call',
@@ -119,8 +116,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[alt]');
-        let extension = tip(triggerElements, { snapTo: 'x' }, testElement);
-        let instance = extension(testElement);
+        let tip = Tip.extend(triggerElements, { contextElement: testElement, snapTo: 'x' });
       },
       anchorName: 'a-model-use-case',
       className: 'grid-call',
@@ -146,8 +142,7 @@
       },
       test(testElement) {
         let triggerElements = testElement.querySelectorAll('[title]');
-        let extension = tip(triggerElements, { snapTo: 'trigger' }, testElement);
-        let instance = extension(testElement);
+        let tip = Tip.extend(triggerElements, { contextElement: testElement, snapTo: 'trigger' });
       },
       anchorName: 'corner-cases',
       className: 'corners-call',

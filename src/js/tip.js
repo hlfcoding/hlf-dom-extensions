@@ -15,9 +15,9 @@
   } else if (typeof exports === 'object') {
     module.exports = attach(require('hlf/core'), require('hlf/hover-intent'));
   } else {
-    attach(hlf, hlf.hoverIntent.extension);
+    attach(HLF, HLF.HoverIntent);
   }
-})(this, function(hlf, hoverIntent) {
+})(this, function(HLF, HoverIntent) {
   //
   // Namespace
   // ---------
@@ -69,9 +69,37 @@
   //   stylesheet. We update the presentation state by using namespaced
   //   __classNames__ generated in a closure.
   //
-  hlf.tip = {
-    debug: true,
-    toString(context) {
+
+  //
+  // Tip
+  // ---
+  //
+  class Tip {
+    static get debug() {
+      return true;
+    }
+    static get defaults() {
+      return {
+       cursorHeight: 12,
+        defaultDirection: ['bottom', 'right'],
+        hasListeners: false,
+        hasStem: true,
+        snapTo: null,
+        template() {
+          let stemHtml = this.hasStem ? `<div class="${this.className('stem')}"></div>` : '';
+          return (
+`<div class="${this.className('inner')}">
+  ${stemHtml}
+  <div class="${this.className('content')}"></div>
+</div>`
+          );
+        },
+        toggleDelay: 700,
+        triggerContent: null,
+        viewportElement: document.body,
+      };
+    }
+    static toPrefix(context) {
       switch (context) {
         case 'event': return 'hlftip';
         case 'data': return 'hlf-tip';
@@ -79,32 +107,7 @@
         case 'var': return 'tip';
         default: return 'hlf-tip';
       }
-    },
-    defaults: {
-      cursorHeight: 12,
-      defaultDirection: ['bottom', 'right'],
-      hasListeners: false,
-      hasStem: true,
-      snapTo: null,
-      template() {
-        let stemHtml = this.hasStem ? `<div class="${this.className('stem')}"></div>` : '';
-        return (
-`<div class="${this.className('inner')}">
-  ${stemHtml}
-  <div class="${this.className('content')}"></div>
-</div>`
-        );
-      },
-      toggleDelay: 700,
-      triggerContent: null,
-      viewportElement: document.body,
-    },
-  };
-  //
-  // Tip
-  // ---
-  //
-  class Tip {
+    }
     constructor(elements, options, contextElement) {
       this.elementHoverIntent = null;
       this.hoverIntent = null;
@@ -139,7 +142,7 @@
     get snapToTrigger() { return this.snapTo === 'trigger'; }
     get snapToXAxis() { return this.snapTo === 'x'; }
     get snapToYAxis() { return this.snapTo === 'y'; }
-    performSleep({ triggerElement, event }) {
+    sleep({ triggerElement, event }) {
       if (this.isAsleep || this.isSleeping) { return; }
 
       this._updateState('sleeping', { event });
@@ -149,7 +152,7 @@
         });
       });
     }
-    performWake({ triggerElement, event }) {
+    wake({ triggerElement, event }) {
       this._updateCurrentTriggerElement(triggerElement);
       if (this.isAwake || this.isWaking) { return; }
 
@@ -248,25 +251,25 @@
       });
       this._updateTriggerElements(newTriggerElements);
       this.elements = this.elements.concat(newTriggerElements);
-      this.hoverIntent().elements = this.elements;
+      this.hoverIntent.elements = this.elements;
     }
     _onContentElementMouseEnter(event) {
       this.debugLog('enter tip');
       let triggerElement = this._currentTriggerElement;
       if (!triggerElement) { return; }
-      this.performWake({ triggerElement, event });
+      this.wake({ triggerElement, event });
     }
     _onContentElementMouseLeave(event) {
       this.debugLog('leave tip');
       let triggerElement = this._currentTriggerElement;
       if (!triggerElement) { return; }
-      this.performSleep({ triggerElement, event });
+      this.sleep({ triggerElement, event });
     }
     _onTriggerElementMouseEnter(event) {
-      this.performWake({ triggerElement: event.target, event });
+      this.wake({ triggerElement: event.target, event });
     }
     _onTriggerElementMouseLeave(event) {
-      this.performSleep({ triggerElement: event.target, event });
+      this.sleep({ triggerElement: event.target, event });
     }
     _onTriggerElementMouseMove(event) {
       const { target } = event;
@@ -332,13 +335,13 @@
     }
     _toggleElementEventListeners(on) {
       if (this.elementHoverIntent || !on) {
-        this.elementHoverIntent('remove');
+        this.elementHoverIntent.remove();
         this.elementHoverIntent = null;
       }
       if (on) {
-        this.elementHoverIntent = hoverIntent(this._contentElement);
+        this.elementHoverIntent = HoverIntent.extend(this._contentElement);
       }
-      const { eventName } = hlf.hoverIntent;
+      const { eventName } = HoverIntent;
       let listeners = {};
       listeners[eventName('enter')] = this._onContentElementMouseEnter;
       listeners[eventName('leave')] = this._onContentElementMouseLeave;
@@ -346,13 +349,14 @@
     }
     _toggleTriggerElementEventListeners(on) {
       if (this.hoverIntent || !on) {
-        this.hoverIntent('remove');
+        this.hoverIntent.remove();
         this.hoverIntent = null;
       }
       if (on) {
-        this.hoverIntent = hoverIntent(this.elements, this.contextElement);
+        const { contextElement } = this;
+        this.hoverIntent = HoverIntent.extend(this.elements, { contextElement });
       }
-      const { eventName } = hlf.hoverIntent;
+      const { eventName } = HoverIntent;
       let listeners = {};
       listeners[eventName('enter')] = this._onTriggerElementMouseEnter;
       listeners[eventName('leave')] = this._onTriggerElementMouseLeave;
@@ -450,7 +454,7 @@
           );
         }
         if (this.hoverIntent) {
-          this.hoverIntent('configure', { interval: this.isAwake ? 100 : 'default' });
+          this.hoverIntent.configure({ interval: this.isAwake ? 100 : 'default' });
         }
       } else if (this.isSleeping) {
         this._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
@@ -539,14 +543,11 @@
   //
   // § __Attaching__
   //
-  return hlf.createExtension({
-    name: 'tip',
-    namespace: hlf.tip,
-    apiClass: Tip,
-    asSharedInstance: true,
+  HLF.buildExtension(Tip, {
     autoBind: true,
-    autoListen: true,
-    baseMethodGroups: ['css', 'selection'],
     compactOptions: true,
+    mixinNames: ['css', 'event', 'selection'],
   });
+  Object.assign(HLF, { Tip });
+  return Tip;
 });
