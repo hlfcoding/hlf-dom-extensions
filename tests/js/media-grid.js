@@ -15,10 +15,10 @@
     }
   });
 
-  define(['hlf/core', 'test/base', 'hlf/media-grid'], function(hlf, base, mediaGrid) {
+  define(['test/base', 'hlf/media-grid'], function(base, MediaGrid) {
     if (window.QUnit) {
       const { module, test } = QUnit;
-      module('hlf.mediaGrid', {
+      module('HLF.MediaGrid', {
         beforeEach() {
           let element = document.createElement('div');
           element.innerHTML = (
@@ -29,15 +29,15 @@
 </div>`
           );
           document.getElementById('qunit-fixture').appendChild(element);
-          this.instance = mediaGrid(element)();
+          this.mediaGrid = MediaGrid.extend(element);
         },
       });
       test('#_updateMetrics', function(assert) {
-        const { instance } = this;
-        let { style } = instance.element;
+        const { mediaGrid } = this;
+        let { style } = mediaGrid.element;
         style.boxSizing = 'border-box';
         style.padding = '10px';
-        instance.itemElements.forEach((itemElement) => {
+        mediaGrid.itemElements.forEach((itemElement) => {
           let { style } = itemElement;
           style.borderWidth = '1px';
           style.boxSizing = 'border-box';
@@ -45,20 +45,20 @@
           style.padding = '9px';
           style.width = style.height = '200px';
         });
-        style = instance.element.parentElement.style;
+        style = mediaGrid.element.parentElement.style;
         style.width = '610px';
         let metrics;
-        instance._updateMetrics({ hard: true });
-        metrics = instance.metrics;
+        mediaGrid._updateMetrics({ hard: true });
+        metrics = mediaGrid.metrics;
         assert.strictEqual(metrics.gutter, 10, 'It bases gutter on item margin sizes.');
         assert.strictEqual(metrics.itemWidth, 200, "It uses the item's 'outerWidth' as width.");
         assert.strictEqual(metrics.rowSize, 2, 'It bases row size on item and wrap sizes.');
         assert.strictEqual(metrics.colSize, 2, 'It bases column size on row size.');
         style.width = '620px';
-        instance._updateMetrics({ hard: true });
-        metrics = instance.metrics;
+        mediaGrid._updateMetrics({ hard: true });
+        metrics = mediaGrid.metrics;
         assert.strictEqual(metrics.rowSize, 3, 'It bases row size on item and wrap sizes.');
-        assert.strictEqual(instance.selectAllByClass('samples').length, 1,
+        assert.strictEqual(mediaGrid.selectAllByClass('samples').length, 1,
           'It cleans up after multiple hard updates.');
       });
       QUnit.start();
@@ -69,7 +69,7 @@
 
     let tests = [];
     const { createVisualTest, placeholderText, runVisualTests } = base;
-    const { className, eventName } = hlf.mediaGrid;
+    const { className, eventName } = MediaGrid;
     tests.push(createVisualTest({
       label: 'by default',
       template({ placeholderText }) {
@@ -111,10 +111,9 @@
       },
       footerHtml: '<button name="list-append">load more</button>',
       test(testElement) {
-        let extension = mediaGrid(testElement.querySelector('.test-body'));
-        let instance = extension();
-        let load = extension.bind(null, 'load');
-        return instance.createPreviewImagesPromise().then(load, load);
+        let mediaGrid = MediaGrid.extend(testElement.querySelector('.test-body'));
+        const { load } = mediaGrid;
+        return mediaGrid.createPreviewImagesPromise().then(load, load);
       },
       anchorName: 'default',
       className: 'default-call',

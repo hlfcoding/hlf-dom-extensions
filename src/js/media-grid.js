@@ -22,9 +22,9 @@
   } else if (typeof exports === 'object') {
     module.exports = attach(require('hlf/core'));
   } else {
-    attach(hlf);
+    attach(HLF);
   }
-})(this, function(hlf) {
+})(this, function(HLF) {
   //
   // Namespace
   // ---------
@@ -55,9 +55,23 @@
   //   stylesheet. We update the presentation state by using namespaced
   //   __classNames__ generated in a closure.
   //
-  hlf.mediaGrid = {
-    debug: false,
-    toString(context) {
+
+  //
+  // MediaGrid
+  // ---------
+  //
+  class MediaGrid {
+    static get debug() {
+      return false;
+    }
+    static get defaults() {
+      return {
+        autoReady: false,
+        resizeDelay: 100,
+        undimDelay: 1000,
+      };
+    }
+    static toPrefix(context) {
       switch (context) {
         case 'event': return 'hlfmg';
         case 'data': return 'hlf-mg';
@@ -65,18 +79,7 @@
         case 'var': return 'mg';
         default: return 'hlf-mg';
       }
-    },
-    defaults: {
-      autoReady: false,
-      resizeDelay: 100,
-      undimDelay: 1000,
-    },
-  };
-  //
-  // MediaGrid
-  // ---------
-  //
-  class MediaGrid {
+    }
     constructor(element, options) {
       // autoListen
       this.eventListeners = { mouseleave: this._onMouseLeave };
@@ -112,18 +115,8 @@
       this.itemElements.forEach(this._toggleItemEventListeners.bind(this, false));
       this._itemsObserver.disconnect();
     }
-    performLoad() {
-      this._updateMetrics({ hard: true });
-      this._layoutItems();
-      this._itemsObserver.connect();
-      this.element.classList.add(this.className('ready'));
-      this.dispatchCustomEvent('ready');
-    }
     //
     // § __Public__
-    //
-    // You are welcome to call these methods from your own code, though currently
-    // there is no intended use case for that.
     //
     createPreviewImagesPromise() {
       const selector = `.${this.className('preview')} img`;
@@ -142,6 +135,16 @@
         teardownTasks.forEach(task => task());
       });
     }
+    load() {
+      this._updateMetrics({ hard: true });
+      this._layoutItems();
+      this._itemsObserver.connect();
+      this.element.classList.add(this.className('ready'));
+      this.dispatchCustomEvent('ready');
+    }
+    //
+    // You are welcome to call these methods from your own code, though currently
+    // there is no intended use case for that.
     //
     // __toggleItemExpansion__ basically toggles the `-expanded` class on the
     // given `itemElement` to `expanded` and triggers the `expand` event. To allow
@@ -430,13 +433,12 @@
   //
   // § __Attaching__
   //
-  return hlf.createExtension({
-    name: 'mediaGrid',
-    namespace: hlf.mediaGrid,
-    apiClass: MediaGrid,
+  HLF.buildExtension(MediaGrid, {
     autoBind: true,
     autoListen: true,
-    baseMethodGroups: ['css', 'selection'],
     compactOptions: true,
+    mixinNames: ['css', 'selection'],
   });
+  Object.assign(HLF, { MediaGrid });
+  return MediaGrid;
 });
