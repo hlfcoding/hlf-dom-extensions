@@ -377,35 +377,7 @@
   //   Also note that `apiClass` will get published into the namespace, so more
   //   flexibility is possible.
   //
-  function createExtension(args) {
-    const { name, namespace } = args;
 
-    const { defaults } = namespace;
-    let optionGroupNames = ['classNames', 'selectors'].filter(name => name in defaults);
-    Object.assign(namespace, { optionGroupNames });
-
-    const { apiClass, autoBind, autoListen, autoSelect } = args;
-    let groups = args.baseMethodGroups || [];
-    groups.push('action', 'naming', 'timeout');
-    if (autoListen) {
-      groups.push('event');
-    }
-    if (autoSelect) {
-      groups.push('selection');
-    }
-    let baseMethods = createExtensionBaseMethods(namespace, groups);
-    if (apiClass) {
-      namespace.apiClass = apiClass;
-      Object.assign(apiClass.prototype, baseMethods);
-      if (apiClass.init) {
-        apiClass.init();
-      }
-    }
-    const { attrName } = baseMethods;
-
-    const { compactOptions } = args;
-    let idCounter = 0;
-    let instances = {};
     //
     // The __extension__ function handles two variations of input. An action
     // `name` and `payload` can be passed in to trigger the action route. The
@@ -425,49 +397,7 @@
     // Otherwise, continue creating the instance by preparing the options and
     // deciding the main element before passing over to `_buildInstance`.
     //
-    function extension(subject, ...args) {
-      let { action, options, contextElement } = extension._parseArguments(args);
 
-      if (action) {
-        extension._dispatchAction(action, subject);
-        return;
-
-      } else if (!options && typeof subject !== 'function') {
-        let result = extension._getInstanceOrInstances(subject);
-        if (result) {
-          return result;
-        }
-
-      } else if (Object.keys(instances).length) {
-        instances = {};
-      }
-
-      options = Object.assign({}, defaults, options);
-      optionGroupNames.forEach((name) => {
-        options[name] = Object.assign({}, defaults[name], options[name]);
-      });
-      if (typeof subject === 'function') {
-        Object.assign(options, { querySelector: subject });
-        subject = subject(contextElement);
-      }
-
-      let finalSubject = contextElement || subject;
-      if (finalSubject === contextElement) {
-        extension._buildInstance(subject, options, contextElement);
-      } else {
-        if (finalSubject instanceof HTMLElement) {
-          extension._buildInstance(finalSubject, options);
-        } else {
-          finalSubject.forEach((element) => {
-            extension._buildInstance(element, options);
-          });
-        }
-      }
-
-      return extension.bind(null, finalSubject);
-    }
-
-    Object.assign(extension, {
       //
       // ___buildInstance__ is a subroutine that's part of `createExtension`,
       // which has more details on its required input.
@@ -507,152 +437,7 @@
       //
       // 9. Lastly, store the instance id on `rootElement`.
       //
-      _buildInstance(subject, options, contextElement) {
-        let element, elements;
-        if (subject instanceof HTMLElement) {
-          element = subject;
-        } else {
-          elements = Array.from(subject);
-        }
-        let attrOptions;
-        let rootElement = contextElement || element;
-        if (rootElement.hasAttribute(attrName())) {
-          try {
-            attrOptions = JSON.parse(element.getAttribute(attrName()));
-          } catch (error) {}
-        }
-        let finalOptions = Object.assign({}, options, attrOptions);
-        let instance = new apiClass(element || elements, finalOptions, contextElement);
-        extension._setInstance(rootElement, instance);
-        instance.rootElement = rootElement;
-        if (element) {
-          instance.element = element;
-        } else {
-          instance.contextElement = contextElement;
-          instance.elements = elements;
-        }
-        if (compactOptions) {
-          Object.assign(instance, finalOptions);
-        } else {
-          instance.options = finalOptions;
-        }
-        let cleanupTasks = [];
-        Object.assign(instance, {
-          destructor() {
-            cleanupTasks.forEach(task => task(this));
-            if (this.deinit) {
-              this.deinit();
-            }
-          }
-        });
-        if (autoBind) {
-          Object.getOwnPropertyNames(apiClass.prototype)
-            .filter(name => (
-              typeof instance[name] === 'function' && name !== 'constructor'
-            ))
-            .forEach((name) => {
-              instance[name] = instance[name].bind(instance);
-            });
-        }
-        if (autoListen && instance.addEventListeners && instance.eventListeners) {
-          const { eventListeners } = instance;
-          Object.getOwnPropertyNames(eventListeners)
-            .forEach((name) => {
-              eventListeners[name] = eventListeners[name].bind(instance);
-            });
-          instance.addEventListeners(eventListeners);
-          cleanupTasks.push(() => {
-            instance.removeEventListeners(eventListeners);
-          });
-          if (instance._onWindowResize && instance.resizeDelay) {
-            let ran, { _onWindowResize } = instance;
-            instance._onWindowResize = function(event) {
-              if (ran && Date.now() < ran + this.resizeDelay) { return; }
-              ran = Date.now();
-              _onWindowResize.call(instance, event);
-            }.bind(instance);
-            window.addEventListener('resize', instance._onWindowResize);
-            cleanupTasks.push(() => {
-              window.removeEventListener('resize', instance._onWindowResize);
-            });
-          }
-        }
-        if (autoSelect && instance.selectToProperties) {
-          instance.selectToProperties();
-        }
-        if (instance.className) {
-          rootElement.classList.add(instance.className());
-        }
-        if (instance.init) {
-          instance.init();
-        }
-        return instance;
-      },
-      _deleteInstance(element) {
-        const id = element.getAttribute(attrName('instance-id'));
-        element.removeAttribute(attrName('instance-id'));
-        delete instances[id];
-      },
-      _deleteInstances() {
-        Object.keys(instances).forEach((id) => {
-          delete instances[id];
-        });
-      },
-      _dispatchAction(action, target) {
-        if (target instanceof HTMLElement) {
-          extension._getInstance(target).perform(action);
-        } else {
-          Array.from(target).map(extension._getInstance)
-            .forEach((instance) => instance.perform(action));
-        }
-      },
-      _getInstance(element) {
-        const id = element.getAttribute(attrName('instance-id'));
-        return instances[id];
-      },
-      _getInstanceOrInstances(source) {
-        let instance, instances;
-        if (source instanceof HTMLElement &&
-          (instance = extension._getInstance(source))
-        ) {
-          return instance;
-        } else if ((instances = Array.from(source).map(extension._getInstance)
-          .filter(i => i != null)) &&
-          instances.length
-        ) {
-          return instances;
-        }
-      },
-      _parseArguments(args) {
-        let action, options, contextElement;
-        const [first, second] = args;
-        if (typeof first === 'string') {
-          action = { name: first, payload: second };
-        } else {
-          if (first instanceof HTMLElement) {
-            contextElement = first;
-          } else {
-            options = first;
-            if (second) {
-              contextElement = second;
-            }
-          }
-        }
-        return { action, options, contextElement };
-      },
-      _setInstance(element, instance) {
-        const id = idCounter;
-        idCounter += 1;
-        instance.id = id;
-        instances[id] = instance;
-        element.setAttribute(attrName('instance-id'), id);
-      },
-    });
 
-    namespace.extension = extension;
-
-    return extension;
-  }
   //
   // __createExtensionBaseMethods__ is an internal subroutine that selectively
   // applies a general mixin collection for writing DOM extensions. It's part of
@@ -679,45 +464,8 @@
   // - __selection__, sugar around selecting `rootElement` descendants and
   //   selecting to properties based on `selectors`.
   //
-  function createExtensionBaseMethods(namespace, groups) {
-    let methods = {};
-    Object.assign(methods, _mixins.debug(namespace.debug, namespace.toString));
-    if (groups.indexOf('action') !== -1) {
-      Object.assign(methods, {
-        perform(action) {
-          const { name, payload } = action;
-          let methodName = `perform${name[0].toUpperCase()}${name.substr(1)}`;
-          if (!this[methodName]) { return; }
-          this[methodName](payload);
-        },
-        performConfigure: _mixins.options(namespace.defaults, namespace.optionGroupNames).configure,
-        performRemove() {
-          namespace.extension._deleteInstance(this.rootElement);
-          this.destructor();
-        },
-      });
-    }
-    if (groups.indexOf('naming') !== -1) {
-      const naming = _mixins.naming(namespace.toString);
-      Object.assign(methods, naming);
-      Object.assign(namespace, naming);
-    }
-    if (groups.indexOf('timeout') !== -1) {
-      Object.assign(methods, _mixins.timing);
-    }
-    if (groups.indexOf('css') !== -1) {
-      Object.assign(methods, _mixins.css);
-    }
-    if (groups.indexOf('event') !== -1) {
-      Object.assign(methods, _mixins.event);
-    }
-    if (groups.indexOf('selection') !== -1) {
-      Object.assign(methods, _mixins.selection);
-    }
-    return methods;
-  }
 
-  Object.assign(HLF, { buildExtension, createExtension });
+  Object.assign(HLF, { buildExtension });
 
   if (HLF.debug && typeof window === 'object') {
     Object.assign(window, { HLF });
