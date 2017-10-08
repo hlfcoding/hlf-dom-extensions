@@ -7,14 +7,7 @@
   'use strict';
   if (window.guard && !guard.isNavigatorSupported) { return; }
 
-  require.config({
-    baseUrl: '../',
-    paths: {
-      hlf: 'src/js',
-      test: 'tests/js',
-    }
-  });
-
+  require.config({ baseUrl: '../', paths: { hlf: 'dist', test: 'tests/js' } });
   define(['test/base', 'hlf/hover-intent'], function(base, HoverIntent) {
 
     // ---

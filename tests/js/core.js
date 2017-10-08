@@ -9,14 +9,7 @@
   'use strict';
   if (window.guard && !guard.isNavigatorSupported) { return; }
 
-  require.config({
-    baseUrl: '../',
-    paths: {
-      hlf: 'src/js',
-      test: 'tests/js',
-    }
-  });
-
+  require.config({ baseUrl: '../', paths: { hlf: 'dist', test: 'tests/js' } });
   define(['hlf/core', 'test/base'], function(HLF, base) {
     const { module, test } = QUnit;
 
