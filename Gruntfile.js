@@ -8,22 +8,22 @@ const dist = {
   // # Copy original css for importing.
   copy: {
     expand: true,
-    src: 'src/**/*.css',
+    src: 'src/**/*.{js,css}',
     dest: 'dist/',
     extDot: 'last',
     flatten: true,
   },
   registerTasks(grunt) {
-    grunt.registerTask('dist', ['clean:dist', 'copy:dist', 'coffee:src']);
+    grunt.registerTask('dist', ['clean:dist', 'copy:dist']);
     // This task's optimized for speed, at cost of artifacts.
-    grunt.registerTask('lazy-dist', ['newer:copy:dist', 'newer:coffee:src']);
+    grunt.registerTask('lazy-dist', ['newer:copy:dist']);
   },
 };
 
 const docs = (function() {
   const src = [
-    'src/**/*.{coffee,css}',
-    'tests/**/*.{coffee,css}',
+    'src/**/*.{js,css}',
+    'tests/**/*.{js,css}',
     'docs/README.md',
   ];
   return {
@@ -54,14 +54,9 @@ const lib = {
   clean: ['lib/*', '!lib/.gitignore'],
   copy: {
     files: [
-      { src: 'node_modules/jquery/dist/jquery.js', dest: 'lib/jquery.js' },
-      { src: 'node_modules/underscore/underscore.js', dest: 'lib/underscore.js' },
-      { src: 'node_modules/es6-promise/dist/es6-promise.js', dest: 'lib/promise.js' },
-      { expand: true, flatten: true, src: 'node_modules/gsap/src/uncompressed/{jquery.gsap,TweenLite,plugins/CSSPlugin}.js', dest: 'lib/' },
       { src: 'node_modules/hlf-css/lib/modified/_normalize.scss', dest: 'lib/normalize.css' },
       { expand: true, flatten: true, src: 'node_modules/qunitjs/qunit/qunit.{css,js}', dest: 'lib/' },
       { src: 'node_modules/requirejs/require.js', dest: 'lib/require.js' },
-      { src: 'node_modules/velocity-animate/velocity.js', dest: 'lib/velocity.js' },
     ]
   },
   registerTasks(grunt) {
@@ -95,7 +90,7 @@ const pages = {
           'docs/**/*',
           'lib/**/*',
           'tests/**/*',
-          '!tests/**/*.{css,js,coffee}',
+          '!tests/**/*.{css,js}',
           'README.md',
         ],
         dest: 'gh-pages/',
@@ -139,7 +134,7 @@ const pages = {
 const release = {
   bump: {
     options: {
-      files: ['bower.json', 'package.json'],
+      files: ['package.json'],
       commitFiles: ['.'],
       pushTo: 'origin',
     },
@@ -173,42 +168,6 @@ const release = {
   },
 };
 
-const src = {
-  coffee: {
-    expand: true,
-    src: 'src/**/*.coffee',
-    dest: 'dist/',
-    ext: '.js',
-    extDot: 'last',
-    flatten: true,
-  },
-  watch: {
-    js: {
-      files: '{src,tests}/**/*.coffee',
-      tasks: ['newer:coffee', 'newer:qunit'],
-    },
-  },
-};
-
-const tests = {
-  qunit: {
-    expand: true,
-    src: [
-      'tests/*.unit.html',
-      '!tests/media-grid.unit.html', // Temporary.
-    ]
-  },
-  coffee: {
-    expand: true,
-    src: 'tests/**/*.coffee',
-    ext: '.js',
-    extDot: 'last',
-  },
-  registerTasks(grunt) {
-    grunt.registerTask('test', ['coffee:tests', 'qunit']);
-  },
-};
-
 module.exports = (grunt) => {
   config = {
     pkg: grunt.file.readJSON('package.json'),
@@ -219,10 +178,6 @@ module.exports = (grunt) => {
       'gh-pages': pages.clean,
       lib: lib.clean,
       release: release.clean,
-    },
-    coffee: {
-      src: src.coffee,
-      tests: tests.coffee,
     },
     copy: {
       dist: dist.copy,
@@ -239,16 +194,10 @@ module.exports = (grunt) => {
     markdown: {
       'gh-pages': pages.markdown,
     },
-    qunit: {
-      tests: tests.qunit,
-    },
     uglify: {
       release: release.uglify,
     },
-    watch: {
-      // Caveat: These watch tasks do not clean.
-      js: src.watch.js,
-    },
+    watch: {},
   };
   if (!grunt.option('fast')) {
     config.watch.docs = docs.watch;
@@ -265,5 +214,4 @@ module.exports = (grunt) => {
   lib.registerTasks(grunt);
   pages.registerTasks(grunt);
   release.registerTasks(grunt);
-  tests.registerTasks(grunt);
 };

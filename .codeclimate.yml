@@ -1,14 +1,10 @@
 ---
 engines:
-  coffeelint:
-    enabled: true
   fixme:
-    enabled: true
-  scss-lint:
     enabled: true
 ratings:
   paths:
-  - "**.coffee"
+  - "**.js"
   - "**.css"
 exclude_paths:
 - "dist/**/*"

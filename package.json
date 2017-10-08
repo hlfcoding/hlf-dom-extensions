@@ -11,17 +11,11 @@
     "type": "git",
     "url": "https://github.com/hlfcoding/hlf-jquery"
   },
-  "dependencies": {
-    "jquery": "^2.0",
-    "underscore": "^1.0"
-  },
   "devDependencies": {
     "grunt": "^1.0",
     "grunt-bump": "^0.8",
     "grunt-contrib-clean": "^1.0",
-    "grunt-contrib-coffee": "^1.0",
     "grunt-contrib-copy": "^1.0",
-    "grunt-contrib-qunit": "0.5.1",
     "grunt-contrib-uglify": "^1.0",
     "grunt-contrib-watch": "^1.0",
     "grunt-gh-pages": "^1.0",
@@ -30,15 +24,11 @@
     "grunt-newer": "^1.0",
     "matchdep": "^1.0",
     "merlot": "^0.1",
-    "es6-promise": "^3.0",
-    "gsap": "^1.0",
     "hlf-css": "^0.2",
     "qunitjs": "^2.0.0-rc1",
-    "requirejs": "^2.0",
-    "velocity-animate": "^1.0"
+    "requirejs": "^2.0"
   },
   "scripts": {
-    "postinstall": "grunt install",
-    "test": "grunt test --verbose"
+    "postinstall": "grunt install"
   }
 }
