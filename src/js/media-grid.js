@@ -106,7 +106,7 @@
       };
       this.metrics = {};
       if (this.autoReady) {
-        this.performLoad();
+        this.load();
       }
     }
     deinit() {
