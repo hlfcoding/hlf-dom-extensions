@@ -1,3 +1,4 @@
+/*
 ###
 HLF Editable jQuery Plugin
 ==========================
@@ -295,3 +296,4 @@ HLF Editable jQuery Plugin
     autoSelect: yes
     compactOptions: yes
 )
+*/
