@@ -8,9 +8,9 @@
 // non-cancel-able animations) when matching mouse input arrives at frequencies
 // past the threshold. It is heavily inspired by Brian Cherne's jQuery plugin of
 // the same name (github.com/briancherne/jquery-hoverIntent).
+//
 (function(root, attach) {
   //
-  // § __UMD__
   // - When AMD, register the attacher as an anonymous module.
   // - When Node or Browserify, set module exports to the attach result.
   // - When browser globals (root is window), Just run the attach function.
@@ -24,20 +24,16 @@
   }
 })(this, function(HLF) {
   //
-  // Namespace
-  // ---------
-  //
-  // It takes some more boilerplate to write the extension. Any of this additional
-  // support API is put into a extension specific namespace under `hlf`, which in
-  // this case is __hlf.hoverIntent__.
+  // HoverIntent
+  // -----------
   //
   // - __debug__ toggles debug logging for all instances of an extension.
-  // - __toString__ helps to namespace when registering any DOM names.
+  // - __toPrefix__ helps to namespace when registering any DOM names.
   // - __attrName__, __className__, __eventName__ helpers are all attached to
-  //   the namespace on extension creation, along with the __extension__ itself.
+  //   the class statically, along with the __extend__ method.
   //
-  // The extension's __defaults__ are available as reference. Also note that _the
-  // extension instance gets extended with the options_.
+  // The extension's __defaults__ are available as reference. Also note that
+  // _the extension instance gets extended with the options_.
   //
   // - __interval__ is the millis to wait before deciding intent. `300` is the
   //   default to reduce more thrashing.
@@ -45,28 +41,26 @@
   // - __sensitivity__ is the pixel threshold for mouse travel between polling
   //   intervals. With the minimum sensitivity threshold of 1, the mouse must
   //   not move between intervals. With higher values yield more false positives.
-  //   `6` is the default.
+  //   `2` is the default.
   //
   // The events dispatched are the name-spaced `enter` and `leave` events. They
   // try to match system mouse events where possible and include values for:
   // `pageX`, `pageY`, `relatedTarget`.
   //
-
-  //
-  // HoverIntent
-  // -----------
-  //
   // To summarize the implementation, the `_onMouseOver` handler is the start of
-  // the intent 'life-cycle', with state being the default. It records the mouse
-  // coordinates, sets up a delayed intent check. All event handlers guard
+  // the intent 'life-cycle', with state being the default (via `_resetState`).
+  // It records the mouse coordinates, sets up a delayed intent check, which is
+  // one of the possible updates done by `_updateState`, and is based on the
+  // distance traveled since `_timeout` was set. All event handlers guard
   // against unneeded checking, with `_onMouseOut` and `_onMouseOver` also using
-  // `_checkEventElement` as a filter. Meanwhile, about every frame, the
-  // `_onMouseMove` handler tracks the current mouse coordinates. If the
-  // `_onMouseOut` handler runs before the delayed check, the check and
-  // subsequent behavior get canceled as state resets to default. Otherwise, if
-  // the check of the stored mouse coordinates against `sensitivity` passes, an
-  // `enter` event gets dispatched, ensuring a `leave` event will too during
-  // `_onMouseOut`.
+  // `_checkEventElement` as a filter.
+  //
+  // Meanwhile, about every frame, the `_onMouseMove` handler tracks the current
+  // mouse coordinates. If the `_onMouseOut` handler runs before the delayed
+  // check, the check and subsequent behavior get canceled as state resets to
+  // default. Otherwise, if the check of the stored mouse coordinates against
+  // `sensitivity` passes, an `enter` event gets dispatched, ensuring a `leave`
+  // event will too during `_onMouseOut`.
   //
   class HoverIntent {
     static get debug() {
@@ -98,9 +92,6 @@
     deinit() {
       this._resetState();
     }
-    //
-    // § __Internal__
-    //
     _checkEventElement(event) {
       const { relatedTarget, target, type } = event;
       if (type === 'mouseout' && target.contains(relatedTarget)) {
@@ -108,7 +99,7 @@
       }
       if (this.contextElement) {
         if (Array.from(this.elements).indexOf(target) === -1) { return false; }
-        // this.debugLog(target, relatedTarget);
+        //this.debugLog(target, relatedTarget);
       } else {
         if (target !== this.rootElement) { return false; }
       }
@@ -196,9 +187,6 @@
       this.debugLog('checked', dMove);
     }
   }
-  //
-  // § __Attaching__
-  //
   HLF.buildExtension(HoverIntent, {
     autoBind: true,
     autoListen: true,
