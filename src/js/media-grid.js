@@ -1,6 +1,6 @@
 //
-// HLF Media Grid Extensions
-// =========================
+// HLF Media Grid Extension
+// ========================
 // [Styles](../css/media-grid.html) | [Tests](../../tests/js/media-grid.html)
 //
 // The `mediaGrid` extension, inspired by the Cargo Voyager design template, can
@@ -12,7 +12,6 @@
 //
 (function(root, attach) {
   //
-  // § __UMD__
   // - When AMD, register the attacher as an anonymous module.
   // - When Node or Browserify, set module exports to the attach result.
   // - When browser globals (root is window), Just run the attach function.
@@ -26,39 +25,48 @@
   }
 })(this, function(HLF) {
   //
-  // Namespace
+  // MediaGrid
   // ---------
-  //
-  // It takes some more boilerplate to write the extension. Any of this additional
-  // support API is put into a extension specific namespace under `hlf`, which in
-  // this case is __hlf.mediaGrid__.
   //
   // - __debug__ toggles debug logging for all instances of an extension.
   // - __toString__ helps to namespace when registering any DOM names.
-  // - __attrName__, __className__, __eventName__, __varName__ helpers are all
-  //   attached to the namespace on extension creation, along with the __extension__
-  //   itself.
+  // - __attrName__, __className__, __eventName__, __varName__ helpers are all attached to
+  //   the class statically, along with the __extend__ method.
   //
-  // The extension's __defaults__ are available as reference. Also note that _the
-  // extension instance gets extended with the options_.
+  // The extension's __defaults__ are available as reference. Also note that
+  // _the extension instance gets extended with the options_.
   //
   // - __autoReady__ is `false` by default, as recommended. Turning it on means
   //   the `ready` event gets triggered immediately, synchronously, and is only
-  //   recommended if your grid doesn't have images and such that require a wait
-  //   before being fully loaded and sized.
+  //   recommended if your grid doesn't have images and such that require a
+  //   wait before being fully loaded and sized. Otherwise, you can manually
+  //   __load__ and use __createPreviewImagesPromise__ to help determine when
+  //   to do so.
   //
   // - __resizeDelay__ is the millis to wait for window resizing to stop before
   //   doing a re-layout. `100` is the default to balance responsiveness and
   //   performance.
   //
+  // - __undimDelay__ is the millis to wait before removing the dim effect when
+  //   focus is toggled off on an expanded item.
+  //
   // - Note: the majority of presentation state logic is in the extension
-  //   stylesheet. We update the presentation state by using namespaced
-  //   __classNames__ generated in a closure.
+  //   stylesheet. We update the presentation state by using __className__.
   //
-
-  //
-  // MediaGrid
-  // ---------
+  // To summarize the implementation, on a DOM that's already created, the
+  // extension, given the `element`, will select the `itemElements` and
+  // `sampleItemElement`, as well as parse the `expandDuration`. The extension
+  // will wait for content to load before doing an initial layout via
+  // `_updateMetrics` and `_layoutItems`. `eventListeners` are added
+  // automatically with the `_onMouseLeave` and `_onItemExpand` handlers that
+  // `toggleItemFocus`. `_toggleItemEventListeners` runs for each item to add
+  // `_onItemClick`, and `_onItemMouseEnter` and `_onItemMouseLeave` that
+  // respectively `toggleItemExpansion` and `toggleExpandedItemFocus`. The
+  // `_onWindowResize` handler is automatically set up to `_reLayoutItems`. And
+  // the `_itemsObserver` is manually set up with the `_onItemsMutation`
+  // handler that `_toggleItemEventListeners` and also `_reLayoutItems`. Once
+  // `ready`, the respective namespaced event is dispatched from and class is
+  // added to the `element`.
   //
   class MediaGrid {
     static get debug() {
@@ -81,19 +89,9 @@
       }
     }
     constructor(element, options) {
-      // autoListen
       this.eventListeners = { mouseleave: this._onMouseLeave };
       this.eventListeners[this.eventName('expand')] = this._onItemExpand;
     }
-    //
-    // __init__ completes the setup:
-    // 1. Select `itemElements` and `sampleItemElement`.
-    // 2. Get `expandDuration` from styles, create event bindings for expansion.
-    //    This also relies on the `expandedItemElement` state.
-    // 3. Create event bindings for dimming on expansion, hovering expanded item.
-    // 4. Set up initial layout for running when `ready`.
-    // 5. Set up re-layout for running on window resize.
-    //
     init() {
       if (!this.itemElements) {
         this._selectItemElements();
@@ -115,9 +113,6 @@
       this.itemElements.forEach(this._toggleItemEventListeners.bind(this, false));
       this._itemsObserver.disconnect();
     }
-    //
-    // § __Public__
-    //
     createPreviewImagesPromise() {
       const selector = `.${this.className('preview')} img`;
       const imageElements = Array.from(this.element.querySelectorAll(selector));
@@ -143,13 +138,41 @@
       this.dispatchCustomEvent('ready');
     }
     //
-    // You are welcome to call these methods from your own code, though currently
-    // there is no intended use case for that.
+    // `toggleItemExpansion` basically toggles the `-expanded` class on the
+    // given `itemElement` to `expanded` and triggers the `expand` event. To
+    // allow styling or scripting during the transition, it adds the
+    // `-transitioning`, `-contracting`, and `-expanding` classes and removes
+    // them afterwards per `expandDuration`.
     //
-    // __toggleItemExpansion__ basically toggles the `-expanded` class on the
-    // given `itemElement` to `expanded` and triggers the `expand` event. To allow
-    // styling or scripting during the transition, it adds the `-transitioning`
-    // class and removes it afterwards per `expandDuration`.
+    // `toggleExpandedItemFocus` wraps `toggleItemFocus` to factor in
+    // `undimDelay` when toggling off `focus`. Focusing dims without delay.
+    //
+    // `toggleItemFocus` basically toggles the `-focused` class on the given
+    // `itemElement` to `focused` and the `-dimmed` class on the root element
+    // after any given `delay`.
+    //
+    // `_getMetricSamples` returns cloned `itemElement` and
+    // `expandedItemElement` mainly for calculating initial metrics. For them
+    // to have the right sizes, they're attached to an invisible container
+    // appended to the root element.
+    //
+    // `_layoutItems` occurs once `metrics` is updated. With the latest
+    // `wrapWidth` and `wrapHeight` metrics, the root element is resized. Each
+    // element in `itemElements` gets its position style set to `absolute` non-
+    // destructively; this method assumes the original is `float`, and so
+    // iterates in reverse.
+    //
+    // `_reLayoutItems` wraps `_layoutItems` to be its idempotent version by
+    // first resetting each item's to its `original-position`.
+    //
+    // `_toggleNeighborItemsRecessed` toggles the `-recessed` class on items
+    // per the occlusion-causing expansion of the item at `index`.
+    //
+    // `_updateMetrics` builds the `metrics` around item and wrap as well as
+    // row and column sizes. It does so by measuring sample elements and their
+    // margins, as well as sizing the wrap (root element) to fit its items. As
+    // such, this method isn't idempotent and expects to be followed by a call
+    // to `_layoutItems`.
     //
     toggleItemExpansion(itemElement, expanded, completion) {
       if (typeof expanded === 'undefined') {
@@ -191,20 +214,11 @@
 
       itemElement.dispatchEvent(this.createCustomEvent('expand', { expanded }));
     }
-    //
-    // __toggleExpandedItemFocus__ wraps `toggleItemFocus` to factor in
-    // `undimDelay` when toggling off `focus`. Focusing dims without delay.
-    //
     toggleExpandedItemFocus(itemElement, focused) {
       if (!itemElement.classList.contains(this.className('expanded'))) { return; }
       let delay = focused ? 0 : this.undimDelay;
       this.toggleItemFocus(itemElement, focused, delay);
     }
-    //
-    // __toggleItemFocus__ basically toggles the `-focused` class on the given
-    // `itemElement` to `focused` and the `-dimmed` class on the root element
-    // after any given `delay`.
-    //
     toggleItemFocus(itemElement, focused, delay = 0) {
       if (focused) {
         this.itemElements.forEach((itemElement) => {
@@ -216,9 +230,6 @@
         this.element.classList.toggle(this.className('dimmed'), focused);
       });
     }
-    //
-    // § __Internal__
-    //
     _onItemClick(event) {
       const actionElementTags = ['a', 'audio', 'button', 'input', 'video'];
       if (actionElementTags.indexOf(event.target.tagName.toLowerCase()) !== -1) { return; }
@@ -254,7 +265,7 @@
       if (!this.expandedItemElement) { return; }
       this.toggleItemFocus(this.expandedItemElement, false);
     }
-    _onWindowResize(_) { // autoListen
+    _onWindowResize(_) {
       this._reLayoutItems();
     }
     _isItemElement(node) {
@@ -273,9 +284,6 @@
         'mouseleave': this._onItemMouseLeave,
       }, itemElement);
     }
-    //
-    // These are layout helpers for changing offset for an `itemElement`.
-    //
     _adjustItemToBottomEdge(itemElement) {
       let { style } = itemElement;
       style.top = 'auto';
@@ -286,11 +294,6 @@
       style.left = 'auto';
       style.right = '0px';
     }
-    //
-    // ___getMetricSamples__ returns cloned `itemElement` and `expandedItemElement`
-    // mainly for calculating initial metrics. For them to have the right sizes,
-    // they're attached to an invisible container appended to the root element.
-    //
     _getMetricSamples() {
       let containerElement = this.selectByClass('samples');
       if (containerElement) {
@@ -314,10 +317,6 @@
       this.element.appendChild(containerElement);
       return { itemElement, expandedItemElement };
     }
-    //
-    // These are layout helpers for checking item position based on index and the
-    // current `rowSize` metric.
-    //
     _isBottomEdgeItem(i) {
       const { rowSize } = this.metrics;
       let lastRowSize = (this.itemElements.length % rowSize) || rowSize;
@@ -327,13 +326,6 @@
     _isRightEdgeItem(i) {
       return ((i + 1) % this.metrics.rowSize) === 0;
     }
-    //
-    // ___layoutItems__ occurs once `metrics` is updated. With the latest
-    // `wrapWidth` and `wrapHeight` metrics, the root element is resized. Each
-    // element in `itemElements` gets its position style set to `absolute` non-
-    // destructively; this method assumes the original is `float`, and so
-    // iterates in reverse.
-    //
     _layoutItems() {
       Array.from(this.itemElements).reverse().forEach((itemElement) => {
         if (!itemElement.hasAttribute(this.attrName('original-position'))) {
@@ -349,10 +341,6 @@
       style.width = `${this.metrics.wrapWidth}px`;
       style.height = `${this.metrics.wrapHeight}px`;
     }
-    //
-    // ___reLayoutItems__ wraps `_layoutItems` to be its idempotent version by
-    // first resetting each item's to its `original-position`.
-    //
     _reLayoutItems(completion) {
       if (this.expandedItemElement) {
         this.toggleItemExpansion(this.expandedItemElement, false, () => {
@@ -373,10 +361,6 @@
         completion();
       }
     }
-    //
-    // ___toggleNeighborItemsRecessed__ toggles the `-recessed` class on items
-    // per the occlusion-causing expansion of the item at `index`.
-    //
     _toggleNeighborItemsRecessed(index, recessed) {
       const { expandedScale, rowSize } = this.metrics;
       let dx = this._isRightEdgeItem(index) ? -1 : 1;
@@ -395,13 +379,6 @@
         itemElement.classList.toggle(this.className('recessed'));
       });
     }
-    //
-    // ___updateMetrics__ builds the `metrics` around item and wrap as well as
-    // row and column sizes. It does so by measuring sample elements and their
-    // margins, as well as sizing the wrap (root element) to fit its items. As
-    // such, this method isn't idempotent and expects to be followed by a call
-    // to `_layoutItems`.
-    //
     _updateMetrics({ hard } = { hard: false }) {
       if (hard) {
         const { itemElement, expandedItemElement } = this._getMetricSamples();
@@ -430,9 +407,6 @@
       });
     }
   }
-  //
-  // § __Attaching__
-  //
   HLF.buildExtension(MediaGrid, {
     autoBind: true,
     autoListen: true,
