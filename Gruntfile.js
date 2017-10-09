@@ -149,10 +149,11 @@ const release = {
   },
   uglify: {
     files: {
-      'release/jquery.hlf.min.js': [
-        'dist/jquery.extension.hlf.core.js',
-        'dist/jquery.extension.hlf.event.js',
-        'dist/jquery.hlf.tip.js',
+      'release/hlf-dom-extensions.min.js': [
+        'dist/core.js',
+        'dist/hover-intent.js',
+        'dist/media-grid.js',
+        'dist/tip.js',
       ],
     },
   },
