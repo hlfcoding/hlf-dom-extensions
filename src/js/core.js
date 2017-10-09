@@ -3,9 +3,12 @@
 // ===================
 // [Tests](../../tests/js/core.html)
 //
+// The extensions core provides shared functionality for extension classes to
+// reduce boilerplate around common tasks. Static methods like `extend` and
+// helpers as added, and instance methods are mixed onto the prototype.
+//
 (function(root, namespace) {
   //
-  // § __UMD__
   // - When AMD, register the attacher as an anonymous module.
   // - When Node or Browserify, set module exports to the attach result.
   // - When browser globals (root is window), Just run the attach function.
@@ -22,19 +25,16 @@
   //
   // Namespace
   // ---------
-  // It takes some more boilerplate and helpers to write DOM extensions. That
-  // code and set of conventions is here in the root namespace __HLF__. Child
-  // namespaces follow suit convention.
   //
-  // - The __debug__ flag here toggles debug logging for everything in the library
-  //   that doesn't have a custom debug flag in its namespace.
+  // - The __debug__ flag here toggles debug logging for everything in the
+  //   library that doesn't have a custom debug flag in its namespace.
   //
-  // - __toString__ is mainly for extension namespacing. For now, its base form
+  // - __toPrefix__ is mainly for extension namespacing. For now, its base form
   //   is very simple.
   //
-  // - __debugLog__ in its base form just wraps around `console.log` and links to
-  //   the `debug` flag. However, `debugLog` conventionally becomes a no-op if
-  //   the `debug` flag is off.
+  // - __debugLog__ in its base form just wraps around `console.log` and links
+  //   to the `debug` flag. However, `debugLog` conventionally becomes a no-op
+  //   if the `debug` flag is off.
   //
   let HLF = {
     debug: true,
@@ -42,7 +42,88 @@
   };
   HLF.debugLog = (HLF.debug === false) ? function(){} :
     (console.log.bind ? console.log.bind(console) : console.log);
-
+  //
+  // buildExtension
+  // --------------
+  //
+  // Further binding state and functionality to DOM elements is a common task
+  // that should be abstracted away, with common patterns and conventions.
+  // Also, instead of extension subclasses inheriting from a base class, the
+  // `extensionClass` is extended upon based on build options. This method will
+  // add a static `extend` factory method for extension instances. How
+  // instances are built is configurable via `options`.
+  //
+  // `buildExtension` will decorate the class with additional mixins if
+  // fitting. If the class has a static `init` method, it will be called.
+  //
+  // __extend__ ultimately returns a new extension instance for a `subject` and
+  // any `options`. It will:
+  //
+  // 1. Parse the `subject` to be either `element` or `elements`. If it is a
+  //    function, invoke and save the original function as a `querySelector`
+  //    option. See `_parseSubject`.
+  //
+  // 2. Check if element has options set in its root data attribute. If
+  //    so, merge those options into `options`.
+  //
+  //    If the `compactOptions` option is toggled, `options` will be merged
+  //    into the instance. This makes accessing options more convenient, but
+  //    can cause conflicts with larger existing APIs that don't account for
+  //    such naming conflicts, since _we don't handle conflicts here_. Else,
+  //    the `options` is added as an instance property. See `_assignOptions`.
+  //
+  // 3. Also decide the `rootElement` based on the situation. If the
+  //    `contextElement` option has a value, that element will be the root, so
+  //    several elements all 'share' the same extension instance. Add the root
+  //    class to the decided `rootElement` before initialization. All element
+  //    values are attached onto the instance as properties.
+  //
+  // 4. If the `autoBind` option is toggled, bind the class' own methods onto
+  //    the instance. See `_bindMethods`.
+  //
+  // 5. If the `autoListen` option is toggled, call the `addEventListeners`
+  //    method (ie. via `event` mixin), to set up element event listening
+  //    before initialization. The `eventListeners` property must be set.
+  //    Cleanup is automatic. If `_onWindowResize` and `resizeDelay` are
+  //    defined, a listener with the handler will be added to the window
+  //    resize event, with calls throttled per the delay. See `_listen`.
+  //
+  // 6. If the `autoSelect` option is toggled, call the `selectToProperties`
+  //    method (ie. via `selection` mixin), to set up element references before
+  //    initialization.
+  //
+  // 7. If an `init` method is provided, call it. Convention is to always
+  //    provide it.
+  //
+  // ___mixins__ is an internal general mixin collection for writing DOM
+  // extensions. Mixins either required or opt-in via the `mixinNames` build
+  // option. They are applied via `_mix`. Some mixins are factory methods
+  // requiring certain parameters.
+  //
+  // - __css__, sugar around accessing element style property values.
+  //
+  // - __debug__, mostly the __debugLog__ method, and will return no-op
+  //   depending on the `debug` flag value.
+  //
+  // - __event__, sugar around mass-listening to `rootElement` events and
+  //   dispatching custom `rootElement` events.
+  //
+  // - __naming__, allows namespacing an `attrName`, `className`, `eventName`,
+  //   or `varName`.
+  //
+  // - __options__, mostly the __configure__ method, which allows updating
+  //   options after initialization.
+  //
+  // - __remove__, mostly the __remove__ method, which calls the `deinit`
+  //   method if provided. Convention is to always provide it for proper
+  //   resource cleanup.
+  //
+  // - __selection__, sugar around selecting `rootElement` descendants and
+  //   selecting to properties based on `selectors`.
+  //
+  // - __timing__, sugar around clearTimeout, setTimeout to allow named, stored
+  //   timeouts.
+  //
   function buildExtension(extensionClass, options) {
     const { defaults } = extensionClass;
     const { autoBind, autoListen, autoSelect, compactOptions } = options;
@@ -355,115 +436,6 @@
     }
     return { element, elements };
   }
-
-  //
-  // createExtension
-  // ---------------
-  // Further binding state and functionality to DOM elements is a common task
-  // that should be abstracted away, with common patterns and conventions around
-  // logging, namespacing, instance access, and sending actions. Also, instead
-  // of API classes and instances inheriting from a base layer, that base layer
-  // should be integrated on instantiation.
-  //
-  // __createExtension__ will return an appropriate, multi-purpose function for
-  // the given `createOptions`, comprised of:
-  //
-  // - The __name__ of the method is required.
-  //
-  // - __namespace__ is required and must correctly implement `debug`,
-  //   `toString`, and `defaults`.
-  //
-  // - An __apiClass__ definition. It will get modified with base API additions.
-  //   Also note that `apiClass` will get published into the namespace, so more
-  //   flexibility is possible.
-  //
-
-    //
-    // The __extension__ function handles two variations of input. An action
-    // `name` and `payload` can be passed in to trigger the action route. The
-    // latter is typically additional, action-specific parameters. Otherwise,
-    // if the first argument is an options collection, the normal route is
-    // triggered.
-    //
-    // With the action route, if there is a extension instance and it can
-    // __perform__ (`action` mixin), call the method. With the normal route,
-    // if there is a extension instance and no arguments are provided we assume
-    // the call is to access the instance, not reset it.
-    //
-    // Otherwise if the instance exists, it is returned. __contextElement__
-    // will decide what the extension instance's main element will be. The idea
-    // is several elements all share the same extension instance.
-    //
-    // Otherwise, continue creating the instance by preparing the options and
-    // deciding the main element before passing over to `_buildInstance`.
-    //
-
-      //
-      // ___buildInstance__ is a subroutine that's part of `createExtension`,
-      // which has more details on its required input.
-      //
-      // 1. Check if element has options set in its root data attribute. If
-      //    so, merge those options into our own `finalOptions`.
-      //
-      // 2. Also decide the `rootElement` based on the situation. It's where the
-      //    extension instance id gets stored and the root class gets added. A
-      //    shared instance, for example, gets stored on the `contextElement`.
-      //
-      // 3. If we're provided with a class for the API, instantiate it. Decorate
-      //    the instance with additional mixins if fitting.
-      //
-      // 4. If the `compactOptions` flag is toggled, `finalOptions` will be merged
-      //    into the instance. This makes accessing options more convenient, but
-      //    can cause conflicts with larger existing APIs that don't account for
-      //    such naming conflicts, since _we don't handle conflicts here_. Else,
-      //    just alias the conventional `selectors` and `classNames` option groups.
-      //
-      // 5. If the `autoListen` flag is toggled, add and call the `addEventListeners`
-      //    method (ie. via `selection` mixin), to set up element event listening
-      //    before initialization. The `eventListeners` property must be set.
-      //    Cleanup is automatic. If `_onWindowResize` and `resizeDelay` are
-      //    defined, a listener with the handler will be added to the window
-      //    resize event, with calls throttled per the delay.
-      //
-      // 6. If the `autoSelect` flag is toggled, add and call the `select` method
-      //    (ie. via `selection` mixin), to set up element references before
-      //    initialization.
-      //
-      // 7. If the `className` API addition exists and provides the root class,
-      //    add the root class to the decided `rootElement` before initialization.
-      //
-      // 8. If an `init` method is provided, call it. Convention is to always
-      //    provide it.
-      //
-      // 9. Lastly, store the instance id on `rootElement`.
-      //
-
-  //
-  // __createExtensionBaseMethods__ is an internal subroutine that selectively
-  // applies a general mixin collection for writing DOM extensions. It's part of
-  // `createExtension`, which has more details on its required input.
-  //
-  // - Add the __debugLog__ method and attach functionality instead of a no-op
-  //   only if namespace `debug` is on.
-  //
-  // - __action__, allows performing actions by calling action methods. The
-  //   default implementation checks for a method of the name of the action
-  //   prefixed by `perform`. This mixin allows extensions to support the
-  //   `remove` action by default via `performRemove`.
-  //
-  // - __naming__, allows namespacing an `attrName`, `className`, or `eventName`.
-  //
-  // - __timeout__, sugar around clearTimeout, setTimeout to allow named, stored
-  //   timeouts.
-  //
-  // - __css__, sugar around accessing element style property values.
-  //
-  // - __event__, sugar around mass-listening to `rootElement` events and
-  //   dispatching custom `rootElement` events.
-  //
-  // - __selection__, sugar around selecting `rootElement` descendants and
-  //   selecting to properties based on `selectors`.
-  //
 
   Object.assign(HLF, { buildExtension });
 
