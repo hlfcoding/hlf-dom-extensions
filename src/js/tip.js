@@ -18,6 +18,7 @@
     attach(HLF, HLF.HoverIntent);
   }
 })(this, function(HLF, HoverIntent) {
+  'use strict';
   //
   // Namespace
   // ---------

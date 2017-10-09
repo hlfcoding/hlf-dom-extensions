@@ -24,6 +24,7 @@
     attach(HLF);
   }
 })(this, function(HLF) {
+  'use strict';
   //
   // MediaGrid
   // ---------
