@@ -3,7 +3,7 @@
 // ========================
 // [Styles](../css/media-grid.html) | [Tests](../../tests/js/media-grid.html)
 //
-// The `mediaGrid` extension, inspired by the Cargo Voyager design template, can
+// The `MediaGrid` extension, inspired by the Cargo Voyager design template, can
 // expand an item inline without affecting the position of its siblings. The
 // extension tries to add the minimal amount of DOM elements and styles. So the
 // layout rules are mostly defined in the styles, and initial html for items is

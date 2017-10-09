@@ -3,7 +3,7 @@
 // ==========================
 // [Tests](../../tests/js/hover-intent.html)
 //
-// The `hoverIntent` extension normalizes DOM events associated with mouse enter
+// The `HoverIntent` extension normalizes DOM events associated with mouse enter
 // and leave interaction. It prevents the 'thrashing' of attached behaviors (ex:
 // non-cancel-able animations) when matching mouse input arrives at frequencies
 // past the threshold. It is heavily inspired by Brian Cherne's jQuery plugin of
