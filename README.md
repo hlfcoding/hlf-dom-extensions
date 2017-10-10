@@ -1,9 +1,9 @@
 # HLF DOM Extensions
 
-[![Package](https://img.shields.io/npm/v/hlf-jquery.svg?style=flat)](https://www.npmjs.com/package/hlf-jquery)
-[![Code Climate](https://codeclimate.com/github/hlfcoding/hlf-jquery/badges/gpa.svg)](https://codeclimate.com/github/hlfcoding/hlf-jquery)
-[![Dependency Status](https://img.shields.io/david/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=dependencies)
-![GitHub License](https://img.shields.io/github/license/hlfcoding/hlf-jquery.svg)
+[![Package](https://img.shields.io/npm/v/hlf-dom-extensions.svg?style=flat)](https://www.npmjs.com/package/hlf-dom-extensions)
+[![Code Climate](https://codeclimate.com/github/hlfcoding/hlf-dom-extensions/badges/gpa.svg)](https://codeclimate.com/github/hlfcoding/hlf-dom-extensions)
+[![Dependency Status](https://img.shields.io/david/hlfcoding/hlf-dom-extensions.svg)](https://david-dm.org/hlfcoding/hlf-dom-extensions#info=dependencies)
+![GitHub License](https://img.shields.io/github/license/hlfcoding/hlf-dom-extensions.svg)
 
 <pre>
  __         __       ___
@@ -117,7 +117,7 @@ Browser version supporting ES2015 and CSS custom properties.
 $ npm install hlf-dom-extensions
 ```
 
-## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
+## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-dom-extensions.svg)](https://david-dm.org/hlfcoding/hlf-dom-extensions#info=devDependencies)
 
 ```bash
 # to install
@@ -138,13 +138,13 @@ Copyright (c) 2014-present Peng Wang
 
 
 [UMD]: https://github.com/umdjs/umd
-[annotated source code]: http://hlfcoding.github.io/hlf-jquery/docs/index.html
-[Tip]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/tip.html
-[Tip's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html
-[Media Grid]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/media-grid.html
-[Media Grid's unit tests]: http://hlfcoding.github.io/hlf-jquery/tests/media-grid.unit.html
-[Media Grid's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/media-grid.visual.html
-[Core]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/core.html
-[Core's unit tests]: http://hlfcoding.github.io/hlf-jquery/tests/core.unit.html
-[Hover Intent]: http://hlfcoding.github.io/hlf-jquery/docs/src/js/hover-intent.html
-[Hover Intent's visual tests]: http://hlfcoding.github.io/hlf-jquery/tests/hover-intent.visual.html
+[annotated source code]: http://hlfcoding.github.io/hlf-dom-extensions/docs/index.html
+[Tip]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/tip.html
+[Tip's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/tip.visual.html
+[Media Grid]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/media-grid.html
+[Media Grid's unit tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.unit.html
+[Media Grid's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.visual.html
+[Core]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/core.html
+[Core's unit tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/core.unit.html
+[Hover Intent]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/hover-intent.html
+[Hover Intent's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/hover-intent.visual.html
