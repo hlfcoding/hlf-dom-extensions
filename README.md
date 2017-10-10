@@ -105,9 +105,13 @@ See [Core's unit tests][] for examples.
 
 ## Requirements
 
-Browser version supporting ES2015 and CSS custom properties.
+Browser versions supporting ES2015 and CSS custom properties. The included
+`guard.js` can be included on the page first to enforce this requirement.
 
-## Plugins Coming Soon
+[v0.3.0][] is the last release as `hlf-jquery`, with jQuery being a dependency
+and compatibility with older browsers.
+
+## Coming Soon
 
 ### Field
 
@@ -148,3 +152,4 @@ Copyright (c) 2014-present Peng Wang
 [Core's unit tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/core.unit.html
 [Hover Intent]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/hover-intent.html
 [Hover Intent's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/hover-intent.visual.html
+[v0.3.0]: https://github.com/hlfcoding/hlf-dom-extensions/releases/tag/v0.3.0
