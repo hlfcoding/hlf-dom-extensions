@@ -114,7 +114,7 @@ Browser version supporting ES2015 and CSS custom properties.
 ## Install
 
 ```bash
-$ npm install hlf-jquery
+$ npm install hlf-dom-extensions
 ```
 
 ## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg)](https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies)
