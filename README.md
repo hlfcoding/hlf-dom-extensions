@@ -88,7 +88,7 @@ and leave interaction. It prevents the 'thrashing' of attached behaviors (ex:
 non-cancel-able animations) when matching mouse input arrives at frequencies
 past the threshold.
 
-See [HoverIntent's visual tests][] for more examples.
+See [Hover Intent's visual tests][] for more examples.
 
 ### [Core][]
 
