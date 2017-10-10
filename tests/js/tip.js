@@ -6,7 +6,16 @@
   define(['test/base', 'hlf/tip'], function(base, Tip) {
     let tests = [];
     const { createVisualTest, placeholderText, runVisualTests } = base;
-
+    //
+    // Default
+    // -------
+    //
+    // Basic test with the default settings. Tip should entirely follow mouse.
+    // Tip size should change when switching between links.
+    //
+    // Note: `contextElement` also needs to be passed in, and it should be an
+    // ancestor element of all trigger elements.
+    //
     tests.push(createVisualTest({
       label: 'by default',
       template({ placeholderText }) {
@@ -26,7 +35,14 @@
       className: 'default-call',
       vars: { placeholderText },
     }));
-
+    //
+    // Snapping Vertically
+    // -------------------
+    //
+    // Snapping tooltips are created via the `snapTo` option. This one should
+    // snap to an appropriate x position, along the y axis and the trigger's
+    // most fitting edge (left or right). Here it should snap to the right.
+    //
     tests.push(createVisualTest({
       label: 'snapping with a list',
       template({ itemCount, placeholderText }) {
@@ -65,7 +81,13 @@
       className: 'list-call',
       vars: { itemCount: 3, placeholderText },
     }));
-
+    //
+    // Snapping Horizontally
+    // ---------------------
+    //
+    // Change the `snapTo` value from `y` to `x`, and this one should snap to an
+    // appropriate y position, along the trigger's top or bottom edge.
+    //
     tests.push(createVisualTest({
       label: 'snapping with a bar',
       template({ itemCount, placeholderText }) {
@@ -89,7 +111,15 @@
       className: 'bar-call',
       vars: { itemCount: 3, placeholderText },
     }));
-
+    //
+    // A Model Use Case
+    // ----------------
+    //
+    // The above examples could suffice with Bootstrap tooltip or others. Snap
+    // and shift behavior without redundantly toggling appearance really makes a
+    // difference when hovering over a grid of small individual content pieces,
+    // ie. avatar images.
+    //
     tests.push(createVisualTest({
       label: 'snapping with a grid',
       template({ itemCount }) {
@@ -115,7 +145,14 @@
       className: 'grid-call',
       vars: { itemCount: 24 },
     }));
-
+    //
+    // Corner Cases
+    // ------------
+    //
+    // Base tips also anchor themselves to the trigger based on available space.
+    // Here we change the `snapTo` value to `trigger` to lock the tip into place
+    // and prevent mouse following.
+    //
     tests.push(createVisualTest({
       label: 'snapping to corners',
       template({ placeholderText }) {
