@@ -1,7 +1,7 @@
 # HLF DOM Extensions
 
 [![Package](https://img.shields.io/npm/v/hlf-dom-extensions.svg?style=flat)](https://www.npmjs.com/package/hlf-dom-extensions)
-[![Code Climate](https://codeclimate.com/github/hlfcoding/hlf-dom-extensions/badges/gpa.svg)](https://codeclimate.com/github/hlfcoding/hlf-dom-extensions)
+[![Code Climate](https://api.codeclimate.com/v1/badges/2fa382c64d158c960256/maintainability)](https://codeclimate.com/github/hlfcoding/hlf-dom-extensions/maintainability)
 [![Dependency Status](https://img.shields.io/david/hlfcoding/hlf-dom-extensions.svg)](https://david-dm.org/hlfcoding/hlf-dom-extensions#info=dependencies)
 ![GitHub License](https://img.shields.io/github/license/hlfcoding/hlf-dom-extensions.svg)
 
