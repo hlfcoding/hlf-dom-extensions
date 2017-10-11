@@ -43,6 +43,9 @@
     // snap to an appropriate x position, along the y axis and the trigger's
     // most fitting edge (left or right). Here it should snap to the right.
     //
+    // Also note the append button and each new item automatically becoming a
+    // trigger.
+    //
     tests.push(createVisualTest({
       label: 'snapping with a list',
       template({ itemCount, placeholderText }) {
