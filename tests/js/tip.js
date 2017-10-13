@@ -1,3 +1,8 @@
+//
+// HLF Tip Visual Tests
+// ====================
+// [Page](../../../tests/tip.visual.html) | [Source](../../src/js/tip.html)
+//
 (function() {
   'use strict';
   if (window.guard && !guard.isNavigatorSupported) { return; }
