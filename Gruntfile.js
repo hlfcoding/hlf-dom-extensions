@@ -139,34 +139,6 @@ const release = {
       pushTo: 'origin',
     },
   },
-  clean: ['release/*'],
-  copy: {
-    expand: true,
-    src: ['dist/*'],
-    dest: 'release/',
-    extDot: 'last',
-    flatten: true,
-  },
-  uglify: {
-    files: {
-      'release/hlf-dom-extensions.min.js': [
-        'dist/core.js',
-        'dist/hover-intent.js',
-        'dist/media-grid.js',
-        'dist/tip.js',
-      ],
-    },
-  },
-  registerTasks(grunt) {
-    grunt.registerTask('release', [
-      'dist',
-      // Uncompressed version.
-      'clean:release',
-      'copy:release',
-      // Compressed version.
-      'uglify:release',
-    ]);
-  },
 };
 
 module.exports = (grunt) => {
@@ -178,13 +150,11 @@ module.exports = (grunt) => {
       docs: docs.clean,
       'gh-pages': pages.clean,
       lib: lib.clean,
-      release: release.clean,
     },
     copy: {
       dist: dist.copy,
       'gh-pages': pages.copy,
       lib: lib.copy,
-      release: release.copy,
     },
     'gh-pages': {
       'gh-pages': pages['gh-pages'],
@@ -194,9 +164,6 @@ module.exports = (grunt) => {
     },
     markdown: {
       'gh-pages': pages.markdown,
-    },
-    uglify: {
-      release: release.uglify,
     },
     watch: {},
   };
@@ -214,5 +181,4 @@ module.exports = (grunt) => {
   docs.registerTasks(grunt);
   lib.registerTasks(grunt);
   pages.registerTasks(grunt);
-  release.registerTasks(grunt);
 };
