@@ -5,16 +5,27 @@ const dist = {
     'dist/*',
     '!dist/.gitignore',
   ],
-  // # Copy original css for importing.
+  comments: {
+    src: ['dist/hlf-dom-extensions.{js,css}'],
+  },
+  concat: {
+    files: {
+      'dist/hlf-dom-extensions.css': ['dist/*.css'],
+      'dist/hlf-dom-extensions.js': ['dist/*.js', '!dist/guard.js'],
+    },
+  },
   copy: {
     expand: true,
-    src: 'src/**/*.{js,css}',
+    src: [
+      'src/**/*.{js,css}',
+      '!src/**/field.{js,css}',
+    ],
     dest: 'dist/',
     extDot: 'last',
     flatten: true,
   },
   registerTasks(grunt) {
-    grunt.registerTask('dist', ['clean:dist', 'copy:dist']);
+    grunt.registerTask('dist', ['clean:dist', 'copy:dist', 'concat:dist', 'comments:dist']);
     // This task's optimized for speed, at cost of artifacts.
     grunt.registerTask('lazy-dist', ['newer:copy:dist']);
   },
@@ -150,6 +161,12 @@ module.exports = (grunt) => {
       docs: docs.clean,
       'gh-pages': pages.clean,
       lib: lib.clean,
+    },
+    comments: {
+      dist: dist.comments,
+    },
+    concat: {
+      dist: dist.concat,
     },
     copy: {
       dist: dist.copy,

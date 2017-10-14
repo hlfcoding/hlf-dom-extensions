@@ -1,0 +1,235 @@
+/*
+HLF Media Grid Extension
+========================
+[Source](../js/media-grid.html) | [Tests](../../tests/css/media-grid.html)
+
+The required extension styling is crucial to extension usage. There's an
+optional, opinionated set of styles in `mg-theme-folio`.
+
+Note that `--mg-item-expanded-scale` is set to `2` and other values are
+not yet supported. This also requires the item count be enough to form at
+least two rows.
+*/
+
+/*
+`js-mg` is modified with the `-dimmed` and `-ready` classes. Note it sets
+`box-sizing: border-box` for itself and its descendants, and the (initial)
+flex-box positioning.
+*/
+.js-mg {
+  --mg-duration: 0.4s;
+  --mg-fade-duration: 0.3s;
+  --mg-gutter-size: 6px;
+  --mg-fill-color: #333;
+  --mg-item-expanded-scale: 2;
+  --mg-item-fill-color: #000;
+  --mg-item-height: 232px;
+  --mg-item-stroke-color: #fff;
+  --mg-item-transition: var(--mg-duration) cubic-bezier(0.8, 0, 0.2, 1);
+  --mg-item-width: 212px;
+
+  background: var(--mg-fill-color);
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: var(--mg-gutter-size);
+  margin-top: var(--mg-gutter-size);
+  min-width: calc((var(--mg-item-width) + var(--mg-gutter-size)) * var(--mg-item-expanded-scale));
+  opacity: 0;
+  position: relative;
+  transition: opacity var(--mg-fade-duration) ease-in-out;
+}
+.js-mg *,
+.js-mg {
+  box-sizing: border-box;
+}
+.js-mg.mg-bleed {
+  margin-left: 0;
+  margin-right: calc(-1 * var(--mg-gutter-size));
+}
+.js-mg.js-mg-ready {
+  opacity: 1;
+}
+
+/*
+`js-mg-item` can be modified with the `-expanded`, `-focused`, `-transitioning`
+classes. Note the (initial) flex-box positioning, as well as the complex `z-index`
+rules when the item has modifier classes.
+
+Its element's DOM can look like (especially if using `mg-theme-folio`):
+```html
+<article class="js-mg-item">
+  <section class="mg-preview"><!-- hidden when expanded -->
+    <img src="..." />
+    <div class="mg-headings">
+      <h1 class="mg-title">...</h1>
+      <h2 class="mg-date">...</h2>
+    </div>
+    <ul class="mg-tags">
+      <li>...</li>
+      <li>...</li>
+    </ul>
+  </section>
+  <section class="mg-detail"><!-- visible when expanded -->
+    <img src="..." />
+    <div class="mg-headings">
+      <h1 class="mg-title">...</h1>
+      <h2 class="mg-date">...</h2>
+    </div>
+    <p>...</p>
+    <ul class="mg-tags">
+      <li>...</li>
+      <li>...</li>
+    </ul>
+  </section>
+</article>
+```
+*/
+.js-mg-item {
+  background: var(--mg-item-fill-color);
+  color: var(--mg-item-stroke-color);
+  flex-basis: var(--mg-item-width);
+  flex-shrink: 0;
+  margin-bottom: var(--mg-gutter-size);
+  margin-right: var(--mg-gutter-size);
+  overflow: hidden;
+  padding: var(--mg-gutter-size);
+  transition:
+    height var(--mg-item-transition),
+    left var(--mg-item-transition),
+    top var(--mg-item-transition),
+    transform var(--mg-item-transition),
+    width var(--mg-item-transition),
+    opacity var(--mg-fade-duration) ease-in-out;
+}
+.js-mg-item.js-mg-contracting,
+.js-mg-item:not(.js-mg-expanding) {
+  height: var(--mg-item-height);
+  width: var(--mg-item-width);
+}
+.js-mg-item.js-mg-expanding,
+.js-mg-item.js-mg-expanded:not(.js-mg-contracting) {
+  height: calc(var(--mg-item-height) * var(--mg-item-expanded-scale) + var(--mg-gutter-size));
+  width: calc(var(--mg-item-width) * var(--mg-item-expanded-scale) + var(--mg-gutter-size));
+}
+.js-mg-item.js-mg-transitioning,
+.js-mg-item.js-mg-expanded:not(.js-mg-transitioning) {
+  z-index: 10;
+}
+.js-mg-item.js-mg-transitioning.js-mg-focused,
+.js-mg-item.js-mg-expanded:not(.js-mg-transitioning).js-mg-focused {
+  z-index: 11;
+}
+.js-mg-dimmed > .js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded) {
+  opacity: 0.3;
+}
+.js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded):hover {
+  background: var(--mg-item-stroke-color);
+  color: var(--mg-item-fill-color);
+}
+.js-mg-item.js-mg-recessed {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.js-mg-item.js-mg-raw {
+  display: none;
+}
+.js-mg-item > .mg-preview,
+.js-mg-item > .mg-detail {
+  height: calc(100% - 2 * var(--mg-gutter-size));
+  overflow: hidden;
+  position: absolute;
+  top: var(--mg-gutter-size);
+  transition: opacity var(--mg-fade-duration) ease-out;
+  width: calc(100% - 2 * var(--mg-gutter-size));
+}
+.js-mg-item > .mg-preview > img:first-child,
+.js-mg-item > .mg-detail > img:first-child {
+  width: 100%;
+}
+.js-mg-item.js-mg-expanded:not(.js-mg-contracting) > .mg-detail,
+.js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded) > .mg-preview {
+  display: block;
+}
+.js-mg-item.js-mg-expanded:not(.js-mg-contracting) > .mg-preview,
+.js-mg-item:not(.js-mg-transitioning):not(.js-mg-expanded) > .mg-detail {
+  display: none;
+  opacity: 0;
+}
+.js-mg-item.js-mg-transitioning > .mg-preview,
+.js-mg-item.js-mg-transitioning > .mg-detail {
+  display: block;
+}
+.js-mg-item.js-mg-contracting > .mg-detail,
+.js-mg-item.js-mg-expanding > .mg-preview {
+  opacity: 0;
+}
+.js-mg-item.js-mg-contracting > .mg-preview,
+.js-mg-item.js-mg-expanding > .mg-detail {
+  opacity: 1;
+}
+
+.mg-theme-folio {
+  --mg-item-corner-radius: 4px;
+  --mg-item-font-size: 10px;
+}
+.mg-theme-folio .js-mg-item {
+  border-radius: var(--mg-item-corner-radius);
+  font-family: Helvetica, sans-serif;
+  font-size: var(--mg-item-font-size);
+  line-height: 2em;
+}
+.mg-theme-folio .js-mg-item p {
+  line-height: 1.6em;
+}
+.mg-theme-folio .js-mg-item p {
+  transition:
+    opacity var(--mg-fade-duration) ease-out,
+    transform var(--mg-fade-duration) ease-in-out;
+}
+.mg-theme-folio .js-mg-item.js-mg-transitioning p {
+  transform: translateY(20%);
+  opacity: 0;
+}
+.mg-theme-folio .js-mg-item .mg-title {
+  font-size: 1.4em;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+.mg-theme-folio .js-mg-item .mg-date {
+  font-size: var(--mg-item-font-size);
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+.mg-theme-folio .js-mg-item:not(.js-mg-expanded) .mg-title {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mg-theme-folio .js-mg-item.js-mg-transitioning .mg-headings,
+.mg-theme-folio .js-mg-item.js-mg-expanded:not(.js-mg-transitioning) .mg-headings {
+  display: flex;
+}
+.mg-theme-folio .js-mg-item.js-mg-transitioning .mg-headings > .mg-title,
+.mg-theme-folio .js-mg-item.js-mg-expanded:not(.js-mg-transitioning) .mg-headings > .mg-title {
+  flex-grow: 1;
+}
+.mg-theme-folio .js-mg-item.js-mg-transitioning .mg-headings > .mg-date,
+.mg-theme-folio .js-mg-item.js-mg-expanded:not(.js-mg-transitioning) .mg-headings > .mg-date {
+  margin-left: 1em;
+  white-space: nowrap;
+}
+.mg-theme-folio .js-mg-item .mg-tags {
+  list-style: none;
+  padding-left: 0;
+}
+.mg-theme-folio .mg-tags li {
+  display: inline;
+}
+.mg-theme-folio .mg-tags li > a {
+  color: inherit;
+}
+.mg-theme-folio .mg-tags li:not(:last-child)::after {
+  content: ',\0020';
+}
