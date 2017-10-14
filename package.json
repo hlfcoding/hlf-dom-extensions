@@ -1,15 +1,22 @@
 {
-  "name": "hlf-jquery",
+  "name": "hlf-dom-extensions",
   "version": "0.3.0",
-  "description": "jQuery plugins and extensions for quality UI.",
+  "description": "DOM extensions for quality UI, without hard dependencies.",
   "main": "release/jquery.hlf.min.js",
-  "files": ["release/*"],
-  "keywords": ["jquery", "js", "tooltip", "grid"],
+  "files": [
+    "release/*"
+  ],
+  "keywords": [
+    "extensions",
+    "components",
+    "tooltip",
+    "cards"
+  ],
   "author": "Peng Wang <peng@pengxwang.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hlfcoding/hlf-jquery"
+    "url": "https://github.com/hlfcoding/hlf-dom-extensions"
   },
   "devDependencies": {
     "grunt": "^1.0",
@@ -22,9 +29,9 @@
     "grunt-groc": "^0.7",
     "grunt-markdown": "^0.7",
     "grunt-newer": "^1.0",
+    "hlf-css": "^0.2",
     "matchdep": "^2.0",
     "merlot": "^0.1",
-    "hlf-css": "^0.2",
     "qunitjs": "^2.4",
     "requirejs": "^2.3"
   },
