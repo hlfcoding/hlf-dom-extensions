@@ -3,9 +3,23 @@
 // =================
 // [Styles](../css/tip.html) | [Tests](../../tests/js/tip.html)
 //
+// The base `tip` plugin does several things. It does basic parsing of trigger
+// element attributes for the tip content. It can anchor itself to a trigger by
+// selecting the best direction. It can follow the cursor. It toggles its
+// appearance by fading in and out and resizing, all via configurable animation
+// options. It can display custom tip content. It uses the `hlf.hoverIntent`
+// event extension to prevent over-queueing of appearance handlers. Last, the tip
+// object attaches to the context element. It acts as tip for the the current
+// jQuery selection via event delegation.
+//
+// The extended `snapTip` plugin extends the base tip. It allows the tip to snap
+// to the trigger element. And by default the tip locks into place. But turn on
+// only one axis of snapping, and the tip will follow the mouse only on the other
+// axis. For example, snapping to the x-axis will only allow the tip to shift
+// along the y-axis. The x will remain constant.
+//
 (function(root, attach) {
   //
-  // § __UMD__
   // - When AMD, register the attacher as an anonymous module.
   // - When Node or Browserify, set module exports to the attach result.
   // - When browser globals (root is window), Just run the attach function.
@@ -20,60 +34,80 @@
 })(this, function(HLF, HoverIntent) {
   'use strict';
   //
-  // Namespace
-  // ---------
-  //
-  // It takes some more boilerplate to write the extension. Any of this additional
-  // support API is put into a extension specific namespace under `hlf`, which in
-  // this case is __hlf.tip__.
+  // Tip
+  // ---
   //
   // - __debug__ toggles debug logging for all instances of an extension.
-  // - __toString__ helps to namespace when registering any DOM names.
+  // - __toPrefix__ helps to namespace when registering any DOM names.
   // - __attrName__, __className__, __eventName__, __varName__ helpers are all
-  //   attached to the namespace on extension creation, along with the __extension__
-  //   itself.
+  //   attached to the class statically, along with the __extend__ method.
   //
-  // The extension's __defaults__ are available as reference. Also note that _the
-  // extension instance gets extended with the options_.
+  // The extension's __defaults__ are available as reference. Also note that
+  // _the extension instance gets extended with the options_.
   //
   // - __cursorHeight__ is the browser's cursor height. We need to know this to
   //   properly offset the tip to avoid cases of cursor-tip-stem overlap.
   //
   // - __defaultDirection__ is used as a tie-breaker when selecting the best
   //   direction. Note that the direction data structure must be an array of
-  //   `components`, and conventionally with top/bottom first.
+  //   string components, and conventionally with `'top'`/`'bottom'` first.
   //
-  // - __hasListeners__ can allow events __hlftipawake__ and __hlftipwaking__,
-  //   __hlftipasleep__ and __hlftipsleeping__ to be triggered from the trigger
+  // - __hasListeners__ can allow events `hlftipawake` and `hlftipwaking`,
+  //   `hlftipasleep` and `hlftipsleeping` to be triggered from the trigger
   //   elements. This is off by default to improve performance.
   //
   // - __hasStem__ can be turned off to omit rendering the stem and accounting
   //   for it during layout.
   //
   // - __snapTo__ when set allows the tip to first snap to or along the trigger
-  //   before mouse tracking. Not set by default. Values are __x__, __y__, __trigger__.
+  //   before mouse tracking. Null by default. Values can also be `'x'`,
+  //   `'y'`, `'trigger'`.
   //
-  // - __template__ should return interpolated HTML when given the additional
-  //   container class list. Its context is the extension instance.
+  // - __template__ should return interpolated HTML. Its context is the
+  //   extension instance.
   //
   // - __toggleDelay__ delays the tip's waking or sleeping under normal cases.
   //   It defaults to 0.7 seconds.
   //
-  // - __triggerContent__ can be the name of the trigger element's attribute or a
-  //   function that provides custom content when given the trigger element.
+  // - __triggerContent__ can be the name of the trigger element's attribute
+  //   or a function providing custom content when given the trigger element.
   //
-  // - __viewportElement__ is the element in which the tip must fit. It is _not_ the
-  //   context element, which stores the tip instance and by convention contains
-  //   the triggers.
+  // - __viewportElement__ is the element in which the tip must fit. It is
+  //   _not_ the context element, which by convention contains the triggers.
   //
   // - Note: the majority of presentation state logic is in the extension
-  //   stylesheet. We update the presentation state by using namespaced
-  //   __classNames__ generated in a closure.
+  //   stylesheet. We update the presentation state by using __className__.
   //
-
+  // To summarize the implementation, given existing `elements` in a
+  // `contextElement`, a tip `element` is created and configured via
+  // `_renderElement` and attached to `viewportElement`. The extension will
+  // initially `_updateTriggerElements`, which effectively
+  // `_updateTriggerAnchoring` and `_updateTriggerContent`.
   //
-  // Tip
-  // ---
+  // `HoverIntent` event listeners are added to `element` via
+  // `_toggleElementEventListeners` with the `_onContentElementMouseEnter` and
+  // `_onContentElementMouseLeave` handlers, and to `contextElement` via
+  // `_toggleTriggerElementEventListeners` with the
+  // `_onTriggerElementMouseEnter`, `_onTriggerElementMouseLeave`, and
+  // `_onTriggerElementMouseMove` handlers. Aside from
+  // `_onTriggerElementMouseMove` mostly wrapping `_updateElementPosition`,
+  // the handlers mostly wrap `wake` and `sleep`, which `_toggleElement` in a
+  // locking and delayed approach per `_updateState`, `_toggleCountdown`,
+  // `toggleDelay` to avoid the tip having short lifespans or thrashing its
+  // CSS-animated appearance.
+  //
+  // `_updateCurrentTriggerElement` calls are also typical during these actions
+  // and involve updating tip anchoring and size (via `_getElementSize`). And
+  // the `_contextObserver` is manually set up with the `_onContextMutation`
+  // handler that `_updateTriggerElements` and also updates `elements` lists.
+  //
+  // `wake` will also `_updateElementPosition`, which holds the majority of the
+  // tip positioning logic but offloads to `_getStemSize` and
+  // `_getTriggerOffset` (and thereby `_withStealthRender`) as needed. The
+  // current positioning implementation uses `offset(Height|Width|Left|Top)`,
+  // `getBoundingClientRect`, `getComputedStyle`, etc. to simply calculate the
+  // offset, factoring in `snapTo`. The offset is applied to the tip as a CSS
+  // translate transform.
   //
   class Tip {
     static get debug() {
@@ -81,7 +115,7 @@
     }
     static get defaults() {
       return {
-       cursorHeight: 12,
+        cursorHeight: 12,
         defaultDirection: ['bottom', 'right'],
         hasListeners: false,
         hasStem: true,
@@ -133,9 +167,6 @@
       this._toggleElementEventListeners(false);
       this._toggleTriggerElementEventListeners(false);
     }
-    //
-    // § __Public__
-    //
     get isAsleep() { return this._state === 'asleep'; }
     get isSleeping() { return this._state === 'sleeping'; }
     get isAwake() { return this._state === 'awake'; }
@@ -170,7 +201,28 @@
       });
     }
     //
-    // § __Internal__
+    // `_getElementSize` does a stealth render via `_withStealthRender` to find
+    // tip size. It returns saved data if possible before doing a measure. The
+    // measures, used by `_updateTriggerAnchoring`, are stored on the trigger
+    // as namespaced, `width` and `height` data-attributes. If on,
+    // `contentOnly` will factor in content padding into the size value for the
+    // current size.
+    //
+    // `_getStemSize` does a stealth render via `_withStealthRender` to find
+    // stem size. The stem layout styles will add offset to the tip content
+    // based on the tip direction. Knowing the size helps operations like
+    // overall tip positioning.
+    //
+    // `_isTriggerDirection` deduces if `element` has the given
+    // `directionComponent`, which is true if it has the classes or if there is
+    // no `triggerElement` or saved direction value, and `directionComponent`
+    // is part of `defaultDirection`.
+    //
+    // `_updateTriggerContent` comes with a very simple base implementation
+    // that supports the common `title` and `alt` meta content for an element.
+    // Support is also provided for the `triggerContent` option. We take that
+    // content and store it into a namespaced `content` data-attribute on the
+    // trigger.
     //
     _getElementSize(triggerElement, { contentOnly } = {}) {
       let size = {
@@ -395,9 +447,8 @@
       let cursorHeight = this.snapTo ? 0 : this.cursorHeight;
       let offset = { left: event.detail.pageX, top: event.detail.pageY };
 
-      if (this.snapTo) {
+      if (this.snapTo) { // Note vertical directions already account for stem-size.
         let triggerOffset = this._getTriggerOffset(triggerElement);
-        // Note vertical directions already account for stem-size.
         if (this.snapToXAxis || this.snapToTrigger) {
           offset.top = triggerOffset.top;
           if (this._isTriggerDirection('bottom', triggerElement)) {
@@ -541,9 +592,6 @@
       return result;
     }
   }
-  //
-  // § __Attaching__
-  //
   HLF.buildExtension(Tip, {
     autoBind: true,
     compactOptions: true,
