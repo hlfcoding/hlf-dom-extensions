@@ -1,4 +1,4 @@
-# HLF jQuery Documentation
+# HLF DOM Extensions Documentation
 
 ## Navigation
 

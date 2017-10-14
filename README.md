@@ -93,12 +93,13 @@ See [Hover Intent's visual tests][] for more examples.
 ### [Core][]
 
 ```js
-  HLF.buildExtension(MyExtensionClass, {
-    autoBind: true,
-    autoListen: true,
-    compactOptions: true,
-    mixinNames: ['css', 'selection'],
-  });
+HLF.buildExtension(MyExtensionClass, {
+  autoBind: true,
+  autoListen: true,
+  compactOptions: true,
+  mixinNames: ['css', 'selection'],
+});
+let myExtension = MyExtensionClass.extend(document.querySelector('.foo'));
 ```
 
 See [Core's unit tests][] for examples.
