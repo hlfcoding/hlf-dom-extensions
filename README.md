@@ -17,7 +17,7 @@
 
 DOM extensions for quality UI and implemented without hard dependencies. The
 [annotated source code][] is also available and include documented examples. All
-modules are exported using [UMD]() and work with AMD, Browserify, or plain.
+modules are exported using [UMD][] and work with AMD, Browserify, or plain.
 
 All extensions should have test pages with documented source. Please use them as
 usage examples. Some extensions also have sample and/or required styles
@@ -149,8 +149,8 @@ Copyright (c) 2014-present Peng Wang
 [Media Grid]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/media-grid.html
 [Media Grid's unit tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.unit.html
 [Media Grid's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.visual.html
-[Core]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/core.html
-[Core's unit tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/core.unit.html
 [Hover Intent]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/hover-intent.html
 [Hover Intent's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/hover-intent.visual.html
+[Core]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/core.html
+[Core's unit tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/core.unit.html
 [v0.3.0]: https://github.com/hlfcoding/hlf-dom-extensions/releases/tag/v0.3.0
