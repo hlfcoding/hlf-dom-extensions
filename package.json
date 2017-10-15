@@ -1,6 +1,6 @@
 {
   "name": "hlf-dom-extensions",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "DOM extensions for quality UI, without hard dependencies.",
   "main": "dist/hlf-dom-extensions.js",
   "files": [
