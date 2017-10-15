@@ -417,3 +417,16 @@ textarea {
   -webkit-appearance: button; /* 1 */
   font: inherit; /* 2 */
 }
+
+/* Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ * @custom Restored from v3.
+ */
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}

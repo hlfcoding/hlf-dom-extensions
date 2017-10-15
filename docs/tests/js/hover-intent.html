@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head><title>tests/js/hover-intent</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/hover-intent"><meta name="groc-project-path" content="tests/js/hover-intent.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/hover-intent.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-hover-intent-visual-tests">HLF Hover Intent Visual Tests</h1>
+<p><a href="../../../tests/hover-intent.visual.html">Page</a> | <a href="../../src/js/hover-intent.html">Source</a></p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.guard &amp;&amp; !guard.isNavigatorSupported) { <span class="hljs-keyword">return</span>; }
+
+  <span class="hljs-built_in">require</span>.config({ baseUrl: <span class="hljs-string">'../'</span>, paths: { hlf: <span class="hljs-string">'dist'</span>, test: <span class="hljs-string">'tests/js'</span> } });
+  define([<span class="hljs-string">'test/base'</span>, <span class="hljs-string">'hlf/hover-intent'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(base, HoverIntent)</span> </span>{</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><hr></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">let</span> tests = [];
+    <span class="hljs-keyword">const</span> { createVisualTest, runVisualTests } = base;
+    <span class="hljs-keyword">const</span> { eventName } = HoverIntent;
+
+    <span class="hljs-keyword">class</span> Counters {
+      setUp(testElement, element, countersInfo) {
+        <span class="hljs-built_in">Object</span>.keys(countersInfo).map(key =&gt; countersInfo[key]).forEach((info) =&gt; {
+          <span class="hljs-keyword">const</span> { selector, eventName } = info;
+          <span class="hljs-keyword">let</span> counterElement = testElement.querySelector(selector);
+          element.addEventListener(eventName, (event) =&gt; {
+            counterElement.textContent = <span class="hljs-built_in">parseInt</span>(counterElement.textContent) + <span class="hljs-number">1</span>;
+          });
+        });
+      }
+      template() {
+        <span class="hljs-keyword">return</span> (
+  `&lt;dl&gt;
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">dt</span>&gt;</span>enter count:<span class="hljs-tag">&lt;/<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">dd</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"enter-counter"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-title">dd</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">dt</span>&gt;</span>leave count:<span class="hljs-tag">&lt;/<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">dd</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"leave-counter"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-title">dd</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">code</span>&gt;</span>mouseover<span class="hljs-tag">&lt;/<span class="hljs-title">code</span>&gt;</span> count:<span class="hljs-tag">&lt;/<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">dd</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"mouseover-counter"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-title">dd</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">code</span>&gt;</span>mouseleave<span class="hljs-tag">&lt;/<span class="hljs-title">code</span>&gt;</span> count:<span class="hljs-tag">&lt;/<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">dd</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"mouseleave-counter"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-title">dd</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">code</span>&gt;</span>mouseout<span class="hljs-tag">&lt;/<span class="hljs-title">code</span>&gt;</span> count:<span class="hljs-tag">&lt;/<span class="hljs-title">dt</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">dd</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"mouseout-counter"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-title">dd</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">dl</span>&gt;</span>`
+        );
+      }
+    }
+
+    tests.push(createVisualTest({
+      label: 'by default',
+      template({ counters }) {
+        return (
+`<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"box"</span>&gt;</span>
+  ${counters.template()}
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>`
+        );
+      },
+      footerHtml: (
+`<span class="hljs-tag">&lt;<span class="hljs-title">label</span> <span class="hljs-attribute">for</span>=<span class="hljs-value">"default-enabled"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"checkbox"</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"default-enabled"</span> <span class="hljs-attribute">checked</span> /&gt;</span>
+  enabled
+<span class="hljs-tag">&lt;/<span class="hljs-title">label</span>&gt;</span>`
+      ),
+      beforeTest(testElement) {
+        const inputElement = document.getElementById('default-enabled');
+        inputElement.addEventListener('change', (_) =&gt; {
+          let element = testElement.querySelector('.box');
+          if (inputElement.checked) {
+            this.hoverIntent = HoverIntent.extend(element);
+          } else {
+            this.hoverIntent.remove();
+          }
+        });
+      },
+      test(testElement) {
+        const { vars } = this;
+        let element = testElement.querySelector('.box');
+        this.hoverIntent = HoverIntent.extend(element);
+        vars.counters.setUp(testElement, element, {
+          enter: { selector: '.enter-counter', eventName: eventName('enter') },
+          leave: { selector: '.leave-counter', eventName: eventName('leave') },
+          mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
+          mouseleave: { selector: '.mouseleave-counter', eventName: 'mouseleave' },
+          mouseout: { selector: '.mouseout-counter', eventName: 'mouseout' },
+        });
+      },
+      anchorName: 'default',
+      className: 'default-call',
+      vars: {
+        counters: new Counters(),
+      },
+    }));
+    tests.push(createVisualTest({
+      label: 'as shared instance',
+      template({ counters }) {
+        return (
+`<span class="hljs-tag">&lt;<span class="hljs-title">ul</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"list"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"item"</span>&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"item"</span>&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">li</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"item"</span>&gt;</span>trigger<span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">ul</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"box"</span>&gt;</span>
+  ${counters.template()}
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>`
+        );
+      },
+      test(testElement) {
+        const { vars } = this;
+        let contextElement = testElement.querySelector('.list');
+        HoverIntent.extend(contextElement.querySelectorAll('.item'), { contextElement });
+        vars.counters.setUp(testElement, contextElement, {
+          enter: { selector: '.enter-counter', eventName: eventName('enter') },
+          leave: { selector: '.leave-counter', eventName: eventName('leave') },
+          mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
+          mouseleave: { selector: '.mouseleave-counter', eventName: 'mouseleave' },
+          mouseout: { selector: '.mouseout-counter', eventName: 'mouseout' },
+        });
+      },
+      anchorName: 'as-shared-instance',
+      className: 'as-shared-instance-call',
+      vars: {
+        counters: new Counters(),
+      },
+    }));
+    runVisualTests(tests);
+  });
+
+}());
+</span></div></div></div></div></body></html>

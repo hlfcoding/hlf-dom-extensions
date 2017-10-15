@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/field</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/field"><meta name="groc-project-path" content="src/js/field.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/field.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h2 id="">#</h2>
+<h1 id="hlf-editable-jquery-plugin">HLF Editable jQuery Plugin</h1>
+<h2 id="">#</h2>
+<h1 id="-styles-css-editable-html-tests-tests-js-editable-html-"><a href="../css/editable.html">Styles</a> | <a href="../../tests/js/editable.html">Tests</a></h1>
+<h1 id="-__umd__">§ <strong>UMD</strong></h1>
+<h1 id="-when-amd-register-the-attacher-as-an-anonymous-module">- When AMD, register the attacher as an anonymous module.</h1>
+<h1 id="-when-node-or-browserify-set-module-exports-to-the-attach-result">- When Node or Browserify, set module exports to the attach result.</h1>
+<h1 id="-when-browser-globals-root-is-window-just-run-the-attach-function">- When browser globals (root is window), Just run the attach function.</h1>
+<p>((root, attach) -&gt;
+  if typeof define is &#39;function&#39; and define.amd?
+    define [
+      &#39;jquery&#39;
+      &#39;underscore&#39;
+      &#39;hlf/jquery.extension.hlf.core&#39;
+    ], attach
+  else if typeof exports is &#39;object&#39;
+    module.exports = attach(
+      require &#39;jquery&#39;,
+      require &#39;underscore&#39;,
+      require &#39;hlf/jquery.extension.hlf.core&#39;
+    )
+  else
+    attach jQuery, <em>, jQuery.hlf
+  return
+)(@, ($, </em>, hlf) -&gt;
+  &#39;use strict&#39;</p>
+<h1 id="namespace">Namespace</h1>
+<h1 id="-">---------</h1>
+<p>  hlf.editable =
+    debug: on
+    toString: _.memoize (context) -&gt;
+      switch context
+        when &#39;event&#39;  then &#39;.hlf.editable&#39;
+        when &#39;data&#39;   then &#39;hlf-editable&#39;
+        when &#39;class&#39;  then &#39;js-editable&#39;
+        else &#39;hlf.editable&#39;</p>
+<pre><code>defaults:
+  selectors:
+    text:       &#39;.js-text&#39;
+    input:      &#39;.js-input input&#39;
+    inputWrap:  &#39;.js-input&#39;
+  classNames:
+    container:  &#39;&#39;
+
+types: _.memoize -&gt;
+  _.chain mixins
+    .keys()
+    .without &#39;base&#39;
+    .value()</code></pre>
+<p>  mixins = {}</p>
+<h1 id="base-mixin">Base Mixin</h1>
+<h1 id="-">----------</h1>
+<p>  $.createMixin mixins, &#39;base&#39;,</p>
+<pre><code># § __Own__
+
+isEditing: null
+
+init: -&gt;
+  @trigger &#39;will-init&#39;
+  @$el.addClass @classNames.container
+  @bind()
+  if @toggleEditing? then @toggleEditing off
+  @trigger &#39;did-init&#39;
+
+bind: -&gt;
+  if @toggleEditing?
+    @on &#39;click&#39;, @selectors.text, (e) =&gt; @toggleEditing on
+    @on &#39;blur&#39;, @selectors.input, (e) =&gt; @toggleEditing off
+  @on &#39;change&#39;, @selectors.input, @handleValueChange
+
+handleCommand: (command, sender) -&gt;
+  @trigger &#39;before-command&#39;, { command }
+  switch command.type
+    when &#39;update&#39; then @renderText command.userInfo.text
+    else
+  @trigger &#39;after-command&#39;, { command }
+
+handleValueChange: (sender) -&gt;
+  text = @inputValue()
+  text = @textOnValueChange text
+  userInfo = { text }
+  @trigger &#39;will-commit&#39;, userInfo
+  #- @event commit.&lt;ns&gt;
+  @trigger &#39;commit&#39;, userInfo
+
+# § __Actions__
+
+toggleEditing: (state) -&gt;
+  @isEditing = state
+  toggleOriginalDisplay = ($el, state) =&gt;
+    display = $el.data @attr(&#39;display&#39;)
+    if state is on
+      display ?= &#39;block&#39;
+      $el.css { display }
+    else if state is off
+      if not display?
+        display = $el.css &#39;display&#39;
+        if display isnt &#39;none&#39; then $el.data @attr(&#39;display&#39;), display
+      $el.hide()
+  if state is on
+    toggleOriginalDisplay @$text, off
+    toggleOriginalDisplay @$inputWrap, on
+    @$input.focus()
+  else if state is off
+    toggleOriginalDisplay @$text, on
+    toggleOriginalDisplay @$inputWrap, off
+  #- @event toggle-edit.&lt;ns&gt;
+  @trigger &#39;toggle-edit&#39;, { state }
+
+renderText: (text) -&gt; @$text.text text
+
+inputValue: -&gt; @$input.val()
+
+textOnValueChange: (text) -&gt;</code></pre>
+<h1 id="inline-mixin">Inline Mixin</h1>
+<h1 id="-">------------</h1>
+<p>  $.createMixin mixins, &#39;inline&#39;,</p>
+<pre><code># § __Action Overrides__
+
+textOnValueChange: (text) -&gt;
+  if not text.length then @$input.attr &#39;placeholder&#39; else text
+
+# § __Onces__
+
+decorateOptions: -&gt;
+  @options.classNames.container += &quot; #{@cls(&#39;inline&#39;)}&quot;
+decorate: -&gt;
+  @on &#39;did-init&#39;, =&gt; @initInline()
+  @on &#39;will-commit&#39;, (e) =&gt; @renderText e.userInfo.text
+  @on &#39;after-command&#39;, (e) =&gt;
+    command = e.userInfo.command
+    switch command.type
+      when &#39;update&#39; then @updatePlaceholder()
+      else
+
+# § __Own__
+
+initInline: -&gt;
+  @updatePlaceholder()
+
+# § __Actions__
+
+updatePlaceholder: -&gt;
+  @$input.attr &#39;placeholder&#39;, @$text.text()</code></pre>
+<h1 id="editor-mixin">Editor Mixin</h1>
+<h1 id="-">------------</h1>
+<p>  $.createMixin mixins, &#39;editor&#39;,</p>
+<pre><code># § __Action Overrides__
+
+inputValue: -&gt;
+  switch @editorName
+    when &#39;CodeMirror&#39; then @editor.getValue()
+    else &#39;&#39;
+
+renderText: (text) -&gt;
+  switch @editorName
+    when &#39;CodeMirror&#39; then @editor.setValue text
+    else
+
+# § __Onces__
+
+decorateOptions: -&gt;
+  @opts.selectors.markup = &#39;.editor-markup&#39;
+decorate: -&gt;
+  delete @toggleEditing # Unneeded action.
+  @on &#39;will-init&#39;, =&gt;
+  @on &#39;did-init&#39;, =&gt; @initEditor()
+
+# § __Own__
+
+initEditor: -&gt;
+  @editorName = @data &#39;editor&#39;
+  switch @editorName
+    when &#39;CodeMirror&#39;
+      opts = @data &#39;editor-options&#39;
+      opts.value = @$markup.text()
+      location = (el) =&gt;
+        @$editor = el
+        @$markup.replaceWith @$editor
+      @editor = CodeMirror location, opts
+    else didInit = no
+  @bindEditor()
+  didInit isnt no
+
+bindEditor: -&gt;
+  switch @editorName
+    when &#39;CodeMirror&#39;
+      @editor.on &#39;blur&#39;, @handleValueChange
+    else</code></pre>
+<h1 id="color-picker-mixin">Color Picker Mixin</h1>
+<h1 id="-">------------------</h1>
+<p>  $.createMixin mixins, &#39;color-picker&#39;,</p>
+<pre><code># § __Onces__
+
+decorateOptions: -&gt;
+  @opts.selectors.well = &#39;.color-well&#39;
+decorate: -&gt;
+  @on &#39;will-commit&#39;, (e) =&gt; @renderColor e.userInfo.text
+  @on &#39;did-init&#39;, =&gt; @initColorPicker()
+
+# § __Own__
+
+initColorPicker: -&gt;
+  _.bindAll @, &#39;handleColorPickerChange&#39;
+  @pickerName = @data &#39;color-picker&#39;
+  switch @pickerName
+    when &#39;Spectrum&#39;
+      opts = @data &#39;color-picker-options&#39;
+      opts.color = &quot;##{@$input.val()}&quot;
+      opts.change = @handleColorPickerChange
+      @$well.spectrum opts
+    else didInit = no
+  @bindColorPicker()
+  didInit isnt no
+
+bindColorPicker: -&gt;
+
+handleColorPickerChange: (color) -&gt;
+  switch @pickerName
+    when &#39;Spectrum&#39; then color = color.toHexString().substring(1)
+  @$input
+    .val color
+    .trigger &#39;change&#39;
+
+# § __Actions__
+
+renderColor: (color) -&gt;
+  switch @pickerName
+    when &#39;Spectrum&#39; then @$well.spectrum &#39;set&#39;, color</code></pre>
+<h1 id="file-uploader-mixin">File Uploader Mixin</h1>
+<h1 id="-">-------------------</h1>
+<p>  $.createMixin mixins, &#39;file-uploader&#39;,</p>
+<pre><code># § __Onces__
+
+decorateOptions: -&gt;
+  @opts.selectors.text = &#39;.preview &gt; figcaption&#39;
+  @opts.selectors.thumb = &#39;.preview &gt; .thumb&#39;
+decorate: -&gt;
+  delete @toggleEditing # Unneeded action.
+  @on &#39;will-commit&#39;, (e) =&gt;
+  @on &#39;did-init&#39;, =&gt; @initFileUploader()
+
+# § __Own__
+
+initFileUploader: -&gt;
+  @uploaderName = @data &#39;file-uploader&#39;
+  switch @uploaderName
+    when &#39;jQueryFileUpload&#39;
+      opts = @data &#39;file-uploader-options&#39;
+      @$input.fileupload opts
+    else didInit = no
+  @bindFileUploader()
+  didInit isnt no
+
+bindFileUploader: -&gt;</code></pre>
+<h1 id="attaching">Attaching</h1>
+<h1 id="-">---------</h1>
+<p>  hlf.createPlugin
+    name: &#39;editable&#39;
+    namespace: hlf.editable
+    apiMixins: mixins
+    mixinFilter: (mixin, name) -&gt;
+      if _.isString(@options.types)
+        @options.types = @options.types.split &#39; &#39;
+      name in @options.types and name in hlf.editable.types()
+    baseMixins: [
+      &#39;data&#39;
+      &#39;event&#39;
+      &#39;selection&#39;
+    ]
+    autoSelect: yes
+    compactOptions: yes
+)</p></div></div></div></div></body></html>

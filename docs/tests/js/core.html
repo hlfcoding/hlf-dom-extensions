@@ -1,39 +1,329 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core"><meta name="groc-project-path" content="tests/js/core.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-core-unit-tests">HLF Core Unit Tests</h1>
-<p>Offloads testing larger corer components to other test modules.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../../../tests/core.unit.html">Page</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">require</span>.config
-  <span class="hljs-attribute">baseUrl</span>: <span class="hljs-string">'../lib'</span>
-  <span class="hljs-attribute">paths</span>:
-    <span class="hljs-attribute">hlf</span>: <span class="hljs-string">'../dist'</span>
-    <span class="hljs-attribute">test</span>: <span class="hljs-string">'../tests/js'</span>
+<!DOCTYPE html><html lang="en"><head><title>tests/js/core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/core"><meta name="groc-project-path" content="tests/js/core.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/core.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-extensions-core-tests">HLF Extensions Core Tests</h1>
+<p>Offloads testing larger core components to other test modules.</p>
+<p><a href="../../../tests/core.unit.html">Page</a></p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.guard &amp;&amp; !guard.isNavigatorSupported) { <span class="hljs-keyword">return</span>; }
 
-<span class="hljs-built_in">require</span> [
-  <span class="hljs-string">'jquery'</span>
-  <span class="hljs-string">'underscore'</span>
-  <span class="hljs-string">'hlf/jquery.extension.hlf.core'</span>
-  <span class="hljs-string">'test/base'</span>
-  <span class="hljs-string">'test/core.mixin'</span>
-  <span class="hljs-string">'test/core.plugin'</span>
-], <span class="hljs-function"><span class="hljs-params">($, _, hlf)</span> -&gt;</span>
-  <span class="hljs-string">'use strict'</span>
+  <span class="hljs-built_in">require</span>.config({ baseUrl: <span class="hljs-string">'../'</span>, paths: { hlf: <span class="hljs-string">'dist'</span>, test: <span class="hljs-string">'tests/js'</span> } });
+  define([<span class="hljs-string">'hlf/core'</span>, <span class="hljs-string">'test/base'</span>], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(HLF, base)</span> </span>{
+    <span class="hljs-keyword">const</span> { <span class="hljs-built_in">module</span>, test } = QUnit;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><hr></div></div><div class="code"><div class="wrapper">    <span class="hljs-built_in">module</span>(<span class="hljs-string">'other'</span>);
 
-  {<span class="hljs-built_in">module</span>, test} = QUnit
+    test(<span class="hljs-string">'exports'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      assert.ok(HLF, <span class="hljs-string">'Namespace should exist.'</span>);
+      assert.ok(HLF.buildExtension, <span class="hljs-string">'Method should exist.'</span>);
+    });</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><hr></div></div><div class="code"><div class="wrapper">    <span class="hljs-built_in">module</span>(<span class="hljs-string">'extension core'</span>, {
+      beforeEach(assert) {
+        <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>, {
+          assertInstanceMethods(instance, ...methodNames) {
+            methodNames.forEach(methodName =&gt; assert.ok(
+              <span class="hljs-keyword">typeof</span> instance[methodName] === <span class="hljs-string">'function'</span>,
+              `Instance has generated API addition ${methodName}.`
+            ));
+          },
+          buildTestExtension(extensionClass, options) {
+            options = <span class="hljs-built_in">Object</span>.assign({}, options);
+            HLF.buildExtension(extensionClass, options);
+            <span class="hljs-keyword">this</span>.SomeExtension = extensionClass;
+          },
+          createSomeChildElement() {
+            <span class="hljs-keyword">let</span> someElement = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+            someElement.classList.add(<span class="hljs-string">'foo'</span>);
+            <span class="hljs-keyword">this</span>.someElement.appendChild(someElement);
+            <span class="hljs-keyword">return</span> someElement;
+          },
+          createTestExtensionClass(additions, defaults) {
+            <span class="hljs-keyword">const</span> { methods, onNew, staticMethods } = additions || {};
+            <span class="hljs-keyword">class</span> SomeExtension {
+              constructor(element, options, contextElement) {
+                <span class="hljs-keyword">if</span> (onNew) { onNew.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>); }
+              }
+            }
+            <span class="hljs-built_in">Object</span>.assign(SomeExtension.prototype, methods);
+            <span class="hljs-built_in">Object</span>.assign(SomeExtension, staticMethods, {
+              debug: <span class="hljs-literal">false</span>,
+              defaults: <span class="hljs-built_in">Object</span>.assign({}, defaults),
+              toPrefix() { <span class="hljs-keyword">return</span> <span class="hljs-string">'se'</span>; },
+            });
+            <span class="hljs-keyword">return</span> SomeExtension;
+          },
+          createTestExtension({ classAdditions, createOptions, defaults } = {}) {
+            createOptions = <span class="hljs-built_in">Object</span>.assign({}, {
+              name: <span class="hljs-string">'someExtension'</span>,
+              namespace: {
+                debug: <span class="hljs-literal">false</span>,
+                toString() { <span class="hljs-keyword">return</span> <span class="hljs-string">'se'</span>; },
+                defaults: <span class="hljs-built_in">Object</span>.assign({}, defaults),
+              },
+              apiClass: <span class="hljs-keyword">this</span>.createTestExtensionClass(classAdditions, defaults),
+            }, createOptions);
+            <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>, {
+              extension: HLF.createExtension(createOptions),
+              namespace: createOptions.namespace,
+            });
+          },
+          someData: { key: <span class="hljs-string">'value'</span> },
+          someElement: <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>),
+          someExtension: <span class="hljs-literal">null</span>,
+        });
+        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'qunit-fixture'</span>).appendChild(<span class="hljs-keyword">this</span>.someElement);
+      },
+      afterEach() {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.someExtension === <span class="hljs-string">'function'</span>) {
+          <span class="hljs-keyword">this</span>.someExtension(<span class="hljs-string">'remove'</span>);
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.extension) {
+          <span class="hljs-keyword">this</span>.extension._deleteInstances();
+        }
+      },
+    });
 
-  <span class="hljs-built_in">module</span> <span class="hljs-string">'other'</span>
+    test(<span class="hljs-string">'initializers'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass({
+        methods: { init() { <span class="hljs-keyword">this</span>._didInit = <span class="hljs-literal">true</span>; } },
+        staticMethods: { init() { <span class="hljs-keyword">this</span>._didInit = <span class="hljs-literal">true</span>; } },
+      }));
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      <span class="hljs-keyword">const</span> { someExtension, SomeExtension } = <span class="hljs-keyword">this</span>;
+      assert.ok(someExtension._didInit,
+        <span class="hljs-string">'Instance had initializer called.'</span>);
+      assert.ok(SomeExtension._didInit,
+        <span class="hljs-string">'Extension class had initializer called.'</span>);
+      assert.strictEqual(someExtension.element, <span class="hljs-keyword">this</span>.someElement,
+        <span class="hljs-string">'Extension stores the element as property.'</span>);
+      assert.strictEqual(someExtension.rootElement, someExtension.element,
+        <span class="hljs-string">'Extension sets the element as root element.'</span>);
+      assert.ok(someExtension.element.classList.contains(<span class="hljs-string">'js-se'</span>),
+        <span class="hljs-string">'Extension gives the element the main class.'</span>);
+    });
 
-  test <span class="hljs-string">'exports'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
-    assert.ok hlf,
-      <span class="hljs-string">'Namespace should exist.'</span>
-    <span class="hljs-keyword">return</span>
+    test(<span class="hljs-string">'de-initializers'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">let</span> didDeinit = <span class="hljs-literal">false</span>;
+      <span class="hljs-keyword">let</span> didReceiveEvent = <span class="hljs-literal">false</span>;
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass({
+        onNew() {
+          <span class="hljs-keyword">this</span>.eventListeners = {};
+          <span class="hljs-keyword">this</span>.eventListeners[<span class="hljs-keyword">this</span>.eventName(<span class="hljs-string">'someevent'</span>)] = <span class="hljs-keyword">this</span>._onSomeEvent;
+          <span class="hljs-keyword">this</span>.resizeDelay = <span class="hljs-number">100</span>;
+        },
+        methods: {
+          deinit() { didDeinit = <span class="hljs-literal">true</span>; },
+          _onSomeEvent(event) { didReceiveEvent = <span class="hljs-literal">true</span>; },
+          _onWindowResize(event) { didReceiveEvent = <span class="hljs-literal">true</span>; },
+        },
+      }), { autoListen: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      <span class="hljs-keyword">this</span>.someExtension.remove();
+      assert.ok(didDeinit,
+        <span class="hljs-string">'Extension performs "remove" action, calls custom deinit, if any.'</span>);
+      <span class="hljs-keyword">this</span>.someElement.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'sesomeevent'</span>));
+      <span class="hljs-built_in">window</span>.dispatchEvent(<span class="hljs-keyword">new</span> Event(<span class="hljs-string">'resize'</span>));
+      assert.notOk(didReceiveEvent,
+        <span class="hljs-string">'Extension automatically removes listeners from autoListen.'</span>);
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-literal">null</span>;
+    });
 
-  test <span class="hljs-string">'noConflict'</span>, <span class="hljs-function"><span class="hljs-params">(assert)</span> -&gt;</span>
-    assert.ok $.createPlugin,
-      <span class="hljs-string">'Method shortcut for createPlugin exists by default, w/o noConflict.'</span>
-    hlf.noConflict()
-    assert.strictEqual $.createPlugin, <span class="hljs-literal">undefined</span>,
-      <span class="hljs-string">'After call, method shortcut for createPlugin is back to old value.'</span>
-    assert.ok hlf.createPlugin,
-      <span class="hljs-string">'After call, original method for createPlugin still exists.'</span>
-    <span class="hljs-keyword">return</span>
+    test(<span class="hljs-string">'compacted options'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">const</span> defaultSelectors = { someElement: <span class="hljs-string">'.foo'</span> };
+      <span class="hljs-keyword">const</span> optionSelectors = { someOtherElement: <span class="hljs-string">'.bar'</span> };
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass(
+        <span class="hljs-literal">null</span>, { classNames: {}, selectors: defaultSelectors }
+      ), { compactOptions: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement, { selectors: optionSelectors });
+      assert.notOk(<span class="hljs-keyword">this</span>.someExtension.options,
+        <span class="hljs-string">'Extension no longer stores the final options as property.'</span>);
+      assert.deepEqual(<span class="hljs-keyword">this</span>.someExtension.classNames, <span class="hljs-keyword">this</span>.SomeExtension.defaults.classNames,
+        <span class="hljs-string">'Extension stores the classNames option as property.'</span>);
+      assert.deepEqual(<span class="hljs-keyword">this</span>.someExtension.selectors, <span class="hljs-built_in">Object</span>.assign({}, defaultSelectors, optionSelectors),
+        <span class="hljs-string">'Extension stores the selectors option as property.'</span>);
+      <span class="hljs-keyword">const</span> configureSelectors = { someOtherElement: <span class="hljs-string">'.baz'</span> };
+      <span class="hljs-keyword">this</span>.someExtension.configure({ selectors: configureSelectors });
+      assert.deepEqual(<span class="hljs-keyword">this</span>.someExtension.selectors,
+        <span class="hljs-built_in">Object</span>.assign({}, defaultSelectors, optionSelectors, configureSelectors),
+        <span class="hljs-string">'Extension performs "configure" action, compacts new options.'</span>);
+      <span class="hljs-keyword">this</span>.someExtension.configure({ selectors: <span class="hljs-string">'default'</span> });
+      assert.deepEqual(<span class="hljs-keyword">this</span>.someExtension.selectors, defaultSelectors,
+        <span class="hljs-string">'Extension performs "configure" action, restores default options.'</span>);
+    });
 
-  QUnit.start()
+    test(<span class="hljs-string">'custom options'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass(), { compactOptions: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">const</span> options = { someOption: <span class="hljs-string">'bar'</span> };
+      <span class="hljs-keyword">this</span>.someElement.setAttribute(<span class="hljs-string">'data-se'</span>, <span class="hljs-built_in">JSON</span>.stringify(options));
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.someOption, options.someOption,
+        <span class="hljs-string">'Extension allows custom options via element data attribute.'</span>);
+    });
 
-  <span class="hljs-literal">yes</span></div></div></div></div></body></html>
+    test(<span class="hljs-string">'naming methods'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">const</span> methodNames = [<span class="hljs-string">'attrName'</span>, <span class="hljs-string">'className'</span>, <span class="hljs-string">'eventName'</span>, <span class="hljs-string">'varName'</span>];
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass());
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      <span class="hljs-keyword">this</span>.assertInstanceMethods(<span class="hljs-keyword">this</span>.someExtension, ...methodNames);
+      methodNames.forEach(methodName =&gt; assert.ok(
+        <span class="hljs-keyword">typeof</span> <span class="hljs-keyword">this</span>.SomeExtension[methodName] === <span class="hljs-string">'function'</span>,
+        `Namespace has generated API addition ${methodName}.`
+      ));
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.attrName(<span class="hljs-string">'some-attribute'</span>), <span class="hljs-string">'data-se-some-attribute'</span>,
+        <span class="hljs-string">'attrName namespaces attribute names correctly.'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.className(<span class="hljs-string">'some-class'</span>), <span class="hljs-string">'js-se-some-class'</span>,
+        <span class="hljs-string">'className namespaces class names correctly.'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.eventName(<span class="hljs-string">'someevent'</span>), <span class="hljs-string">'sesomeevent'</span>,
+        <span class="hljs-string">'eventName namespaces event names correctly.'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.varName(<span class="hljs-string">'some-var'</span>), <span class="hljs-string">'--se-some-var'</span>,
+        <span class="hljs-string">'varName namespaces CSS var names correctly.'</span>);
+    });
+
+    test(<span class="hljs-string">'timing methods'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass());
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      <span class="hljs-keyword">let</span> done = assert.async();
+      <span class="hljs-keyword">const</span> duration = <span class="hljs-number">50</span>;
+
+      <span class="hljs-keyword">let</span> elementTimeoutCompleted = <span class="hljs-literal">false</span>;
+      <span class="hljs-keyword">this</span>.someExtension.setElementTimeout(<span class="hljs-keyword">this</span>.someElement, <span class="hljs-string">'some-timeout'</span>, duration,
+        () =&gt; { elementTimeoutCompleted = <span class="hljs-literal">true</span>; });
+      assert.ok(<span class="hljs-keyword">this</span>.someElement.hasAttribute(<span class="hljs-string">'data-se-some-timeout'</span>),
+        <span class="hljs-string">'setElementTimeout stores timeout as element data attribute per name.'</span>);
+
+      <span class="hljs-keyword">let</span> timeoutCompleted = <span class="hljs-literal">false</span>;
+      <span class="hljs-keyword">this</span>.someExtension.setTimeout(<span class="hljs-string">'_someTimeout'</span>, duration,
+        () =&gt; { timeoutCompleted = <span class="hljs-literal">true</span>; });
+      assert.ok(<span class="hljs-keyword">this</span>.someExtension._someTimeout,
+        <span class="hljs-string">'setTimeout stores timeout as property value per name.'</span>);
+
+      <span class="hljs-keyword">let</span> elementTimeoutCleared = <span class="hljs-literal">true</span>;
+      <span class="hljs-keyword">this</span>.someExtension.setElementTimeout(<span class="hljs-keyword">this</span>.someElement, <span class="hljs-string">'some-timeout-to-clear'</span>, duration,
+        () =&gt; { elementTimeoutCleared = <span class="hljs-literal">false</span>; });
+      <span class="hljs-keyword">this</span>.someExtension.setElementTimeout(<span class="hljs-keyword">this</span>.someElement, <span class="hljs-string">'some-timeout-to-clear'</span>, <span class="hljs-literal">null</span>);
+      assert.notOk(<span class="hljs-keyword">this</span>.someElement.hasAttribute(<span class="hljs-string">'data-se-some-timeout-to-clear'</span>),
+        <span class="hljs-string">'setElementTimeout clears timeout if value is null.'</span>);
+
+      <span class="hljs-keyword">let</span> timeoutCleared = <span class="hljs-literal">true</span>;
+      <span class="hljs-keyword">this</span>.someExtension.setTimeout(<span class="hljs-string">'_someTimeoutToClear'</span>, duration,
+        () =&gt; { timeoutCleared = <span class="hljs-literal">false</span>; });
+      <span class="hljs-keyword">this</span>.someExtension.setTimeout(<span class="hljs-string">'_someTimeoutToClear'</span>, <span class="hljs-literal">null</span>);
+      assert.notOk(<span class="hljs-keyword">this</span>.someExtension._someTimeoutToClear,
+        <span class="hljs-string">'setTimeout clears timeout if value is null.'</span>);
+
+      setTimeout(() =&gt; {
+
+        assert.ok(elementTimeoutCompleted, <span class="hljs-string">'setElementTimeout calls callback.'</span>);
+        assert.notOk(<span class="hljs-keyword">this</span>.someElement.hasAttribute(<span class="hljs-string">'data-se-some-timeout'</span>),
+          <span class="hljs-string">'setElementTimeout removes element data attribute upon completion.'</span>);
+
+        assert.ok(timeoutCompleted, <span class="hljs-string">'setTimeout calls callback.'</span>);
+        assert.notOk(<span class="hljs-keyword">this</span>.someExtension._someTimeout,
+          <span class="hljs-string">'setTimeout removes property value upon completion.'</span>);
+
+        assert.ok(elementTimeoutCleared,
+          <span class="hljs-string">'setElementTimeout clears timeout if value is null.'</span>);
+        assert.ok(timeoutCleared,
+          <span class="hljs-string">'setTimeout clears timeout if value is null.'</span>);
+
+        done();
+      }, duration + <span class="hljs-number">50</span>);
+    });
+
+    test(<span class="hljs-string">'css methods'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass(), { mixinNames: [<span class="hljs-string">'css'</span>] });
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      <span class="hljs-keyword">let</span> childElement = <span class="hljs-keyword">this</span>.createSomeChildElement();
+
+      <span class="hljs-keyword">this</span>.someElement.style.setProperty(<span class="hljs-string">'--se-some-size'</span>, <span class="hljs-string">'1px'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.cssVariable(<span class="hljs-string">'some-size'</span>), <span class="hljs-string">'1px'</span>,
+        <span class="hljs-string">'cssVariable returns variable value on root element by default.'</span>);
+      childElement.style.setProperty(<span class="hljs-string">'--se-some-size'</span>, <span class="hljs-string">'2px'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.cssVariable(<span class="hljs-string">'some-size'</span>, childElement), <span class="hljs-string">'2px'</span>,
+        <span class="hljs-string">'cssVariable returns variable value on given element if any.'</span>);
+
+      <span class="hljs-keyword">this</span>.someElement.style.setProperty(<span class="hljs-string">'transition-duration'</span>, <span class="hljs-string">'0.1s'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.cssDuration(<span class="hljs-string">'transition-duration'</span>), <span class="hljs-number">100</span>,
+        <span class="hljs-string">'cssDuration returns converted duration on root element by default.'</span>);
+      childElement.style.setProperty(<span class="hljs-string">'transition-duration'</span>, <span class="hljs-string">'0.2s'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.cssDuration(<span class="hljs-string">'transition-duration'</span>, childElement), <span class="hljs-number">200</span>,
+        <span class="hljs-string">'cssDuration returns converted duration on given element if any.'</span>);
+    });
+
+    test(<span class="hljs-string">'as shared instance'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.createSomeChildElement();
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass());
+      <span class="hljs-keyword">let</span> subject = (contextElement) =&gt; (contextElement.querySelectorAll(<span class="hljs-string">'.foo'</span>));
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(subject, { contextElement: <span class="hljs-keyword">this</span>.someElement });
+      assert.deepEqual(<span class="hljs-keyword">this</span>.someExtension.elements, <span class="hljs-built_in">Array</span>.from(subject(<span class="hljs-keyword">this</span>.someElement)),
+        <span class="hljs-string">'Extension stores the elements as property.'</span>);
+      assert.deepEqual(<span class="hljs-keyword">this</span>.someExtension.options.querySelector(<span class="hljs-keyword">this</span>.someElement), subject(<span class="hljs-keyword">this</span>.someElement),
+        <span class="hljs-string">'Extension stores custom query-selector subject as option.'</span>);
+      assert.strictEqual(<span class="hljs-keyword">this</span>.someExtension.contextElement, <span class="hljs-keyword">this</span>.someElement,
+        <span class="hljs-string">'Extension stores the context element as property.'</span>);
+      assert.strictEqual(<span class="hljs-keyword">this</span>.someExtension.rootElement, <span class="hljs-keyword">this</span>.someExtension.contextElement,
+        <span class="hljs-string">'Extension sets the context element as root element.'</span>);
+      assert.ok(<span class="hljs-keyword">this</span>.someExtension.contextElement.classList.contains(<span class="hljs-string">'js-se'</span>),
+        <span class="hljs-string">'Extension gives the context element the main class.'</span>);
+    });
+
+    test(<span class="hljs-string">'compactOptions option'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass(
+        <span class="hljs-literal">null</span>, { someOption: <span class="hljs-string">'foo'</span> }
+      ), { compactOptions: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement, { someOtherOption: <span class="hljs-string">'bar'</span> });
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.someOption, <span class="hljs-string">'foo'</span>,
+        <span class="hljs-string">'Instance has default options merged in as properties.'</span>);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension.someOtherOption, <span class="hljs-string">'bar'</span>,
+        <span class="hljs-string">'Instance has custom options merged in as properties.'</span>);
+    });
+
+    test(<span class="hljs-string">'autoBind option'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass({
+        methods: {
+          _onSomeEvent() { <span class="hljs-keyword">this</span>.someContext = <span class="hljs-keyword">this</span>; }
+        }
+      }), { autoBind: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      <span class="hljs-keyword">let</span> { _onSomeEvent } = <span class="hljs-keyword">this</span>.someExtension;
+      _onSomeEvent();
+      assert.strictEqual(<span class="hljs-keyword">this</span>.someExtension.someContext, <span class="hljs-keyword">this</span>.someExtension,
+        <span class="hljs-string">'Instance has auto-bound methods.'</span>);
+    });
+
+    test(<span class="hljs-string">'autoListen option'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass({
+        onNew() {
+          <span class="hljs-keyword">this</span>.eventListeners = {};
+          <span class="hljs-keyword">this</span>.eventListeners[<span class="hljs-keyword">this</span>.eventName(<span class="hljs-string">'someevent'</span>)] = <span class="hljs-keyword">this</span>._onSomeEvent;
+          <span class="hljs-keyword">this</span>.resizeDelay = <span class="hljs-number">100</span>;
+          <span class="hljs-keyword">this</span>._resizeCount = <span class="hljs-number">0</span>;
+        },
+        methods: {
+          _onSomeEvent(event) { <span class="hljs-keyword">this</span>._someEventDetail = event.detail; },
+          _onWindowResize(event) { <span class="hljs-keyword">this</span>._resizeCount += <span class="hljs-number">1</span>; },
+        },
+      }), { autoListen: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      <span class="hljs-keyword">this</span>.assertInstanceMethods(<span class="hljs-keyword">this</span>.someExtension,
+        <span class="hljs-string">'addEventListeners'</span>, <span class="hljs-string">'removeEventListeners'</span>, <span class="hljs-string">'toggleEventListeners'</span>,
+        <span class="hljs-string">'createCustomEvent'</span>, <span class="hljs-string">'dispatchCustomEvent'</span>);
+      <span class="hljs-keyword">this</span>.someExtension.dispatchCustomEvent(<span class="hljs-string">'someevent'</span>, <span class="hljs-keyword">this</span>.someData);
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension._someEventDetail, <span class="hljs-keyword">this</span>.someData,
+        <span class="hljs-string">'Instance has auto-added auto-bound listeners based on eventListeners.'</span>);
+      <span class="hljs-built_in">window</span>.dispatchEvent(<span class="hljs-keyword">new</span> Event(<span class="hljs-string">'resize'</span>));
+      <span class="hljs-built_in">window</span>.dispatchEvent(<span class="hljs-keyword">new</span> Event(<span class="hljs-string">'resize'</span>));
+      assert.equal(<span class="hljs-keyword">this</span>.someExtension._resizeCount, <span class="hljs-number">1</span>,
+        <span class="hljs-string">'Instance has auto-bound and throttled _onWindowResize listener.'</span>);
+    });
+
+    test(<span class="hljs-string">'autoSelect option'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(assert)</span> </span>{
+      <span class="hljs-keyword">this</span>.buildTestExtension(<span class="hljs-keyword">this</span>.createTestExtensionClass(
+        <span class="hljs-literal">null</span>, { selectors: { someElement: <span class="hljs-string">'.foo'</span>, someElements: <span class="hljs-string">'.foo'</span> } }
+      ), { autoSelect: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>.createSomeChildElement();
+      <span class="hljs-keyword">this</span>.someExtension = <span class="hljs-keyword">this</span>.SomeExtension.extend(<span class="hljs-keyword">this</span>.someElement);
+      assert.ok(<span class="hljs-keyword">this</span>.someExtension.someElement <span class="hljs-keyword">instanceof</span> HTMLElement,
+        <span class="hljs-string">'Instance has auto-selected sub element based on selectors option.'</span>);
+      assert.ok(<span class="hljs-keyword">this</span>.someExtension.someElements <span class="hljs-keyword">instanceof</span> NodeList,
+        <span class="hljs-string">'Instance has auto-selected sub elements based on selectors option.'</span>);
+      <span class="hljs-keyword">this</span>.assertInstanceMethods(<span class="hljs-keyword">this</span>.someExtension,
+        <span class="hljs-string">'selectByClass'</span>, <span class="hljs-string">'selectAllByClass'</span>, <span class="hljs-string">'selectToProperties'</span>);
+    });</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><hr></div></div><div class="code"><div class="wrapper">    QUnit.start();
+  });
+
+}());</div></div></div></div></body></html>

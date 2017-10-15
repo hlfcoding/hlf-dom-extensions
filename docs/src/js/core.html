@@ -1,0 +1,431 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/core</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/core"><meta name="groc-project-path" content="src/js/core.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/core.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-extensions-core">HLF Extensions Core</h1>
+<p><a href="../../tests/js/core.html">Tests</a></p>
+<p>The extensions core provides shared functionality for extension classes to
+reduce boilerplate around common tasks. Static methods like <code>extend</code> and
+helpers as added, and instance methods are mixed onto the prototype.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(root, namespace)</span> </span>{</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>When AMD, register the attacher as an anonymous module.</li>
+<li>When Node or Browserify, set module exports to the attach result.</li>
+<li>When browser globals (root is window), Just run the attach function.</li>
+</ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+    define(namespace);
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports === <span class="hljs-string">'object'</span>) {
+    <span class="hljs-built_in">module</span>.exports = namespace();
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-built_in">window</span>.HLF = namespace();
+  }
+})(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="namespace">Namespace</h2>
+<ul>
+<li><p>The <strong>debug</strong> flag here toggles debug logging for everything in the
+library that doesn&#39;t have a custom debug flag in its namespace.</p>
+</li>
+<li><p><strong>toPrefix</strong> is mainly for extension namespacing. For now, its base form
+is very simple.</p>
+</li>
+<li><p><strong>debugLog</strong> in its base form just wraps around <code>console.log</code> and links
+to the <code>debug</code> flag. However, <code>debugLog</code> conventionally becomes a no-op
+if the <code>debug</code> flag is off.</p>
+</li>
+</ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">let</span> HLF = {
+    debug: <span class="hljs-literal">true</span>,
+    toPrefix() { <span class="hljs-keyword">return</span> <span class="hljs-string">'hlf'</span>; },
+  };
+  HLF.debugLog = (HLF.debug === <span class="hljs-literal">false</span>) ? <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{} :
+    (<span class="hljs-built_in">console</span>.log.bind ? <span class="hljs-built_in">console</span>.log.bind(<span class="hljs-built_in">console</span>) : <span class="hljs-built_in">console</span>.log);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="buildextension">buildExtension</h2>
+<p>Further binding state and functionality to DOM elements is a common task
+that should be abstracted away, with common patterns and conventions.
+Also, instead of extension subclasses inheriting from a base class, the
+<code>extensionClass</code> is extended upon based on build options. This method will
+add a static <code>extend</code> factory method for extension instances. How
+instances are built is configurable via <code>options</code>.</p>
+<p><code>buildExtension</code> will decorate the class with additional mixins if
+fitting. If the class has a static <code>init</code> method, it will be called.</p>
+<p><strong>extend</strong> ultimately returns a new extension instance for a <code>subject</code> and
+any <code>options</code>. It will:</p>
+<ol>
+<li><p>Parse the <code>subject</code> to be either <code>element</code> or <code>elements</code>. If it is a
+function, invoke and save the original function as a <code>querySelector</code>
+option. See <code>_parseSubject</code>.</p>
+</li>
+<li><p>Check if element has options set in its root data attribute. If
+so, merge those options into <code>options</code>.</p>
+<p>If the <code>compactOptions</code> option is toggled, <code>options</code> will be merged
+into the instance. This makes accessing options more convenient, but
+can cause conflicts with larger existing APIs that don&#39;t account for
+such naming conflicts, since <em>we don&#39;t handle conflicts here</em>. Else,
+the <code>options</code> is added as an instance property. See <code>_assignOptions</code>.</p>
+</li>
+<li><p>Also decide the <code>rootElement</code> based on the situation. If the
+<code>contextElement</code> option has a value, that element will be the root, so
+several elements all &#39;share&#39; the same extension instance. Add the root
+class to the decided <code>rootElement</code> before initialization. All element
+values are attached onto the instance as properties.</p>
+</li>
+<li><p>If the <code>autoBind</code> option is toggled, bind the class&#39; own methods onto
+the instance. See <code>_bindMethods</code>.</p>
+</li>
+<li><p>If the <code>autoListen</code> option is toggled, call the <code>addEventListeners</code>
+method (ie. via <code>event</code> mixin), to set up element event listening
+before initialization. The <code>eventListeners</code> property must be set.
+Cleanup is automatic. If <code>_onWindowResize</code> and <code>resizeDelay</code> are
+defined, a listener with the handler will be added to the window
+resize event, with calls throttled per the delay. See <code>_listen</code>.</p>
+</li>
+<li><p>If the <code>autoSelect</code> option is toggled, call the <code>selectToProperties</code>
+method (ie. via <code>selection</code> mixin), to set up element references before
+initialization.</p>
+</li>
+<li><p>If an <code>init</code> method is provided, call it. Convention is to always
+provide it.</p>
+</li>
+</ol>
+<p><strong>_mixins</strong> is an internal general mixin collection for writing DOM
+extensions. Mixins either required or opt-in via the <code>mixinNames</code> build
+option. They are applied via <code>_mix</code>. Some mixins are factory methods
+requiring certain parameters.</p>
+<ul>
+<li><p><strong>css</strong>, sugar around accessing element style property values.</p>
+</li>
+<li><p><strong>debug</strong>, mostly the <strong>debugLog</strong> method, and will return no-op
+depending on the <code>debug</code> flag value.</p>
+</li>
+<li><p><strong>event</strong>, sugar around mass-listening to <code>rootElement</code> events and
+dispatching custom <code>rootElement</code> events.</p>
+</li>
+<li><p><strong>naming</strong>, allows namespacing an <code>attrName</code>, <code>className</code>, <code>eventName</code>,
+or <code>varName</code>.</p>
+</li>
+<li><p><strong>options</strong>, mostly the <strong>configure</strong> method, which allows updating
+options after initialization.</p>
+</li>
+<li><p><strong>remove</strong>, mostly the <strong>remove</strong> method, which calls the <code>deinit</code>
+method if provided. Convention is to always provide it for proper
+resource cleanup.</p>
+</li>
+<li><p><strong>selection</strong>, sugar around selecting <code>rootElement</code> descendants and
+selecting to properties based on <code>selectors</code>.</p>
+</li>
+<li><p><strong>timing</strong>, sugar around clearTimeout, setTimeout to allow named, stored
+timeouts.</p>
+</li>
+</ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">buildExtension</span><span class="hljs-params">(extensionClass, options)</span> </span>{
+    <span class="hljs-keyword">const</span> { defaults } = extensionClass;
+    <span class="hljs-keyword">const</span> { autoBind, autoListen, autoSelect, compactOptions } = options;
+    <span class="hljs-keyword">const</span> optionGroupNames = [<span class="hljs-string">'classNames'</span>, <span class="hljs-string">'selectors'</span>].filter(name =&gt; name <span class="hljs-keyword">in</span> defaults);
+
+    <span class="hljs-built_in">Object</span>.assign(extensionClass, {
+      extend(subject, options = {}) {
+        <span class="hljs-keyword">let</span> { element, elements } = _parseSubject(subject, options);
+        <span class="hljs-keyword">let</span> { contextElement: context } = options;
+        <span class="hljs-keyword">let</span> root = (context || element);
+        root.classList.add(<span class="hljs-keyword">this</span>.className());
+        options = _assignOptions(options,
+          defaults, optionGroupNames, root.getAttribute(<span class="hljs-keyword">this</span>.attrName())
+        );
+        <span class="hljs-keyword">let</span> instance = <span class="hljs-keyword">new</span> <span class="hljs-keyword">this</span>(
+          element || elements, <span class="hljs-built_in">Object</span>.assign({}, options), context
+        );
+        instance._setUpCleanupTasks();
+        <span class="hljs-built_in">Object</span>.assign(instance, compactOptions ? options : { options });
+        <span class="hljs-built_in">Object</span>.assign(instance, {
+          element, elements, contextElement: context, rootElement: root,
+        });
+        <span class="hljs-keyword">if</span> (autoBind) {
+          _bindMethods(instance, { properties: <span class="hljs-keyword">this</span>.prototype });
+        }
+        <span class="hljs-keyword">if</span> (autoListen) {
+          _listen(instance);
+        }
+        <span class="hljs-keyword">if</span> (autoSelect) {
+          instance.selectToProperties();
+        }
+        <span class="hljs-keyword">if</span> (instance.init) {
+          instance.init();
+        }
+        <span class="hljs-keyword">return</span> instance;
+      },
+    });
+
+    _mix(extensionClass, options, optionGroupNames);
+
+    <span class="hljs-keyword">if</span> (extensionClass.init) {
+      extensionClass.init();
+    }
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_assignOptions</span><span class="hljs-params">(options, defaults, groupNames, attribute)</span> </span>{
+    <span class="hljs-keyword">if</span> (attribute) {
+      <span class="hljs-keyword">try</span> { <span class="hljs-built_in">Object</span>.assign(options, <span class="hljs-built_in">JSON</span>.parse(attribute)); } <span class="hljs-keyword">catch</span> (error) {}
+    }
+    options = <span class="hljs-built_in">Object</span>.assign({}, defaults, options);
+    groupNames.forEach((g) =&gt; options[g] = <span class="hljs-built_in">Object</span>.assign({}, defaults[g], options[g]));
+    <span class="hljs-keyword">return</span> options;
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_bindMethods</span><span class="hljs-params">(object, { context, properties })</span> </span>{
+    <span class="hljs-built_in">Object</span>.getOwnPropertyNames(properties || object)
+      .filter(name =&gt; <span class="hljs-keyword">typeof</span> object[name] === <span class="hljs-string">'function'</span> &amp;&amp; name !== <span class="hljs-string">'constructor'</span>)
+      .forEach(name =&gt; object[name] = object[name].bind(context || object));
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_listen</span><span class="hljs-params">(instance)</span> </span>{
+    <span class="hljs-keyword">if</span> (!instance.addEventListeners || !instance.eventListeners) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-string">'Missing requirements.'</span>;
+    }
+    <span class="hljs-keyword">const</span> { eventListeners } = instance;
+    _bindMethods(eventListeners, { context: instance });
+    instance.addEventListeners(eventListeners);
+    instance._cleanupTasks.push(() =&gt; {
+      instance.removeEventListeners(eventListeners);
+    });
+    <span class="hljs-keyword">if</span> (instance._onWindowResize &amp;&amp; instance.resizeDelay) {
+      <span class="hljs-keyword">let</span> ran, { _onWindowResize } = instance;
+      instance._onWindowResize = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(event)</span> </span>{
+        <span class="hljs-keyword">if</span> (ran &amp;&amp; <span class="hljs-built_in">Date</span>.now() &lt; ran + <span class="hljs-keyword">this</span>.resizeDelay) { <span class="hljs-keyword">return</span>; }
+        ran = <span class="hljs-built_in">Date</span>.now();
+        _onWindowResize.call(<span class="hljs-keyword">this</span>, event);
+      }.bind(instance);
+      <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'resize'</span>, instance._onWindowResize);
+      instance._cleanupTasks.push(() =&gt; {
+        <span class="hljs-built_in">window</span>.removeEventListener(<span class="hljs-string">'resize'</span>, instance._onWindowResize);
+      });
+    }
+  }
+
+  <span class="hljs-keyword">const</span> _mixins = {};
+
+  _mixins.css = {
+    cssDuration(name, element) {
+      <span class="hljs-keyword">if</span> (!element) { element = <span class="hljs-keyword">this</span>.rootElement; }
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1000</span> * <span class="hljs-built_in">parseFloat</span>(getComputedStyle(element)[name]);
+    },
+    cssVariable(name, element) {
+      <span class="hljs-keyword">if</span> (!element) { element = <span class="hljs-keyword">this</span>.rootElement; }
+      <span class="hljs-keyword">return</span> getComputedStyle(element).getPropertyValue(<span class="hljs-keyword">this</span>.varName(name));
+    },
+    cssVariableDuration(name, element) {
+      <span class="hljs-keyword">return</span> <span class="hljs-number">1000</span> * <span class="hljs-built_in">parseFloat</span>(<span class="hljs-keyword">this</span>.cssVariable(name, element));
+    },
+    swapClasses(nameFrom, nameTo, element) {
+      <span class="hljs-keyword">if</span> (!element) { element = <span class="hljs-keyword">this</span>.rootElement; }
+      element.classList.remove(<span class="hljs-keyword">this</span>.className(nameFrom));
+      element.classList.add(<span class="hljs-keyword">this</span>.className(nameTo));
+    },
+  };
+
+  _mixins.debug = (debug, toPrefix) =&gt; (debug ? {
+    debugLog(...args) {
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._hasDebugLogGroup) {
+        args.unshift(toPrefix(<span class="hljs-string">'log'</span>));
+      }
+      HLF.debugLog(...args);
+    },
+    debugLogGroup(arg) {
+      <span class="hljs-keyword">if</span> (arg === <span class="hljs-literal">false</span>) {
+        <span class="hljs-built_in">console</span>.groupEnd();
+        <span class="hljs-keyword">this</span>._hasDebugLogGroup = <span class="hljs-literal">false</span>;
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">let</span> args = [toPrefix(<span class="hljs-string">'log'</span>)];
+        <span class="hljs-keyword">if</span> (arg) { args.push(arg); }
+        <span class="hljs-built_in">console</span>.group(...args);
+        <span class="hljs-keyword">this</span>._hasDebugLogGroup = <span class="hljs-literal">true</span>;
+      }
+    },
+  } : {
+    debugLog() {},
+    debugLogGroup() {},
+  });
+
+  _mixins.event = {
+    addEventListeners(info, target) {
+      target = target || <span class="hljs-keyword">this</span>.rootElement;
+      _normalizeEventListenersInfo(info);
+      <span class="hljs-built_in">Object</span>.keys(info).forEach((type) =&gt; {
+        <span class="hljs-keyword">const</span> [handler, options] = info[type];
+        target.addEventListener(type, handler, options);
+      });
+    },
+    removeEventListeners(info, target) {
+      target = target || <span class="hljs-keyword">this</span>.rootElement;
+      _normalizeEventListenersInfo(info);
+      <span class="hljs-built_in">Object</span>.keys(info).forEach((type) =&gt; {
+        <span class="hljs-keyword">const</span> [handler, options] = info[type];
+        target.removeEventListener(type, handler, options);
+      });
+    },
+    toggleEventListeners(on, info, target) {
+      <span class="hljs-keyword">this</span>[`${on ? <span class="hljs-string">'add'</span> : <span class="hljs-string">'remove'</span>}EventListeners`](info, target);
+    },
+    createCustomEvent(type, detail) {
+      <span class="hljs-keyword">let</span> initArgs = { detail };
+      initArgs.bubbles = <span class="hljs-literal">true</span>;
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-keyword">this</span>.eventName(type), initArgs);
+    },
+    dispatchCustomEvent(type, detail = {}) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.rootElement.dispatchEvent(<span class="hljs-keyword">this</span>.createCustomEvent(type, detail));
+    },
+  };
+
+  _mixins.naming = (toPrefix) =&gt; ({
+    attrName(name = <span class="hljs-string">''</span>) {
+      <span class="hljs-keyword">if</span> (name.length) {
+        name = `-${name}`;
+      }
+      <span class="hljs-keyword">return</span> `data-${toPrefix(<span class="hljs-string">'data'</span>)}${name}`;
+    },
+    className(name = <span class="hljs-string">''</span>) {
+      <span class="hljs-keyword">if</span> (name.length) {
+        name = `-${name}`;
+      }
+      <span class="hljs-keyword">return</span> `js-${toPrefix(<span class="hljs-string">'class'</span>)}${name}`;
+    },
+    eventName(name) {
+      <span class="hljs-keyword">return</span> `${toPrefix(<span class="hljs-string">'event'</span>)}${name}`;
+    },
+    varName(name) {
+      <span class="hljs-keyword">return</span> `--${toPrefix(<span class="hljs-string">'var'</span>)}-${name}`;
+    },
+  });
+
+  _mixins.options = (defaults, groupNames) =&gt; ({
+    configure(options) {
+      <span class="hljs-built_in">Object</span>.keys(options).forEach((name) =&gt; {
+        <span class="hljs-keyword">if</span> (name <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> || (<span class="hljs-keyword">this</span>.options &amp;&amp; name <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>.options)) { <span class="hljs-keyword">return</span>; }
+        <span class="hljs-keyword">delete</span> options[name];
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Not an existing option.'</span>;
+      });
+      <span class="hljs-keyword">let</span> store = <span class="hljs-keyword">this</span>.options || <span class="hljs-keyword">this</span>;
+      <span class="hljs-built_in">Object</span>.keys(options).filter(name =&gt; options[name] === <span class="hljs-string">'default'</span>).forEach((name) =&gt; {
+        options[name] = defaults[name];
+        <span class="hljs-keyword">delete</span> store[name];
+      });
+      groupNames.forEach((name) =&gt; {
+        store[name] = <span class="hljs-built_in">Object</span>.assign({}, store[name], options[name]);
+        <span class="hljs-keyword">delete</span> options[name];
+      });
+      <span class="hljs-built_in">Object</span>.assign(store, options);
+    },
+  });
+
+  _mixins.remove = {
+    remove() {
+      <span class="hljs-keyword">this</span>._cleanupTasks.forEach(task =&gt; task(<span class="hljs-keyword">this</span>));
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.deinit) {
+        <span class="hljs-keyword">this</span>.deinit();
+      }
+    },
+    _setUpCleanupTasks() {
+      <span class="hljs-keyword">this</span>._cleanupTasks = [];
+    },
+  };
+
+  _mixins.selection = {
+    selectByClass(name, element) {
+      <span class="hljs-keyword">if</span> (!element) { element = <span class="hljs-keyword">this</span>.rootElement; }
+      <span class="hljs-keyword">return</span> element.querySelector(`.${<span class="hljs-keyword">this</span>.className(name)}`);
+    },
+    selectAllByClass(name, element) {
+      <span class="hljs-keyword">if</span> (!element) { element = <span class="hljs-keyword">this</span>.rootElement; }
+      <span class="hljs-keyword">return</span> element.querySelectorAll(`.${<span class="hljs-keyword">this</span>.className(name)}`);
+    },
+    selectToProperties() {
+      <span class="hljs-keyword">const</span> selectors = <span class="hljs-keyword">this</span>.options ? <span class="hljs-keyword">this</span>.options.selectors : <span class="hljs-keyword">this</span>.selectors;
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.rootElement || !selectors) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">'Missing requirements.'</span>;
+      }
+      <span class="hljs-built_in">Object</span>.keys(selectors).forEach((name) =&gt; {
+        <span class="hljs-keyword">const</span> selector = selectors[name];
+        <span class="hljs-keyword">if</span> (name.substr(-<span class="hljs-number">1</span>) === <span class="hljs-string">'s'</span>) {
+          <span class="hljs-keyword">this</span>[name] = <span class="hljs-keyword">this</span>.rootElement.querySelectorAll(selector);
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">this</span>[name] = <span class="hljs-keyword">this</span>.rootElement.querySelector(selector);
+        }
+      });
+    },
+  };
+
+  _mixins.timing = {
+    setElementTimeout(element, name, duration, callback) {
+      name = <span class="hljs-keyword">this</span>.attrName(name);
+      <span class="hljs-keyword">if</span> (element.getAttribute(name)) {
+        clearTimeout(element.getAttribute(name));
+      }
+      <span class="hljs-keyword">let</span> timeout = <span class="hljs-literal">null</span>;
+      <span class="hljs-keyword">if</span> (duration != <span class="hljs-literal">null</span> &amp;&amp; callback) {
+        timeout = setTimeout(() =&gt; {
+          callback();
+          element.removeAttribute(name);
+        }, duration);
+      }
+      <span class="hljs-keyword">if</span> (timeout) {
+        element.setAttribute(name, timeout);
+      } <span class="hljs-keyword">else</span> {
+        element.removeAttribute(name);
+      }
+    },
+    setTimeout(name, duration, callback) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>[name]) {
+        clearTimeout(<span class="hljs-keyword">this</span>[name]);
+      }
+      <span class="hljs-keyword">let</span> timeout = <span class="hljs-literal">null</span>;
+      <span class="hljs-keyword">if</span> (duration != <span class="hljs-literal">null</span> &amp;&amp; callback) {
+        timeout = setTimeout(() =&gt; {
+          callback();
+          <span class="hljs-keyword">this</span>[name] = <span class="hljs-literal">null</span>;
+        }, duration);
+      }
+      <span class="hljs-keyword">this</span>[name] = timeout;
+    },
+  };
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_mix</span><span class="hljs-params">(extensionClass, options, optionGroupNames)</span> </span>{
+    <span class="hljs-keyword">const</span> { debug, defaults, toPrefix } = extensionClass;
+    <span class="hljs-built_in">Object</span>.assign(extensionClass, _mixins.naming(toPrefix));
+
+    <span class="hljs-keyword">let</span> { autoListen, autoSelect, mixinNames: names } = options, flags = {};
+    <span class="hljs-built_in">Object</span>.keys(_mixins).forEach(n =&gt; flags[n] = <span class="hljs-literal">false</span>);
+    (names || []).concat(<span class="hljs-string">'debug'</span>, <span class="hljs-string">'naming'</span>, <span class="hljs-string">'options'</span>, <span class="hljs-string">'remove'</span>, <span class="hljs-string">'timing'</span>)
+      .forEach(n =&gt; flags[n] = <span class="hljs-literal">true</span>);
+    <span class="hljs-keyword">if</span> (autoListen) { flags.event = <span class="hljs-literal">true</span>; }
+    <span class="hljs-keyword">if</span> (autoSelect) { flags.selection = <span class="hljs-literal">true</span>; }
+    names = <span class="hljs-built_in">Object</span>.keys(flags).filter(n =&gt; flags[n]);
+    <span class="hljs-built_in">Object</span>.assign(extensionClass.prototype, ...names.map((name) =&gt; {
+      <span class="hljs-keyword">let</span> mixin = _mixins[name];
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> mixin === <span class="hljs-string">'function'</span>) {
+        <span class="hljs-keyword">if</span> (name === <span class="hljs-string">'debug'</span>) { mixin = mixin(debug, toPrefix); }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name === <span class="hljs-string">'naming'</span>) { mixin = mixin(toPrefix); }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (name === <span class="hljs-string">'options'</span>) { mixin = mixin(defaults, optionGroupNames); }
+        <span class="hljs-keyword">else</span> { mixin = mixin(); }
+      }
+      <span class="hljs-keyword">return</span> mixin;
+    }));
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_normalizeEventListenersInfo</span><span class="hljs-params">(info)</span> </span>{
+    <span class="hljs-built_in">Object</span>.keys(info).forEach((type) =&gt; {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> info[type] !== <span class="hljs-string">'function'</span>) { <span class="hljs-keyword">return</span>; }
+      info[type] = [info[type]];
+    });
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">_parseSubject</span><span class="hljs-params">(subject, options)</span> </span>{
+    <span class="hljs-keyword">let</span> element, elements;
+    <span class="hljs-keyword">if</span> (subject <span class="hljs-keyword">instanceof</span> HTMLElement) {
+      element = subject;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> subject === <span class="hljs-string">'function'</span>) {
+      <span class="hljs-built_in">Object</span>.assign(options, { querySelector: subject });
+      <span class="hljs-keyword">return</span> _parseSubject(subject(options.contextElement), options);
+    } <span class="hljs-keyword">else</span> {
+      elements = <span class="hljs-built_in">Array</span>.from(subject);
+    }
+    <span class="hljs-keyword">return</span> { element, elements };
+  }
+
+  <span class="hljs-built_in">Object</span>.assign(HLF, { buildExtension });
+
+  <span class="hljs-keyword">if</span> (HLF.debug &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-built_in">window</span> === <span class="hljs-string">'object'</span>) {
+    <span class="hljs-built_in">Object</span>.assign(<span class="hljs-built_in">window</span>, { HLF });
+  }
+
+  <span class="hljs-keyword">return</span> HLF;
+});</div></div></div></div></body></html>

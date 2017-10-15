@@ -1,26 +1,21 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/css/media-grid</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/css/media-grid"><meta name="groc-project-path" content="tests/css/media-grid.scss"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/css/media-grid.scss</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="-hlf-media-grid-visual-tests">  HLF Media Grid Visual Tests</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="../../../tests/media-grid.visual.html">Page</a> | <a href="../../src/css/jquery.hlf.media-grid.html">Styles</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-at_rule">@<span class="hljs-keyword">import</span> <span class="hljs-string">'../../dist/jquery.hlf.media-grid'</span>;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>A basic example of how to use the media-grid plugin&#39;s style-building mixins.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-class">.js-mg</span> {
-  <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> hlf-media-grid</span>;</span>
-}
+<!DOCTYPE html><html lang="en"><head><title>tests/css/media-grid</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/css/media-grid"><meta name="groc-project-path" content="tests/css/media-grid.css"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/css/media-grid.css</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-media-grid-visual-tests">HLF Media Grid Visual Tests</h1>
+<p><a href="../../../tests/media-grid.visual.html">Page</a> | <a href="../../src/css/media-grid.html">Styles</a></p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Customize the visual test color scheme to semi-inverted. Reduce the spacing
+to match the media-grid gutter.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-pseudo">:root</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">--bezel-highlight-color</span>:<span class="hljs-value"> <span class="hljs-function">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.1</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#333</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bg-color-dark</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#2f2f2f</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bg-color-light</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#555</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--fg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#eaeae6</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--header-bg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#1a1a1a</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--section-header-bg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#1a1a1a</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--section-header-fg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#d1d1d1</span></span></span>;
+<span class="hljs-rule">}</span></span>
 
-<span class="hljs-class">.js-mg-item</span> {
-  <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> hlf-media-grid-item</span>(
-    <span class="hljs-variable">$height</span>:<span class="hljs-preprocessor"> 232px</span>,
-    <span class="hljs-variable">$width</span>:<span class="hljs-preprocessor"> 212px</span>
-  );</span>
-  <span class="hljs-at_rule">@<span class="hljs-keyword">include</span><span class="hljs-preprocessor"> hlf-media-grid-item-extras</span>;</span>
-}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Customize the visual test color scheme to semi-inverted. Reduce the spacing
-to match the media-grid gutter.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-variable">$bg-color</span><span class="hljs-value">: <span class="hljs-variable">$hlf-mg-fill-color</span>;</span>
-<span class="hljs-variable">$light-color</span><span class="hljs-value">: <span class="hljs-function">mix</span>(<span class="hljs-variable">$bg-color</span>, <span class="hljs-hexcolor">#fff</span>);</span>
-<span class="hljs-at_rule">@<span class="hljs-keyword">import</span> <span class="hljs-string">'base'</span>;</span>
+<span class="hljs-id">#main</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">padding-bottom</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+<span class="hljs-rule">}</span></span>
 
-<span class="hljs-id">#main</span> {
-  <span class="hljs-attribute">padding-bottom</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
-}
-
-<span class="hljs-class">.js-mg</span><span class="hljs-class">.test-body</span> {
-  <span class="hljs-attribute">margin</span><span class="hljs-value">: {
-    left: <span class="hljs-number">0</span>;</span>
-    <span class="hljs-attribute">right</span><span class="hljs-value">: <span class="hljs-number">0</span>;</span>
-    <span class="hljs-attribute">top</span><span class="hljs-value">: <span class="hljs-number">1rem</span>;</span>
-  }
-}</div></div></div></div></body></html>
+<span class="hljs-class">.js-mg</span><span class="hljs-class">.test-body</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">max-width</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>((<span class="hljs-function">var</span>(--mg-item-width) + <span class="hljs-function">var</span>(--mg-gutter-size)) * <span class="hljs-number">6</span>)</span></span>;
+<span class="hljs-rule">}</span></span></div></div></div></div></body></html>

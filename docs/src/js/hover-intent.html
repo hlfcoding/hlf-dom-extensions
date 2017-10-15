@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/hover-intent</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/hover-intent"><meta name="groc-project-path" content="src/js/hover-intent.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/hover-intent.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-hover-intent-extension">HLF Hover Intent Extension</h1>
+<p><a href="../../tests/js/hover-intent.html">Tests</a></p>
+<p>The <code>HoverIntent</code> extension normalizes DOM events associated with mouse enter
+and leave interaction. It prevents the &#39;thrashing&#39; of attached behaviors (ex:
+non-cancel-able animations) when matching mouse input arrives at frequencies
+past the threshold. It is heavily inspired by Brian Cherne&#39;s jQuery plugin of
+the same name (github.com/briancherne/jquery-hoverIntent).</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(root, attach)</span> </span>{</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>When AMD, register the attacher as an anonymous module.</li>
+<li>When Node or Browserify, set module exports to the attach result.</li>
+<li>When browser globals (root is window), Just run the attach function.</li>
+</ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+    define([<span class="hljs-string">'hlf/core'</span>], attach);
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports === <span class="hljs-string">'object'</span>) {
+    <span class="hljs-built_in">module</span>.exports = attach(<span class="hljs-built_in">require</span>(<span class="hljs-string">'hlf/core'</span>));
+  } <span class="hljs-keyword">else</span> {
+    attach(HLF);
+  }
+})(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(HLF)</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="hoverintent">HoverIntent</h2>
+<ul>
+<li><strong>debug</strong> toggles debug logging for all instances of an extension.</li>
+<li><strong>toPrefix</strong> helps to namespace when registering any DOM names.</li>
+<li><strong>attrName</strong>, <strong>className</strong>, <strong>eventName</strong> helpers are all attached to
+the class statically, along with the <strong>extend</strong> method.</li>
+</ul>
+<p>The extension&#39;s <strong>defaults</strong> are available as reference. Also note that
+<em>the extension instance gets extended with the options</em>.</p>
+<ul>
+<li><p><strong>interval</strong> is the millis to wait before deciding intent. <code>300</code> is the
+default to reduce more thrashing.</p>
+</li>
+<li><p><strong>sensitivity</strong> is the pixel threshold for mouse travel between polling
+intervals. With the minimum sensitivity threshold of 1, the mouse must
+not move between intervals. With higher values yield more false positives.
+<code>2</code> is the default.</p>
+</li>
+</ul>
+<p>The events dispatched are the name-spaced <code>enter</code> and <code>leave</code> events. They
+try to match system mouse events where possible and include values for:
+<code>pageX</code>, <code>pageY</code>, <code>relatedTarget</code>.</p>
+<p>To summarize the implementation, the <code>_onMouseOver</code> handler is the start of
+the intent &#39;life-cycle&#39;, with state being the default (via <code>_resetState</code>).
+It records the mouse coordinates, sets up a delayed intent check, which is
+one of the possible updates done by <code>_updateState</code>, and is based on the
+distance traveled since <code>_timeout</code> was set. All event handlers guard
+against unneeded checking, with <code>_onMouseOut</code> and <code>_onMouseOver</code> also using
+<code>_checkEventElement</code> as a filter.</p>
+<p>Meanwhile, about every frame, the <code>_onMouseMove</code> handler tracks the current
+mouse coordinates. If the <code>_onMouseOut</code> handler runs before the delayed
+check, the check and subsequent behavior get canceled as state resets to
+default. Otherwise, if the check of the stored mouse coordinates against
+<code>sensitivity</code> passes, an <code>enter</code> event gets dispatched, ensuring a <code>leave</code>
+event will too during <code>_onMouseOut</code>.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">class</span> HoverIntent {
+    static get debug() {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+    static get defaults() {
+      <span class="hljs-keyword">return</span> {
+        interval: <span class="hljs-number">300</span>,
+        sensitivity: <span class="hljs-number">2</span>,
+      };
+    }
+    static toPrefix(context) {
+      <span class="hljs-keyword">switch</span> (context) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'event'</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'hlfhi'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'data'</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'hlf-hi'</span>;
+        <span class="hljs-keyword">default</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'hlf-hi'</span>;
+      }
+    }
+    constructor(elementOrElements, options, contextElement) {
+      <span class="hljs-keyword">this</span>.eventListeners = {
+        <span class="hljs-string">'mousemove'</span>: <span class="hljs-keyword">this</span>._onMouseMove,
+        <span class="hljs-string">'mouseout'</span>: <span class="hljs-keyword">this</span>._onMouseOut,
+        <span class="hljs-string">'mouseover'</span>: <span class="hljs-keyword">this</span>._onMouseOver,
+      };
+    }
+    init() {
+      <span class="hljs-keyword">this</span>._resetState();
+    }
+    deinit() {
+      <span class="hljs-keyword">this</span>._resetState();
+    }
+    _checkEventElement(event) {
+      <span class="hljs-keyword">const</span> { relatedTarget, target, type } = event;
+      <span class="hljs-keyword">if</span> (type === <span class="hljs-string">'mouseout'</span> &amp;&amp; target.contains(relatedTarget)) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+      }
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.contextElement) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Array</span>.from(<span class="hljs-keyword">this</span>.elements).indexOf(target) === -<span class="hljs-number">1</span>) { <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>; }
+        <span class="hljs-comment">//this.debugLog(target, relatedTarget);</span>
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (target !== <span class="hljs-keyword">this</span>.rootElement) { <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>; }
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+    _dispatchHoverEvent(on, event) {
+      <span class="hljs-keyword">const</span> { mouse: { x, y } } = <span class="hljs-keyword">this</span>;
+      <span class="hljs-keyword">const</span> { pageX, pageY, relatedTarget, target } = event;
+      <span class="hljs-keyword">let</span> type = on ? <span class="hljs-string">'enter'</span> : <span class="hljs-string">'leave'</span>;
+      target.dispatchEvent(<span class="hljs-keyword">this</span>.createCustomEvent(type, {
+        pageX: (x.current == <span class="hljs-literal">null</span>) ? pageX : x.current,
+        pageY: (y.current == <span class="hljs-literal">null</span>) ? pageY : y.current,
+        relatedTarget
+      }));
+      <span class="hljs-keyword">this</span>.debugLog(type, pageX, pageY, <span class="hljs-built_in">Date</span>.now() % <span class="hljs-number">100000</span>);
+    }
+    _dispatchTrackEvent(event) {
+      event.target.dispatchEvent(<span class="hljs-keyword">this</span>.createCustomEvent(<span class="hljs-string">'track'</span>, {
+        pageX: event.pageX,
+        pageY: event.pageY,
+      }));
+    }
+    _onMouseMove(event) {
+      <span class="hljs-keyword">this</span>._updateState(event);
+      requestAnimationFrame((_) =&gt; {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.intentional) {
+          <span class="hljs-keyword">this</span>.debugLog(<span class="hljs-string">'track'</span>, event.pageX, event.pageY);
+        }
+        <span class="hljs-keyword">this</span>._dispatchTrackEvent(event);
+      });
+    }
+    _onMouseOut(event) {
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._checkEventElement(event)) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.intentional) {
+        <span class="hljs-keyword">this</span>._dispatchHoverEvent(<span class="hljs-literal">false</span>, event);
+      }
+      <span class="hljs-keyword">this</span>._resetState();
+      <span class="hljs-keyword">this</span>.debugLogGroup(<span class="hljs-literal">false</span>);
+    }
+    _onMouseOver(event) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.intentional) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._timeout) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._checkEventElement(event)) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">this</span>.debugLogGroup();
+      <span class="hljs-keyword">this</span>._updateState(event);
+      <span class="hljs-keyword">this</span>.setTimeout(<span class="hljs-string">'_timeout'</span>, <span class="hljs-keyword">this</span>.interval, () =&gt; {
+        <span class="hljs-keyword">this</span>._updateState(event);
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.intentional) {
+          <span class="hljs-keyword">this</span>._dispatchHoverEvent(<span class="hljs-literal">true</span>, event);
+        }
+      });
+    }
+    _resetState() {
+      <span class="hljs-keyword">this</span>.debugLog(<span class="hljs-string">'reset'</span>);
+      <span class="hljs-keyword">this</span>.intentional = <span class="hljs-literal">false</span>;
+      <span class="hljs-keyword">this</span>.mouse = {
+        x: { current: <span class="hljs-literal">null</span>, previous: <span class="hljs-literal">null</span> },
+        y: { current: <span class="hljs-literal">null</span>, previous: <span class="hljs-literal">null</span> },
+      };
+      <span class="hljs-keyword">this</span>.setTimeout(<span class="hljs-string">'_timeout'</span>, <span class="hljs-literal">null</span>);
+    }
+    _updateState(event) {
+      <span class="hljs-keyword">const</span> { pageX, pageY } = event;
+      <span class="hljs-keyword">if</span> (event.type === <span class="hljs-string">'mousemove'</span>) {
+        <span class="hljs-keyword">let</span> { mouse: { x, y } } = <span class="hljs-keyword">this</span>;
+        x.current = pageX;
+        y.current = pageY;
+        <span class="hljs-keyword">return</span>;
+      }
+      <span class="hljs-keyword">let</span> { mouse: { x, y } } = <span class="hljs-keyword">this</span>;
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._timeout) {
+        x.previous = pageX;
+        y.previous = pageY;
+        <span class="hljs-keyword">return</span>;
+      }
+      <span class="hljs-keyword">const</span> { pow, sqrt } = <span class="hljs-built_in">Math</span>;
+      <span class="hljs-keyword">let</span> dMove;
+      <span class="hljs-keyword">this</span>.intentional = x.current == <span class="hljs-literal">null</span> || y.current == <span class="hljs-literal">null</span>;
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.intentional) {
+        dMove = sqrt(
+          pow(x.current - x.previous, <span class="hljs-number">2</span>) + pow(y.current - y.previous, <span class="hljs-number">2</span>)
+        );
+        <span class="hljs-keyword">this</span>.intentional = dMove &gt; <span class="hljs-keyword">this</span>.sensitivity;
+      }
+      <span class="hljs-keyword">this</span>.debugLog(<span class="hljs-string">'checked'</span>, dMove);
+    }
+  }
+  HLF.buildExtension(HoverIntent, {
+    autoBind: <span class="hljs-literal">true</span>,
+    autoListen: <span class="hljs-literal">true</span>,
+    compactOptions: <span class="hljs-literal">true</span>,
+  });
+  <span class="hljs-built_in">Object</span>.assign(HLF, { HoverIntent });
+  <span class="hljs-keyword">return</span> HoverIntent;
+});</div></div></div></div></body></html>

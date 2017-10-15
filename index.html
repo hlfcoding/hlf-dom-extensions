@@ -10,18 +10,18 @@
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
-    <title>HLF jQuery by hlfcoding</title>
+    <title>HLF DOM Extensions by hlfcoding</title>
   </head>
 
   <body>
-    <a id="forkme_banner" href="https://github.com/hlfcoding/hlf-jquery">Fork Me on GitHub</a>
+    <a id="forkme_banner" href="https://github.com/hlfcoding/hlf-dom-extensions">Fork Me on GitHub</a>
     <div class="shell">
 
       <header>
         <div class="ribbon-outer">
           <div class="ribbon-inner">
-            <h1>HLF jQuery</h1>
-            <h2>Custom jQuery Plugins</h2>
+            <h1>HLF DOM Extensions</h1>
+            <h2>Custom UI</h2>
           </div>
           <div class="left-tail" role="presentation"><div class="tip"></div></div>
           <div class="right-tail" role="presentation"><div class="tip"></div></div>
@@ -30,19 +30,18 @@
 
       <section id="downloads">
         <div class="inner">
-          <a href="https://github.com/hlfcoding/hlf-jquery/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/hlfcoding/hlf-jquery/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+          <a href="https://github.com/hlfcoding/hlf-dom-extensions/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/hlfcoding/hlf-dom-extensions/tarball/master" class="tgz"><em>download</em> .TGZ</a>
           <div class="tip" role="presentation"></div>
         </div>
         <div class="tip" role="presentation"></div>
       </section>
 
       <section id="main_content">
-        <h1 id="hlf-jquery-library">HLF jQuery Library</h1>
-<p><a href="https://travis-ci.org/hlfcoding/hlf-jquery"><img src="https://img.shields.io/travis/hlfcoding/hlf-jquery.svg" alt="Build Status"></a>
-<a href="https://www.npmjs.com/package/hlf-jquery"><img src="https://img.shields.io/npm/v/hlf-jquery.svg?style=flat" alt="Package"></a>
-<a href="https://codeclimate.com/github/hlfcoding/hlf-jquery"><img src="https://codeclimate.com/github/hlfcoding/hlf-jquery/badges/gpa.svg" alt="Code Climate"></a>
-<a href="https://david-dm.org/hlfcoding/hlf-jquery#info=dependencies"><img src="https://img.shields.io/david/hlfcoding/hlf-jquery.svg" alt="Dependency Status"></a>
-<img src="https://img.shields.io/github/license/hlfcoding/hlf-jquery.svg" alt="GitHub License"></p>
+        <h1 id="hlf-dom-extensions">HLF DOM Extensions</h1>
+<p><a href="https://www.npmjs.com/package/hlf-dom-extensions"><img src="https://img.shields.io/npm/v/hlf-dom-extensions.svg?style=flat" alt="Package"></a>
+<a href="https://codeclimate.com/github/hlfcoding/hlf-dom-extensions/maintainability"><img src="https://api.codeclimate.com/v1/badges/2fa382c64d158c960256/maintainability" alt="Code Climate"></a>
+<a href="https://david-dm.org/hlfcoding/hlf-dom-extensions#info=dependencies"><img src="https://img.shields.io/david/hlfcoding/hlf-dom-extensions.svg" alt="Dependency Status"></a>
+<img src="https://img.shields.io/github/license/hlfcoding/hlf-dom-extensions.svg" alt="GitHub License"></p>
 <pre>
  __         __       ___
 /\ \       /\ \     / __\
@@ -53,41 +52,43 @@
     \/_/ /_/   \/_/   \/_/
 </pre>
 
-<p>jQuery extensions and plugins for quality UI and implemented following best
-practices. The <a href="http://hlfcoding.github.io/hlf-jquery/docs/index.html">annotated source code</a> is also available and include
-documented examples.</p>
-<p>All modules have scoped debug flags, jQuery namespaces, and no-conflict support
-with jQuery. They are exported using <a href="">UMD</a> and work with AMD, Browserify, or
-plain.</p>
-<h2 id="plugins">Plugins</h2>
-<p>All plugins should have test pages with documented source. Please use them as
-usage examples. Plugins should also have sample styles, and some have required
-styles. When possible, styles are made customizeable as SCSS mixins.</p>
-<h3 id="-hlf-tip-"><a href="http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.tip.html">HLF Tip</a></h3>
+<p>DOM extensions for quality UI and implemented without hard dependencies. The
+<a href="http://hlfcoding.github.io/hlf-dom-extensions/docs/index.html">annotated source code</a> is also available and include documented examples. All
+modules are exported using <a href="https://github.com/umdjs/umd">UMD</a> and work with AMD, Browserify, or plain.</p>
+<p>All extensions should have test pages with documented source. Please use them as
+usage examples. Some extensions also have sample and/or required styles
+configurable via custom properties.</p>
+<h3 id="-tip-"><a href="http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/tip.html">Tip</a></h3>
 <p>Main features summary:</p>
 <ul>
 <li>Based on hover &#39;intent&#39; and prevents redundant toggling or DOM thrashing.</li>
 <li>Re-use the same tip for a group of triggers to keep DOM light.</li>
 <li>Aware of available space surrounding the triggering element.</li>
-<li>Configurable animator, so opting out of non-GPU jQuery animations is easy.</li>
-<li>Has an extended, &#39;snapping&#39; version that only follows the mouse on one axis.
-The tip snaps to the trigger&#39;s edge on the other axis.</li>
+<li>Has a <code>snapTo</code> option to allow only following the mouse on one axis. The tip
+snaps to the trigger&#39;s edge on the other axis.</li>
 </ul>
 <p>Short examples:</p>
-<pre><code class="lang-js">$(<span class="hljs-string">'.avatars'</span>).<span class="hljs-keyword">find</span>(<span class="hljs-string">'img[alt]'</span>).tip(); <span class="hljs-comment">// Tips will follow cursor.</span>
-$(<span class="hljs-string">'nav.bar'</span>).<span class="hljs-keyword">find</span>(<span class="hljs-string">'a[title]'</span>).snapTip({
-  snap: { toXAxis: <span class="hljs-keyword">true</span> } <span class="hljs-comment">// Tips will only follow along x axis.</span>
-});
-$(<span class="hljs-string">'article'</span>).<span class="hljs-keyword">find</span>(<span class="hljs-string">'a[title]'</span>).snapTip(); <span class="hljs-comment">// Tip will not follow.</span>
+<pre><code class="lang-js">let contextElement, tip;
+contextElement = <span class="hljs-built_in">document</span>.<span class="hljs-built_in">querySelector</span>(<span class="hljs-string">'.avatars'</span>);
+<span class="hljs-comment">// Tip will follow cursor.</span>
+tip = Tip.extend(contextElement.<span class="hljs-built_in">querySelectorAll</span>(<span class="hljs-string">'img[alt]'</span>), { contextElement });
+
+contextElement = <span class="hljs-built_in">document</span>.<span class="hljs-built_in">querySelector</span>(<span class="hljs-string">'nav.bar'</span>);
+<span class="hljs-comment">// Tip will only follow along x axis.</span>
+tip = Tip.extend(contextElement.<span class="hljs-built_in">querySelectorAll</span>(<span class="hljs-string">'a[title]'</span>), { snapTo: <span class="hljs-string">'x'</span>, contextElement });
+
+contextElement = <span class="hljs-built_in">document</span>.<span class="hljs-built_in">querySelector</span>(<span class="hljs-string">'article'</span>);
+<span class="hljs-comment">// Tip will not follow.</span>
+tip = Tip.extend(contextElement.<span class="hljs-built_in">querySelectorAll</span>(<span class="hljs-string">'a[title]'</span>), { snapTo: <span class="hljs-string">'trigger'</span>, contextElement });
 </code></pre>
-<p>See <a href="http://hlfcoding.github.io/hlf-jquery/tests/tip.visual.html">Tip&#39;s visual tests</a> for more examples.</p>
-<h3 id="-hlf-media-grid-"><a href="http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.hlf.media-grid.html">HLF Media Grid</a></h3>
-<p>Main features summary:</p>
-<ul>
-<li>Allows expanding an item inline without affecting the position of its siblings.</li>
-<li>Handles additional effects like focusing on the expanded item and dimming its
-siblings.</li>
-</ul>
+<p>See <a href="http://hlfcoding.github.io/hlf-dom-extensions/tests/tip.visual.html">Tip&#39;s visual tests</a> for more examples.</p>
+<h3 id="-media-grid-"><a href="http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/media-grid.html">Media Grid</a></h3>
+<p>The <code>MediaGrid</code> extension, inspired by the Cargo Voyager design template, can
+expand an item inline without affecting the position of its siblings. The
+extension tries to add the minimal amount of DOM elements and styles. So the
+layout rules are mostly defined in the styles, and initial html for items is
+required (see the tests for an example). The extension also handles additional
+effects like focusing on the expanded item and dimming its siblings.</p>
 <p>Short examples:</p>
 <pre><code class="lang-html">&lt;div class=<span class="hljs-string">"tiles"</span>&gt;
   &lt;div class=<span class="hljs-string">"js-mg-item"</span>&gt;
@@ -97,53 +98,40 @@ siblings.</li>
   <span class="hljs-keyword">...</span>
 &lt;/div&gt;
 </code></pre>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> mg = $(<span class="hljs-string">'.tiles'</span>).mediaGrid().mediaGrid();
-setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ mg.trigger(<span class="hljs-string">'ready'</span>); }, <span class="hljs-number">500</span>); <span class="hljs-comment">// Better to use imagesLoaded.</span>
+<pre><code class="lang-js"><span class="hljs-reserved">let</span> mediaGrid = HLF.MediaGrid.extend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.tiles'</span>));
+mediaGrid.createPreviewImagesPromise().<span class="hljs-keyword">then</span>(mediaGrid.load, mediaGrid.load);
 </code></pre>
-<p>See <a href="http://hlfcoding.github.io/hlf-jquery/tests/media-grid.unit.html">Media Grid&#39;s unit tests</a> and <a href="http://hlfcoding.github.io/hlf-jquery/tests/media-grid.visual.html">Media Grid&#39;s visual tests</a> for more
+<p>See <a href="http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.unit.html">Media Grid&#39;s unit tests</a> and <a href="http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.visual.html">Media Grid&#39;s visual tests</a> for more
 examples.</p>
-<h2 id="extensions">Extensions</h2>
-<p>All extensions should be covered by QUnit tests.</p>
-<h3 id="-hlf-core-"><a href="http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.core.html">HLF Core</a></h3>
-<p>Main features:</p>
-<ul>
-<li>Generate jQuery plugin methods from plugin definitions.</li>
-<li>Helpers to create mixins that can be used for plugin API.</li>
-<li>Provide no-conflict support.</li>
-</ul>
-<p>See <a href="http://hlfcoding.github.io/hlf-jquery/tests/core.unit.html">Core&#39;s unit tests</a> for examples.</p>
-<h3 id="-hlf-event-"><a href="http://hlfcoding.github.io/hlf-jquery/docs/src/js/jquery.extension.hlf.event.html">HLF Event</a></h3>
-<p>Main features:</p>
-<ul>
-<li>Hover-intent provides rate-limited versions of mouseenter and mouseleave 
-events through a customizable delay.</li>
-</ul>
-<h2 id="requirements">Requirements</h2>
-<p>Only other required dependency is UnderscoreJS. Modernizr is a suggested
-dependency for true feature detection. Other Bower dependencies are for tests
-and demos.</p>
-<p>Styling is released as mainly Sass modules for you to import into your own SCSS.
-Unfortunately, there are no plans for LESS support. Also for now, vendor-
-prefixing is left to the build layer, so you&#39;re encouraged to select an auto-
-prefixing solution.</p>
-<h2 id="plugins-coming-soon">Plugins Coming Soon</h2>
-<h3 id="hlf-editable">HLF Editable</h3>
-<p>Main features:</p>
-<ul>
-<li>Uses mixins for encapsulate editing behaviors, so plugin instances can be
-composed based on data-attribute configuration. </li>
-<li>Attempts to wrap abstract away vendor APIs (for example, CodeMirror vs ACE).</li>
-</ul>
-<h2 id="install">Install</h2>
-<pre><code class="lang-bash">$ npm <span class="hljs-keyword">install</span> hlf-jquery
+<h3 id="-hover-intent-"><a href="http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/hover-intent.html">Hover Intent</a></h3>
+<p>The <code>HoverIntent</code> extension normalizes DOM events associated with mouse enter
+and leave interaction. It prevents the &#39;thrashing&#39; of attached behaviors (ex:
+non-cancel-able animations) when matching mouse input arrives at frequencies
+past the threshold.</p>
+<p>See <a href="http://hlfcoding.github.io/hlf-dom-extensions/tests/hover-intent.visual.html">Hover Intent&#39;s visual tests</a> for more examples.</p>
+<h3 id="-core-"><a href="http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/core.html">Core</a></h3>
+<pre><code class="lang-js">HLF.buildExtension(MyExtensionClass, {
+  <span class="hljs-attribute">autoBind</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attribute">autoListen</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attribute">compactOptions</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attribute">mixinNames</span>: [<span class="hljs-string">'css'</span>, <span class="hljs-string">'selection'</span>],
+});
+<span class="hljs-reserved">let</span> myExtension = MyExtensionClass.extend(<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.foo'</span>));
 </code></pre>
-<h2 id="development-devdependency-status-https-img-shields-io-david-dev-hlfcoding-hlf-jquery-svg-https-david-dm-org-hlfcoding-hlf-jquery-info-devdependencies-">Development <a href="https://david-dm.org/hlfcoding/hlf-jquery#info=devDependencies"><img src="https://img.shields.io/david/dev/hlfcoding/hlf-jquery.svg" alt="devDependency Status"></a></h2>
+<p>See <a href="http://hlfcoding.github.io/hlf-dom-extensions/tests/core.unit.html">Core&#39;s unit tests</a> for examples.</p>
+<h2 id="requirements">Requirements</h2>
+<p>Browser versions supporting ES2015 and CSS custom properties. The included
+<code>guard.js</code> can be included on the page first to enforce this requirement.</p>
+<p><a href="https://github.com/hlfcoding/hlf-dom-extensions/releases/tag/v0.3.0">v0.3.0</a> is the last release as <code>hlf-jquery</code>, with jQuery being a dependency
+and compatibility with older browsers.</p>
+<h2 id="coming-soon">Coming Soon</h2>
+<h3 id="field">Field</h3>
+<h2 id="install">Install</h2>
+<pre><code class="lang-bash">$ npm <span class="hljs-keyword">install</span> hlf-dom-extensions
+</code></pre>
+<h2 id="development-devdependency-status-https-img-shields-io-david-dev-hlfcoding-hlf-dom-extensions-svg-https-david-dm-org-hlfcoding-hlf-dom-extensions-info-devdependencies-">Development <a href="https://david-dm.org/hlfcoding/hlf-dom-extensions#info=devDependencies"><img src="https://img.shields.io/david/dev/hlfcoding/hlf-dom-extensions.svg" alt="devDependency Status"></a></h2>
 <pre><code class="lang-bash"># to <span class="hljs-operator"><span class="hljs-keyword">install</span>
-$ gem <span class="hljs-keyword">install</span> -N sass # <span class="hljs-keyword">for</span> grunt-contrib-sass
 $ npm <span class="hljs-keyword">install</span>
-
-# <span class="hljs-keyword">to</span> run <span class="hljs-keyword">some</span> tests <span class="hljs-keyword">first</span>
-$ grunt test
 
 # <span class="hljs-keyword">to</span> <span class="hljs-keyword">read</span> <span class="hljs-keyword">some</span> docs
 $ grunt docs
@@ -151,7 +139,6 @@ $ grunt docs
 # <span class="hljs-keyword">to</span> <span class="hljs-keyword">start</span> developing
 $ grunt</span>
 </code></pre>
-<p>Note that Grunt task options and multi-tasks are in build/.</p>
 <h2 id="license">License</h2>
 <p>The MIT License (MIT)</p>
 <p>Copyright (c) 2014-present Peng Wang</p>
@@ -163,7 +150,7 @@ $ grunt</span>
           <div class="ribbon-inner">
             <p>
               this fork by <a href="http://github.com/hlfcoding">hlfcoding</a>
-              can be found on <a href="http://github.com/hlfcoding/hlf-jquery">GitHub</a>
+              can be found on <a href="http://github.com/hlfcoding/hlf-dom-extensions">GitHub</a>
             </p>
           </div>
           <div class="left-tail" role="presentation"><div class="tip"></div></div>

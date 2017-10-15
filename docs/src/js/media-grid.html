@@ -1,0 +1,397 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/media-grid</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/media-grid"><meta name="groc-project-path" content="src/js/media-grid.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/media-grid.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-media-grid-extension">HLF Media Grid Extension</h1>
+<p><a href="../css/media-grid.html">Styles</a> | <a href="../../tests/js/media-grid.html">Tests</a></p>
+<p>The <code>MediaGrid</code> extension, inspired by the Cargo Voyager design template, can
+expand an item inline without affecting the position of its siblings. The
+extension tries to add the minimal amount of DOM elements and styles. So the
+layout rules are mostly defined in the styles, and initial html for items is
+required (see the tests for an example). The extension also handles additional
+effects like focusing on the expanded item and dimming its siblings.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(root, attach)</span> </span>{</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>When AMD, register the attacher as an anonymous module.</li>
+<li>When Node or Browserify, set module exports to the attach result.</li>
+<li>When browser globals (root is window), Just run the attach function.</li>
+</ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+    define([<span class="hljs-string">'hlf/core'</span>], attach);
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports === <span class="hljs-string">'object'</span>) {
+    <span class="hljs-built_in">module</span>.exports = attach(<span class="hljs-built_in">require</span>(<span class="hljs-string">'hlf/core'</span>));
+  } <span class="hljs-keyword">else</span> {
+    attach(HLF);
+  }
+})(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(HLF)</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="mediagrid">MediaGrid</h2>
+<ul>
+<li><strong>debug</strong> toggles debug logging for all instances of an extension.</li>
+<li><strong>toPrefix</strong> helps to namespace when registering any DOM names.</li>
+<li><strong>attrName</strong>, <strong>className</strong>, <strong>eventName</strong>, <strong>varName</strong> helpers are all
+attached to the class statically, along with the <strong>extend</strong> method.</li>
+</ul>
+<p>The extension&#39;s <strong>defaults</strong> are available as reference. Also note that
+<em>the extension instance gets extended with the options</em>.</p>
+<ul>
+<li><p><strong>autoReady</strong> is <code>false</code> by default, as recommended. Turning it on means
+the <code>ready</code> event gets triggered immediately, synchronously, and is only
+recommended if your grid doesn&#39;t have images and such that require a
+wait before being fully loaded and sized. Otherwise, you can manually
+<strong>load</strong> and use <strong>createPreviewImagesPromise</strong> to help determine when
+to do so.</p>
+</li>
+<li><p><strong>resizeDelay</strong> is the millis to wait for window resizing to stop before
+doing a re-layout. <code>100</code> is the default to balance responsiveness and
+performance.</p>
+</li>
+<li><p><strong>undimDelay</strong> is the millis to wait before removing the dim effect when
+focus is toggled off on an expanded item.</p>
+</li>
+<li><p>Note: the majority of presentation state logic is in the extension
+stylesheet. We update the presentation state by using <strong>className</strong>.</p>
+</li>
+</ul>
+<p>To summarize the implementation, on a DOM that&#39;s already created, the
+extension, given the <code>element</code>, will select the <code>itemElements</code> and
+<code>sampleItemElement</code>, as well as parse the <code>expandDuration</code>. The extension
+will wait for content to load before doing an initial layout via
+<code>_updateMetrics</code> and <code>_layoutItems</code>. <code>eventListeners</code> are added
+automatically with the <code>_onMouseLeave</code> and <code>_onItemExpand</code> handlers that
+<code>toggleItemFocus</code>. <code>_toggleItemEventListeners</code> runs for each item to add
+<code>_onItemClick</code>, and <code>_onItemMouseEnter</code> and <code>_onItemMouseLeave</code> that
+respectively <code>toggleItemExpansion</code> and <code>toggleExpandedItemFocus</code>. The
+<code>_onWindowResize</code> handler is automatically set up to <code>_reLayoutItems</code>. And
+the <code>_itemsObserver</code> is manually set up with the <code>_onItemsMutation</code>
+handler that <code>_toggleItemEventListeners</code> and also <code>_reLayoutItems</code>. Once
+<code>ready</code>, the respective namespaced event is dispatched from and class is
+added to the <code>element</code>.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">class</span> MediaGrid {
+    static get debug() {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    static get defaults() {
+      <span class="hljs-keyword">return</span> {
+        autoReady: <span class="hljs-literal">false</span>,
+        resizeDelay: <span class="hljs-number">100</span>,
+        undimDelay: <span class="hljs-number">1000</span>,
+      };
+    }
+    static toPrefix(context) {
+      <span class="hljs-keyword">switch</span> (context) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'event'</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'hlfmg'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'data'</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'hlf-mg'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'class'</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'mg'</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'var'</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'mg'</span>;
+        <span class="hljs-keyword">default</span>: <span class="hljs-keyword">return</span> <span class="hljs-string">'hlf-mg'</span>;
+      }
+    }
+    constructor(element, options) {
+      <span class="hljs-keyword">this</span>.eventListeners = { mouseleave: <span class="hljs-keyword">this</span>._onMouseLeave };
+      <span class="hljs-keyword">this</span>.eventListeners[<span class="hljs-keyword">this</span>.eventName(<span class="hljs-string">'expand'</span>)] = <span class="hljs-keyword">this</span>._onItemExpand;
+    }
+    init() {
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.itemElements) {
+        <span class="hljs-keyword">this</span>._selectItemElements();
+      }
+      <span class="hljs-keyword">this</span>.itemElements.forEach(<span class="hljs-keyword">this</span>._toggleItemEventListeners.bind(<span class="hljs-keyword">this</span>, <span class="hljs-literal">true</span>));
+      <span class="hljs-keyword">this</span>.sampleItemElement = <span class="hljs-keyword">this</span>.itemElements[<span class="hljs-number">0</span>];
+      <span class="hljs-keyword">this</span>.expandDuration = <span class="hljs-keyword">this</span>.cssDuration(<span class="hljs-string">'transitionDuration'</span>, <span class="hljs-keyword">this</span>.sampleItemElement);
+      <span class="hljs-keyword">this</span>.expandedItemElement = <span class="hljs-literal">null</span>;
+      <span class="hljs-keyword">this</span>._itemsObserver = <span class="hljs-keyword">new</span> MutationObserver(<span class="hljs-keyword">this</span>._onItemsMutation);
+      <span class="hljs-keyword">this</span>._itemsObserver.connect = () =&gt; {
+        <span class="hljs-keyword">this</span>._itemsObserver.observe(<span class="hljs-keyword">this</span>.element, { childList: <span class="hljs-literal">true</span> });
+      };
+      <span class="hljs-keyword">this</span>.metrics = {};
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.autoReady) {
+        <span class="hljs-keyword">this</span>.load();
+      }
+    }
+    deinit() {
+      <span class="hljs-keyword">this</span>.itemElements.forEach(<span class="hljs-keyword">this</span>._toggleItemEventListeners.bind(<span class="hljs-keyword">this</span>, <span class="hljs-literal">false</span>));
+      <span class="hljs-keyword">this</span>._itemsObserver.disconnect();
+    }
+    createPreviewImagesPromise() {
+      <span class="hljs-keyword">const</span> selector = `.${<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'preview'</span>)} img`;
+      <span class="hljs-keyword">const</span> imageElements = <span class="hljs-built_in">Array</span>.from(<span class="hljs-keyword">this</span>.element.querySelectorAll(selector));
+      <span class="hljs-keyword">let</span> teardownTasks = [];
+      <span class="hljs-keyword">return</span> Promise.all(imageElements.map((element) =&gt; <span class="hljs-keyword">new</span> Promise((resolve, reject) =&gt; {
+        element.addEventListener(<span class="hljs-string">'load'</span>, resolve);
+        element.addEventListener(<span class="hljs-string">'error'</span>, reject);
+        teardownTasks.push(() =&gt; {
+          element.removeEventListener(<span class="hljs-string">'load'</span>, resolve);
+          element.removeEventListener(<span class="hljs-string">'error'</span>, reject);
+        });
+      }))).then(() =&gt; {
+        teardownTasks.forEach(task =&gt; task());
+      }, () =&gt; {
+        teardownTasks.forEach(task =&gt; task());
+      });
+    }
+    load() {
+      <span class="hljs-keyword">this</span>._updateMetrics({ hard: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>._layoutItems();
+      <span class="hljs-keyword">this</span>._itemsObserver.connect();
+      <span class="hljs-keyword">this</span>.element.classList.add(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'ready'</span>));
+      <span class="hljs-keyword">this</span>.dispatchCustomEvent(<span class="hljs-string">'ready'</span>);
+    }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>toggleItemExpansion</code> basically toggles the <code>-expanded</code> class on the
+given <code>itemElement</code> to <code>expanded</code> and triggers the <code>expand</code> event. To
+allow styling or scripting during the transition, it adds the
+<code>-transitioning</code>, <code>-contracting</code>, and <code>-expanding</code> classes and removes
+them afterwards per <code>expandDuration</code>.</p>
+<p><code>toggleExpandedItemFocus</code> wraps <code>toggleItemFocus</code> to factor in
+<code>undimDelay</code> when toggling off <code>focus</code>. Focusing dims without delay.</p>
+<p><code>toggleItemFocus</code> basically toggles the <code>-focused</code> class on the given
+<code>itemElement</code> to <code>focused</code> and the <code>-dimmed</code> class on the root element
+after any given <code>delay</code>.</p>
+<p><code>_getMetricSamples</code> returns cloned <code>itemElement</code> and
+<code>expandedItemElement</code> mainly for calculating initial metrics. For them
+to have the right sizes, they&#39;re attached to an invisible container
+appended to the root element.</p>
+<p><code>_layoutItems</code> occurs once <code>metrics</code> is updated. With the latest
+<code>wrapWidth</code> and <code>wrapHeight</code> metrics, the root element is resized. Each
+element in <code>itemElements</code> gets its position style set to <code>absolute</code> non-
+destructively; this method assumes the original is <code>float</code>, and so
+iterates in reverse.</p>
+<p><code>_reLayoutItems</code> wraps <code>_layoutItems</code> to be its idempotent version by
+first resetting each item&#39;s to its <code>original-position</code>.</p>
+<p><code>_toggleNeighborItemsRecessed</code> toggles the <code>-recessed</code> class on items
+per the occlusion-causing expansion of the item at <code>index</code>.</p>
+<p><code>_updateMetrics</code> builds the <code>metrics</code> around item and wrap as well as
+row and column sizes. It does so by measuring sample elements and their
+margins, as well as sizing the wrap (root element) to fit its items. As
+such, this method isn&#39;t idempotent and expects to be followed by a call
+to <code>_layoutItems</code>.</p></div></div><div class="code"><div class="wrapper">    toggleItemExpansion(itemElement, expanded, completion) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> expanded === <span class="hljs-string">'undefined'</span>) {
+        expanded = !(
+          itemElement.classList.contains(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'expanded'</span>)) ||
+          itemElement.classList.contains(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'expanding'</span>))
+        );
+      }
+      <span class="hljs-keyword">let</span> index = <span class="hljs-keyword">this</span>.itemElements.indexOf(itemElement);
+      <span class="hljs-keyword">if</span> (expanded) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.expandedItemElement) {
+          <span class="hljs-keyword">this</span>.toggleItemExpansion(<span class="hljs-keyword">this</span>.expandedItemElement, <span class="hljs-literal">false</span>);
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isRightEdgeItem(index)) {
+          <span class="hljs-keyword">this</span>._adjustItemToRightEdge(itemElement);
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isBottomEdgeItem(index)) {
+          <span class="hljs-keyword">this</span>._adjustItemToBottomEdge(itemElement);
+        }
+      }
+      <span class="hljs-keyword">this</span>._toggleNeighborItemsRecessed(index, expanded);
+      itemElement.classList.remove(
+        <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'expanding'</span>), <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'contracting'</span>)
+      );
+      <span class="hljs-keyword">let</span> classNames = [
+        <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'transitioning'</span>),
+        <span class="hljs-keyword">this</span>.className(expanded ? <span class="hljs-string">'expanding'</span> : <span class="hljs-string">'contracting'</span>)
+      ];
+      itemElement.classList.add(...classNames);
+      <span class="hljs-keyword">this</span>.setElementTimeout(itemElement, <span class="hljs-string">'expand-timeout'</span>, <span class="hljs-keyword">this</span>.expandDuration, () =&gt; {
+        itemElement.classList.remove(...classNames);
+        itemElement.classList.toggle(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'expanded'</span>), expanded);
+        <span class="hljs-keyword">if</span> (completion) {
+          completion();
+        }
+      });
+
+      <span class="hljs-keyword">this</span>.expandedItemElement = expanded ? itemElement : <span class="hljs-literal">null</span>;
+
+      itemElement.dispatchEvent(<span class="hljs-keyword">this</span>.createCustomEvent(<span class="hljs-string">'expand'</span>, { expanded }));
+    }
+    toggleExpandedItemFocus(itemElement, focused) {
+      <span class="hljs-keyword">if</span> (!itemElement.classList.contains(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'expanded'</span>))) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">let</span> delay = focused ? <span class="hljs-number">0</span> : <span class="hljs-keyword">this</span>.undimDelay;
+      <span class="hljs-keyword">this</span>.toggleItemFocus(itemElement, focused, delay);
+    }
+    toggleItemFocus(itemElement, focused, delay = <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">if</span> (focused) {
+        <span class="hljs-keyword">this</span>.itemElements.forEach((itemElement) =&gt; {
+          itemElement.classList.remove(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'focused'</span>));
+        });
+      }
+      itemElement.classList.toggle(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'focused'</span>), focused);
+      <span class="hljs-keyword">this</span>.setTimeout(<span class="hljs-string">'_dimTimeout'</span>, delay, () =&gt; {
+        <span class="hljs-keyword">this</span>.element.classList.toggle(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'dimmed'</span>), focused);
+      });
+    }
+    _onItemClick(event) {
+      <span class="hljs-keyword">const</span> actionElementTags = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'audio'</span>, <span class="hljs-string">'button'</span>, <span class="hljs-string">'input'</span>, <span class="hljs-string">'video'</span>];
+      <span class="hljs-keyword">if</span> (actionElementTags.indexOf(event.target.tagName.toLowerCase()) !== -<span class="hljs-number">1</span>) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">this</span>.toggleItemExpansion(event.currentTarget);
+    }
+    _onItemExpand(event) {
+      <span class="hljs-keyword">const</span> { target } = event;
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._isItemElement(target)) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">const</span> { expanded } = event.detail;
+      <span class="hljs-keyword">this</span>.toggleItemFocus(target, expanded, <span class="hljs-keyword">this</span>.expandDuration);
+    }
+    _onItemMouseEnter(event) {
+      <span class="hljs-keyword">this</span>.toggleExpandedItemFocus(event.currentTarget, <span class="hljs-literal">true</span>);
+    }
+    _onItemMouseLeave(event) {
+      <span class="hljs-keyword">this</span>.toggleExpandedItemFocus(event.currentTarget, <span class="hljs-literal">false</span>);
+    }
+    _onItemsMutation(mutations) {
+      <span class="hljs-keyword">let</span> addedItemElements = mutations
+        .filter(m =&gt; !!m.addedNodes.length)
+        .reduce((allElements, m) =&gt; {
+          <span class="hljs-keyword">let</span> elements = <span class="hljs-built_in">Array</span>.from(m.addedNodes).filter(<span class="hljs-keyword">this</span>._isItemElement);
+          <span class="hljs-keyword">return</span> allElements.concat(elements);
+        }, []);
+      addedItemElements.forEach(<span class="hljs-keyword">this</span>._toggleItemEventListeners.bind(<span class="hljs-keyword">this</span>, <span class="hljs-literal">true</span>));
+      <span class="hljs-keyword">this</span>._itemsObserver.disconnect();
+      <span class="hljs-keyword">this</span>._reLayoutItems(() =&gt; {
+        addedItemElements[<span class="hljs-number">0</span>].scrollIntoView();
+      });
+      <span class="hljs-keyword">this</span>._itemsObserver.connect();
+    }
+    _onMouseLeave(_) {
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.expandedItemElement) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">this</span>.toggleItemFocus(<span class="hljs-keyword">this</span>.expandedItemElement, <span class="hljs-literal">false</span>);
+    }
+    _onWindowResize(_) {
+      <span class="hljs-keyword">this</span>._reLayoutItems();
+    }
+    _isItemElement(node) {
+      <span class="hljs-keyword">return</span> (node <span class="hljs-keyword">instanceof</span> HTMLElement &amp;&amp;
+        node.classList.contains(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'item'</span>)));
+    }
+    _selectItemElements() {
+      <span class="hljs-keyword">this</span>.itemElements = <span class="hljs-built_in">Array</span>.from(<span class="hljs-keyword">this</span>.element.querySelectorAll(
+        `.${<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'item'</span>)}:not(.${<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'sample'</span>)})`
+      ));
+    }
+    _toggleItemEventListeners(on, itemElement) {
+      <span class="hljs-keyword">this</span>.toggleEventListeners(on, {
+        <span class="hljs-string">'click'</span>: <span class="hljs-keyword">this</span>._onItemClick,
+        <span class="hljs-string">'mouseenter'</span>: <span class="hljs-keyword">this</span>._onItemMouseEnter,
+        <span class="hljs-string">'mouseleave'</span>: <span class="hljs-keyword">this</span>._onItemMouseLeave,
+      }, itemElement);
+    }
+    _adjustItemToBottomEdge(itemElement) {
+      <span class="hljs-keyword">let</span> { style } = itemElement;
+      style.top = <span class="hljs-string">'auto'</span>;
+      style.bottom = <span class="hljs-string">'0px'</span>;
+    }
+    _adjustItemToRightEdge(itemElement) {
+      <span class="hljs-keyword">let</span> { style } = itemElement;
+      style.left = <span class="hljs-string">'auto'</span>;
+      style.right = <span class="hljs-string">'0px'</span>;
+    }
+    _getMetricSamples() {
+      <span class="hljs-keyword">let</span> containerElement = <span class="hljs-keyword">this</span>.selectByClass(<span class="hljs-string">'samples'</span>);
+      <span class="hljs-keyword">if</span> (containerElement) {
+        containerElement.parentNode.removeChild(containerElement);
+      }
+      <span class="hljs-keyword">let</span> itemElement = <span class="hljs-keyword">this</span>.sampleItemElement.cloneNode(<span class="hljs-literal">true</span>);
+      itemElement.classList.add(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'sample'</span>));
+      <span class="hljs-keyword">let</span> expandedItemElement = <span class="hljs-keyword">this</span>.sampleItemElement.cloneNode(<span class="hljs-literal">true</span>);
+      expandedItemElement.classList.add(
+        <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'expanded'</span>), <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'sample'</span>)
+      );
+      containerElement = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+      containerElement.classList.add(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'samples'</span>));
+      <span class="hljs-keyword">let</span> { style } = containerElement;
+      style.left = style.right = style.top = <span class="hljs-string">'0px'</span>;
+      style.position = <span class="hljs-string">'absolute'</span>;
+      style.visibility = <span class="hljs-string">'hidden'</span>;
+      style.zIndex = <span class="hljs-number">0</span>;
+      containerElement.appendChild(itemElement);
+      containerElement.appendChild(expandedItemElement);
+      <span class="hljs-keyword">this</span>.element.appendChild(containerElement);
+      <span class="hljs-keyword">return</span> { itemElement, expandedItemElement };
+    }
+    _isBottomEdgeItem(i) {
+      <span class="hljs-keyword">const</span> { rowSize } = <span class="hljs-keyword">this</span>.metrics;
+      <span class="hljs-keyword">let</span> lastRowSize = (<span class="hljs-keyword">this</span>.itemElements.length % rowSize) || rowSize;
+      <span class="hljs-keyword">let</span> untilLastRow = <span class="hljs-keyword">this</span>.itemElements.length - lastRowSize;
+      <span class="hljs-keyword">return</span> (i + <span class="hljs-number">1</span>) &gt; untilLastRow;
+    }
+    _isRightEdgeItem(i) {
+      <span class="hljs-keyword">return</span> ((i + <span class="hljs-number">1</span>) % <span class="hljs-keyword">this</span>.metrics.rowSize) === <span class="hljs-number">0</span>;
+    }
+    _layoutItems() {
+      <span class="hljs-built_in">Array</span>.from(<span class="hljs-keyword">this</span>.itemElements).reverse().forEach((itemElement) =&gt; {
+        <span class="hljs-keyword">if</span> (!itemElement.hasAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'original-position'</span>))) {
+          itemElement.setAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'original-position'</span>),
+            getComputedStyle(itemElement).position);
+        }
+        <span class="hljs-keyword">let</span> { offsetLeft, offsetTop, style } = itemElement;
+        style.position = <span class="hljs-string">'absolute'</span>;
+        style.left = `${offsetLeft}px`;
+        style.top = `${offsetTop}px`;
+      });
+      <span class="hljs-keyword">let</span> { style } = <span class="hljs-keyword">this</span>.element;
+      style.width = `${<span class="hljs-keyword">this</span>.metrics.wrapWidth}px`;
+      style.height = `${<span class="hljs-keyword">this</span>.metrics.wrapHeight}px`;
+    }
+    _reLayoutItems(completion) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.expandedItemElement) {
+        <span class="hljs-keyword">this</span>.toggleItemExpansion(<span class="hljs-keyword">this</span>.expandedItemElement, <span class="hljs-literal">false</span>, () =&gt; {
+          <span class="hljs-keyword">this</span>._reLayoutItems(completion);
+        });
+        <span class="hljs-keyword">return</span>;
+      }
+      <span class="hljs-keyword">this</span>._selectItemElements();
+      <span class="hljs-keyword">this</span>._updateMetrics();
+      <span class="hljs-keyword">this</span>.itemElements.forEach((itemElement) =&gt; {
+        <span class="hljs-keyword">let</span> { style } = itemElement;
+        style.bottom = style.left = style.right = style.top = <span class="hljs-string">'auto'</span>;
+        style.position = itemElement.getAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'original-position'</span>));
+        itemElement.classList.remove(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'raw'</span>));
+      });
+      <span class="hljs-keyword">this</span>._layoutItems();
+      <span class="hljs-keyword">if</span> (completion) {
+        completion();
+      }
+    }
+    _toggleNeighborItemsRecessed(index, recessed) {
+      <span class="hljs-keyword">const</span> { expandedScale, rowSize } = <span class="hljs-keyword">this</span>.metrics;
+      <span class="hljs-keyword">let</span> dx = <span class="hljs-keyword">this</span>._isRightEdgeItem(index) ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>;
+      <span class="hljs-keyword">let</span> dy = <span class="hljs-keyword">this</span>._isBottomEdgeItem(index) ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>;
+      <span class="hljs-keyword">let</span> level = <span class="hljs-number">1</span>;
+      <span class="hljs-keyword">let</span> neighbors = [];
+      <span class="hljs-keyword">while</span> (level &lt; expandedScale) {
+        neighbors.push(
+          <span class="hljs-keyword">this</span>.itemElements[index + level * dx],
+          <span class="hljs-keyword">this</span>.itemElements[index + level * dy * rowSize],
+          <span class="hljs-keyword">this</span>.itemElements[index + level * (dy * rowSize + dx)]
+        );
+        level += <span class="hljs-number">1</span>;
+      }
+      neighbors.filter(n =&gt; !!n).forEach((itemElement) =&gt; {
+        itemElement.classList.toggle(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'recessed'</span>));
+      });
+    }
+    _updateMetrics({ hard } = { hard: <span class="hljs-literal">false</span> }) {
+      <span class="hljs-keyword">if</span> (hard) {
+        <span class="hljs-keyword">const</span> { itemElement, expandedItemElement } = <span class="hljs-keyword">this</span>._getMetricSamples();
+        <span class="hljs-keyword">this</span>.metrics = {
+          itemWidth: itemElement.offsetWidth,
+          itemHeight: itemElement.offsetHeight,
+          expandedWidth: expandedItemElement.offsetWidth,
+          expandedHeight: expandedItemElement.offsetHeight,
+          expandedScale: <span class="hljs-built_in">parseInt</span>(<span class="hljs-keyword">this</span>.cssVariable(<span class="hljs-string">'item-expanded-scale'</span>)),
+        };
+      }
+      <span class="hljs-keyword">let</span> gutter = <span class="hljs-built_in">Math</span>.round(<span class="hljs-built_in">parseFloat</span>(
+        getComputedStyle(<span class="hljs-keyword">this</span>.sampleItemElement).marginRight
+      ));
+      <span class="hljs-keyword">let</span> fullWidth = <span class="hljs-keyword">this</span>.metrics.itemWidth + gutter;
+      <span class="hljs-keyword">let</span> fullHeight = <span class="hljs-keyword">this</span>.metrics.itemHeight + gutter;
+
+      <span class="hljs-keyword">let</span> { style } = <span class="hljs-keyword">this</span>.element;
+      style.height = style.width = <span class="hljs-string">'auto'</span>;
+
+      <span class="hljs-keyword">let</span> rowSize = <span class="hljs-built_in">parseInt</span>(((<span class="hljs-keyword">this</span>.element.offsetWidth + gutter) / fullWidth));
+      <span class="hljs-keyword">let</span> colSize = <span class="hljs-built_in">Math</span>.ceil(<span class="hljs-keyword">this</span>.itemElements.length / rowSize);
+      <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>.metrics, { gutter, rowSize, colSize }, {
+        wrapWidth: fullWidth * rowSize,
+        wrapHeight: fullHeight * colSize,
+      });
+    }
+  }
+  HLF.buildExtension(MediaGrid, {
+    autoBind: <span class="hljs-literal">true</span>,
+    autoListen: <span class="hljs-literal">true</span>,
+    compactOptions: <span class="hljs-literal">true</span>,
+    mixinNames: [<span class="hljs-string">'css'</span>, <span class="hljs-string">'selection'</span>],
+  });
+  <span class="hljs-built_in">Object</span>.assign(HLF, { MediaGrid });
+  <span class="hljs-keyword">return</span> MediaGrid;
+});</div></div></div></div></body></html>

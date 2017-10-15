@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="en"><head><title>src/css/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/css/tip"><meta name="groc-project-path" content="src/css/tip.css"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/css/tip.css</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-extension">HLF Tip Extension</h1>
+<p><a href="../js/tip.html">Source</a> | <a href="../../tests/css/tip.html">Tests</a></p>
+<p>The main responsibility for the required extension styling is to provide core
+layout styles but allow easy customization of skin styles, ie. colors, fonts,
+borders, shadows.</p>
+<p>The required DOM structure looks like:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"js-tips-tip"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"js-tips-inner"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"js-tips-stem"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"js-tips-content"</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span></code></pre>
+<p>Example of the variations of classes on the tip element:</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"js-tips js-snap-tip js-tips-follow js-tips-bottom js-tips-right js-tips-snap-trigger js-tips-snap-x-side"</span>&gt;</span></code></pre></div></div><div class="code"><div class="wrapper"><span class="hljs-class">.js-tips-tip</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">--tip-em</span>:<span class="hljs-value"> <span class="hljs-number">12px</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--tip-fill-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#666</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--tip-text-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#fff</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--stem-size</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-em)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--stem-size-wide-half</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--tip-em) * <span class="hljs-number">1.5</span> / <span class="hljs-number">2</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--tip-max-width</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--tip-em) * <span class="hljs-number">18</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--tip-toggle-duration</span>:<span class="hljs-value"> <span class="hljs-number">0.2s</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--tip-z-index</span>:<span class="hljs-value"> <span class="hljs-number">9999</span></span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> absolute</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">transition</span>:<span class="hljs-value"> opacity <span class="hljs-function">var</span>(--tip-toggle-duration)</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">z-index</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-z-index)</span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.js-tips-hidden</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> none</span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.js-tips-visible</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">1</span></span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.js-tips-inner</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> relative</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">max-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-max-width)</span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.js-tips-stem</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> none</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border</span>:<span class="hljs-value"> <span class="hljs-number">0</span> solid transparent</span></span>; <span class="hljs-comment">/* Initial value. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">height</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>; <span class="hljs-comment">/* Initial value. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> absolute</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>; <span class="hljs-comment">/* Initial value. */</span>
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-left</span> <span class="hljs-class">.js-tips-stem</span>,
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-left</span><span class="hljs-class">.js-tips-snap-y-side</span> <span class="hljs-class">.js-tips-stem</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-left-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> auto</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-bottom</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--stem-size) * -<span class="hljs-number">1</span>)</span></span>; <span class="hljs-comment">/* Positioning. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">right</span>:<span class="hljs-value"> -<span class="hljs-number">1px</span></span></span>; <span class="hljs-comment">/* To match the JS. */</span>
+
+  <span class="hljs-rule"><span class="hljs-attribute">border-color</span>:<span class="hljs-value"> transparent</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-left-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-fill-color)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-right</span> <span class="hljs-class">.js-tips-stem</span>,
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-right</span><span class="hljs-class">.js-tips-snap-y-side</span> <span class="hljs-class">.js-tips-stem</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-right-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-bottom</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--stem-size) * -<span class="hljs-number">1</span>)</span></span>; <span class="hljs-comment">/* Positioning. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">right</span>:<span class="hljs-value"> auto</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">border-color</span>:<span class="hljs-value"> transparent</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-right-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-fill-color)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-bottom</span> <span class="hljs-class">.js-tips-stem</span>,
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-bottom</span><span class="hljs-class">.js-tips-snap-x-side</span> <span class="hljs-class">.js-tips-stem</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">bottom</span>:<span class="hljs-value"> auto</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--stem-size) * -<span class="hljs-number">1</span>)</span></span>; <span class="hljs-comment">/* Positioning. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">border-color</span>:<span class="hljs-value"> transparent</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-fill-color)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-top</span> <span class="hljs-class">.js-tips-stem</span>,
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-top</span><span class="hljs-class">.js-tips-snap-x-side</span> <span class="hljs-class">.js-tips-stem</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-top-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">bottom</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-bottom</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--stem-size) * -<span class="hljs-number">1</span>)</span></span>; <span class="hljs-comment">/* Positioning. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> auto</span></span>; <span class="hljs-comment">/* Reset. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> auto</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">border-color</span>:<span class="hljs-value"> transparent</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-top-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-fill-color)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-snap-x-side</span> &gt; <span class="hljs-class">.js-tips-inner</span> &gt; <span class="hljs-class">.js-tips-stem</span> <span class="hljs-rules">{ <span class="hljs-comment">/* Add specifity. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">border-left-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size-wide-half)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-right-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size-wide-half)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> <span class="hljs-number">50%</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--stem-size-wide-half) * -<span class="hljs-number">1</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> auto</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.js-tips-tip</span><span class="hljs-class">.js-tips-snap-y-side</span> &gt; <span class="hljs-class">.js-tips-inner</span> &gt; <span class="hljs-class">.js-tips-stem</span> <span class="hljs-rules">{ <span class="hljs-comment">/* Add specifity. */</span>
+  <span class="hljs-rule"><span class="hljs-attribute">border-top-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size-wide-half)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--stem-size-wide-half)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-bottom</span>:<span class="hljs-value"> auto</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--stem-size-wide-half) * -<span class="hljs-number">1</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> <span class="hljs-number">50%</span></span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.js-tips-content</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">overflow</span>:<span class="hljs-value"> hidden</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> relative</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">padding-bottom</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--tip-em) * <span class="hljs-number">5</span> / <span class="hljs-number">6</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-left</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-em)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-right</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-em)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-top</span>:<span class="hljs-value"> <span class="hljs-function">calc</span>(<span class="hljs-function">var</span>(--tip-em) * <span class="hljs-number">2</span> / <span class="hljs-number">3</span>)</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-fill-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-text-color)</span></span>;
+
+  <span class="hljs-rule"><span class="hljs-attribute">transition-duration</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--tip-toggle-duration)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">transition-property</span>:<span class="hljs-value"> height width</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">transition-timing-function</span>:<span class="hljs-value"> ease-in-out</span></span>;
+<span class="hljs-rule">}</span></span></div></div></div></div></body></html>

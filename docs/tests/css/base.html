@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="en"><head><title>tests/css/base</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/css/base"><meta name="groc-project-path" content="tests/css/base.css"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/css/base.css</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="base-visual-test">Base Visual Test</h1>
+<p>Provides the styling foundation for visual test pages. Import into a test page.</p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>variables</p></div></div><div class="code"><div class="wrapper"><span class="hljs-pseudo">:root</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">--accent-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#06d</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--accent-color-em</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#117fff</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bezel-highlight-color</span>:<span class="hljs-value"> <span class="hljs-function">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.3</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bezel-shadow-color</span>:<span class="hljs-value"> <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.3</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#dadad6</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bg-color-dark</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#cecec9</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--bg-color-light</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#f2f2f1</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--fg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#111</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--fill-color</span>:<span class="hljs-value"> <span class="hljs-function">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.95</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--header-bg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#272724</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--header-bg-color-light</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#5d5d54</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--header-fg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#a3a3a4</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--section-header-bg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#c2c2bb</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--section-header-fg-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#4a4a50</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--line-color</span>:<span class="hljs-value"> <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.1</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--line-size</span>:<span class="hljs-value"> <span class="hljs-number">3px</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">--radius-size</span>:<span class="hljs-value"> <span class="hljs-number">10px</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>dimmed</p></div></div><div class="code"><div class="wrapper"><span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; *<span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:first-child)</span>,
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> &gt; <span class="hljs-attr_selector">[data-rel=docs]</span>,
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">footer</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:empty)</span> &gt; * <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> .<span class="hljs-number">5</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; <span class="hljs-pseudo">:hover</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:first-child)</span>,
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; <span class="hljs-pseudo">:focus</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:first-child)</span>,
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> &gt; <span class="hljs-attr_selector">[data-rel=docs]</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> &gt; <span class="hljs-attr_selector">[data-rel=docs]</span><span class="hljs-pseudo">:focus</span>,
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">footer</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:empty)</span> &gt; <span class="hljs-pseudo">:hover</span>,
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">footer</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:empty)</span> &gt; <span class="hljs-pseudo">:focus</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">1</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>panel-skin</p></div></div><div class="code"><div class="wrapper"><span class="hljs-class">.bar-item</span>,
+<span class="hljs-class">.bar</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-class">.item</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>) &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.box</span>,
+<span class="hljs-class">.list-item</span>,
+<span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.item</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.bar</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>) &gt; <span class="hljs-tag">a</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background-clip</span>:<span class="hljs-value"> padding-box</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--fill-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--line-size) solid <span class="hljs-function">var</span>(--line-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">box-shadow</span>:<span class="hljs-value">
+    inset <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.7</span>),
+    inset <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1rem</span> <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.05</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">box-sizing</span>:<span class="hljs-value"> border-box</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.bar-item</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.bar</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-class">.item</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>) &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.box</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.list-item</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.item</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.bar</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span><span class="hljs-pseudo">:hover</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>) &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> <span class="hljs-hexcolor">#fff</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>pull-left-right</p></div></div><div class="code"><div class="wrapper"><span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span>,
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> -<span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> -<span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-left</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-right</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>base</p></div></div><div class="code"><div class="wrapper"><span class="hljs-tag">html</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">font-size</span>:<span class="hljs-value"> <span class="hljs-number">14px</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">body</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--bg-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">font-family</span>:<span class="hljs-value"> Helvetica, sans-serif</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-top</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">a</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--accent-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">text-decoration</span>:<span class="hljs-value"> none</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--accent-color-em)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">text-decoration</span>:<span class="hljs-value"> underline</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">button</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background-clip</span>:<span class="hljs-value"> padding-box</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">background-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--bg-color-light)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border</span>:<span class="hljs-value"> <span class="hljs-number">1px</span> solid <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--fg-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">0.3em</span> <span class="hljs-number">0.6em</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">button</span><span class="hljs-pseudo">:focus</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">outline</span>:<span class="hljs-value"> none</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">box-shadow</span>:<span class="hljs-value"> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0.3em</span> <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.1</span>)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">h1</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">font-size</span>:<span class="hljs-value"> <span class="hljs-number">1.5rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">letter-spacing</span>:<span class="hljs-value"> -<span class="hljs-number">0.01rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-bottom</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-top</span>:<span class="hljs-value"> <span class="hljs-number">4rem</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>common test content container </p></div></div><div class="code"><div class="wrapper"><span class="hljs-tag">p</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span> <span class="hljs-number">0</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">dl</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> flex</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">justify-content</span>:<span class="hljs-value"> space-between</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">dl</span><span class="hljs-pseudo">:only-child</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">margin-bottom</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-top</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">dt</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">text-align</span>:<span class="hljs-value"> right</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">white-space</span>:<span class="hljs-value"> nowrap</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">dd</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">flex-basis</span>:<span class="hljs-value"> <span class="hljs-number">3em</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">font-weight</span>:<span class="hljs-value"> bold</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-number">0.5rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>non-edge tests container </p></div></div><div class="code"><div class="wrapper"><span class="hljs-id">#main</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span> <span class="hljs-number">0</span> <span class="hljs-number">2rem</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>test page header</p></div></div><div class="code"><div class="wrapper"><span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--header-bg-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">box-shadow</span>:<span class="hljs-value"> inset <span class="hljs-number">0</span> <span class="hljs-number">30px</span> <span class="hljs-number">40px</span> -<span class="hljs-number">20px</span> <span class="hljs-function">var</span>(--bezel-shadow-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--header-fg-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">text-shadow</span>:<span class="hljs-value"> <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.7</span>)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; * <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> inline-block</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; *<span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:first-child)</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; <span class="hljs-tag">h1</span> <span class="hljs-rules">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>reset </p></div></div><div class="code"><div class="wrapper">  <span class="hljs-tag">font-weight</span>: <span class="hljs-tag">normal</span>;
+  <span class="hljs-tag">margin</span>: 0;
+}
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; <span class="hljs-tag">fieldset</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--header-bg-color-light)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">0</span> <span class="hljs-number">10px</span> <span class="hljs-number">10px</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; <span class="hljs-tag">fieldset</span> &gt; <span class="hljs-tag">legend</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">opacity</span>:<span class="hljs-value"> <span class="hljs-number">0.5</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">0.2rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">body</span> &gt; <span class="hljs-tag">header</span> &gt; <span class="hljs-tag">fieldset</span> &gt; <span class="hljs-tag">label</span> + <span class="hljs-tag">label</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">margin-left</span>:<span class="hljs-value"> <span class="hljs-number">0.5rem</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>main test styles</p></div></div><div class="code"><div class="wrapper"><span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:last-child)</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">padding-bottom</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--section-header-bg-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">box-shadow</span>:<span class="hljs-value">
+    inset <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-number">4px</span> <span class="hljs-function">var</span>(--bezel-shadow-color),
+    <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-number">0</span> <span class="hljs-function">var</span>(--bezel-highlight-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">color</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--section-header-fg-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> flex</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">font-weight</span>:<span class="hljs-value"> bold</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-bottom</span>:<span class="hljs-value"> <span class="hljs-number">0.5rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-top</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">text-shadow</span>:<span class="hljs-value"> <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-function">var</span>(--bg-color)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> &gt; <span class="hljs-class">.label</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">flex-grow</span>:<span class="hljs-value"> <span class="hljs-number">1</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> &gt; <span class="hljs-class">.label</span><span class="hljs-pseudo">::after</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">content</span>:<span class="hljs-value"> <span class="hljs-string">':'</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">header</span> &gt; <span class="hljs-attr_selector">[data-rel=docs]</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">font-weight</span>:<span class="hljs-value"> normal</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">footer</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:empty)</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">background</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--bg-color-dark)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">box-shadow</span>:<span class="hljs-value">
+    inset <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-number">4px</span> <span class="hljs-function">var</span>(--bezel-shadow-color),
+    <span class="hljs-number">0</span> <span class="hljs-number">1px</span> <span class="hljs-number">0</span> <span class="hljs-function">var</span>(--bezel-highlight-color)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">0.5rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-tag">section</span><span class="hljs-class">.visual-test</span> <span class="hljs-tag">footer</span><span class="hljs-pseudo">:not(</span><span class="hljs-pseudo">:empty)</span> &gt; <span class="hljs-tag">button</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-radius</span>:<span class="hljs-value"> <span class="hljs-number">4px</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">font-size</span>:<span class="hljs-value"> .<span class="hljs-number">9em</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>alternative test container styles</p></div></div><div class="code"><div class="wrapper"><span class="hljs-class">.edge</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> absolute</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.edge</span><span class="hljs-class">.affixed</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> fixed</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.edge</span><span class="hljs-class">.top</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">top</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.edge</span><span class="hljs-class">.right</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">right</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.edge</span><span class="hljs-class">.bottom</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">bottom</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.edge</span><span class="hljs-class">.left</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">left</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>other</p></div></div><div class="code"><div class="wrapper"><span class="hljs-class">.box</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">position</span>:<span class="hljs-value"> relative</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.item</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>) &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.list-item</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-width</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:first-child</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span><span class="hljs-pseudo">:first-child</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>)<span class="hljs-pseudo">:first-child</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.item</span><span class="hljs-pseudo">:first-child</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-top-left-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-top-right-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:last-child</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span><span class="hljs-pseudo">:last-child</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>)<span class="hljs-pseudo">:last-child</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.item</span><span class="hljs-pseudo">:last-child</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-left-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-right-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--line-size)</span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.list</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> inline-block</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">list-style</span>:<span class="hljs-value"> none</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.list</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-class">.item</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span>,
+<span class="hljs-class">.list</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>) &gt; <span class="hljs-tag">a</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">300px</span></span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.bar</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-class">.item</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>) &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.bar-item</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-right-width</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> block</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.bar</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:first-child</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span><span class="hljs-pseudo">:first-child</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>)<span class="hljs-pseudo">:first-child</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.bar-item-first</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-top-left-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-left-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.bar</span> &gt; <span class="hljs-tag">a</span><span class="hljs-pseudo">:last-child</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-class">.no-a</span><span class="hljs-pseudo">:last-child</span>,
+<span class="hljs-class">.bar</span> <span class="hljs-tag">li</span><span class="hljs-pseudo">:not(</span><span class="hljs-class">.no-a</span>)<span class="hljs-pseudo">:last-child</span> &gt; <span class="hljs-tag">a</span>,
+<span class="hljs-class">.bar-item-last</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">border-top-right-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-bottom-right-radius</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--radius-size)</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">border-width</span>:<span class="hljs-value"> <span class="hljs-function">var</span>(--line-size)</span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.bar</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> inline-flex</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin</span>:<span class="hljs-value"> <span class="hljs-number">1rem</span> <span class="hljs-number">0</span></span></span>;
+<span class="hljs-rule">}</span></span>
+
+<span class="hljs-class">.grid</span> <span class="hljs-tag">li</span>,
+<span class="hljs-class">.grid-item</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">line-height</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-bottom</span>:<span class="hljs-value"> <span class="hljs-number">0.5rem</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-right</span>:<span class="hljs-value"> <span class="hljs-number">0.5rem</span></span></span>;
+<span class="hljs-rule">}</span></span>
+<span class="hljs-class">.grid</span> <span class="hljs-rules">{
+  <span class="hljs-rule"><span class="hljs-attribute">display</span>:<span class="hljs-value"> flex</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">flex-wrap</span>:<span class="hljs-value"> wrap</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">list-style</span>:<span class="hljs-value"> none</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">padding-left</span>:<span class="hljs-value"> <span class="hljs-number">0</span></span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">350px</span></span></span>;
+<span class="hljs-rule">}</span></span></div></div></div></div></body></html>

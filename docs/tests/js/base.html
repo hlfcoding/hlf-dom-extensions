@@ -1,37 +1,126 @@
-<!DOCTYPE html><html lang="en"><head><title>tests/js/base</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/base"><meta name="groc-project-path" content="tests/js/base.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/base.coffee</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="unit-test-helpers">Unit Test Helpers</h1>
-<p>This is a developer-level extension for writing unit tests. Plugin users need
-not read further.</p></div></div><div class="code"><div class="wrapper">define [
-  <span class="hljs-string">'jquery'</span>
-  <span class="hljs-string">'underscore'</span>
-], <span class="hljs-function"><span class="hljs-params">($, _)</span> -&gt;</span>
-  <span class="hljs-string">'use strict'</span>
+<!DOCTYPE html><html lang="en"><head><title>tests/js/base</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="tests/js/base"><meta name="groc-project-path" content="tests/js/base.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">tests/js/base.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="test-helpers">Test Helpers</h1>
+<p>This is a developer-level module for writing tests. Extension users need
+not read further.</p></div></div><div class="code"><div class="wrapper">define(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="reporting">Reporting</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">window</span>.QUnit) {
+    QUnit.testStart(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(details)</span> </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">''</span>); <span class="hljs-comment">// For grunt-contrib-qunit.</span>
+    });
+    QUnit.log(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(details)</span> </span>{
+      <span class="hljs-keyword">if</span> (details.result) {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\x1b[32m'</span>, `✔ ${details.message}`);
+        <span class="hljs-keyword">return</span>;
+      }
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\x1b[31m'</span>, `✘ ${details.message}` +
+        ` -- Expected: ${details.expected}, actual: ${details.actual}.`);
+    });
+    <span class="hljs-keyword">return</span>;
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>createVisualTest</strong> returns a configured test function generator. Tests
+should be invoked tests on document ready. Configuration:</p>
+<ul>
+<li><code>label</code> - header text describing the test topic.</li>
+<li><code>anchorName</code> - for the section on its docs page, used to generate <code>docsUrl</code>.</li>
+<li><code>className</code> - a hook for any custom css.</li>
+<li><code>footerHtml</code> - optional html for controls for additional testing.</li>
+</ul>
+<p>It will:</p>
+<ol>
+<li>Ensure config.</li>
+<li>Build test template vars.</li>
+<li>Render test to get test element (or fragments).</li>
+<li>Run tests.</li>
+</ol>
+<p>It also includes helpers for additional setup. <code>setupAppendButton</code> inits a
+button for appending an item to a list, and should be included as part of
+<code>footerHtml</code>.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createVisualTest</span><span class="hljs-params">(delegate)</span> </span>{
+    <span class="hljs-keyword">let</span> {
+      anchorName, beforeTest, className, label, template, test,
+      footerHtml, vars
+    } = delegate;
+    footerHtml = footerHtml || <span class="hljs-string">''</span>;
+    vars = vars || {};
+    <span class="hljs-keyword">let</span> docsUrl = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'body &gt; header [data-rel=docs]'</span>).href;
+    docsUrl += `#${anchorName}`;
+    <span class="hljs-keyword">let</span> containerElement = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'main'</span>);
+    <span class="hljs-keyword">return</span> [<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setUp</span><span class="hljs-params">(completion)</span> </span>{
+      <span class="hljs-keyword">let</span> html = template.bind(delegate)(vars);
+      <span class="hljs-keyword">let</span> testElement = renderVisualTest(containerElement, {
+        className, docsUrl, footerHtml, html, label
+      });
+      <span class="hljs-keyword">let</span> { style } = testElement.querySelector(<span class="hljs-string">'.test-container'</span>);
+      style.visibility = <span class="hljs-string">'hidden'</span>;
+      <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">finish</span><span class="hljs-params">()</span> </span>{ style.visibility = <span class="hljs-string">'visible'</span>; }
+      <span class="hljs-keyword">if</span> (beforeTest) {
+        beforeTest.bind(delegate)(testElement);
+      }
+      setTimeout(() =&gt; {
+        <span class="hljs-keyword">let</span> promise = completion(testElement);
+        <span class="hljs-keyword">if</span> (promise) { promise.then(finish); }
+        <span class="hljs-keyword">else</span> { finish(); }
+      });
+    }, test.bind(delegate)];
+  }
+  <span class="hljs-built_in">Object</span>.assign(createVisualTest, {
+    setupAppendButton({ testElement, listSelector, onAppend }) {
+      <span class="hljs-keyword">let</span> listElement = testElement.querySelector(listSelector);
+      <span class="hljs-keyword">let</span> itemElement = listElement.lastElementChild.cloneNode(<span class="hljs-literal">true</span>);
+      testElement.querySelector(<span class="hljs-string">'[name=list-append]'</span>).addEventListener(<span class="hljs-string">'click'</span>, () =&gt; {
+        <span class="hljs-keyword">let</span> newElement = itemElement.cloneNode(<span class="hljs-literal">true</span>);
+        listElement.appendChild(newElement);
+        <span class="hljs-keyword">if</span> (onAppend) {
+          onAppend(newElement);
+        }
+      });
+    }
+  });</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><strong>renderVisualTest</strong> is a simple method for an element to render and
+append a test. Only provide a custom template if absolutely needed.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">renderVisualTest</span><span class="hljs-params">(containerElement, vars, opts = {})</span> </span>{
+    <span class="hljs-keyword">var</span> $test;
+    <span class="hljs-keyword">let</span> { template } = <span class="hljs-built_in">Object</span>.assign({}, renderVisualTest.defaults, opts);
+    <span class="hljs-keyword">let</span> templateElement = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'template'</span>);
+    templateElement.innerHTML = template(vars);
+    <span class="hljs-keyword">let</span> testElement = templateElement.content.firstChild;
+    containerElement.appendChild(testElement);
+    <span class="hljs-keyword">return</span> testElement;
+  }
+  <span class="hljs-built_in">Object</span>.assign(renderVisualTest, {
+    defaults: {
+      template: ({ className, docsUrl, footerHtml, html, label }) =&gt; {
+        <span class="hljs-keyword">return</span> (
+`&lt;section <span class="hljs-keyword">class</span>=<span class="hljs-string">"${className} visual-test"</span>&gt;
+  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">header</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"label"</span>&gt;</span>${label}<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">a</span> <span class="hljs-attribute">data-rel</span>=<span class="hljs-value">"docs"</span> <span class="hljs-attribute">href</span>=<span class="hljs-value">"${docsUrl}"</span>&gt;</span>docs<span class="hljs-tag">&lt;/<span class="hljs-title">a</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">header</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"test-container"</span>&gt;</span>
+    ${html}
+  <span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">footer</span>&gt;</span>${footerHtml}<span class="hljs-tag">&lt;/<span class="hljs-title">footer</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">section</span>&gt;</span>`
+        );
+      },
+    },
+  });
 
-  <span class="hljs-keyword">return</span> <span class="hljs-literal">no</span> <span class="hljs-keyword">unless</span> <span class="hljs-built_in">window</span>.QUnit?
+  function runVisualTests(tests) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('readystatechange', runVisualTests.bind(null, tests));
+      return;
+    }
+    tests.forEach(([setUp, test]) =&gt; setUp(test));
+  }
 
-  QUnit.extend QUnit.assert,
+  const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed " +
+    "do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim " +
+    "ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip " +
+    "ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate " +
+    "velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat " +
+    "cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id " +
+    "est laborum.";
+  const placeholderText = {
+    long: loremIpsum,
+    short: loremIpsum.slice(0, 200),
+    title: loremIpsum.slice(0, 26)
+  };
 
-    <span class="hljs-attribute">hasFunctions</span>: <span class="hljs-function"><span class="hljs-params">(object, names, message)</span> -&gt;</span>
-      result = _.chain object
-        .functions().intersection names
-        .size().isEqual names.length
-        .value()
-      <span class="hljs-property">@pushResult</span> { result, <span class="hljs-attribute">actual</span>: result, <span class="hljs-attribute">expected</span>: <span class="hljs-literal">yes</span>, message }
-
-    <span class="hljs-attribute">hasOwnProperties</span>: <span class="hljs-function"><span class="hljs-params">(object, names, message)</span> -&gt;</span>
-      result = _.chain object
-        .keys().intersection names
-        .size().isEqual names.length
-        .value()
-      <span class="hljs-property">@pushResult</span> { result, <span class="hljs-attribute">actual</span>: result, <span class="hljs-attribute">expected</span>: <span class="hljs-literal">yes</span>, message }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="reporting">Reporting</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">  QUnit.testStart (details) =&gt;
-    <span class="hljs-built_in">console</span>.log <span class="hljs-string">''</span> <span class="hljs-comment"># For grunt-contrib-qunit.</span>
-    <span class="hljs-keyword">return</span>
-
-  QUnit.log (details) =&gt;
-    <span class="hljs-keyword">if</span> details.result <span class="hljs-keyword">is</span> <span class="hljs-literal">yes</span>
-      <span class="hljs-built_in">console</span>.log <span class="hljs-string">'\x1b[32m'</span>, <span class="hljs-string">"✔ <span class="hljs-subst">#{details.message}</span>"</span>
-      <span class="hljs-keyword">return</span>
-    <span class="hljs-built_in">console</span>.log <span class="hljs-string">'\x1b[31m'</span>, <span class="hljs-string">"✘ <span class="hljs-subst">#{details.message}</span>"</span> +
-      <span class="hljs-string">" -- Expected: <span class="hljs-subst">#{details.expected}</span>, actual: <span class="hljs-subst">#{details.actual}</span>."</span>
-    <span class="hljs-keyword">return</span>
-
-  <span class="hljs-literal">yes</span></div></div></div></div></body></html>
+  return { createVisualTest, placeholderText, renderVisualTest, runVisualTests };
+});
+</span></div></div></div></div></body></html>

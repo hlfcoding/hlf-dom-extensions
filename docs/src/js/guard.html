@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/guard</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/guard"><meta name="groc-project-path" content="src/js/guard.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/guard.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;
+
+  <span class="hljs-built_in">window</span>.guard = {
+    isNavigatorSupported: <span class="hljs-literal">true</span>
+  };
+
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-built_in">eval</span>(<span class="hljs-string">'({a})=&gt;{}'</span>);
+  } <span class="hljs-keyword">catch</span> (e) {
+    guard.isNavigatorSupported = <span class="hljs-literal">false</span>;
+  }
+
+  <span class="hljs-keyword">if</span> (!CSS.supports || !CSS.supports(<span class="hljs-string">'(--custom-property: 0)'</span>)) {
+    guard.isNavigatorSupported = <span class="hljs-literal">false</span>;
+  }
+
+  <span class="hljs-keyword">if</span> (!guard.isNavigatorSupported) {
+    alert(<span class="hljs-string">'To view, you must upgrade your browser!'</span>);
+
+    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">'readystatechange'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(_)</span> </span>{
+      <span class="hljs-keyword">var</span> body, element, head;
+      <span class="hljs-keyword">if</span> (<span class="hljs-built_in">document</span>.readyState === <span class="hljs-string">'loading'</span>) { <span class="hljs-keyword">return</span>; }
+
+      head = <span class="hljs-built_in">document</span>.head;
+      element = head.querySelector(<span class="hljs-string">'script[src$="guard.js"]'</span>);
+      <span class="hljs-keyword">while</span> (element.nextElementSibling) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/link|script/</span>.test(element.nextElementSibling.tagName.toLowerCase())) {
+          head.removeChild(element.nextElementSibling);
+        } <span class="hljs-keyword">else</span> {
+          element = element.nextElementSibling;
+        }
+      }
+
+      body = <span class="hljs-built_in">document</span>.body;
+      <span class="hljs-keyword">while</span> (body.firstChild) {
+        body.removeChild(body.firstChild);
+      }
+    });
+  }
+}());</div></div></div></div></body></html>

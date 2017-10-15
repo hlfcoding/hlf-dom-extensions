@@ -13,7 +13,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "commentsOnly": true,
           "name": "Markdown"
         },
-        "sourcePath": "/Users/destrado/Projects/hlf-jquery/docs/README.md",
+        "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/docs/README.md",
         "projectPath": "docs/README.md",
         "targetPath": "index",
         "pageTitle": "index",
@@ -40,29 +40,28 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".scss"],
-                  "pygmentsLexer": "scss",
+                  "nameMatchers": [".css"],
+                  "pygmentsLexer": "css",
                   "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "SCSS"
+                  "name": "CSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/css/jquery.hlf.editable.scss",
-                "projectPath": "src/css/jquery.hlf.editable.scss",
-                "targetPath": "src/css/jquery.hlf.editable",
-                "pageTitle": "src/css/jquery.hlf.editable",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/css/field.css",
+                "projectPath": "src/css/field.css",
+                "targetPath": "src/css/field",
+                "pageTitle": "src/css/field",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "  HLF Editable jQuery Plugin",
-                    "slug": "-hlf-editable-jquery-plugin",
+                    "title": "HLF Editable Extension",
+                    "slug": "hlf-editable-extension",
                     "isFileHeader": true
                   },
                   "depth": 1
                 },
-                "title": "  HLF Editable jQuery Plugin"
+                "title": "HLF Editable Extension"
               },
               "depth": 3,
               "outline": []
@@ -70,152 +69,60 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".scss"],
-                  "pygmentsLexer": "scss",
+                  "nameMatchers": [".css"],
+                  "pygmentsLexer": "css",
                   "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "SCSS"
+                  "name": "CSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/css/jquery.hlf.media-grid.scss",
-                "projectPath": "src/css/jquery.hlf.media-grid.scss",
-                "targetPath": "src/css/jquery.hlf.media-grid",
-                "pageTitle": "src/css/jquery.hlf.media-grid",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/css/media-grid.css",
+                "projectPath": "src/css/media-grid.css",
+                "targetPath": "src/css/media-grid",
+                "pageTitle": "src/css/media-grid",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "  HLF Media Grid jQuery Plugin",
-                    "slug": "-hlf-media-grid-jquery-plugin",
+                    "title": "HLF Media Grid Extension",
+                    "slug": "hlf-media-grid-extension",
                     "isFileHeader": true
                   },
-                  "depth": 1,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Globals",
-                        "slug": "globals"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Helpers",
-                        "slug": "helpers"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Mixins",
-                        "slug": "mixins"
-                      },
-                      "depth": 2
-                    }
-                  ]
+                  "depth": 1
                 },
-                "title": "  HLF Media Grid jQuery Plugin"
+                "title": "HLF Media Grid Extension"
               },
               "depth": 3,
-              "outline": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Globals",
-                    "slug": "globals"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Helpers",
-                    "slug": "helpers"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Mixins",
-                    "slug": "mixins"
-                  },
-                  "depth": 2
-                }
-              ]
+              "outline": []
             }, {
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".scss"],
-                  "pygmentsLexer": "scss",
+                  "nameMatchers": [".css"],
+                  "pygmentsLexer": "css",
                   "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "SCSS"
+                  "name": "CSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/css/jquery.hlf.tip.scss",
-                "projectPath": "src/css/jquery.hlf.tip.scss",
-                "targetPath": "src/css/jquery.hlf.tip",
-                "pageTitle": "src/css/jquery.hlf.tip",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/css/tip.css",
+                "projectPath": "src/css/tip.css",
+                "targetPath": "src/css/tip",
+                "pageTitle": "src/css/tip",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "  HLF Tip jQuery Plugin",
-                    "slug": "-hlf-tip-jquery-plugin",
+                    "title": "HLF Tip Extension",
+                    "slug": "hlf-tip-extension",
                     "isFileHeader": true
                   },
-                  "depth": 1,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Internal",
-                        "slug": "internal"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Mixins",
-                        "slug": "mixins"
-                      },
-                      "depth": 2
-                    }
-                  ]
+                  "depth": 1
                 },
-                "title": "  HLF Tip jQuery Plugin"
+                "title": "HLF Tip Extension"
               },
               "depth": 3,
-              "outline": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Internal",
-                    "slug": "internal"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Mixins",
-                    "slug": "mixins"
-                  },
-                  "depth": 2
-                }
-              ]
+              "outline": []
             }
           ]
         }, {
@@ -230,26 +137,24 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/js/jquery.extension.hlf.core.coffee",
-                "projectPath": "src/js/jquery.extension.hlf.core.coffee",
-                "targetPath": "src/js/jquery.extension.hlf.core",
-                "pageTitle": "src/js/jquery.extension.hlf.core",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/js/core.js",
+                "projectPath": "src/js/core.js",
+                "targetPath": "src/js/core",
+                "pageTitle": "src/js/core",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "HLF Core jQuery Extension",
-                    "slug": "hlf-core-jquery-extension",
+                    "title": "HLF Extensions Core",
+                    "slug": "hlf-extensions-core",
                     "isFileHeader": true
                   },
                   "depth": 1,
@@ -266,22 +171,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "Plugin Support",
-                        "slug": "plugin-support"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Mixin Support",
-                        "slug": "mixin-support"
+                        "title": "buildExtension",
+                        "slug": "buildextension"
                       },
                       "depth": 2
                     }
                   ]
                 },
-                "title": "HLF Core jQuery Extension"
+                "title": "HLF Extensions Core"
               },
               "depth": 3,
               "outline": [
@@ -297,16 +194,8 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Plugin Support",
-                    "slug": "plugin-support"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Mixin Support",
-                    "slug": "mixin-support"
+                    "title": "buildExtension",
+                    "slug": "buildextension"
                   },
                   "depth": 2
                 }
@@ -315,42 +204,19 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/js/jquery.extension.hlf.event.coffee",
-                "projectPath": "src/js/jquery.extension.hlf.event.coffee",
-                "targetPath": "src/js/jquery.extension.hlf.event",
-                "pageTitle": "src/js/jquery.extension.hlf.event",
-                "firstHeader": {
-                  "type": "heading",
-                  "data": {
-                    "level": 1,
-                    "title": "HLF Event jQuery Extension",
-                    "slug": "hlf-event-jquery-extension",
-                    "isFileHeader": true
-                  },
-                  "depth": 1,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Hover-Intent",
-                        "slug": "hover-intent"
-                      },
-                      "depth": 2
-                    }
-                  ]
-                },
-                "title": "HLF Event jQuery Extension"
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/js/field.js",
+                "projectPath": "src/js/field.js",
+                "targetPath": "src/js/field",
+                "pageTitle": "src/js/field",
+                "title": "field"
               },
               "depth": 3,
               "outline": [
@@ -358,36 +224,209 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Hover-Intent",
-                    "slug": "hover-intent"
+                    "title": "#",
+                    "slug": ""
                   },
                   "depth": 2
-                }
-              ]
-            }, {
-              "type": "file",
-              "data": {
-                "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
-                  "ignorePrefix": "}",
-                  "foldPrefix": "^",
-                  "name": "CoffeeScript"
-                },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/js/jquery.hlf.editable.coffee",
-                "projectPath": "src/js/jquery.hlf.editable.coffee",
-                "targetPath": "src/js/jquery.hlf.editable",
-                "pageTitle": "src/js/jquery.hlf.editable",
-                "firstHeader": {
+                }, {
                   "type": "heading",
                   "data": {
                     "level": 1,
                     "title": "HLF Editable jQuery Plugin",
-                    "slug": "hlf-editable-jquery-plugin",
+                    "slug": "hlf-editable-jquery-plugin"
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "#",
+                        "slug": ""
+                      },
+                      "depth": 2
+                    }
+                  ]
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "- When AMD, register the attacher as an anonymous module.",
+                    "slug": "-when-amd-register-the-attacher-as-an-anonymous-module"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "- When Node or Browserify, set module exports to the attach result.",
+                    "slug": "-when-node-or-browserify-set-module-exports-to-the-attach-result"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "- When browser globals (root is window), Just run the attach function.",
+                    "slug": "-when-browser-globals-root-is-window-just-run-the-attach-function"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Namespace",
+                    "slug": "namespace"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "---------",
+                    "slug": "-"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Base Mixin",
+                    "slug": "base-mixin"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "----------",
+                    "slug": "-"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Inline Mixin",
+                    "slug": "inline-mixin"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "------------",
+                    "slug": "-"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Editor Mixin",
+                    "slug": "editor-mixin"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "------------",
+                    "slug": "-"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Color Picker Mixin",
+                    "slug": "color-picker-mixin"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "------------------",
+                    "slug": "-"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "File Uploader Mixin",
+                    "slug": "file-uploader-mixin"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "-------------------",
+                    "slug": "-"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Attaching",
+                    "slug": "attaching"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "---------",
+                    "slug": "-"
+                  },
+                  "depth": 1
+                }
+              ]
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "JavaScript"
+                },
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/js/guard.js",
+                "projectPath": "src/js/guard.js",
+                "targetPath": "src/js/guard",
+                "pageTitle": "src/js/guard",
+                "title": "guard"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "JavaScript"
+                },
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/js/hover-intent.js",
+                "projectPath": "src/js/hover-intent.js",
+                "targetPath": "src/js/hover-intent",
+                "pageTitle": "src/js/hover-intent",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Hover Intent Extension",
+                    "slug": "hlf-hover-intent-extension",
                     "isFileHeader": true
                   },
                   "depth": 1,
@@ -396,62 +435,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "Namespace",
-                        "slug": "namespace"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Base Mixin",
-                        "slug": "base-mixin"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Inline Mixin",
-                        "slug": "inline-mixin"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Editor Mixin",
-                        "slug": "editor-mixin"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Color Picker Mixin",
-                        "slug": "color-picker-mixin"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "File Uploader Mixin",
-                        "slug": "file-uploader-mixin"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Attaching",
-                        "slug": "attaching"
+                        "title": "HoverIntent",
+                        "slug": "hoverintent"
                       },
                       "depth": 2
                     }
                   ]
                 },
-                "title": "HLF Editable jQuery Plugin"
+                "title": "HLF Hover Intent Extension"
               },
               "depth": 3,
               "outline": [
@@ -459,56 +450,8 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Namespace",
-                    "slug": "namespace"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Base Mixin",
-                    "slug": "base-mixin"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Inline Mixin",
-                    "slug": "inline-mixin"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Editor Mixin",
-                    "slug": "editor-mixin"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Color Picker Mixin",
-                    "slug": "color-picker-mixin"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "File Uploader Mixin",
-                    "slug": "file-uploader-mixin"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Attaching",
-                    "slug": "attaching"
+                    "title": "HoverIntent",
+                    "slug": "hoverintent"
                   },
                   "depth": 2
                 }
@@ -517,39 +460,29 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/js/jquery.hlf.media-grid.coffee",
-                "projectPath": "src/js/jquery.hlf.media-grid.coffee",
-                "targetPath": "src/js/jquery.hlf.media-grid",
-                "pageTitle": "src/js/jquery.hlf.media-grid",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/js/media-grid.js",
+                "projectPath": "src/js/media-grid.js",
+                "targetPath": "src/js/media-grid",
+                "pageTitle": "src/js/media-grid",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "HLF Media Grid jQuery Plugin",
-                    "slug": "hlf-media-grid-jquery-plugin",
+                    "title": "HLF Media Grid Extension",
+                    "slug": "hlf-media-grid-extension",
                     "isFileHeader": true
                   },
                   "depth": 1,
                   "children": [
                     {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Namespace",
-                        "slug": "namespace"
-                      },
-                      "depth": 2
-                    }, {
                       "type": "heading",
                       "data": {
                         "level": 2,
@@ -560,19 +493,11 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     }
                   ]
                 },
-                "title": "HLF Media Grid jQuery Plugin"
+                "title": "HLF Media Grid Extension"
               },
               "depth": 3,
               "outline": [
                 {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Namespace",
-                    "slug": "namespace"
-                  },
-                  "depth": 2
-                }, {
                   "type": "heading",
                   "data": {
                     "level": 2,
@@ -586,26 +511,24 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/src/js/jquery.hlf.tip.coffee",
-                "projectPath": "src/js/jquery.hlf.tip.coffee",
-                "targetPath": "src/js/jquery.hlf.tip",
-                "pageTitle": "src/js/jquery.hlf.tip",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/src/js/tip.js",
+                "projectPath": "src/js/tip.js",
+                "targetPath": "src/js/tip",
+                "pageTitle": "src/js/tip",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "HLF Tip jQuery Plugin",
-                    "slug": "hlf-tip-jquery-plugin",
+                    "title": "HLF Tip Extension",
+                    "slug": "hlf-tip-extension",
                     "isFileHeader": true
                   },
                   "depth": 1,
@@ -614,30 +537,14 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "type": "heading",
                       "data": {
                         "level": 2,
-                        "title": "Namespace",
-                        "slug": "namespace"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
                         "title": "Tip",
                         "slug": "tip"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "SnapTip",
-                        "slug": "snaptip"
                       },
                       "depth": 2
                     }
                   ]
                 },
-                "title": "HLF Tip jQuery Plugin"
+                "title": "HLF Tip Extension"
               },
               "depth": 3,
               "outline": [
@@ -645,24 +552,8 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Namespace",
-                    "slug": "namespace"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
                     "title": "Tip",
                     "slug": "tip"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "SnapTip",
-                    "slug": "snaptip"
                   },
                   "depth": 2
                 }
@@ -691,128 +582,57 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".scss"],
-                  "pygmentsLexer": "scss",
+                  "nameMatchers": [".css"],
+                  "pygmentsLexer": "css",
                   "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "SCSS"
+                  "name": "CSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/_base.scss",
-                "projectPath": "tests/css/_base.scss",
-                "targetPath": "tests/css/_base",
-                "pageTitle": "tests/css/_base",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/css/base.css",
+                "projectPath": "tests/css/base.css",
+                "targetPath": "tests/css/base",
+                "pageTitle": "tests/css/base",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "  Base Visual Test",
-                    "slug": "-base-visual-test",
+                    "title": "Base Visual Test",
+                    "slug": "base-visual-test",
                     "isFileHeader": true
                   },
-                  "depth": 1,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Variables",
-                        "slug": "variables"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Placeholders",
-                        "slug": "placeholders"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Base CSS Output",
-                        "slug": "base-css-output"
-                      },
-                      "depth": 2
-                    }, {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Other CSS Output",
-                        "slug": "other-css-output"
-                      },
-                      "depth": 2
-                    }
-                  ]
+                  "depth": 1
                 },
-                "title": "  Base Visual Test"
+                "title": "Base Visual Test"
               },
               "depth": 3,
-              "outline": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Variables",
-                    "slug": "variables"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Placeholders",
-                    "slug": "placeholders"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Base CSS Output",
-                    "slug": "base-css-output"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Other CSS Output",
-                    "slug": "other-css-output"
-                  },
-                  "depth": 2
-                }
-              ]
+              "outline": []
             }, {
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".scss"],
-                  "pygmentsLexer": "scss",
+                  "nameMatchers": [".css"],
+                  "pygmentsLexer": "css",
                   "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "SCSS"
+                  "name": "CSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/editable.scss",
-                "projectPath": "tests/css/editable.scss",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/css/editable.css",
+                "projectPath": "tests/css/editable.css",
                 "targetPath": "tests/css/editable",
                 "pageTitle": "tests/css/editable",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "  HLF Editable Visual Tests",
-                    "slug": "-hlf-editable-visual-tests",
+                    "title": "HLF Editable Visual Tests",
+                    "slug": "hlf-editable-visual-tests",
                     "isFileHeader": true
                   },
                   "depth": 1
                 },
-                "title": "  HLF Editable Visual Tests"
+                "title": "HLF Editable Visual Tests"
               },
               "depth": 3,
               "outline": []
@@ -820,29 +640,28 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".scss"],
-                  "pygmentsLexer": "scss",
+                  "nameMatchers": [".css"],
+                  "pygmentsLexer": "css",
                   "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "SCSS"
+                  "name": "CSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/media-grid.scss",
-                "projectPath": "tests/css/media-grid.scss",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/css/media-grid.css",
+                "projectPath": "tests/css/media-grid.css",
                 "targetPath": "tests/css/media-grid",
                 "pageTitle": "tests/css/media-grid",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "  HLF Media Grid Visual Tests",
-                    "slug": "-hlf-media-grid-visual-tests",
+                    "title": "HLF Media Grid Visual Tests",
+                    "slug": "hlf-media-grid-visual-tests",
                     "isFileHeader": true
                   },
                   "depth": 1
                 },
-                "title": "  HLF Media Grid Visual Tests"
+                "title": "HLF Media Grid Visual Tests"
               },
               "depth": 3,
               "outline": []
@@ -850,29 +669,28 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".scss"],
-                  "pygmentsLexer": "scss",
+                  "nameMatchers": [".css"],
+                  "pygmentsLexer": "css",
                   "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "SCSS"
+                  "name": "CSS"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/css/tip.scss",
-                "projectPath": "tests/css/tip.scss",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/css/tip.css",
+                "projectPath": "tests/css/tip.css",
                 "targetPath": "tests/css/tip",
                 "pageTitle": "tests/css/tip",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "  HLF Tip Visual Tests",
-                    "slug": "-hlf-tip-visual-tests",
+                    "title": "HLF Tip Visual Tests",
+                    "slug": "hlf-tip-visual-tests",
                     "isFileHeader": true
                   },
                   "depth": 1
                 },
-                "title": "  HLF Tip Visual Tests"
+                "title": "HLF Tip Visual Tests"
               },
               "depth": 3,
               "outline": []
@@ -890,26 +708,24 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/base.coffee",
-                "projectPath": "tests/js/base.coffee",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/js/base.js",
+                "projectPath": "tests/js/base.js",
                 "targetPath": "tests/js/base",
                 "pageTitle": "tests/js/base",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "Unit Test Helpers",
-                    "slug": "unit-test-helpers",
+                    "title": "Test Helpers",
+                    "slug": "test-helpers",
                     "isFileHeader": true
                   },
                   "depth": 1,
@@ -925,7 +741,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     }
                   ]
                 },
-                "title": "Unit Test Helpers"
+                "title": "Test Helpers"
               },
               "depth": 3,
               "outline": [
@@ -943,63 +759,29 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/base-visual.coffee",
-                "projectPath": "tests/js/base-visual.coffee",
-                "targetPath": "tests/js/base-visual",
-                "pageTitle": "tests/js/base-visual",
-                "firstHeader": {
-                  "type": "heading",
-                  "data": {
-                    "level": 1,
-                    "title": "Visual Test Helpers",
-                    "slug": "visual-test-helpers",
-                    "isFileHeader": true
-                  },
-                  "depth": 1
-                },
-                "title": "Visual Test Helpers"
-              },
-              "depth": 3,
-              "outline": []
-            }, {
-              "type": "file",
-              "data": {
-                "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
-                  "ignorePrefix": "}",
-                  "foldPrefix": "^",
-                  "name": "CoffeeScript"
-                },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/core.coffee",
-                "projectPath": "tests/js/core.coffee",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/js/core.js",
+                "projectPath": "tests/js/core.js",
                 "targetPath": "tests/js/core",
                 "pageTitle": "tests/js/core",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
                     "level": 1,
-                    "title": "HLF Core Unit Tests",
-                    "slug": "hlf-core-unit-tests",
+                    "title": "HLF Extensions Core Tests",
+                    "slug": "hlf-extensions-core-tests",
                     "isFileHeader": true
                   },
                   "depth": 1
                 },
-                "title": "HLF Core Unit Tests"
+                "title": "HLF Extensions Core Tests"
               },
               "depth": 3,
               "outline": []
@@ -1007,84 +789,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/core.mixin.coffee",
-                "projectPath": "tests/js/core.mixin.coffee",
-                "targetPath": "tests/js/core.mixin",
-                "pageTitle": "tests/js/core.mixin",
-                "firstHeader": {
-                  "type": "heading",
-                  "data": {
-                    "level": 1,
-                    "title": "HLF Core Mixin Unit Tests",
-                    "slug": "hlf-core-mixin-unit-tests",
-                    "isFileHeader": true
-                  },
-                  "depth": 1
-                },
-                "title": "HLF Core Mixin Unit Tests"
-              },
-              "depth": 3,
-              "outline": []
-            }, {
-              "type": "file",
-              "data": {
-                "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
-                  "ignorePrefix": "}",
-                  "foldPrefix": "^",
-                  "name": "CoffeeScript"
-                },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/core.plugin.coffee",
-                "projectPath": "tests/js/core.plugin.coffee",
-                "targetPath": "tests/js/core.plugin",
-                "pageTitle": "tests/js/core.plugin",
-                "firstHeader": {
-                  "type": "heading",
-                  "data": {
-                    "level": 1,
-                    "title": "HLF Core Plugin Unit Tests",
-                    "slug": "hlf-core-plugin-unit-tests",
-                    "isFileHeader": true
-                  },
-                  "depth": 1
-                },
-                "title": "HLF Core Plugin Unit Tests"
-              },
-              "depth": 3,
-              "outline": []
-            }, {
-              "type": "file",
-              "data": {
-                "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
-                  "ignorePrefix": "}",
-                  "foldPrefix": "^",
-                  "name": "CoffeeScript"
-                },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/editable.coffee",
-                "projectPath": "tests/js/editable.coffee",
-                "targetPath": "tests/js/editable",
-                "pageTitle": "tests/js/editable",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/js/field.js",
+                "projectPath": "tests/js/field.js",
+                "targetPath": "tests/js/field",
+                "pageTitle": "tests/js/field",
                 "firstHeader": {
                   "type": "heading",
                   "data": {
@@ -1093,49 +809,56 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     "slug": "hlf-editable-visual-tests",
                     "isFileHeader": true
                   },
-                  "depth": 1,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Default",
-                        "slug": "default"
-                      },
-                      "depth": 2
-                    }
-                  ]
+                  "depth": 1
                 },
                 "title": "HLF Editable Visual Tests"
               },
               "depth": 3,
-              "outline": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Default",
-                    "slug": "default"
-                  },
-                  "depth": 2
-                }
-              ]
+              "outline": []
             }, {
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/media-grid.coffee",
-                "projectPath": "tests/js/media-grid.coffee",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/js/hover-intent.js",
+                "projectPath": "tests/js/hover-intent.js",
+                "targetPath": "tests/js/hover-intent",
+                "pageTitle": "tests/js/hover-intent",
+                "firstHeader": {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "HLF Hover Intent Visual Tests",
+                    "slug": "hlf-hover-intent-visual-tests",
+                    "isFileHeader": true
+                  },
+                  "depth": 1
+                },
+                "title": "HLF Hover Intent Visual Tests"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "JavaScript"
+                },
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/js/media-grid.js",
+                "projectPath": "tests/js/media-grid.js",
                 "targetPath": "tests/js/media-grid",
                 "pageTitle": "tests/js/media-grid",
                 "firstHeader": {
@@ -1146,49 +869,26 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                     "slug": "hlf-media-grid-visual-tests",
                     "isFileHeader": true
                   },
-                  "depth": 1,
-                  "children": [
-                    {
-                      "type": "heading",
-                      "data": {
-                        "level": 2,
-                        "title": "Default",
-                        "slug": "default"
-                      },
-                      "depth": 2
-                    }
-                  ]
+                  "depth": 1
                 },
                 "title": "HLF Media Grid Visual Tests"
               },
               "depth": 3,
-              "outline": [
-                {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Default",
-                    "slug": "default"
-                  },
-                  "depth": 2
-                }
-              ]
+              "outline": []
             }, {
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".coffee", "Cakefile"],
-                  "pygmentsLexer": "coffee-script",
-                  "highlightJS": "coffeescript",
-                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
-                  "strictMultiLineEnd": false,
-                  "singleLineComment": ["#"],
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "CoffeeScript"
+                  "name": "JavaScript"
                 },
-                "sourcePath": "/Users/destrado/Projects/hlf-jquery/tests/js/tip.coffee",
-                "projectPath": "tests/js/tip.coffee",
+                "sourcePath": "/Users/destrado/Projects/hlf-dom-extensions/tests/js/tip.js",
+                "projectPath": "tests/js/tip.js",
                 "targetPath": "tests/js/tip",
                 "pageTitle": "tests/js/tip",
                 "firstHeader": {

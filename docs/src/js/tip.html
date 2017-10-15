@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="en"><head><title>src/js/tip</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="src/js/tip"><meta name="groc-project-path" content="src/js/tip.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/js/tip.js</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="hlf-tip-extension">HLF Tip Extension</h1>
+<p><a href="../css/tip.html">Styles</a> | <a href="../../tests/js/tip.html">Tests</a></p>
+<p>The base <code>tip</code> plugin does several things. It does basic parsing of trigger
+element attributes for the tip content. It can anchor itself to a trigger by
+selecting the best direction. It can follow the cursor. It toggles its
+appearance by fading in and out and resizing, all via configurable animation
+options. It can display custom tip content. It uses the <code>hlf.hoverIntent</code>
+event extension to prevent over-queueing of appearance handlers. Last, the tip
+object attaches to the context element. It acts as tip for the the current
+jQuery selection via event delegation.</p>
+<p>The extended <code>snapTip</code> plugin extends the base tip. It allows the tip to snap
+to the trigger element. And by default the tip locks into place. But turn on
+only one axis of snapping, and the tip will follow the mouse only on the other
+axis. For example, snapping to the x-axis will only allow the tip to shift
+along the y-axis. The x will remain constant.</p></div></div><div class="code"><div class="wrapper">(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(root, attach)</span> </span>{</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>When AMD, register the attacher as an anonymous module.</li>
+<li>When Node or Browserify, set module exports to the attach result.</li>
+<li>When browser globals (root is window), Just run the attach function.</li>
+</ul></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+    define([<span class="hljs-string">'hlf/core'</span>, <span class="hljs-string">'hlf/hover-intent'</span>], attach);
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports === <span class="hljs-string">'object'</span>) {
+    <span class="hljs-built_in">module</span>.exports = attach(<span class="hljs-built_in">require</span>(<span class="hljs-string">'hlf/core'</span>), <span class="hljs-built_in">require</span>(<span class="hljs-string">'hlf/hover-intent'</span>));
+  } <span class="hljs-keyword">else</span> {
+    attach(HLF, HLF.HoverIntent);
+  }
+})(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(HLF, HoverIntent)</span> </span>{
+<span class="hljs-pi">  'use strict'</span>;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="tip">Tip</h2>
+<ul>
+<li><strong>debug</strong> toggles debug logging for all instances of an extension.</li>
+<li><strong>toPrefix</strong> helps to namespace when registering any DOM names.</li>
+<li><strong>attrName</strong>, <strong>className</strong>, <strong>eventName</strong>, <strong>varName</strong> helpers are all
+attached to the class statically, along with the <strong>extend</strong> method.</li>
+</ul>
+<p>The extension&#39;s <strong>defaults</strong> are available as reference. Also note that
+<em>the extension instance gets extended with the options</em>.</p>
+<ul>
+<li><p><strong>cursorHeight</strong> is the browser&#39;s cursor height. We need to know this to
+properly offset the tip to avoid cases of cursor-tip-stem overlap.</p>
+</li>
+<li><p><strong>defaultDirection</strong> is used as a tie-breaker when selecting the best
+direction. Note that the direction data structure must be an array of
+string components, and conventionally with <code>&#39;top&#39;</code>/<code>&#39;bottom&#39;</code> first.</p>
+</li>
+<li><p><strong>hasListeners</strong> can allow events <code>hlftipawake</code> and <code>hlftipwaking</code>,
+<code>hlftipasleep</code> and <code>hlftipsleeping</code> to be triggered from the trigger
+elements. This is off by default to improve performance.</p>
+</li>
+<li><p><strong>hasStem</strong> can be turned off to omit rendering the stem and accounting
+for it during layout.</p>
+</li>
+<li><p><strong>snapTo</strong> when set allows the tip to first snap to or along the trigger
+before mouse tracking. Null by default. Values can also be <code>&#39;x&#39;</code>,
+<code>&#39;y&#39;</code>, <code>&#39;trigger&#39;</code>.</p>
+</li>
+<li><p><strong>template</strong> should return interpolated HTML. Its context is the
+extension instance.</p>
+</li>
+<li><p><strong>toggleDelay</strong> delays the tip&#39;s waking or sleeping under normal cases.
+It defaults to 0.7 seconds.</p>
+</li>
+<li><p><strong>triggerContent</strong> can be the name of the trigger element&#39;s attribute
+or a function providing custom content when given the trigger element.</p>
+</li>
+<li><p><strong>viewportElement</strong> is the element in which the tip must fit. It is
+<em>not</em> the context element, which by convention contains the triggers.</p>
+</li>
+<li><p>Note: the majority of presentation state logic is in the extension
+stylesheet. We update the presentation state by using <strong>className</strong>.</p>
+</li>
+</ul>
+<p>To summarize the implementation, given existing <code>elements</code> in a
+<code>contextElement</code>, a tip <code>element</code> is created and configured via
+<code>_renderElement</code> and attached to <code>viewportElement</code>. The extension will
+initially <code>_updateTriggerElements</code>, which effectively
+<code>_updateTriggerAnchoring</code> and <code>_updateTriggerContent</code>.</p>
+<p><code>HoverIntent</code> event listeners are added to <code>element</code> via
+<code>_toggleElementEventListeners</code> with the <code>_onContentElementMouseEnter</code> and
+<code>_onContentElementMouseLeave</code> handlers, and to <code>contextElement</code> via
+<code>_toggleTriggerElementEventListeners</code> with the
+<code>_onTriggerElementMouseEnter</code>, <code>_onTriggerElementMouseLeave</code>, and
+<code>_onTriggerElementMouseMove</code> handlers. Aside from
+<code>_onTriggerElementMouseMove</code> mostly wrapping <code>_updateElementPosition</code>,
+the handlers mostly wrap <code>wake</code> and <code>sleep</code>, which <code>_toggleElement</code> in a
+locking and delayed approach per <code>_updateState</code>, <code>_toggleCountdown</code>,
+<code>toggleDelay</code> to avoid the tip having short lifespans or thrashing its
+CSS-animated appearance.</p>
+<p><code>_updateCurrentTriggerElement</code> calls are also typical during these actions
+and involve updating tip anchoring and size (via <code>_getElementSize</code>). And
+the <code>_contextObserver</code> is manually set up with the <code>_onContextMutation</code>
+handler that <code>_updateTriggerElements</code> and also updates <code>elements</code> lists.</p>
+<p><code>wake</code> will also <code>_updateElementPosition</code>, which holds the majority of the
+tip positioning logic but offloads to <code>_getStemSize</code> and
+<code>_getTriggerOffset</code> (and thereby <code>_withStealthRender</code>) as needed. The
+current positioning implementation uses <code>offset(Height|Width|Left|Top)</code>,
+<code>getBoundingClientRect</code>, <code>getComputedStyle</code>, etc. to simply calculate the
+offset, factoring in <code>snapTo</code>. The offset is applied to the tip as a CSS
+translate transform.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">class</span> Tip {
+    static get debug() {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+    static get defaults() {
+      <span class="hljs-keyword">return</span> {
+        cursorHeight: <span class="hljs-number">12</span>,
+        defaultDirection: [<span class="hljs-string">'bottom'</span>, <span class="hljs-string">'right'</span>],
+        hasListeners: <span class="hljs-literal">false</span>,
+        hasStem: <span class="hljs-literal">true</span>,
+        snapTo: <span class="hljs-literal">null</span>,
+        template() {
+          <span class="hljs-keyword">let</span> stemHtml = <span class="hljs-keyword">this</span>.hasStem ? `&lt;div <span class="hljs-keyword">class</span>=<span class="hljs-string">"${this.className('stem')}"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>` : '';
+          return (
+`<span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"${this.className('inner')}"</span>&gt;</span>
+  ${stemHtml}
+  <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"${this.className('content')}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">div</span>&gt;</span>`
+          );
+        },
+        toggleDelay: 700,
+        triggerContent: null,
+        viewportElement: document.body,
+      };
+    }
+    static toPrefix(context) {
+      switch (context) {
+        case 'event': return 'hlftip';
+        case 'data': return 'hlf-tip';
+        case 'class': return 'tips';
+        case 'var': return 'tip';
+        default: return 'hlf-tip';
+      }
+    }
+    constructor(elements, options, contextElement) {
+      this.elementHoverIntent = null;
+      this.hoverIntent = null;
+      this._currentTriggerElement = null;
+      this._sleepingPosition = null;
+      this._state = null;
+      this._stemSize = null;
+      this._toggleCountdown = null;
+    }
+    init() {
+      this.element = document.createElement('div');
+      this._updateState('asleep');
+      this._renderElement();
+      this._toggleContextMutationObserver(true);
+      this._toggleElementEventListeners(true);
+      this._toggleTriggerElementEventListeners(true);
+      this._updateTriggerElements();
+    }
+    deinit() {
+      this.element.parentNode.removeChild(this.element);
+      this._toggleContextMutationObserver(false);
+      this._toggleElementEventListeners(false);
+      this._toggleTriggerElementEventListeners(false);
+    }
+    get isAsleep() { return this._state === 'asleep'; }
+    get isSleeping() { return this._state === 'sleeping'; }
+    get isAwake() { return this._state === 'awake'; }
+    get isWaking() { return this._state === 'waking'; }
+    get snapToTrigger() { return this.snapTo === 'trigger'; }
+    get snapToXAxis() { return this.snapTo === 'x'; }
+    get snapToYAxis() { return this.snapTo === 'y'; }
+    sleep({ triggerElement, event }) {
+      if (this.isAsleep || this.isSleeping) { return; }
+
+      this._updateState('sleeping', { event });
+      this.setTimeout('_toggleCountdown', this.toggleDelay, () =&gt; {
+        this._toggleElement(false, () =&gt; {
+          this._updateState('asleep', { event });
+        });
+      });
+    }
+    wake({ triggerElement, event }) {
+      this._updateCurrentTriggerElement(triggerElement);
+      if (this.isAwake || this.isWaking) { return; }
+
+      let delayed = !this.isSleeping;
+      if (!delayed) { this.debugLog('staying awake'); }
+      this._updateState('waking', { event });
+      this.setTimeout('_toggleCountdown', (!delayed ? 0 : this.toggleDelay), () =&gt; {
+        this._toggleElement(true, () =&gt; {
+          this._updateState('awake', { event });
+        });
+        if (event.target !== this._contentElement) {
+          this._updateElementPosition(triggerElement, event);
+        }
+      });
+    }</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><code>_getElementSize</code> does a stealth render via <code>_withStealthRender</code> to find
+tip size. It returns saved data if possible before doing a measure. The
+measures, used by <code>_updateTriggerAnchoring</code>, are stored on the trigger
+as namespaced, <code>width</code> and <code>height</code> data-attributes. If on,
+<code>contentOnly</code> will factor in content padding into the size value for the
+current size.</p>
+<p><code>_getStemSize</code> does a stealth render via <code>_withStealthRender</code> to find
+stem size. The stem layout styles will add offset to the tip content
+based on the tip direction. Knowing the size helps operations like
+overall tip positioning.</p>
+<p><code>_isTriggerDirection</code> deduces if <code>element</code> has the given
+<code>directionComponent</code>, which is true if it has the classes or if there is
+no <code>triggerElement</code> or saved direction value, and <code>directionComponent</code>
+is part of <code>defaultDirection</code>.</p>
+<p><code>_updateTriggerContent</code> comes with a very simple base implementation
+that supports the common <code>title</code> and <code>alt</code> meta content for an element.
+Support is also provided for the <code>triggerContent</code> option. We take that
+content and store it into a namespaced <code>content</code> data-attribute on the
+trigger.</p></div></div><div class="code"><div class="wrapper">    _getElementSize(triggerElement, { contentOnly } = {}) {
+      <span class="hljs-keyword">let</span> size = {
+        height: triggerElement.getAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'height'</span>)),
+        width: triggerElement.getAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'width'</span>)),
+      };
+      <span class="hljs-keyword">if</span> (!size.height || !size.width) {
+        <span class="hljs-keyword">this</span>._updateElementContent(triggerElement);
+        <span class="hljs-keyword">this</span>._withStealthRender(() =&gt; {
+          triggerElement.setAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'height'</span>),
+            (size.height = <span class="hljs-keyword">this</span>.element.offsetHeight));
+          triggerElement.setAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'width'</span>),
+            (size.width = <span class="hljs-keyword">this</span>.element.offsetWidth));
+        });
+      }
+      <span class="hljs-keyword">if</span> (contentOnly) {
+        <span class="hljs-keyword">const</span> { paddingTop, paddingLeft, paddingBottom, paddingRight } =
+          getComputedStyle(<span class="hljs-keyword">this</span>._contentElement);
+        size.height -= <span class="hljs-built_in">parseFloat</span>(paddingTop) + <span class="hljs-built_in">parseFloat</span>(paddingBottom);
+        size.width -= <span class="hljs-built_in">parseFloat</span>(paddingLeft) + <span class="hljs-built_in">parseFloat</span>(paddingRight);
+      }
+      <span class="hljs-keyword">return</span> size;
+    }
+    _getStemSize() {
+      <span class="hljs-keyword">let</span> size = <span class="hljs-keyword">this</span>._stemSize;
+      <span class="hljs-keyword">if</span> (size != <span class="hljs-literal">null</span>) { <span class="hljs-keyword">return</span> size; }
+
+      <span class="hljs-keyword">let</span> stemElement = <span class="hljs-keyword">this</span>.selectByClass(<span class="hljs-string">'stem'</span>, <span class="hljs-keyword">this</span>.element);
+      <span class="hljs-keyword">if</span> (!stemElement) {
+        size = <span class="hljs-number">0</span>;
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>._withStealthRender(() =&gt; {
+          <span class="hljs-keyword">let</span> margin = getComputedStyle(stemElement).margin.replace(<span class="hljs-regexp">/0px/g</span>, <span class="hljs-string">''</span>);
+          size = <span class="hljs-built_in">Math</span>.abs(<span class="hljs-built_in">parseInt</span>(margin));
+        });
+      }
+      <span class="hljs-keyword">this</span>._stemSize = size;
+      <span class="hljs-keyword">return</span> size;
+    }
+    _getTriggerOffset(triggerElement) {
+      <span class="hljs-keyword">const</span> { position } = getComputedStyle(triggerElement);
+      <span class="hljs-keyword">if</span> (position === <span class="hljs-string">'fixed'</span> || position === <span class="hljs-string">'absolute'</span>) {
+        <span class="hljs-keyword">const</span> triggerRect = triggerElement.getBoundingClientRect();
+        <span class="hljs-keyword">const</span> viewportRect = <span class="hljs-keyword">this</span>.viewportElement.getBoundingClientRect();
+        <span class="hljs-keyword">return</span> {
+          left: triggerRect.left - viewportRect.left,
+          top: triggerRect.top - viewportRect.top,
+        };
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> {
+          left: triggerElement.offsetLeft, top: triggerElement.offsetTop
+        };
+      }
+    }
+    _isTriggerDirection(directionComponent, triggerElement) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.element.classList.contains(<span class="hljs-keyword">this</span>.className(directionComponent))) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+      }
+      <span class="hljs-keyword">if</span> (
+        (!triggerElement || !triggerElement.hasAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'direction'</span>))) &amp;&amp;
+        <span class="hljs-keyword">this</span>.defaultDirection.indexOf(directionComponent) !== -<span class="hljs-number">1</span>
+      ) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    _onContextMutation(mutations) {
+      <span class="hljs-keyword">let</span> newTriggerElements = [];
+      <span class="hljs-keyword">const</span> allTriggerElements = <span class="hljs-built_in">Array</span>.from(<span class="hljs-keyword">this</span>.querySelector(<span class="hljs-keyword">this</span>.contextElement));
+      mutations.forEach((mutation) =&gt; {
+        <span class="hljs-keyword">let</span> triggerElements = <span class="hljs-built_in">Array</span>.from(mutation.addedNodes)
+          .filter(n =&gt; n <span class="hljs-keyword">instanceof</span> HTMLElement)
+          .map((n) =&gt; {
+            <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">this</span>.querySelector(n);
+            <span class="hljs-keyword">return</span> result.length ? result[<span class="hljs-number">0</span>] : n;
+          })
+          .filter(n =&gt; allTriggerElements.indexOf(n) !== -<span class="hljs-number">1</span>);
+        newTriggerElements = newTriggerElements.concat(triggerElements);
+      });
+      <span class="hljs-keyword">this</span>._updateTriggerElements(newTriggerElements);
+      <span class="hljs-keyword">this</span>.elements = <span class="hljs-keyword">this</span>.elements.concat(newTriggerElements);
+      <span class="hljs-keyword">this</span>.hoverIntent.elements = <span class="hljs-keyword">this</span>.elements;
+    }
+    _onContentElementMouseEnter(event) {
+      <span class="hljs-keyword">this</span>.debugLog(<span class="hljs-string">'enter tip'</span>);
+      <span class="hljs-keyword">let</span> triggerElement = <span class="hljs-keyword">this</span>._currentTriggerElement;
+      <span class="hljs-keyword">if</span> (!triggerElement) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">this</span>.wake({ triggerElement, event });
+    }
+    _onContentElementMouseLeave(event) {
+      <span class="hljs-keyword">this</span>.debugLog(<span class="hljs-string">'leave tip'</span>);
+      <span class="hljs-keyword">let</span> triggerElement = <span class="hljs-keyword">this</span>._currentTriggerElement;
+      <span class="hljs-keyword">if</span> (!triggerElement) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">this</span>.sleep({ triggerElement, event });
+    }
+    _onTriggerElementMouseEnter(event) {
+      <span class="hljs-keyword">this</span>.wake({ triggerElement: event.target, event });
+    }
+    _onTriggerElementMouseLeave(event) {
+      <span class="hljs-keyword">this</span>.sleep({ triggerElement: event.target, event });
+    }
+    _onTriggerElementMouseMove(event) {
+      <span class="hljs-keyword">const</span> { target } = event;
+      <span class="hljs-keyword">if</span> (target.classList.contains(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'trigger'</span>))) {
+        <span class="hljs-keyword">this</span>._updateCurrentTriggerElement(target);
+      }
+      <span class="hljs-keyword">if</span> (
+        <span class="hljs-keyword">this</span>.isAsleep || !<span class="hljs-keyword">this</span>._currentTriggerElement || (
+          target !== <span class="hljs-keyword">this</span>._currentTriggerElement &amp;&amp;
+          target !== <span class="hljs-keyword">this</span>._currentTriggerElement.parentElement
+        )
+      ) {
+        <span class="hljs-keyword">return</span>;
+      }
+      <span class="hljs-keyword">this</span>._updateElementPosition(<span class="hljs-keyword">this</span>._currentTriggerElement, event);
+    }
+    _renderElement() {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.element.innerHTML.length) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">this</span>.element.innerHTML = <span class="hljs-keyword">this</span>.template();
+      <span class="hljs-keyword">this</span>.element.classList.add(
+        <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'tip'</span>), <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'follow'</span>), <span class="hljs-keyword">this</span>.className(<span class="hljs-string">'hidden'</span>),
+        ...(<span class="hljs-keyword">this</span>.defaultDirection.map(<span class="hljs-keyword">this</span>.className))
+      );
+
+      <span class="hljs-keyword">this</span>._contentElement = <span class="hljs-keyword">this</span>.selectByClass(<span class="hljs-string">'content'</span>, <span class="hljs-keyword">this</span>.element);
+
+      <span class="hljs-keyword">this</span>.viewportElement.insertBefore(<span class="hljs-keyword">this</span>.element, <span class="hljs-keyword">this</span>.viewportElement.firstChild);
+
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.snapTo) {
+        <span class="hljs-keyword">this</span>.element.classList.add(<span class="hljs-keyword">this</span>.className((() =&gt; {
+          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.snapToTrigger) { <span class="hljs-keyword">return</span> <span class="hljs-string">'snap-trigger'</span>; }
+          <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.snapToXAxis) { <span class="hljs-keyword">return</span> <span class="hljs-string">'snap-x-side'</span>; }
+          <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.snapToYAxis) { <span class="hljs-keyword">return</span> <span class="hljs-string">'snap-y-side'</span>; }
+        })()));
+      }
+    }
+    _toggleContextMutationObserver(on) {
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._contextObserver) {
+        <span class="hljs-keyword">this</span>._contextObserver = <span class="hljs-keyword">new</span> MutationObserver(<span class="hljs-keyword">this</span>._onContextMutation);
+      }
+      <span class="hljs-keyword">if</span> (on) {
+        <span class="hljs-keyword">const</span> options = { childList: <span class="hljs-literal">true</span>, subtree: <span class="hljs-literal">true</span> };
+        <span class="hljs-keyword">this</span>._contextObserver.observe(<span class="hljs-keyword">this</span>.contextElement, options);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>._contextObserver.disconnect();
+      }
+    }
+    _toggleElement(visible, completion) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._toggleAnimation) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">const</span> duration = <span class="hljs-keyword">this</span>.cssVariableDuration(<span class="hljs-string">'toggle-duration'</span>, <span class="hljs-keyword">this</span>.element);
+      <span class="hljs-keyword">let</span> { classList, style } = <span class="hljs-keyword">this</span>.element;
+      classList.toggle(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'visible'</span>), visible);
+      <span class="hljs-keyword">if</span> (visible) {
+        classList.remove(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'hidden'</span>));
+      }
+      <span class="hljs-keyword">this</span>.setTimeout(<span class="hljs-string">'_toggleAnimation'</span>, duration, () =&gt; {
+        <span class="hljs-keyword">if</span> (!visible) {
+          classList.add(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'hidden'</span>));
+          style.transform = <span class="hljs-string">'none'</span>;
+        }
+        completion();
+      });
+    }
+    _toggleElementEventListeners(on) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.elementHoverIntent || !on) {
+        <span class="hljs-keyword">this</span>.elementHoverIntent.remove();
+        <span class="hljs-keyword">this</span>.elementHoverIntent = <span class="hljs-literal">null</span>;
+      }
+      <span class="hljs-keyword">if</span> (on) {
+        <span class="hljs-keyword">this</span>.elementHoverIntent = HoverIntent.extend(<span class="hljs-keyword">this</span>._contentElement);
+      }
+      <span class="hljs-keyword">const</span> { eventName } = HoverIntent;
+      <span class="hljs-keyword">let</span> listeners = {};
+      listeners[eventName(<span class="hljs-string">'enter'</span>)] = <span class="hljs-keyword">this</span>._onContentElementMouseEnter;
+      listeners[eventName(<span class="hljs-string">'leave'</span>)] = <span class="hljs-keyword">this</span>._onContentElementMouseLeave;
+      <span class="hljs-keyword">this</span>.toggleEventListeners(on, listeners, <span class="hljs-keyword">this</span>._contentElement);
+    }
+    _toggleTriggerElementEventListeners(on) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hoverIntent || !on) {
+        <span class="hljs-keyword">this</span>.hoverIntent.remove();
+        <span class="hljs-keyword">this</span>.hoverIntent = <span class="hljs-literal">null</span>;
+      }
+      <span class="hljs-keyword">if</span> (on) {
+        <span class="hljs-keyword">const</span> { contextElement } = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">this</span>.hoverIntent = HoverIntent.extend(<span class="hljs-keyword">this</span>.elements, { contextElement });
+      }
+      <span class="hljs-keyword">const</span> { eventName } = HoverIntent;
+      <span class="hljs-keyword">let</span> listeners = {};
+      listeners[eventName(<span class="hljs-string">'enter'</span>)] = <span class="hljs-keyword">this</span>._onTriggerElementMouseEnter;
+      listeners[eventName(<span class="hljs-string">'leave'</span>)] = <span class="hljs-keyword">this</span>._onTriggerElementMouseLeave;
+      listeners[eventName(<span class="hljs-string">'track'</span>)] = <span class="hljs-keyword">this</span>._onTriggerElementMouseMove;
+      <span class="hljs-keyword">this</span>.toggleEventListeners(on, listeners, <span class="hljs-keyword">this</span>.contextElement);
+    }
+    _updateCurrentTriggerElement(triggerElement) {
+      <span class="hljs-keyword">if</span> (triggerElement == <span class="hljs-keyword">this</span>._currentTriggerElement) { <span class="hljs-keyword">return</span>; }
+
+      <span class="hljs-keyword">this</span>._updateElementContent(triggerElement);
+      <span class="hljs-keyword">let</span> contentSize = <span class="hljs-keyword">this</span>._getElementSize(triggerElement, { contentOnly: <span class="hljs-literal">true</span> });
+      <span class="hljs-keyword">this</span>._contentElement.style.height = `${contentSize.height}px`;
+      <span class="hljs-keyword">this</span>._contentElement.style.width = `${contentSize.width + <span class="hljs-number">1</span>}px`; <span class="hljs-comment">// Give some buffer.</span>
+
+      <span class="hljs-keyword">let</span> { classList } = <span class="hljs-keyword">this</span>.element;
+      <span class="hljs-keyword">let</span> compoundDirection = triggerElement.hasAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'direction'</span>)) ?
+        triggerElement.getAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'direction'</span>)).split(<span class="hljs-string">' '</span>) :
+        <span class="hljs-keyword">this</span>.defaultDirection;
+      <span class="hljs-keyword">let</span> directionClassNames = compoundDirection.map(<span class="hljs-keyword">this</span>.className);
+      <span class="hljs-keyword">if</span> (!directionClassNames.reduce((memo, className) =&gt; {
+        <span class="hljs-keyword">return</span> memo &amp;&amp; classList.contains(className);
+      }, <span class="hljs-literal">true</span>)) {
+        <span class="hljs-keyword">this</span>.debugLog(<span class="hljs-string">'update direction class'</span>, compoundDirection);
+        classList.remove(...([<span class="hljs-string">'top'</span>, <span class="hljs-string">'bottom'</span>, <span class="hljs-string">'right'</span>, <span class="hljs-string">'left'</span>].map(<span class="hljs-keyword">this</span>.className)));
+        classList.add(...directionClassNames);
+      }
+
+      <span class="hljs-keyword">this</span>._currentTriggerElement = triggerElement;
+    }
+    _updateElementContent(triggerElement) {
+      <span class="hljs-keyword">const</span> content = triggerElement.getAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'content'</span>));
+      <span class="hljs-keyword">this</span>._contentElement.textContent = content;
+    }
+    _updateElementPosition(triggerElement, event) {
+      <span class="hljs-keyword">let</span> cursorHeight = <span class="hljs-keyword">this</span>.snapTo ? <span class="hljs-number">0</span> : <span class="hljs-keyword">this</span>.cursorHeight;
+      <span class="hljs-keyword">let</span> offset = { left: event.detail.pageX, top: event.detail.pageY };
+
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.snapTo) { <span class="hljs-comment">// Note vertical directions already account for stem-size.</span>
+        <span class="hljs-keyword">let</span> triggerOffset = <span class="hljs-keyword">this</span>._getTriggerOffset(triggerElement);
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.snapToXAxis || <span class="hljs-keyword">this</span>.snapToTrigger) {
+          offset.top = triggerOffset.top;
+          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isTriggerDirection(<span class="hljs-string">'bottom'</span>, triggerElement)) {
+            offset.top += triggerElement.offsetHeight;
+          }
+          <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.snapToTrigger) {
+            offset.left -= <span class="hljs-keyword">this</span>.element.offsetWidth / <span class="hljs-number">2</span>;
+          }
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.snapToYAxis || <span class="hljs-keyword">this</span>.snapToTrigger) {
+          offset.left = triggerOffset.left;
+          <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.snapToTrigger) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isTriggerDirection(<span class="hljs-string">'right'</span>, triggerElement)) {
+              offset.left += triggerElement.offsetWidth + <span class="hljs-keyword">this</span>._getStemSize();
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isTriggerDirection(<span class="hljs-string">'left'</span>, triggerElement)) {
+              offset.left -= <span class="hljs-keyword">this</span>._getStemSize();
+            }
+            offset.top -= <span class="hljs-keyword">this</span>.element.offsetHeight / <span class="hljs-number">2</span> + <span class="hljs-keyword">this</span>._getStemSize();
+          }
+        }
+      }
+
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isTriggerDirection(<span class="hljs-string">'top'</span>, triggerElement)) {
+        offset.top -= <span class="hljs-keyword">this</span>.element.offsetHeight + <span class="hljs-keyword">this</span>._getStemSize();
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isTriggerDirection(<span class="hljs-string">'bottom'</span>, triggerElement)) {
+        offset.top += cursorHeight * <span class="hljs-number">2</span> + <span class="hljs-keyword">this</span>._getStemSize();
+      }
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._isTriggerDirection(<span class="hljs-string">'left'</span>, triggerElement)) {
+        offset.left -= <span class="hljs-keyword">this</span>.element.offsetWidth;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.element.offsetWidth &gt; triggerElement.offsetWidth) {
+          offset.left += triggerElement.offsetWidth;
+        }
+      }
+      <span class="hljs-keyword">this</span>.element.style.transform = `translate(${offset.left}px, ${offset.top}px)`;
+    }
+    _updateState(state, { event } = {}) {
+      <span class="hljs-keyword">if</span> (state === <span class="hljs-keyword">this</span>._state) { <span class="hljs-keyword">return</span>; }
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._state) {
+        <span class="hljs-keyword">if</span> (state === <span class="hljs-string">'asleep'</span> &amp;&amp; !<span class="hljs-keyword">this</span>.isAsleep) { <span class="hljs-keyword">return</span>; }
+        <span class="hljs-keyword">if</span> (state === <span class="hljs-string">'awake'</span> &amp;&amp; !<span class="hljs-keyword">this</span>.isWaking) { <span class="hljs-keyword">return</span>; }
+      }
+      <span class="hljs-keyword">this</span>._state = state;
+      <span class="hljs-keyword">this</span>.debugLog(state);
+
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hasListeners &amp;&amp; <span class="hljs-keyword">this</span>._currentTriggerElement) {
+        <span class="hljs-keyword">this</span>._currentTriggerElement.dispatchEvent(
+          <span class="hljs-keyword">this</span>.createCustomEvent(<span class="hljs-keyword">this</span>._state)
+        );
+      }
+
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isAsleep || <span class="hljs-keyword">this</span>.isAwake) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._currentTriggerElement) {
+          <span class="hljs-keyword">this</span>._currentTriggerElement.setAttribute(
+            <span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'has-tip-focus'</span>), <span class="hljs-keyword">this</span>.isAwake
+          );
+        }
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.hoverIntent) {
+          <span class="hljs-keyword">this</span>.hoverIntent.configure({ interval: <span class="hljs-keyword">this</span>.isAwake ? <span class="hljs-number">100</span> : <span class="hljs-string">'default'</span> });
+        }
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isSleeping) {
+        <span class="hljs-keyword">this</span>._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isWaking) {
+        <span class="hljs-keyword">this</span>._sleepingPosition = <span class="hljs-literal">null</span>;
+      }
+    }
+    _updateTriggerAnchoring(triggerElement) {
+      <span class="hljs-keyword">let</span> offset = <span class="hljs-keyword">this</span>._getTriggerOffset(triggerElement);
+      <span class="hljs-keyword">let</span> height = triggerElement.offsetHeight;
+      <span class="hljs-keyword">let</span> width = triggerElement.offsetWidth;
+      <span class="hljs-keyword">let</span> tip = <span class="hljs-keyword">this</span>._getElementSize(triggerElement);
+      <span class="hljs-keyword">this</span>.debugLog({ offset, height, width, tip });
+      <span class="hljs-keyword">const</span> viewportRect = <span class="hljs-keyword">this</span>.viewportElement.getBoundingClientRect();
+      <span class="hljs-keyword">let</span> newDirection = <span class="hljs-keyword">this</span>.defaultDirection.map((d) =&gt; {
+        <span class="hljs-keyword">let</span> edge, fits;
+        <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'bottom'</span>) {
+          fits = (edge = offset.top + height + tip.height) &amp;&amp; edge &lt;= viewportRect.height;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'right'</span>) {
+          fits = (edge = offset.left + tip.width) &amp;&amp; edge &lt;= viewportRect.width;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'top'</span>) {
+          fits = (edge = offset.top - tip.height) &amp;&amp; edge &gt;= <span class="hljs-number">0</span>;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'left'</span>) {
+          fits = (edge = offset.left - tips.width) &amp;&amp; edge &gt;= <span class="hljs-number">0</span>;
+        } <span class="hljs-keyword">else</span> {
+          fits = <span class="hljs-literal">true</span>;
+        }
+        <span class="hljs-keyword">this</span>.debugLog(<span class="hljs-string">'check-direction-component'</span>, { d, edge });
+        <span class="hljs-keyword">if</span> (!fits) {
+          <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'bottom'</span>) { <span class="hljs-keyword">return</span> <span class="hljs-string">'top'</span>; }
+          <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'right'</span>) { <span class="hljs-keyword">return</span> <span class="hljs-string">'left'</span>; }
+          <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'top'</span>) { <span class="hljs-keyword">return</span> <span class="hljs-string">'bottom'</span>; }
+          <span class="hljs-keyword">if</span> (d === <span class="hljs-string">'left'</span>) { <span class="hljs-keyword">return</span> <span class="hljs-string">'right'</span>; }
+        }
+        <span class="hljs-keyword">return</span> d;
+      });
+      triggerElement.setAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'direction'</span>), newDirection.join(<span class="hljs-string">' '</span>));
+    }
+    _updateTriggerContent(triggerElement) {
+      <span class="hljs-keyword">const</span> { triggerContent } = <span class="hljs-keyword">this</span>;
+      <span class="hljs-keyword">let</span> content;
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> triggerContent === <span class="hljs-string">'function'</span>) {
+        content = triggerContent(triggerElement);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">let</span> contentAttribute;
+        <span class="hljs-keyword">let</span> shouldRemoveAttribute = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">if</span> (triggerElement.hasAttribute(triggerContent)) {
+          contentAttribute = triggerContent;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (triggerElement.hasAttribute(<span class="hljs-string">'title'</span>)) {
+          contentAttribute = <span class="hljs-string">'title'</span>;
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (triggerElement.hasAttribute(<span class="hljs-string">'alt'</span>)) {
+          contentAttribute = <span class="hljs-string">'alt'</span>;
+          shouldRemoveAttribute = <span class="hljs-literal">false</span>;
+        } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Unsupported trigger.'</span>);
+        }
+        content = triggerElement.getAttribute(contentAttribute);
+        <span class="hljs-keyword">if</span> (shouldRemoveAttribute) {
+          triggerElement.removeAttribute(contentAttribute);
+        }
+      }
+      triggerElement.setAttribute(<span class="hljs-keyword">this</span>.attrName(<span class="hljs-string">'content'</span>), content);
+    }
+    _updateTriggerElements(triggerElements) {
+      <span class="hljs-keyword">if</span> (!triggerElements) {
+        triggerElements = <span class="hljs-keyword">this</span>.elements;
+      }
+      triggerElements.forEach((triggerElement) =&gt; {
+        triggerElement.classList.add(<span class="hljs-keyword">this</span>.className(<span class="hljs-string">'trigger'</span>));
+        <span class="hljs-keyword">this</span>._updateTriggerContent(triggerElement);
+        <span class="hljs-keyword">this</span>._updateTriggerAnchoring(triggerElement);
+      });
+    }
+    _withStealthRender(fn) {
+      <span class="hljs-keyword">if</span> (getComputedStyle(<span class="hljs-keyword">this</span>.element).display !== <span class="hljs-string">'none'</span>) {
+        <span class="hljs-keyword">return</span> fn();
+      }
+      <span class="hljs-keyword">this</span>.swapClasses(<span class="hljs-string">'hidden'</span>, <span class="hljs-string">'visible'</span>, <span class="hljs-keyword">this</span>.element);
+      <span class="hljs-keyword">this</span>.element.style.visibility = <span class="hljs-string">'hidden'</span>;
+      <span class="hljs-keyword">let</span> result = fn();
+      <span class="hljs-keyword">this</span>.swapClasses(<span class="hljs-string">'visible'</span>, <span class="hljs-string">'hidden'</span>, <span class="hljs-keyword">this</span>.element);
+      <span class="hljs-keyword">this</span>.element.style.visibility = <span class="hljs-string">'visible'</span>;
+      <span class="hljs-keyword">return</span> result;
+    }
+  }
+  HLF.buildExtension(Tip, {
+    autoBind: <span class="hljs-literal">true</span>,
+    compactOptions: <span class="hljs-literal">true</span>,
+    mixinNames: [<span class="hljs-string">'css'</span>, <span class="hljs-string">'event'</span>, <span class="hljs-string">'selection'</span>],
+  });
+  <span class="hljs-built_in">Object</span>.assign(HLF, { Tip });
+  <span class="hljs-keyword">return</span> Tip;
+});</div></div></div></div></body></html>
