@@ -10,8 +10,6 @@ checks:
     config:
       threshold: 20
 plugins:
-  csslint:
-    enabled: true
   eslint:
     enabled: true
   fixme:
