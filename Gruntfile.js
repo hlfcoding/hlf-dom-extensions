@@ -79,7 +79,6 @@ const pages = {
   'gh-pages': {
     options: {
       base: 'gh-pages',
-      add: true,
     },
     src: [
       '**',
@@ -107,8 +106,15 @@ const pages = {
         dest: 'gh-pages/',
       },
       {
-        src: 'node_modules/merlot/template.jst.html',
+        expand: true,
+        cwd: 'node_modules/merlot',
+        src: [
+          'images/*',
+          'stylesheets/*.{css,map}',
+          'template.jst.html',
+        ],
         dest: 'gh-pages/',
+        filter: 'isFile',
       },
     ],
   },
