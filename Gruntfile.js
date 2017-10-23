@@ -35,6 +35,7 @@ const docs = (function() {
   const src = [
     'src/**/*.{js,css}',
     'tests/**/*.{js,css}',
+    '!**/field.{js,css}',
     'docs/README.md',
   ];
   return {
@@ -100,7 +101,6 @@ const pages = {
           'docs/**/*',
           'lib/**/*',
           'tests/**/*',
-          '!tests/**/*.{css,js}',
           'README.md',
         ],
         dest: 'gh-pages/',
