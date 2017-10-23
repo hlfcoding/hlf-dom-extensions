@@ -1,0 +1,9 @@
+/*
+HLF Tip Visual Tests
+====================
+[Page](../../../tests/tip.visual.html) | [Styles](../../src/css/tip.html)
+*/
+
+.js-tip {
+  --tip-em: 14px;
+}

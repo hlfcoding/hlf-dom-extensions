@@ -1,0 +1,346 @@
+/*
+Base Visual Test
+================
+Provides the styling foundation for visual test pages. Import into a test page.
+*/
+
+/*
+variables
+*/
+:root {
+  --accent-color: #06d;
+  --accent-color-em: #117fff;
+  --bezel-highlight-color: rgba(255, 255, 255, 0.3);
+  --bezel-shadow-color: rgba(0, 0, 0, 0.3);
+  --bg-color: #dadad6;
+  --bg-color-dark: #cecec9;
+  --bg-color-light: #f2f2f1;
+  --fg-color: #111;
+  --fill-color: rgba(255, 255, 255, 0.95);
+  --header-bg-color: #272724;
+  --header-bg-color-light: #5d5d54;
+  --header-fg-color: #a3a3a4;
+  --section-header-bg-color: #c2c2bb;
+  --section-header-fg-color: #4a4a50;
+  --line-color: rgba(0, 0, 0, 0.1);
+  --line-size: 3px;
+  --radius-size: 10px;
+}
+
+/*
+dimmed
+*/
+body > header > *:not(:first-child),
+section.visual-test header > [data-rel=docs],
+section.visual-test footer:not(:empty) > * {
+  opacity: .5;
+}
+body > header > :hover:not(:first-child),
+body > header > :focus:not(:first-child),
+section.visual-test header > [data-rel=docs]:hover,
+section.visual-test header > [data-rel=docs]:focus,
+section.visual-test footer:not(:empty) > :hover,
+section.visual-test footer:not(:empty) > :focus {
+  opacity: 1;
+}
+
+/*
+panel-skin
+*/
+.bar-item,
+.bar > a,
+.bar .item,
+.bar .list > a,
+.bar li.no-a,
+.bar li:not(.no-a) > a,
+.box,
+.list-item,
+.list > a,
+.list .item,
+.list .bar > a,
+.list li.no-a,
+.list li:not(.no-a) > a {
+  background-clip: padding-box;
+  background-color: var(--fill-color);
+  border: var(--line-size) solid var(--line-color);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    inset 0 0 1rem rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+.bar-item:hover,
+.bar > a:hover,
+.bar .item:hover,
+.bar .list > a:hover,
+.bar li.no-a:hover,
+.bar li:not(.no-a) > a:hover,
+.box:hover,
+.list-item:hover,
+.list > a:hover,
+.list .item:hover,
+.list .bar > a:hover,
+.list li.no-a:hover,
+.list li:not(.no-a) > a:hover {
+  background-color: #fff;
+}
+
+/*
+pull-left-right
+*/
+body > header,
+section.visual-test header {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/*
+base
+*/
+html {
+  font-size: 14px;
+}
+body {
+  background-color: var(--bg-color);
+  font-family: Helvetica, sans-serif;
+  padding: 1rem;
+  padding-top: 0;
+}
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent-color-em);
+  text-decoration: underline;
+}
+button {
+  background-clip: padding-box;
+  background-color: var(--bg-color-light);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  color: var(--fg-color);
+  padding: 0.3em 0.6em;
+}
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.3em rgba(0, 0, 0, 0.1);
+}
+h1 {
+  font-size: 1.5rem;
+  letter-spacing: -0.01rem;
+  padding-bottom: 1rem;
+  padding-top: 4rem;
+}
+/* common test content container */
+p {
+  padding: 1rem 0;
+}
+dl {
+  display: flex;
+  justify-content: space-between;
+}
+dl:only-child {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+dt {
+  margin-left: 1rem;
+  text-align: right;
+  white-space: nowrap;
+}
+dd {
+  flex-basis: 3em;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  margin-right: 1rem;
+}
+/* non-edge tests container */
+#main {
+  padding: 1rem 0 2rem;
+}
+
+/*
+test page header
+*/
+body > header {
+  background: var(--header-bg-color);
+  box-shadow: inset 0 30px 40px -20px var(--bezel-shadow-color);
+  color: var(--header-fg-color);
+  text-shadow: 0 1px rgba(0, 0, 0, 0.7);
+}
+body > header > * {
+  display: inline-block;
+}
+body > header > *:not(:first-child) {
+  margin-left: 1rem;
+}
+body > header > h1 {
+  /* reset */
+  font-weight: normal;
+  margin: 0;
+}
+body > header > fieldset {
+  border-color: var(--header-bg-color-light);
+  border-radius: var(--radius-size);
+  padding: 0 10px 10px;
+}
+body > header > fieldset > legend {
+  opacity: 0.5;
+  padding: 0.2rem;
+}
+body > header > fieldset > label + label {
+  margin-left: 0.5rem;
+}
+
+/*
+main test styles
+*/
+section.visual-test:not(:last-child) {
+  padding-bottom: 1rem;
+}
+section.visual-test header {
+  background: var(--section-header-bg-color);
+  box-shadow:
+    inset 0 1px 4px var(--bezel-shadow-color),
+    0 1px 0 var(--bezel-highlight-color);
+  color: var(--section-header-fg-color);
+  display: flex;
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+  padding-top: 1rem;
+  text-shadow: 0 1px var(--bg-color);
+}
+section.visual-test header > .label {
+  flex-grow: 1;
+}
+section.visual-test header > .label::after {
+  content: ':';
+}
+section.visual-test header > [data-rel=docs] {
+  font-weight: normal;
+}
+section.visual-test footer:not(:empty) {
+  background: var(--bg-color-dark);
+  border-radius: var(--radius-size);
+  box-shadow:
+    inset 0 1px 4px var(--bezel-shadow-color),
+    0 1px 0 var(--bezel-highlight-color);
+  padding: 0.5rem;
+}
+section.visual-test footer:not(:empty) > button {
+  border-radius: 4px;
+  font-size: .9em;
+}
+
+/*
+alternative test container styles
+*/
+.edge {
+  position: absolute;
+}
+.edge.affixed {
+  position: fixed;
+}
+.edge.top {
+  top: 1rem;
+}
+.edge.right {
+  right: 1rem;
+}
+.edge.bottom {
+  bottom: 1rem;
+}
+.edge.left {
+  left: 1rem;
+}
+
+/*
+other
+*/
+.box {
+  border-radius: var(--radius-size);
+  margin: 1rem 0;
+  padding: 1rem;
+  position: relative;
+}
+.list > a,
+.list .item,
+.list li.no-a,
+.list li:not(.no-a) > a,
+.list-item {
+  border-bottom-width: 0;
+  display: block;
+  padding: 1rem;
+}
+.list > a:first-child,
+.list li.no-a:first-child,
+.list li:not(.no-a):first-child > a,
+.list .item:first-child {
+  border-top-left-radius: var(--radius-size);
+  border-top-right-radius: var(--radius-size);
+}
+.list > a:last-child,
+.list li.no-a:last-child,
+.list li:not(.no-a):last-child > a,
+.list .item:last-child {
+  border-bottom-left-radius: var(--radius-size);
+  border-bottom-right-radius: var(--radius-size);
+  border-bottom-width: var(--line-size);
+}
+
+.list {
+  display: inline-block;
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+}
+.list > a,
+.list .item,
+.list li.no-a,
+.list li:not(.no-a) > a {
+  width: 300px;
+}
+
+.bar > a,
+.bar .item,
+.bar li.no-a,
+.bar li:not(.no-a) > a,
+.bar-item {
+  border-right-width: 0;
+  display: block;
+  padding: 1rem;
+}
+.bar > a:first-child,
+.bar li.no-a:first-child,
+.bar li:not(.no-a):first-child > a,
+.bar-item-first {
+  border-top-left-radius: var(--radius-size);
+  border-bottom-left-radius: var(--radius-size);
+}
+.bar > a:last-child,
+.bar li.no-a:last-child,
+.bar li:not(.no-a):last-child > a,
+.bar-item-last {
+  border-top-right-radius: var(--radius-size);
+  border-bottom-right-radius: var(--radius-size);
+  border-width: var(--line-size);
+}
+.bar {
+  display: inline-flex;
+  margin: 1rem 0;
+}
+
+.grid li,
+.grid-item {
+  line-height: 0;
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+}
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding-left: 0;
+  width: 350px;
+}
