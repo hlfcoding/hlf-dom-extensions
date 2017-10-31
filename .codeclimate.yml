@@ -9,6 +9,9 @@ checks:
   return-statements:
     config:
       threshold: 20
+  similar-code:
+    config:
+      threshold: 100
 plugins:
   eslint:
     enabled: true
