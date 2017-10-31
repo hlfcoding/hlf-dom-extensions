@@ -17,7 +17,13 @@
     const { eventName } = HoverIntent;
 
     class Counters {
-      setUp(testElement, element, countersInfo) {
+      setUp(testElement, element, countersInfo = {
+        enter: { selector: '.enter-counter', eventName: eventName('enter') },
+        leave: { selector: '.leave-counter', eventName: eventName('leave') },
+        mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
+        mouseleave: { selector: '.mouseleave-counter', eventName: 'mouseleave' },
+        mouseout: { selector: '.mouseout-counter', eventName: 'mouseout' },
+      }) {
         Object.keys(countersInfo).map(key => countersInfo[key]).forEach((info) => {
           const { selector, eventName } = info;
           let counterElement = testElement.querySelector(selector);
@@ -69,13 +75,7 @@
         const { vars } = this;
         let element = testElement.querySelector('.box');
         this.hoverIntent = HoverIntent.extend(element);
-        vars.counters.setUp(testElement, element, {
-          enter: { selector: '.enter-counter', eventName: eventName('enter') },
-          leave: { selector: '.leave-counter', eventName: eventName('leave') },
-          mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
-          mouseleave: { selector: '.mouseleave-counter', eventName: 'mouseleave' },
-          mouseout: { selector: '.mouseout-counter', eventName: 'mouseout' },
-        });
+        vars.counters.setUp(testElement, element);
       },
       anchorName: 'default',
       className: 'default-call',
@@ -101,13 +101,7 @@
         const { vars } = this;
         let contextElement = testElement.querySelector('.list');
         HoverIntent.extend(contextElement.querySelectorAll('.item'), { contextElement });
-        vars.counters.setUp(testElement, contextElement, {
-          enter: { selector: '.enter-counter', eventName: eventName('enter') },
-          leave: { selector: '.leave-counter', eventName: eventName('leave') },
-          mouseover: { selector: '.mouseover-counter', eventName: 'mouseover' },
-          mouseleave: { selector: '.mouseleave-counter', eventName: 'mouseleave' },
-          mouseout: { selector: '.mouseout-counter', eventName: 'mouseout' },
-        });
+        vars.counters.setUp(testElement, contextElement);
       },
       anchorName: 'as-shared-instance',
       className: 'as-shared-instance-call',
