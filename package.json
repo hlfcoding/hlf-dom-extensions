@@ -35,8 +35,5 @@
     "merlot": "^0.1",
     "qunitjs": "^2.4",
     "requirejs": "^2.3"
-  },
-  "scripts": {
-    "postinstall": "grunt install"
   }
 }

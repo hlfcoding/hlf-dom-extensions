@@ -125,8 +125,11 @@ $ npm install hlf-dom-extensions
 ## Development [![devDependency Status](https://img.shields.io/david/dev/hlfcoding/hlf-dom-extensions.svg)](https://david-dm.org/hlfcoding/hlf-dom-extensions#info=devDependencies)
 
 ```bash
+# clone
+
 # to install
 $ npm install
+$ grunt install
 
 # to read some docs
 $ grunt docs
