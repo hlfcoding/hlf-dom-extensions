@@ -180,9 +180,19 @@
 
   function _bindMethods(object, { context, properties }) {
     Object.getOwnPropertyNames(properties || object)
-      .filter(name => typeof object[name] === 'function' &&
-        ['constructor', 'debugLog', 'debugLogGroup'].indexOf(name) === -1)
-      .forEach(name => object[name] = object[name].bind(context || object));
+      .filter((name) => {
+        try {
+          return (
+            typeof object[name] === 'function' &&
+            ['constructor', 'debugLog', 'debugLogGroup'].indexOf(name) === -1
+          );
+        } catch (error) {
+          console.log(`Error checking method ${name}, skipping binding...`);
+          return false;
+        }
+      }).forEach((name) => {
+        object[name] = object[name].bind(context || object);
+      });
   }
 
   function _listen(instance) {
