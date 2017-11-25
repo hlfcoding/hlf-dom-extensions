@@ -332,7 +332,7 @@
       this.someExtension = this.SomeExtension.extend(this.someElement);
       assert.ok(this.someExtension.someElement instanceof HTMLElement,
         'Instance has auto-selected sub element based on selectors option.');
-      assert.ok(this.someExtension.someElements instanceof NodeList,
+      assert.ok(this.someExtension.someElements instanceof Array,
         'Instance has auto-selected sub elements based on selectors option.');
       this.assertInstanceMethods(this.someExtension,
         'selectByClass', 'selectAllByClass', 'selectToProperties');

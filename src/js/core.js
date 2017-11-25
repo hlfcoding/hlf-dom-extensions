@@ -343,7 +343,7 @@
     },
     selectAllByClass(name, element) {
       if (!element) { element = this.rootElement; }
-      return element.querySelectorAll(`.${this.className(name)}`);
+      return Array.from(element.querySelectorAll(`.${this.className(name)}`));
     },
     selectToProperties() {
       const selectors = this.options ? this.options.selectors : this.selectors;
@@ -353,7 +353,7 @@
       Object.keys(selectors).forEach((name) => {
         const selector = selectors[name];
         if (name.substr(-1) === 's') {
-          this[name] = this.rootElement.querySelectorAll(selector);
+          this[name] = Array.from(this.rootElement.querySelectorAll(selector));
         } else {
           this[name] = this.rootElement.querySelector(selector);
         }
