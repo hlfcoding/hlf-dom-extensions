@@ -1268,7 +1268,7 @@
       return result;
     }
   }
-  Tip.debug = true;
+  Tip.debug = false;
   HLF.buildExtension(Tip, {
     autoBind: true,
     compactOptions: true,

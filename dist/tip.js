@@ -37,7 +37,7 @@
   // Tip
   // ---
   //
-  // - __debug__ toggles debug logging for all instances of an extension.
+  // - __setDebug__ toggles debug logging for all instances of an extension.
   // - __toPrefix__ helps to namespace when registering any DOM names.
   // - __attrName__, __className__, __eventName__, __varName__ helpers are all
   //   attached to the class statically, along with the __extend__ method.
@@ -589,7 +589,7 @@
       return result;
     }
   }
-  Tip.debug = true;
+  Tip.debug = false;
   HLF.buildExtension(Tip, {
     autoBind: true,
     compactOptions: true,
