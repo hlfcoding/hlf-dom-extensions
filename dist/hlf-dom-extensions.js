@@ -70,9 +70,19 @@
 
   function _bindMethods(object, { context, properties }) {
     Object.getOwnPropertyNames(properties || object)
-      .filter(name => typeof object[name] === 'function' &&
-        ['constructor', 'debugLog', 'debugLogGroup'].indexOf(name) === -1)
-      .forEach(name => object[name] = object[name].bind(context || object));
+      .filter((name) => {
+        try {
+          return (
+            typeof object[name] === 'function' &&
+            ['constructor', 'debugLog', 'debugLogGroup'].indexOf(name) === -1
+          );
+        } catch (error) {
+          console.log(`Error checking method ${name}, skipping binding...`);
+          return false;
+        }
+      }).forEach((name) => {
+        object[name] = object[name].bind(context || object);
+      });
   }
 
   function _listen(instance) {
@@ -233,7 +243,7 @@
     },
     selectAllByClass(name, element) {
       if (!element) { element = this.rootElement; }
-      return element.querySelectorAll(`.${this.className(name)}`);
+      return Array.from(element.querySelectorAll(`.${this.className(name)}`));
     },
     selectToProperties() {
       const selectors = this.options ? this.options.selectors : this.selectors;
@@ -243,7 +253,7 @@
       Object.keys(selectors).forEach((name) => {
         const selector = selectors[name];
         if (name.substr(-1) === 's') {
-          this[name] = this.rootElement.querySelectorAll(selector);
+          this[name] = Array.from(this.rootElement.querySelectorAll(selector));
         } else {
           this[name] = this.rootElement.querySelector(selector);
         }
