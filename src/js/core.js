@@ -180,7 +180,8 @@
 
   function _bindMethods(object, { context, properties }) {
     Object.getOwnPropertyNames(properties || object)
-      .filter(name => typeof object[name] === 'function' && name !== 'constructor')
+      .filter(name => typeof object[name] === 'function' &&
+        ['constructor', 'debugLog', 'debugLogGroup'].indexOf(name) === -1)
       .forEach(name => object[name] = object[name].bind(context || object));
   }
 
@@ -415,6 +416,13 @@
       }
       return mixin;
     }));
+
+    Object.assign(extensionClass, {
+      setDebug(debug) {
+        this.debug = debug;
+        Object.assign(this.prototype, _mixins.debug(debug, toPrefix));
+      }
+    });
   }
 
   function _normalizeEventListenersInfo(info) {

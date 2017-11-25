@@ -70,9 +70,6 @@
   // added to the `element`.
   //
   class MediaGrid {
-    static get debug() {
-      return false;
-    }
     static get defaults() {
       return {
         autoReady: false,
@@ -408,6 +405,7 @@
       });
     }
   }
+  MediaGrid.debug = false;
   HLF.buildExtension(MediaGrid, {
     autoBind: true,
     autoListen: true,
