@@ -64,9 +64,6 @@
   // event will too during `_onMouseOut`.
   //
   class HoverIntent {
-    static get debug() {
-      return true;
-    }
     static get defaults() {
       return {
         interval: 300,
@@ -188,6 +185,7 @@
       this.debugLog('checked', dMove);
     }
   }
+  HoverIntent.debug = false;
   HLF.buildExtension(HoverIntent, {
     autoBind: true,
     autoListen: true,

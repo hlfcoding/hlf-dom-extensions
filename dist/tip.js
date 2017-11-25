@@ -110,9 +110,6 @@
   // translate transform.
   //
   class Tip {
-    static get debug() {
-      return true;
-    }
     static get defaults() {
       return {
         cursorHeight: 12,
@@ -592,6 +589,7 @@
       return result;
     }
   }
+  Tip.debug = true;
   HLF.buildExtension(Tip, {
     autoBind: true,
     compactOptions: true,

@@ -70,7 +70,8 @@
 
   function _bindMethods(object, { context, properties }) {
     Object.getOwnPropertyNames(properties || object)
-      .filter(name => typeof object[name] === 'function' && name !== 'constructor')
+      .filter(name => typeof object[name] === 'function' &&
+        ['constructor', 'debugLog', 'debugLogGroup'].indexOf(name) === -1)
       .forEach(name => object[name] = object[name].bind(context || object));
   }
 
@@ -305,6 +306,13 @@
       }
       return mixin;
     }));
+
+    Object.assign(extensionClass, {
+      setDebug(debug) {
+        this.debug = debug;
+        Object.assign(this.prototype, _mixins.debug(debug, toPrefix));
+      }
+    });
   }
 
   function _normalizeEventListenersInfo(info) {
@@ -346,9 +354,6 @@
 })(this, function(HLF) {
   'use strict';
   class HoverIntent {
-    static get debug() {
-      return true;
-    }
     static get defaults() {
       return {
         interval: 300,
@@ -469,6 +474,7 @@
       this.debugLog('checked', dMove);
     }
   }
+  HoverIntent.debug = false;
   HLF.buildExtension(HoverIntent, {
     autoBind: true,
     autoListen: true,
@@ -488,9 +494,6 @@
 })(this, function(HLF) {
   'use strict';
   class MediaGrid {
-    static get debug() {
-      return false;
-    }
     static get defaults() {
       return {
         autoReady: false,
@@ -789,6 +792,7 @@
       });
     }
   }
+  MediaGrid.debug = false;
   HLF.buildExtension(MediaGrid, {
     autoBind: true,
     autoListen: true,
@@ -809,9 +813,6 @@
 })(this, function(HLF, HoverIntent) {
   'use strict';
   class Tip {
-    static get debug() {
-      return true;
-    }
     static get defaults() {
       return {
         cursorHeight: 12,
@@ -1267,6 +1268,7 @@
       return result;
     }
   }
+  Tip.debug = true;
   HLF.buildExtension(Tip, {
     autoBind: true,
     compactOptions: true,
