@@ -358,6 +358,7 @@
       }
     }
     _toggleContextMutationObserver(on) {
+      if (!this.querySelector) { return; }
       if (!this._contextObserver) {
         this._contextObserver = new MutationObserver(this._onContextMutation);
       }
