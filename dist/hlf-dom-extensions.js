@@ -1018,7 +1018,8 @@
       if (
         this.isAsleep || !this._currentTriggerElement || (
           target !== this._currentTriggerElement &&
-          target !== this._currentTriggerElement.parentElement
+          target !== this._currentTriggerElement.parentElement &&
+          !this._currentTriggerElement.contains(target)
         )
       ) {
         return;
