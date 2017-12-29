@@ -21,7 +21,7 @@
         featureCount: 1,
         itemsSelector: 'li:not(:first-child)',
         sectionSelector: 'ul',
-        triggerSelector: 'button.accordion',
+        triggerSelector: '.accordion-trigger',
       };
     }
     static toPrefix(context) {
@@ -71,8 +71,12 @@
         this._sections.filter(s => s !== section)
           .forEach(s => this._toggleSectionFolding(s, true));
       }
-      let { itemElements, sectionElement } = section;
-      itemElements.slice(this.featureCount)
+      let { itemElements, sectionElement, triggerElement } = section;
+      let featureCount = this.featureCount;
+      if (triggerElement === itemElements[0].previousElementSibling) {
+        featureCount -= 1;
+      }
+      itemElements.slice(featureCount)
         .forEach(el => el.style.display = folded ? 'none' : 'block');
       sectionElement.classList.toggle(this.className('folded'), folded);
       section.isFolded = folded;

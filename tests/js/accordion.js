@@ -18,7 +18,7 @@
         [...Array(sectionCount)].forEach((_, i) => {
           sectionsHtml += (
 `<ul class="list">
-  <li class="no-a">Section ${i}, Item Foo</li>
+  <li class="no-a accordion-trigger">Section ${i}, Item Foo</li>
   <li class="no-a">Section ${i}, Item Bar</li>
   <li class="no-a">Section ${i}, Item Baz</li>
 </ul>`
@@ -31,10 +31,7 @@
         );
       },
       test(testElement) {
-        Accordion.extend(testElement.querySelector('.sections'), {
-          featureCount: 0,
-          triggerSelector: 'li:first-child',
-        });
+        Accordion.extend(testElement.querySelector('.sections'));
       },
       anchorName: 'default',
       className: 'default-call',
