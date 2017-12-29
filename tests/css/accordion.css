@@ -1,0 +1,15 @@
+/*
+HLF Accordion Visual Tests
+==========================
+[Page](../../../tests/accordion.visual.html) | [Source](../../src/css/accordion.html)
+*/
+
+.sections > ul {
+  display: block;
+}
+
+.list.js-ac-folded li.no-a:first-child {
+  border-bottom-left-radius: var(--radius-size);
+  border-bottom-right-radius: var(--radius-size);
+  border-bottom-width: var(--line-size);
+}
