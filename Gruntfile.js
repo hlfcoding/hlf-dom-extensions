@@ -11,7 +11,7 @@ const dist = {
   concat: {
     files: {
       'dist/hlf-dom-extensions.css': ['dist/*.css'],
-      'dist/hlf-dom-extensions.js': ['dist/*.js', '!dist/guard.js'],
+      'dist/hlf-dom-extensions.js': ['dist/core.js', 'dist/*.js', '!dist/guard.js'],
     },
   },
   copy: {
