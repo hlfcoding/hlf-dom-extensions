@@ -30,8 +30,23 @@
 </div>`
         );
       },
+      footerHtml: (
+`<label for="cursor-enabled">
+  <input type="checkbox" id="cursor-enabled" value="[0,1]">
+  cursor enabled at first section, second item
+</label>`
+      ),
+      beforeTest(testElement) {
+        const inputElement = document.getElementById('cursor-enabled');
+        inputElement.addEventListener('change', (_) => {
+          let itemElement = testElement.querySelector('.sections > ul:first-child > li:nth-child(2)');
+          itemElement.classList.toggle('active', inputElement.checked);
+          this.accordion.remove();
+          this.accordion = Accordion.extend(testElement.querySelector('.sections'));
+        });
+      },
       test(testElement) {
-        Accordion.extend(testElement.querySelector('.sections'));
+        this.accordion = Accordion.extend(testElement.querySelector('.sections'));
       },
       anchorName: 'default',
       className: 'default-call',
