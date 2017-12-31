@@ -80,7 +80,7 @@
           html += (
 `<article class="js-mg-item">
   <section class="mg-preview">
-    <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail" />
+    <img src="http://placehold.it/200x134/888/aaa" alt="preview thumbnail">
     <div class="mg-headings">
       <h1 class="mg-title">${title}</h1>
       <h2 class="mg-date">July 2012</h2>
@@ -88,7 +88,7 @@
     ${tagsHTML}
   </section>
   <section class="mg-detail">
-    <img src="http://placehold.it/418x280/888/aaa" alt="main banner" />
+    <img src="http://placehold.it/418x280/888/aaa" alt="main banner">
     <div class="mg-headings">
       <h1 class="mg-title">${title}</h1>
       <h2 class="mg-date">July 2012</h2>

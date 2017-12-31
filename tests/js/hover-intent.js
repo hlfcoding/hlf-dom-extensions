@@ -56,7 +56,7 @@
       },
       footerHtml: (
 `<label for="default-enabled">
-  <input type="checkbox" id="default-enabled" checked />
+  <input type="checkbox" id="default-enabled" checked>
   enabled
 </label>`
       ),
