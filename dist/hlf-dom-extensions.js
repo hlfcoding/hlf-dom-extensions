@@ -981,6 +981,7 @@
       return true;
     }
     _highlightElement(element) {
+      if (element === null) { return; }
       if (element.classList.contains(this.highlightClass)) { return; }
       element.classList.add(this.highlightClass);
       setTimeout(() => {

@@ -1,0 +1,30 @@
+/*
+HLF SlideShow Extension
+=======================
+[Styles](../js/slide-show.html) | [Tests](../../tests/css/slide-show.html)
+*/
+
+.slideshow {
+  --slide-spacing: 1rem;
+}
+.slideshow > .slides {
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  list-style: none;
+  overflow-x: scroll;
+  padding-left: 0;
+  scroll-snap-type: mandatory;
+}
+.slideshow .slide {
+  margin-right: var(--slide-spacing);
+  scroll-snap-align: center;
+}
+.slideshow .slide.current { opacity: 1; }
+.slideshow .slide > figure { margin: 0; }
+.slideshow .slide > figure > img { margin-bottom: 0; }
+
+@media print {
+  .slideshow > .slides { display: block; }
+  .slideshow .slide { page-break-inside: avoid; }
+  .slide > figure > img { margin-bottom: inherit; }
+}

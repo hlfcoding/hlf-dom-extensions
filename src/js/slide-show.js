@@ -1,7 +1,7 @@
 //
 // HLF SlideShow Extension
 // =======================
-// [Tests](../../tests/js/slide-show.html)
+// [Styles](../css/slide-show.html) | [Tests](../../tests/js/slide-show.html)
 //
 (function(root, attach) {
   if (typeof define === 'function' && define.amd) {
@@ -76,6 +76,7 @@
       return true;
     }
     _highlightElement(element) {
+      if (element === null) { return; }
       if (element.classList.contains(this.highlightClass)) { return; }
       element.classList.add(this.highlightClass);
       setTimeout(() => {
