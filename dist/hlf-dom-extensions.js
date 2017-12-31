@@ -411,6 +411,8 @@
     }
     _tearDownSection(section) {
       this._toggleSectionEventListeners(false, section);
+      this.autoCollapse = false;
+      this._toggleSectionFolding(section, false);
     }
     _toggleSectionFolding(section, folded) {
       const { hasCursor, isFolded } = section;
