@@ -122,6 +122,9 @@ button {
   color: var(--fg-color);
   padding: 0.3em 0.6em;
 }
+button:disabled {
+  opacity: 0.5;
+}
 button:focus {
   outline: none;
   box-shadow: 0 0 0 0.3em rgba(0, 0, 0, 0.1);
@@ -308,7 +311,6 @@ other
 .bar li:not(.no-a) > a,
 .bar-item {
   border-right-width: 0;
-  display: block;
   padding: 1rem;
 }
 .bar > a:first-child,
@@ -326,9 +328,15 @@ other
   border-bottom-right-radius: var(--radius-size);
   border-width: var(--line-size);
 }
+.bar > .flexible-space {
+  flex-grow: 1;
+}
 .bar {
   display: inline-flex;
   margin: 1rem 0;
+}
+.bar.full {
+  display: flex;
 }
 
 .grid li,
