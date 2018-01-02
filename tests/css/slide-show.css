@@ -7,3 +7,6 @@ HLF SlideShow Visual Tests
 .slideshow {
   width: 300px;
 }
+.slides {
+  margin-bottom: 0;
+}

@@ -35,7 +35,38 @@
       },
       anchorName: 'default',
       className: 'default-call',
-      vars: { placeholderText, slideCount: 3 },
+      vars: { slideCount: 3 },
+    }));
+    tests.push(createVisualTest({
+      label: 'with buttons',
+      template({ slideCount }) {
+        let slidesHtml = '';
+        [...Array(slideCount)].forEach(() => {
+          slidesHtml += (
+`<li class="slide">
+  <figure><img src="resources/slide.png"></figure>
+</li>`
+          );
+        });
+        return (
+`<div class="slideshow">
+  <ol class="slides">
+    ${slidesHtml}
+  </ol>
+  <nav class="bar full">
+    <button type="button" class="previous">Previous</button>
+    <span class="flexible-space"></span>
+    <button type="button" class="next">Next</button>
+  </nav>
+</div>`
+        );
+      },
+      test(testElement) {
+        SlideShow.extend(testElement.querySelector('.slideshow'));
+      },
+      anchorName: 'with-buttons',
+      className: 'with-buttons-call',
+      vars: { slideCount: 3 },
     }));
     runVisualTests(tests);
   });
