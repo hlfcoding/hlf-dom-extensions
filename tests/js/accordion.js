@@ -13,7 +13,7 @@
     const { createVisualTest, placeholderText, runVisualTests } = base;
     tests.push(createVisualTest({
       label: 'by default',
-      template({ placeholderText, sectionCount }) {
+      template({ sectionCount }) {
         let sectionsHtml = '';
         [...Array(sectionCount)].forEach((_, i) => {
           sectionsHtml += (
@@ -50,7 +50,7 @@
       },
       anchorName: 'default',
       className: 'default-call',
-      vars: { placeholderText, sectionCount: 3 },
+      vars: { sectionCount: 3 },
     }));
     runVisualTests(tests);
   });

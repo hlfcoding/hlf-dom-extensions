@@ -13,14 +13,12 @@
     const { createVisualTest, placeholderText, runVisualTests } = base;
     tests.push(createVisualTest({
       label: 'by default',
-      template({ placeholderText, slideCount }) {
+      template({ slideCount }) {
         let slidesHtml = '';
-        [...Array(slideCount)].forEach((_, i) => {
+        [...Array(slideCount)].forEach(() => {
           slidesHtml += (
 `<li class="slide">
-  <figure>
-    <img src="resources/slide.png">
-  </figure>
+  <figure><img src="resources/slide.png"></figure>
 </li>`
           );
         });
