@@ -38,3 +38,13 @@ For extension JS, the [UMD](https://github.com/umdjs/umd) pattern is:
   return Extension;
 });
 ```
+
+For extension JS, there is a base pattern of certain members:
+
+- `setDebug` toggles debug logging for all instances of an extension.
+- `toPrefix` helps to namespace when registering any DOM names.
+- `attrName`, `className`, `eventName`, `varName` helpers are all
+  attached to the class statically, along with the `extend` method.
+
+The extension's `defaults` are available as reference. Also note that
+_the extension instance gets extended with the options_.

@@ -32,14 +32,6 @@
   // Tip
   // ---
   //
-  // - __setDebug__ toggles debug logging for all instances of an extension.
-  // - __toPrefix__ helps to namespace when registering any DOM names.
-  // - __attrName__, __className__, __eventName__, __varName__ helpers are all
-  //   attached to the class statically, along with the __extend__ method.
-  //
-  // The extension's __defaults__ are available as reference. Also note that
-  // _the extension instance gets extended with the options_.
-  //
   // - __cursorHeight__ is the browser's cursor height. We need to know this to
   //   properly offset the tip to avoid cases of cursor-tip-stem overlap.
   //
