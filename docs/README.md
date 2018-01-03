@@ -16,3 +16,25 @@ The docs use [Groc](http://nevir.github.io/groc) and are generated via:
 ```bash
 grunt docs
 ```
+
+## Conventions
+
+For extension JS, the [UMD](https://github.com/umdjs/umd) pattern is:
+
+- When AMD, register the attacher as an anonymous module.
+- When Node or Browserify, set module exports to the attach result.
+- When browser globals (root is window), Just run the attach function.
+
+```js
+(function(root, attach) {
+  if (typeof define === 'function' && define.amd) {
+    define(['hlf/core'], attach);
+  } else if (typeof exports === 'object') {
+    module.exports = attach(require('hlf/core'));
+  } else {
+    attach(HLF);
+  }
+})(this, function(HLF) {
+  return Extension;
+});
+```

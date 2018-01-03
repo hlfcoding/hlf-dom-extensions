@@ -10,11 +10,6 @@
 // the same name (github.com/briancherne/jquery-hoverIntent).
 //
 (function(root, attach) {
-  //
-  // - When AMD, register the attacher as an anonymous module.
-  // - When Node or Browserify, set module exports to the attach result.
-  // - When browser globals (root is window), Just run the attach function.
-  //
   if (typeof define === 'function' && define.amd) {
     define(['hlf/core'], attach);
   } else if (typeof exports === 'object') {

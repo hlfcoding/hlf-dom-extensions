@@ -8,11 +8,6 @@
 // helpers as added, and instance methods are mixed onto the prototype.
 //
 (function(root, namespace) {
-  //
-  // - When AMD, register the attacher as an anonymous module.
-  // - When Node or Browserify, set module exports to the attach result.
-  // - When browser globals (root is window), Just run the attach function.
-  //
   if (typeof define === 'function' && define.amd) {
     define(namespace);
   } else if (typeof exports === 'object') {
