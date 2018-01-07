@@ -11,6 +11,11 @@
   define(['test/base', 'hlf/accordion'], function(base, Accordion) {
     let tests = [];
     const { createVisualTest, placeholderText, runVisualTests } = base;
+    //
+    // Default
+    // -------
+    // Basic test with the default settings.
+    //
     tests.push(createVisualTest({
       label: 'by default',
       template({ sectionCount }) {

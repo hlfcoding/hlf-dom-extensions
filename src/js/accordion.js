@@ -13,6 +13,10 @@
   }
 })(this, function(HLF) {
   'use strict';
+  //
+  // Accordion
+  // ---------
+  //
   class Accordion {
     static get defaults() {
       return {
