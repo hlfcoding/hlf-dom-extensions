@@ -11,6 +11,11 @@
   define(['test/base', 'hlf/slide-show'], function(base, SlideShow) {
     let tests = [];
     const { createVisualTest, placeholderText, runVisualTests } = base;
+    //
+    // Default
+    // -------
+    // Basic test with the default settings.
+    //
     tests.push(createVisualTest({
       label: 'by default',
       template({ slideCount }) {
@@ -37,6 +42,10 @@
       className: 'default-call',
       vars: { slideCount: 3 },
     }));
+    //
+    // With Buttons
+    // ------------
+    //
     tests.push(createVisualTest({
       label: 'with buttons',
       template({ slideCount }) {
