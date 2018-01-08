@@ -31,7 +31,7 @@ The required DOM structure looks like:
 }
 .slideshow .slide > figure { margin: 0; }
 .slideshow .slide > figure > img { margin-bottom: 0; }
-.slideshow .slide.current > figure > img { cursor: pointer; }
+.slideshow .slide.js-ss-current > figure > img { cursor: pointer; }
 
 @media print {
   .slideshow > .slides { display: block; }
@@ -40,7 +40,7 @@ The required DOM structure looks like:
 }
 
 @media not print {
-  .slideshow .slide.full-screen > figure {
+  .slideshow .slide.js-ss-full-screen > figure {
     height: 100%;
     left: 0;
     overflow: auto;
@@ -51,8 +51,8 @@ The required DOM structure looks like:
     background: var(--slide-full-screen-dim-color);
     z-index: var(--slide-full-screen-z-index);
   }
-  .slideshow .slide.full-screen > figure > figcaption { display: none; }
-  .slideshow .slide.full-screen > figure > img {
+  .slideshow .slide.js-ss-full-screen > figure > figcaption { display: none; }
+  .slideshow .slide.js-ss-full-screen > figure > img {
     background: transparent;
     bottom: 0; left: 0; right: 0; top: 0;
     display: block;

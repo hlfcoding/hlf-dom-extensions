@@ -20,8 +20,6 @@
   class SlideShow {
     static get defaults() {
       return {
-        currentSlideClass: 'current',
-        fullScreenSlideClass: 'full-screen',
         highlightClass: 'highlighted',
         highlightDuration: 500,
         selectors: {
@@ -30,7 +28,6 @@
           slideElements: '.slide',
           slidesElement: '.slides',
         },
-        singleSlideClass: 'single-slide',
       };
     }
     static toPrefix(context) {
@@ -50,7 +47,7 @@
       this.changeSlide(0, { animated: false });
       this._slideMargin = parseFloat(getComputedStyle(this.slideElements[0]).marginRight);
       if (this.slideElements.length === 1) {
-        this.element.classList.add(this.singleSlideClass);
+        this.element.classList.add(this.className('single-slide'));
       }
     }
     deinit() {
@@ -62,10 +59,10 @@
     changeSlide(index, { animated } = { animated: true }) {
       if (index < 0 || index >= this.slideElements.length) { return false; }
       if (this.currentSlideElement) {
-        this.currentSlideElement.classList.remove(this.currentSlideClass);
+        this.currentSlideElement.classList.remove(this.className('current'));
       }
       this.currentSlideIndex = index;
-      this.currentSlideElement.classList.add(this.currentSlideClass);
+      this.currentSlideElement.classList.add(this.className('current'));
       if (animated) {
         this.currentSlideElement.scrollIntoView({ behavior: 'smooth' });
         this._isAnimatingScroll = true;
@@ -121,9 +118,9 @@
     }
     _onSlidesClick(event) {
       if (!this.currentSlideElement.contains(event.target)) { return; }
-      if (this.currentSlideElement.classList.contains(this.fullScreenSlideClass)) {
-        this.slidesElement.classList.remove(this.fullScreenSlideClass);
-        return this.currentSlideElement.classList.remove(this.fullScreenSlideClass);
+      if (this.currentSlideElement.classList.contains(this.className('full-screen'))) {
+        this.slidesElement.classList.remove(this.className('full-screen'));
+        return this.currentSlideElement.classList.remove(this.className('full-screen'));
       }
       if (event.target.tagName.toLowerCase() !== 'img') { return; }
       const maxDelay = 300;
@@ -140,8 +137,8 @@
         this.setTimeout('_endClickTimeout', null);
         if (delta < maxDelay) {
           this.debugLog('click:end');
-          this.slidesElement.classList.add(this.fullScreenSlideClass);
-          return this.currentSlideElement.classList.add(this.fullScreenSlideClass);
+          this.slidesElement.classList.add(this.className('full-screen'));
+          return this.currentSlideElement.classList.add(this.className('full-screen'));
         }
         this.debugLog('click:fail');
       }
@@ -158,7 +155,7 @@
       }
     }
     _onSlidesScroll(event) {
-      if (this.currentSlideElement.classList.contains(this.fullScreenSlideClass)) { return; }
+      if (this.currentSlideElement.classList.contains(this.className('full-screen'))) { return; }
       this.debugLog('scroll');
       this.setTimeout('_scrollTimeout', 96, () => {
         this.debugLog('did-scroll');
