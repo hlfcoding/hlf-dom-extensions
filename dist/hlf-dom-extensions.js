@@ -921,14 +921,14 @@
   class SlideShow {
     static get defaults() {
       return {
-        highlightClass: 'highlighted',
-        highlightDuration: 500,
         selectors: {
           nextElement: 'button.next',
           previousElement: 'button.previous',
           slideElements: '.slide',
           slidesElement: '.slides',
         },
+        uiHighlightClass: 'highlighted',
+        uiHighlightDuration: 500,
       };
     }
     static toPrefix(context) {
@@ -979,11 +979,11 @@
     }
     _highlightElement(element) {
       if (element === null) { return; }
-      if (element.classList.contains(this.highlightClass)) { return; }
-      element.classList.add(this.highlightClass);
+      if (element.classList.contains(this.uiHighlightClass)) { return; }
+      element.classList.add(this.uiHighlightClass);
       setTimeout(() => {
-        element.classList.remove(this.highlightClass);
-      }, this.highlightDuration);
+        element.classList.remove(this.uiHighlightClass);
+      }, this.uiHighlightDuration);
     }
     _onKeyDown(event) {
       const leftArrow = 37, rightArrow = 39;
