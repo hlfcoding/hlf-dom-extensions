@@ -2,6 +2,14 @@
 HLF SlideShow Extension
 =======================
 [Styles](../js/slide-show.html) | [Tests](../../tests/css/slide-show.html)
+
+The main responsibility for the required extension styling is to provide core
+layout styles but allow easy customization of skin styles, ie. colors, fonts,
+borders, shadows.
+
+The required DOM structure looks like:
+```html
+```
 */
 
 .slideshow {

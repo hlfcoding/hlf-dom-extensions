@@ -13,6 +13,10 @@
   }
 })(this, function(HLF) {
   'use strict';
+  //
+  // SlideShow
+  // ---------
+  //
   class SlideShow {
     static get defaults() {
       return {
