@@ -1085,12 +1085,16 @@
       this.toggleEventListeners(on, {
         keydown: this._onKeyDown,
       }, document.body);
-      this.toggleEventListeners(on, {
-        click: this._onNextClick,
-      }, this.nextElement);
-      this.toggleEventListeners(on, {
-        click: this._onPreviousClick,
-      }, this.previousElement);
+      if (this.nextElement !== null) {
+        this.toggleEventListeners(on, {
+          click: this._onNextClick,
+        }, this.nextElement);
+      }
+      if (this.previousElement !== null) {
+        this.toggleEventListeners(on, {
+          click: this._onPreviousClick,
+        }, this.previousElement);
+      }
       this.toggleEventListeners(on, {
         click: this._onSlidesClick,
         scroll: this._onSlidesScroll,
