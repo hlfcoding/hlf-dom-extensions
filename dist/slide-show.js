@@ -17,6 +17,32 @@
   // SlideShow
   // ---------
   //
+  // - __selectors.nextElement__ points to the optional existing UI for
+  //   effectively changing to the slide (if any) after the current on click.
+  //   The element will be modified with the `uiHighlightClass` when needed.
+  //   `'button.next'` by default.
+  //
+  // - __selectors.previousElement__ points to the optional existing UI for
+  //   effectively changing to the slide (if any) before the current on click.
+  //   The element will be modified with the `uiHighlightClass` when needed.
+  //   `'button.previous'` by default.
+  //
+  // - __selectors.slideElements__ points to all elements considered to be
+  //   slides, which can be modified with `js-ss-current`, `js-ss-full-screen`
+  //   classes. `'.slide'` by default.
+  //
+  // - __selectors.slidesElement__ points to the container element for all
+  //   slides, which can be modified with the `js-ss-full-screen` class. It
+  //   needs to be a scrollable element. See recommended, associated styling for
+  //   details. `'.slides'` by default.
+  //
+  // - __uiHighlightClass__ modifies optional UI elements, specifically for
+  //   those changing slides when a corresponding slide change occurs.
+  //   `'highlighted'` by default.
+  //
+  // - __uiHighlightDuration__ is the duration to apply the `uiHighlightClass`.
+  //   `500` by default.
+  //
   class SlideShow {
     static get defaults() {
       return {
