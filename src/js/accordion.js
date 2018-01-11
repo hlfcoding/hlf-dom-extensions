@@ -17,6 +17,25 @@
   // Accordion
   // ---------
   //
+  // - __autoCollapse__ can be turned off to prevent other sections from folding
+  //   when a section unfolds. `true` by default.
+  //
+  // - __cursorItemClass__ when on a section's item, marks it as a cursor, and
+  //   effectively preventing its section from folding. `'active'` by default.
+  //
+  // - __featureCount__ limits the number of starting items for a section to
+  //   show even when folded. `1` by default.
+  //
+  // - __itemsSelector__ points to all elements in a section, to be toggled
+  //   during folding and unfolding. `'li:not(:first-child)'` by default.
+  //
+  // - __sectionSelector__ points to all elements considered to be folding
+  //   sections, which can be modified with the `js-ac-folded` class. `'ul'`
+  //   by default.
+  //
+  // - __triggerSelector__ points to existing UI that when clicked toggles its
+  //   section's folding'. `'.accordion-trigger'` by default.
+  //
   class Accordion {
     static get defaults() {
       return {
