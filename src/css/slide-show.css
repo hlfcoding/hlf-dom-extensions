@@ -9,6 +9,17 @@ borders, shadows.
 
 The required DOM structure looks like:
 ```html
+<div class="slideshow">
+  <ol class="slides">
+    <li class="slide">
+      <figure><img src="resources/slide.png"></figure>
+    </li>
+  </ol>
+  <nav>
+    <button type="button" class="previous">Previous</button>
+    <button type="button" class="next">Next</button>
+  </nav>
+</div>
 ```
 */
 
