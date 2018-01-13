@@ -3,9 +3,10 @@ HLF SlideShow Extension
 =======================
 [Source](../js/slide-show.html) | [Tests](../../tests/css/slide-show.html)
 
-The main responsibility for the required extension styling is to provide core
-layout styles but allow easy customization of skin styles, ie. colors, fonts,
-borders, shadows.
+These styles are a suggested implementation to accompany the extension source,
+especially the styles around full-screen mode. Inclusion is optional, and
+excluding or overriding them is welcomed. Note: when available, it is expected
+that `scroll-snap-type: mandatory` is used.
 
 The required DOM structure looks like:
 ```html
