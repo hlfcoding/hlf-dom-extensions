@@ -3,6 +3,14 @@
 // =======================
 // [Styles](../css/slide-show.html) | [Tests](../../tests/js/slide-show.html)
 //
+// The `SlideShow` extension provides a simple but flexible slide-show behavior.
+// Simply scroll to change slides. The slide animation takes advantage of native
+// `scrollIntoView` support in modern browsers. Slide scroll-snap is also
+// supported if native support is missing. Arrow keys, any existing previous and
+// next buttons, and even the left and right regions of slides can also change
+// slides. Double-tap a slide to enter full-screen mode. See accompanying,
+// suggested styles.
+//
 (function(root, attach) {
   if (typeof define === 'function' && define.amd) {
     define(['hlf/core'], attach);
