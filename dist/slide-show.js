@@ -43,6 +43,24 @@
   // - __uiHighlightDuration__ is the duration to apply the `uiHighlightClass`.
   //   `500` by default.
   //
+  // To summarize the implementation, given existing `slideElements` in the
+  // extended `element`, keep track of the `currentSlideElement` (and
+  // `currentSlideIndex`), which will start at the first slide. Various user
+  // input is transformed into calls to `changeSlide`, which if `animated`, will
+  // call `scrollIntoView` on `currentSlideElement`. A `hlfssslidechange` event
+  // will also be dispatched.
+  //
+  // User input is handled by `_onKeyDown`, `_onNextClick`, `_onPreviousClick`,
+  // `_onSlidesClick`, and `_onSlidesScroll`, with timeouts `_keyDownTimeout`
+  // and `_scrollTimeout` for debounce.`_onSlidesClick`, using event delegation,
+  // implements both (mobile-ok) double-click recognition (with
+  // `_startClickTime` and `_endClickTimeout`) to enter full-screen mode and
+  // single-click recognition on left and right regions to change slide.
+  // `_onSlidesScroll` implements both current-slide tracking and substitute
+  // scroll-snap behavior (in case of no browser support, and with some math),
+  // with `_isAnimatingScroll` and `_isUserScroll` to track when to skip
+  // execution to avoid conflicts with other interactions and updates.
+  //
   class SlideShow {
     static get defaults() {
       return {
