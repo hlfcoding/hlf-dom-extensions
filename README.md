@@ -81,6 +81,39 @@ mediaGrid.createPreviewImagesPromise().then(mediaGrid.load, mediaGrid.load);
 See [Media Grid's unit tests][] and [Media Grid's visual tests][] for more
 examples.
 
+### [Slide Show][]
+
+The `SlideShow` extension provides a simple but flexible slide-show behavior.
+Simply scroll to change slides. The slide animation takes advantage of native
+`scrollIntoView` support in modern browsers. Slide scroll-snap is also
+supported if native support is missing. Arrow keys, any existing previous and
+next buttons, and even the left and right regions of slides can also change
+slides. Double-tap a slide to enter full-screen mode. See accompanying,
+suggested styles.
+
+Short examples:
+
+```html
+<div class="slideshow">
+  <ol class="slides">
+    <li class="slide">
+      <figure><img src="resources/slide.png"></figure>
+    </li>
+    ...
+  </ol>
+  <nav>
+    <button type="button" class="previous">Previous</button>
+    <button type="button" class="next">Next</button>
+  </nav>
+</div>
+```
+
+```js
+let slideShow = HLF.SlideShow.extend(document.querySelector('.slideshow'));
+```
+
+See [Slide Show's visual tests][] for more examples.
+
 ### [Hover Intent][]
 
 The `HoverIntent` extension normalizes DOM events associated with mouse enter
@@ -152,6 +185,8 @@ Copyright (c) 2014-present Peng Wang
 [Media Grid]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/media-grid.html
 [Media Grid's unit tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.unit.html
 [Media Grid's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.visual.html
+[Slide Show]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/slide-show.html
+[Slide Show's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/slide-show.visual.html
 [Hover Intent]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/hover-intent.html
 [Hover Intent's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/hover-intent.visual.html
 [Core]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/core.html
