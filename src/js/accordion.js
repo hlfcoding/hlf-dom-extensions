@@ -3,6 +3,12 @@
 // =======================
 // [Tests](../../tests/js/accordion.html)
 //
+// The `Accordion` extension provides a simple but flexible accordion behavior.
+// Folding a section only folds its items. `autoCollapse` is an option. And
+// `cursorItemClass` and `featureCount` options allow certain items to remain
+// visible upon folding. A `triggerSelector` option allows any trigger within
+// the section to be used.
+//
 (function(root, attach) {
   if (typeof define === 'function' && define.amd) {
     define(['hlf/core'], attach);
