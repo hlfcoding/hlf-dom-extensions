@@ -1493,7 +1493,10 @@
           );
         }
         if (this.hoverIntent) {
-          this.hoverIntent.configure({ interval: this.isAwake ? 100 : 'default' });
+          this.hoverIntent.configure({
+            interval: this.isAwake ? 100 : 'default',
+            sensitivity: this.isAwake ? 1 : 'default',
+          });
         }
       } else if (this.isSleeping) {
         this._sleepingPosition = { x: event.detail.pageX, y: event.detail.pageY };
