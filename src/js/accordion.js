@@ -36,6 +36,20 @@
   // - __triggerSelector__ points to existing UI that when clicked toggles its
   //   section's folding'. `'.accordion-trigger'` by default.
   //
+  // To summarize the implementation, given existing section elements in the
+  // extended `element`, populate `_sections` with elements (`sectionElement`,
+  // its `itemElements`, its `triggerElement`) and state (`hasCursor` and
+  // `isFolded`, respectively per `cursorItemClass` and `false`). User input is
+  // handled by `_onTriggerClick` and transformed into calls to
+  // `_toggleSectionFolding`.
+  //
+  // `_toggleSectionFolding` at its core changes `display` on the `itemElements`
+  // past the `featureCount` option for the section, while toggling the `js-ac-
+  // folded` class. It also implements the `autoCollapse` option and recurses
+  // to collapse the other sections if needed. It has a couple guards,
+  // including not folding if the section `hasCursor`, or if section's
+  // `isFolded` is already set.
+  //
   class Accordion {
     static get defaults() {
       return {
