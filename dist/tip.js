@@ -3,18 +3,14 @@
 // =================
 // [Styles](../css/tip.html) | [Tests](../../tests/js/tip.html)
 //
-// The base `tip` plugin does several things. It does basic parsing of trigger
+// The `Tip` extension does several things. It does basic parsing of trigger
 // element attributes for the tip content. It can anchor itself to a trigger by
 // selecting the best direction. It can follow the cursor. It toggles its
-// appearance by fading in and out and resizing, all via configurable animation
-// options. It can display custom tip content. It uses the `hlf.hoverIntent`
-// event extension to prevent over-queueing of appearance handlers. Last, the tip
-// object attaches to the context element. It acts as tip for the the current
-// jQuery selection via event delegation.
-//
-// The extended `snapTip` plugin extends the base tip. It allows the tip to snap
-// to the trigger element. And by default the tip locks into place. But turn on
-// only one axis of snapping, and the tip will follow the mouse only on the other
+// appearance by fading in and out and resizing. It can display custom tip
+// content. It uses the `HLF.HoverIntent` extension to prevent over-queueing of
+// appearance handlers. The `snapTo` option allows the tip to snap to the
+// trigger element. And by default the tip locks into place. But turn on only
+// one axis of snapping, and the tip will follow the mouse only on the other
 // axis. For example, snapping to the x-axis will only allow the tip to shift
 // along the y-axis. The x will remain constant.
 //
