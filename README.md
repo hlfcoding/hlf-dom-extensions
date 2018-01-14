@@ -114,6 +114,33 @@ let slideShow = HLF.SlideShow.extend(document.querySelector('.slideshow'));
 
 See [Slide Show's visual tests][] for more examples.
 
+### [Accordion][]
+
+The `Accordion` extension provides a simple but flexible accordion behavior.
+Folding a section only folds its items. `autoCollapse` is an option. And
+`cursorItemClass` and `featureCount` options allow certain items to remain
+visible upon folding. A `triggerSelector` option allows any trigger within
+the section to be used.
+
+Short examples:
+
+```html
+<div class="sections">
+  <ul class="list">
+    <li class="accordion-trigger">...</li>
+    <li>...</li>
+    <li>...</li>
+  </ul>
+  ...
+</div>
+```
+
+```js
+let accordion = HLF.Accordion.extend(document.querySelector('.sections'));
+```
+
+See [Accordion's visual tests][] for more examples.
+
 ### [Hover Intent][]
 
 The `HoverIntent` extension normalizes DOM events associated with mouse enter
@@ -187,6 +214,8 @@ Copyright (c) 2014-present Peng Wang
 [Media Grid's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/media-grid.visual.html
 [Slide Show]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/slide-show.html
 [Slide Show's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/slide-show.visual.html
+[Accordion]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/accordion.html
+[Accordion's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/accordion.visual.html
 [Hover Intent]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/hover-intent.html
 [Hover Intent's visual tests]: http://hlfcoding.github.io/hlf-dom-extensions/tests/hover-intent.visual.html
 [Core]: http://hlfcoding.github.io/hlf-dom-extensions/docs/src/js/core.html
