@@ -169,7 +169,7 @@
         );
         this.intentional = dMove > this.sensitivity;
       }
-      this.debugLog('checked', dMove);
+      this.debugLog('checked', dMove, this.sensitivity);
     }
   }
   HoverIntent.debug = false;
