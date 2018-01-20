@@ -118,10 +118,18 @@
     }
     _onMouseOut(event) {
       if (!this._checkEventElement(event)) { return; }
+      let keepPosition = false;
       if (this.intentional) {
+        keepPosition = true;
         this._dispatchHoverEvent(false, event);
       }
       this._resetState();
+      if (keepPosition) {
+        const { pageX, pageY } = event;
+        let { mouse: { x, y } } = this;
+        x.previous = pageX;
+        y.previous = pageY;
+      }
       this.debugLogGroup(false);
     }
     _onMouseOver(event) {
@@ -167,7 +175,7 @@
         dMove = sqrt(
           pow(x.current - x.previous, 2) + pow(y.current - y.previous, 2)
         );
-        this.intentional = dMove > this.sensitivity;
+        this.intentional = dMove >= this.sensitivity;
       }
       this.debugLog('checked', dMove, this.sensitivity);
     }
