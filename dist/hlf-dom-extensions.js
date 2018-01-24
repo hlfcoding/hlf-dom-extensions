@@ -500,9 +500,10 @@
     }
     _dispatchHoverEvent(on, event) {
       const { mouse: { x, y } } = this;
-      const { pageX, pageY, relatedTarget, target } = event;
+      const { clientX, clientY, pageX, pageY, relatedTarget, target } = event;
       let type = on ? 'enter' : 'leave';
       target.dispatchEvent(this.createCustomEvent(type, {
+        clientX, clientY,
         pageX: (x.current == null) ? pageX : x.current,
         pageY: (y.current == null) ? pageY : y.current,
         relatedTarget
@@ -511,6 +512,8 @@
     }
     _dispatchTrackEvent(event) {
       event.target.dispatchEvent(this.createCustomEvent('track', {
+        clientX: event.clientX,
+        clientY: event.clientY,
         pageX: event.pageX,
         pageY: event.pageY,
       }));
