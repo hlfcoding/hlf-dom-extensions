@@ -99,6 +99,7 @@
         defaultDirection: ['bottom', 'right'],
         hasListeners: false,
         hasStem: true,
+        repositionToFit: true,
         snapTo: null,
         template() {
           let stemHtml = this.hasStem ? `<div class="${this.className('stem')}"></div>` : '';
@@ -520,7 +521,7 @@
           fits = true;
         }
         this.debugLog('check-direction-component', { d, edge });
-        if (!fits) {
+        if (!fits && this.repositionToFit) {
           if (d === 'bottom') { return 'top'; }
           if (d === 'right') { return 'left'; }
           if (d === 'top') { return 'bottom'; }
