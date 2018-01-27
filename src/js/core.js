@@ -422,12 +422,21 @@
       return mixin;
     }));
 
+    const persistenceKey = `${extensionClass.toPrefix('data')}-debug`;
     Object.assign(extensionClass, {
-      setDebug(debug) {
+      setDebug(debug, persistent = false) {
         this.debug = debug;
         Object.assign(this.prototype, _mixins.debug(debug, toPrefix));
+        if (persistent) {
+          try {
+            localStorage.setItem(persistenceKey, debug);
+          } catch(e) {}
+        }
       }
     });
+    try {
+      extensionClass.setDebug(localStorage.getItem(persistenceKey) === 'true');
+    } catch(e) {}
   }
 
   function _normalizeEventListenersInfo(info) {
