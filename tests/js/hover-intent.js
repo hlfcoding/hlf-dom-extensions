@@ -84,6 +84,27 @@
       },
     }));
     tests.push(createVisualTest({
+      label: 'with longer interval',
+      template({ counters }) {
+        return (
+`<div class="box">
+  ${counters.template()}
+</div>`
+        );
+      },
+      test(testElement) {
+        const { vars } = this;
+        let element = testElement.querySelector('.box');
+        this.hoverIntent = HoverIntent.extend(element, { interval: 600 });
+        vars.counters.setUp(testElement, element);
+      },
+      anchorName: 'optional-longer-interval',
+      className: 'optional-longer-interval',
+      vars: {
+        counters: new Counters(),
+      },
+    }));
+    tests.push(createVisualTest({
       label: 'as shared instance',
       template({ counters }) {
         return (
