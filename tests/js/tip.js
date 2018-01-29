@@ -186,6 +186,29 @@
       className: 'corners-call',
       vars: { placeholderText },
     }));
+    //
+    // Longer Toggle Delay
+    // -------------------
+    //
+    tests.push(createVisualTest({
+      label: 'with longer toggle delay',
+      template({ placeholderText }) {
+        return (
+`<p>
+  <a class="trigger" title="link details" href="javascript:">tooltip trigger</a> &middot;
+  <a class="trigger" title="${placeholderText.short}" href="javascript:">tooltip trigger</a> &middot;
+  <a class="trigger" title="${placeholderText.long}" href="javascript:">tooltip trigger</a>
+</p>`
+        );
+      },
+      test(testElement) {
+        let triggerElements = testElement.querySelectorAll('[title]');
+        let tip = Tip.extend(triggerElements, { contextElement: testElement, toggleDelay: 1000 });
+      },
+      anchorName: 'optional-longer-toggle-delay',
+      className: 'optional-longer-toggle-delay',
+      vars: { placeholderText },
+    }));
 
     runVisualTests(tests);
   });
