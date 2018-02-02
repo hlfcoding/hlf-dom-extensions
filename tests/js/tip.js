@@ -58,7 +58,9 @@
         [...Array(itemCount)].forEach((_, i) => {
           itemsHtml += (
 `<li>
-  <a class="trigger" title="This is list item ${i + 1} in detail." href="javascript:">tooltip trigger</a>
+  <a class="trigger" href="javascript:"
+    title="This is list item ${i + 1} in detail. ${(i % 2 == 1) ? placeholderText.short : ''}">
+    tooltip trigger</a>
 </li>`
           );
         });
@@ -102,7 +104,9 @@
         let itemsHtml = '';
         [...Array(itemCount)].forEach((_, i) => {
           itemsHtml += (
-`<a class="trigger" title="This is bar item ${i + 1} in detail." href="javascript:">tooltip trigger</a>`
+`<a class="trigger" href="javascript:"
+  title="This is bar item ${i + 1} in detail. ${(i % 2 == 1) ? placeholderText.short : ''}">
+  tooltip trigger</a>`
           );
         });
         return (
@@ -135,7 +139,8 @@
         [...Array(itemCount)].forEach((_, i) => {
           itemsHtml += (
 `<li>
-  <img src="resources/avatar.png" alt="This is avatar ${i + 1} in detail.">
+  <img src="resources/avatar.png"
+    alt="This is avatar ${i + 1} in detail. ${(i % 2 == 1) ? placeholderText.short : ''}">
 </li>`
           );
         });
@@ -166,7 +171,7 @@
       template({ placeholderText }) {
         return (
 `<div class="box" style="height:6em">
-  <a class="trigger edge top right" title="${placeholderText.short}" href="javascript:">
+  <a class="trigger edge top right" title="${placeholderText.long}" href="javascript:">
     top right corner
   </a>
   <a class="trigger edge bottom left" title="${placeholderText.short}" href="javascript:">
