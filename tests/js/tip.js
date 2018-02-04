@@ -214,6 +214,37 @@
       className: 'optional-longer-toggle-delay',
       vars: { placeholderText },
     }));
+    //
+    // Custom Content
+    // --------------
+    //
+    tests.push(createVisualTest({
+      label: 'with custom content',
+      template({ placeholderText }) {
+        return (
+`<div>
+  <p>
+    <a class="trigger" href="javascript:">tooltip trigger</a>
+  </p>
+  <div class="content" style="display:none">
+    <h1>Custom Content</h1>
+    <p>${placeholderText.long}</p>
+  </div>
+</div>`
+        );
+      },
+      test(testElement) {
+        let triggerElements = testElement.querySelectorAll('.trigger');
+        let contentElement = testElement.querySelector('.content');
+        let tip = Tip.extend(triggerElements, {
+          contextElement: testElement,
+          triggerContent() { return contentElement.innerHTML; },
+        });
+      },
+      anchorName: 'optional-custom-content',
+      className: 'optional-custom-content',
+      vars: { placeholderText },
+    }));
 
     runVisualTests(tests);
   });
