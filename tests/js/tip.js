@@ -245,6 +245,29 @@
       className: 'optional-custom-content',
       vars: { placeholderText },
     }));
+    //
+    // Inside Scroll Container
+    // -----------------------
+    //
+    tests.push(createVisualTest({
+      label: 'inside an overflow-scroll container',
+      template({ placeholderText }) {
+        return (
+`<div class="box" style="height:6em; overflow:auto">
+  <a class="trigger" title="${placeholderText.short}" href="javascript:"
+    style="display:inline-block; margin:6em 0">
+    tooltip trigger</a>
+</div>`
+        );
+      },
+      test(testElement) {
+        let triggerElements = testElement.querySelectorAll('.trigger');
+        let tip = Tip.extend(triggerElements, { contextElement: testElement });
+      },
+      anchorName: 'inside-scroll-container',
+      className: 'inside-scroll-container',
+      vars: { placeholderText },
+    }));
 
     runVisualTests(tests);
   });
