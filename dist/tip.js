@@ -424,7 +424,11 @@
     }
     _updateElementContent(triggerElement) {
       const content = triggerElement.getAttribute(this.attrName('content'));
-      this._contentElement.textContent = content;
+      if (content.indexOf('<') !== -1) {
+        this._contentElement.innerHTML = content;
+      } else {
+        this._contentElement.textContent = content;
+      }
     }
     _updateElementPosition(triggerElement, event) {
       let cursorHeight = this.snapTo ? 0 : this.cursorHeight;
