@@ -170,7 +170,7 @@
       label: 'snapping to corners',
       template({ placeholderText }) {
         return (
-`<div class="box" style="height:6em">
+`<div class="box" style="height:6rem">
   <a class="trigger edge top right" title="${placeholderText.long}" href="javascript:">
     top right corner
   </a>
@@ -253,9 +253,9 @@
       label: 'inside an overflow-scroll container',
       template({ placeholderText }) {
         return (
-`<div class="box" style="height:6em; overflow:auto">
+`<div class="box" style="height:6rem; overflow:auto">
   <a class="trigger" title="${placeholderText.short}" href="javascript:"
-    style="display:inline-block; margin:6em 0">
+    style="display:inline-block; margin:6rem 0">
     tooltip trigger</a>
 </div>`
         );
