@@ -195,8 +195,7 @@
       throw 'Missing requirements.';
     }
     const { eventListeners } = instance;
-    _bindMethods(eventListeners, { context: instance });
-    instance.addEventListeners(eventListeners);
+    instance.addEventListeners(eventListeners, null, instance);
     instance._cleanupTasks.push(() => {
       instance.removeEventListeners(eventListeners);
     });
@@ -259,11 +258,14 @@
   });
 
   _mixins.event = {
-    addEventListeners(info, target) {
+    addEventListeners(info, target, context) {
       target = target || this.rootElement;
       _normalizeEventListenersInfo(info);
       Object.keys(info).forEach((type) => {
-        const [handler, options] = info[type];
+        let [handler, options] = info[type];
+        if (context != null) {
+          handler = info[type][0] = handler.bind(context);
+        }
         target.addEventListener(type, handler, options);
       });
     },
