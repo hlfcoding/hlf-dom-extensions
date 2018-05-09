@@ -486,9 +486,9 @@
     }
     constructor(elementOrElements, options, contextElement) {
       this.eventListeners = {
-        'mousemove': this._onMouseMove,
-        'mouseout': this._onMouseOut,
-        'mouseover': this._onMouseOver,
+        'mousemove': [this._onMouseMove, { passive: true }],
+        'mouseout': [this._onMouseOut, { passive: true }],
+        'mouseover': [this._onMouseOver, { passive: true }]
       };
     }
     init() {
