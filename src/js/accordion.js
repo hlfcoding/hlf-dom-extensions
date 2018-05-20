@@ -78,7 +78,7 @@
     }
     init() {
       this._sections = [];
-      Array.from(this.element.querySelectorAll(this.sectionSelector))
+      [...this.element.querySelectorAll(this.sectionSelector)]
         .forEach(this._setUpSection);
     }
     deinit() {
@@ -90,7 +90,7 @@
       this._toggleSectionFolding(section);
     }
     _setUpSection(sectionElement) {
-      let itemElements = Array.from(sectionElement.querySelectorAll(this.itemsSelector));
+      let itemElements = [...sectionElement.querySelectorAll(this.itemsSelector)];
       let section = {
         hasCursor: itemElements.some(el => el.classList.contains(this.cursorItemClass)),
         isFolded: false,

@@ -272,9 +272,9 @@
     }
     _onContextMutation(mutations) {
       let newTriggerElements = [];
-      const allTriggerElements = Array.from(this.querySelector(this.contextElement));
+      const allTriggerElements = [...this.querySelector(this.contextElement)];
       mutations.forEach((mutation) => {
-        let triggerElements = Array.from(mutation.addedNodes)
+        let triggerElements = [...mutation.addedNodes]
           .filter(n => n instanceof HTMLElement)
           .map((n) => {
             let result = this.querySelector(n);

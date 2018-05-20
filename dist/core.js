@@ -350,7 +350,7 @@
     },
     selectAllByClass(name, element) {
       if (!element) { element = this.rootElement; }
-      return Array.from(element.querySelectorAll(`.${this.className(name)}`));
+      return [...element.querySelectorAll(`.${this.className(name)}`)];
     },
     selectToProperties() {
       const selectors = this.options ? this.options.selectors : this.selectors;
@@ -360,7 +360,7 @@
       Object.keys(selectors).forEach((name) => {
         const selector = selectors[name];
         if (name.substr(-1) === 's') {
-          this[name] = Array.from(this.rootElement.querySelectorAll(selector));
+          this[name] = [...this.rootElement.querySelectorAll(selector)];
         } else {
           this[name] = this.rootElement.querySelector(selector);
         }
@@ -456,7 +456,7 @@
       Object.assign(options, { querySelector: subject });
       return _parseSubject(subject(options.contextElement), options);
     } else {
-      elements = Array.from(subject);
+      elements = [...subject];
     }
     return { element, elements };
   }

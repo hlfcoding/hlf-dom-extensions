@@ -83,7 +83,7 @@
         return false;
       }
       if (this.contextElement) {
-        if (Array.from(this.elements).indexOf(target) === -1) { return false; }
+        if ([...this.elements].indexOf(target) === -1) { return false; }
         //this.debugLog(target, relatedTarget);
       } else {
         if (target !== this.rootElement) { return false; }

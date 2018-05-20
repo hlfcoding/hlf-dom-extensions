@@ -100,7 +100,7 @@
     }
     createPreviewImagesPromise() {
       const selector = `.${this.className('preview')} img`;
-      const imageElements = Array.from(this.element.querySelectorAll(selector));
+      const imageElements = [...this.element.querySelectorAll(selector)];
       let teardownTasks = [];
       return Promise.all(imageElements.map((element) => new Promise((resolve, reject) => {
         element.addEventListener('load', resolve);
@@ -236,7 +236,7 @@
       let addedItemElements = mutations
         .filter(m => !!m.addedNodes.length)
         .reduce((allElements, m) => {
-          let elements = Array.from(m.addedNodes).filter(this._isItemElement);
+          let elements = [...m.addedNodes].filter(this._isItemElement);
           return allElements.concat(elements);
         }, []);
       addedItemElements.forEach(this._toggleItemEventListeners.bind(this, true));
@@ -258,9 +258,9 @@
         node.classList.contains(this.className('item')));
     }
     _selectItemElements() {
-      this.itemElements = Array.from(this.element.querySelectorAll(
+      this.itemElements = [...this.element.querySelectorAll(
         `.${this.className('item')}:not(.${this.className('sample')})`
-      ));
+      )];
     }
     _toggleItemEventListeners(on, itemElement) {
       this.toggleEventListeners(on, {
@@ -312,7 +312,7 @@
       return ((i + 1) % this.metrics.rowSize) === 0;
     }
     _layoutItems() {
-      Array.from(this.itemElements).reverse().forEach((itemElement) => {
+      [...this.itemElements].reverse().forEach((itemElement) => {
         if (!itemElement.hasAttribute(this.attrName('original-position'))) {
           itemElement.setAttribute(this.attrName('original-position'),
             getComputedStyle(itemElement).position);
