@@ -200,7 +200,7 @@ $ grunt
 
 ## License
 
-The MIT License (MIT)
+MIT NON-AI License
 
 Copyright (c) 2014-present Peng Wang
 
